@@ -3898,22 +3898,106 @@ function spellVariants(s) {
   return [...v];
 }
 
+function expandAbbreviations(s) {
+  const result = new Set([s]);
+  // Handle combined "sb./sth." — expand to all useful forms including standalone
+  if (/\bsb\.?\s*\/\s*sth\.?/i.test(s)) {
+    const comboPat = /\bsb\.?\s*\/\s*sth\.?\b/gi;
+    for (const r of ['somebody/something','somebody or something','someone/something','someone or something','somebody','someone','something']) {
+      result.add(s.replace(comboPat, r));
+    }
+  }
+  // Individual abbreviations — iterate until stable
+  const singles = [
+    [/\bsb\.?(?=\s|$|[/,])/gi, ['somebody', 'someone']],
+    [/\bsth\.?(?=\s|$|[/,])/gi, ['something']],
+  ];
+  let prevSize = 0;
+  while (result.size !== prevSize) {
+    prevSize = result.size;
+    for (const base of [...result]) {
+      for (const [pat, replacements] of singles) {
+        if (pat.test(base)) {
+          for (const r of replacements) { pat.lastIndex = 0; result.add(base.replace(pat, r)); }
+        }
+        pat.lastIndex = 0;
+      }
+    }
+  }
+  return [...result];
+}
+
+function expandAmpersand(s) {
+  const result = [s];
+  if (s.includes('&')) result.push(s.replace(/\s*&\s*/g, ' and ').replace(/\s+/g, ' '));
+  if (/\band\b/.test(s)) result.push(s.replace(/\band\b/g, '&'));
+  return result;
+}
+
+function expandNumbers(s) {
+  const W = ['zero','one','two','three','four','five','six','seven','eight','nine',
+    'ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+  const T = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+  const OW = ['zeroth','first','second','third','fourth','fifth','sixth','seventh','eighth','ninth',
+    'tenth','eleventh','twelfth','thirteenth','fourteenth','fifteenth','sixteenth','seventeenth','eighteenth','nineteenth'];
+  const OT = ['','','twentieth','thirtieth','fortieth','fiftieth','sixtieth','seventieth','eightieth','ninetieth'];
+  function n2w(n) { if (n < 20) return W[n]; if (n < 100) return T[n/10|0] + (n%10 ? '-' + W[n%10] : ''); return null; }
+  function n2o(n) { if (n < 20) return OW[n]; if (n%10===0 && n<100) return OT[n/10|0]; if (n<100) return T[n/10|0]+'-'+OW[n%10]; return null; }
+  function oSfx(n) { const s=['th','st','nd','rd'], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
+  const result = new Set([s]);
+  result.add(s.replace(/\b(\d{1,2})\b/g, (m,d) => { const w = n2w(+d); return w || m; }));
+  result.add(s.replace(/\b(\d{1,2})(st|nd|rd|th)\b/gi, (m,d) => { const w = n2o(+d); return w || m; }));
+  const w2n = {}; for (let i=0;i<100;i++){const w=n2w(i);if(w)w2n[w]=String(i);}
+  const o2n = {}; for (let i=0;i<100;i++){const w=n2o(i);if(w)o2n[w]=oSfx(i);}
+  const wKeys = Object.keys(w2n).sort((a,b)=>b.length-a.length);
+  let tmp = s;
+  for (const w of wKeys) { tmp = tmp.replace(new RegExp('\\b'+w.replace('-','[-\\s]')+'\\b','gi'), w2n[w]); }
+  result.add(tmp);
+  const oKeys = Object.keys(o2n).sort((a,b)=>b.length-a.length);
+  let tmp2 = s;
+  for (const w of oKeys) { tmp2 = tmp2.replace(new RegExp('\\b'+w.replace('-','[-\\s]')+'\\b','gi'), o2n[w]); }
+  result.add(tmp2);
+  return [...result];
+}
+
 function isCorrect(userAnswer, word) {
   const norm = normalizeAnswer(userAnswer);
   const expected = normalizeAnswer(word.w);
   const cf = normalizeAnswer(getContextForm(word));
-  const candidates = [expected, cf];
-  if (word.a) word.a.forEach(a => candidates.push(normalizeAnswer(a)));
+  const baseCandidates = [expected, cf];
+  if (word.a) word.a.forEach(a => baseCandidates.push(normalizeAnswer(a)));
+
+  const candidates = new Set();
+  for (const c of baseCandidates) {
+    for (const ea of expandAbbreviations(c)) {
+      for (const em of expandAmpersand(ea)) {
+        for (const en of expandNumbers(em)) { candidates.add(en); }
+      }
+    }
+  }
+
+  const userForms = new Set();
+  for (const en of expandNumbers(norm)) {
+    for (const em of expandAmpersand(en)) { userForms.add(em); }
+  }
+
   const _sw = new Set(['to','a','an','the','in','on','of','for','at','up','out','by','with','off','down']);
   const _co = s => s.split(' ').filter(w => !_sw.has(w)).join(' ');
-  for (const c of [...candidates]) { const p = _co(c); if (p && p !== c) candidates.push(p); }
-  const strip = s => s.replace(/[-_.,!?'"()]/g, '').replace(/\s+/g, ' ').trim();
-  const userV = spellVariants(norm);
-  const userS = spellVariants(strip(norm));
+  for (const c of [...candidates]) { const p = _co(c); if (p && p !== c) candidates.add(p); }
+
+  const strip = s => s.replace(/[.,]/g, ' ').replace(/[-_!?'"()&]/g, '').replace(/\s+/g, ' ').trim();
+
+  const allUserNorm = new Set();
+  const allUserStrip = new Set();
+  for (const u of userForms) {
+    for (const sv of spellVariants(u)) allUserNorm.add(sv);
+    for (const sv of spellVariants(strip(u))) allUserStrip.add(sv);
+  }
+
   for (const c of candidates) {
-    for (const u of userV) { if (u === c) return true; }
+    for (const u of allUserNorm) { if (u === c) return true; }
     const sc = strip(c);
-    for (const u of userS) { if (u === sc) return true; }
+    for (const u of allUserStrip) { if (u === sc) return true; }
   }
   return false;
 }
