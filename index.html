@@ -2817,14 +2817,30 @@ function getSmartReviewWords(limit = 20) {
       const p = prog.words[entry.w];
       if (!p) continue;
       const c = p.c || 0, w = p.w || 0;
-      if (c >= 3 && c > w) continue;
+      if (c >= 3 && c > w && (p.interval || 0) >= 14) continue; // fully mastered
       let priority = 0;
+      let reason = '';
       const total = c + w;
+      // Spaced repetition: overdue words get highest priority
+      if (p.dueDate && new Date(p.dueDate) <= new Date()) {
+        priority += 15;
+        reason = 'Due for review';
+      }
+      // Not seen in a long time
+      if (p.lastSeen) {
+        const daysSince = Math.floor((Date.now() - new Date(p.lastSeen).getTime()) / 86400000);
+        if (daysSince > 14) {
+          priority += daysSince / 7;
+          if (!reason) reason = 'Not seen in ' + daysSince + ' days';
+        }
+      }
       if (total > 0) priority += (w / total) * 10;
       priority += Math.min(w, 5);
-      if (c === 2 && w <= 1) priority += 3;
-      if (total >= 5 && w >= c) priority += 4;
-      if (priority > 0) candidates.push({ ...entry, source: src, priority });
+      if (c === 2 && w <= 1) { priority += 3; if (!reason) reason = 'Almost mastered'; }
+      if (total >= 5 && w >= c) { priority += 4; if (!reason) reason = 'Got wrong ' + w + '\u00d7'; }
+      if (!reason && w > 0) reason = 'Got wrong ' + w + '\u00d7';
+      if (!reason) reason = 'Needs practice';
+      if (priority > 0) candidates.push({ ...entry, source: src, priority, reason });
     }
   }
   candidates.sort((a, b) => b.priority - a.priority);
@@ -3128,17 +3144,20 @@ async function saveSessionResults() {
     state.studentData.exerciseTypesUsed = allUsed;
     state.studentData.totalSessions = (state.studentData.totalSessions || 0) + 1;
 
-    // Update per-source word progress
+    // Update per-source word progress (with spaced repetition fields)
     const progressBySource = {};
     for (const r of state.results) {
       const src = r.word.source;
       if (!progressBySource[src]) progressBySource[src] = {};
       const key = r.word.w;
-      if (!progressBySource[src][key]) progressBySource[src][key] = { c: 0, w: 0 };
+      if (!progressBySource[src][key]) progressBySource[src][key] = { c: 0, w: 0, correct: r.correct };
       if (r.correct) progressBySource[src][key].c++;
       else progressBySource[src][key].w++;
+      // Track last answer correctness for spaced repetition calc
+      progressBySource[src][key].lastCorrect = r.correct;
     }
 
+    const nowISO = new Date().toISOString();
     for (const [src, words] of Object.entries(progressBySource)) {
       const slug = slugify(src);
       const docRef = studentsRef.doc(state.studentId).collection('progress').doc(slug);
@@ -3150,14 +3169,39 @@ async function saveSessionResults() {
           if (merged[w]) {
             merged[w] = { c: (merged[w].c || 0) + counts.c, w: (merged[w].w || 0) + counts.w };
           } else {
-            merged[w] = counts;
+            merged[w] = { c: counts.c, w: counts.w };
+          }
+          // Spaced repetition: update lastSeen, interval, dueDate
+          merged[w].lastSeen = nowISO;
+          const oldInterval = merged[w].interval || 0;
+          if (counts.lastCorrect) {
+            // Last answer for this word in this session was correct
+            const newInterval = oldInterval === 0 ? 1 : Math.min(Math.round(oldInterval * 2.5), 60);
+            merged[w].interval = newInterval;
+            const due = new Date();
+            due.setDate(due.getDate() + newInterval);
+            merged[w].dueDate = due.toISOString();
+          } else {
+            // Last answer was wrong — reset interval
+            merged[w].interval = 1;
+            const due = new Date();
+            due.setDate(due.getDate() + 1);
+            merged[w].dueDate = due.toISOString();
           }
         }
         await docRef.set({ source: src, words: merged });
         state.progressData[slug] = { source: src, words: merged };
       } else {
-        await docRef.set({ source: src, words: words });
-        state.progressData[slug] = { source: src, words: words };
+        // New progress doc — add spaced repetition fields
+        const withSR = {};
+        for (const [w, counts] of Object.entries(words)) {
+          const newInterval = counts.lastCorrect ? 1 : 1;
+          const due = new Date();
+          due.setDate(due.getDate() + newInterval);
+          withSR[w] = { c: counts.c, w: counts.w, lastSeen: nowISO, interval: newInterval, dueDate: due.toISOString() };
+        }
+        await docRef.set({ source: src, words: withSR });
+        state.progressData[slug] = { source: src, words: withSR };
       }
     }
 
@@ -3207,7 +3251,7 @@ function getSourceProgress(sourceKey) {
   let practiced = 0, mastered = 0;
   for (const w of Object.values(prog.words)) {
     practiced++;
-    if (w.c >= 3 && w.c > w.w) mastered++;
+    if (w.c >= 3 && w.c > w.w && (w.interval || 0) >= 14) mastered++;
   }
   return { practiced, mastered, total };
 }
@@ -3258,11 +3302,12 @@ function showProgressScreen() {
       if (w) {
         c = w.c || 0; wr = w.w || 0;
         practiced++;
-        if (c >= 3 && c > wr) { mastered++; status = 'mastered'; }
+        if (c >= 3 && c > wr && (w.interval || 0) >= 14) { mastered++; status = 'mastered'; }
         else if (wr > 0 && wr >= c) { weak++; status = 'weak'; }
         else { status = 'practiced'; }
       }
-      wordDetails.push({ word: entry.w, status, c, w: wr });
+      const isDue = w && w.dueDate && new Date(w.dueDate) <= new Date() && status !== 'unseen';
+      wordDetails.push({ word: entry.w, status, c, w: wr, isDue });
     }
 
     // Sort: weak first, then practiced, then mastered, then unseen
@@ -3319,9 +3364,10 @@ function showProgressScreen() {
 
     let wordRows = '';
     for (const wd of src.wordDetails) {
+      const dueBadge = wd.isDue ? '<span style="font-size:0.65rem;padding:1px 6px;border-radius:6px;background:rgba(245,158,11,0.15);color:#f59e0b;font-weight:600;margin-left:4px;">📅 Due</span>' : '';
       wordRows += `<div class="word-detail-row ${wd.status}">
         <div class="word-detail-status">${statusIcons[wd.status]}</div>
-        <div class="word-detail-name">${wd.word}</div>
+        <div class="word-detail-name">${wd.word}${dueBadge}</div>
         <div class="word-detail-counts">
           ${wd.status !== 'unseen' ? `<span class="correct-count">✓${wd.c}</span><span class="wrong-count">✗${wd.w}</span>` : '<span style="color:var(--muted)">—</span>'}
         </div>
@@ -3448,14 +3494,20 @@ function buildReferenceList(sourceFilter, searchTerm) {
     group.className = 'ref-source-group';
     group.innerHTML = `<div class="ref-source-title">${src} · ${filtered.length} words</div>`;
 
+    const refSlug = slugify(src);
+    const refProg = state.progressData[refSlug];
+    const refWords = refProg && refProg.words ? refProg.words : {};
     for (const entry of filtered) {
       const item = document.createElement('div');
       item.className = 'ref-word-item';
       // Clean sentence: replace _____ with the actual word in bold
       const sentenceDisplay = entry.s.replace('_____', `<strong style="color:var(--accent)">${entry.w}</strong>`);
+      const rp = refWords[entry.w];
+      const refDue = rp && rp.dueDate && new Date(rp.dueDate) <= new Date();
+      const refDueBadge = refDue ? ' <span style="font-size:0.65rem;padding:1px 6px;border-radius:6px;background:rgba(245,158,11,0.15);color:#f59e0b;font-weight:600;">📅 Due</span>' : '';
       item.innerHTML = `
         <div class="ref-word-header">
-          <span class="ref-word-en">${entry.w}</span>
+          <span class="ref-word-en">${entry.w}${refDueBadge}</span>
           <span class="ref-word-de">${entry.g}</span>
         </div>
         <div class="ref-word-details">
@@ -4562,9 +4614,10 @@ async function endPractice() {
   for (const r of sorted) {
     const item = document.createElement('div');
     item.className = 'result-item ' + (r.correct ? 'correct' : 'wrong');
+    const reasonTag = r.word.reason ? `<span style="font-size:0.65rem;padding:1px 6px;border-radius:6px;background:rgba(255,255,255,0.07);color:var(--text-secondary);font-weight:500;margin-left:4px;">${escapeHtml(r.word.reason)}</span>` : '';
     item.innerHTML = `
       <span class="result-icon">${r.correct ? '✓' : '✗'}</span>
-      <span class="result-word">${r.word.w}</span>
+      <span class="result-word">${r.word.w}${reasonTag}</span>
       <span class="result-answer">${r.correct ? '' : 'You: ' + r.userAnswer}</span>
     `;
     list.appendChild(item);
