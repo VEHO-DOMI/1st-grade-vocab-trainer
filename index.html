@@ -860,20 +860,208 @@ body.playing .header-container { display: none; }
 .quiz-card.flash-correct { animation: correctFlash 0.6s ease-out; }
 .quiz-card.flash-wrong { animation: wrongFlash 0.6s ease-out; }
 
-/* Word of the Day */
-#wotd-card { background: rgba(200,60,40,0.06); border: 1px solid rgba(200,60,40,0.12); color: #4a3520; border-radius: var(--radius-lg); padding: 1rem 1.1rem; margin-bottom: 0.8rem; width: 100%; }
-#wotd-card .wotd-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; color: var(--accent2); margin-bottom: 0.4rem; }
-#wotd-card .wotd-word { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.2rem; }
-#wotd-card .wotd-german { font-size: 0.9rem; opacity: 0.7; margin-bottom: 0.3rem; }
-#wotd-card .wotd-def { font-size: 0.82rem; opacity: 0.8; font-style: italic; }
+/* Word of the Day card */
+#wotd-card { background: rgba(200,60,40,0.06); border: 1px solid rgba(200,60,40,0.12); color: #4a3520; border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 0.8rem; }
 
-/* Weekly Class Goal */
-#weekly-goal { background: rgba(200,60,40,0.04); border: 1px solid rgba(200,60,40,0.1); color: #4a3520; border-radius: var(--radius-lg); padding: 1rem 1.1rem; margin-bottom: 0.8rem; width: 100%; }
-#wg-track { background: rgba(0,0,0,0.06); height: 10px; border-radius: 5px; overflow: hidden; margin: 8px 0; }
-#wg-fill { background: linear-gradient(90deg, #e05040, #f07060); height: 100%; border-radius: 5px; transition: width 0.6s ease; }
-#wg-current { color: #d04030; font-weight: 700; }
-.wg-reached #wg-fill { background: linear-gradient(90deg, #22a55e, #4ade80); }
-.wg-reached #wg-current { color: #1a8a4a; }
+/* Weekly Goal card */
+#weekly-goal-card { background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.15); border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 0.8rem; }
+
+/* Tighter home screen spacing */
+.stats-bar { margin-bottom: 0.5rem; }
+.badge-row { margin-bottom: 0.4rem; }
+#wotd-card, #weekly-goal-card { margin-bottom: 0.5rem; }
+.daily-card { margin-bottom: 0.5rem; }
+#rank-display { margin-bottom: 0.4rem !important; }
+
+/* Today card */
+.today-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 0;
+  margin-bottom: 0.8rem;
+  overflow: hidden;
+}
+.today-section {
+  padding: 1rem 1.2rem;
+}
+.today-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.today-label {
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--accent-light);
+}
+.today-source, .today-date {
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+.today-wotd {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 2px;
+}
+.today-word {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.today-german {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+.today-def {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-style: italic;
+}
+.today-divider {
+  height: 1px;
+  background: var(--card-border);
+  margin: 0;
+}
+.today-daily-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.8rem;
+}
+
+/* Start Practice button */
+.btn-start-practice {
+  font-size: 1.1rem !important;
+  padding: 1rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.5px;
+}
+
+/* Practice Setup Overlay */
+.practice-setup-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  z-index: 9000;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  animation: fadeIn 0.2s ease;
+}
+.setup-step {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.setup-header {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  padding: 1rem 0 0.8rem;
+  z-index: 10;
+  text-align: center;
+}
+.setup-header h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin: 0;
+}
+.setup-step-indicator {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.setup-close, .setup-back {
+  position: absolute;
+  left: 0;
+  top: 1rem;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.setup-close:hover, .setup-back:hover {
+  background: var(--card-hover);
+}
+.setup-body {
+  flex: 1;
+  padding: 0.5rem 0;
+}
+.setup-footer {
+  position: sticky;
+  bottom: 0;
+  background: var(--bg);
+  padding: 1rem 0 calc(env(safe-area-inset-bottom) + 1rem);
+}
+
+/* Mode cards */
+.mode-select {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.2rem;
+}
+.mode-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--card-border);
+  background: var(--card);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  width: 100%;
+  color: var(--text);
+}
+.mode-card:hover:not(.disabled) {
+  background: var(--card-hover);
+  border-color: var(--accent);
+}
+.mode-card.selected {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.mode-card.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.mode-icon {
+  font-size: 1.6rem;
+  width: 40px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.mode-info {
+  flex: 1;
+}
+.mode-name {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
+.mode-desc {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.type-select-wrap {
+  margin-top: 0.5rem;
+}
+.type-select-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+}
 
 /* ===== BATTLE SYSTEM CSS ===== */
 .battle-modal-bg { background:#FFF8F0;color:#4a3520; }
@@ -984,76 +1172,49 @@ body.playing .header-container { display: none; }
   </div>
 
 
-  <div class="daily-card" id="daily-card">
-    <div class="daily-card-header">
-      <span class="daily-card-title">⚡ Daily Challenge</span>
-      <span class="daily-card-date" id="daily-date"></span>
+  <div class="today-card" id="today-card" style="display:none;">
+    <div class="today-section">
+      <div class="today-header">
+        <span class="today-label">📝 Word of the Day</span>
+        <span class="today-source" id="wotd-source"></span>
+      </div>
+      <div class="today-wotd">
+        <span class="today-word" id="wotd-word"></span>
+        <span class="today-german" id="wotd-german"></span>
+      </div>
+      <div class="today-def" id="wotd-def"></div>
     </div>
-    <div class="daily-card-desc">10 words · same for everyone today</div>
-    <div id="daily-action"></div>
-  </div>
-
-  <div id="wotd-card" style="display:none;">
-    <div class="wotd-label">📝 Word of the Day</div>
-    <div class="wotd-word" id="wotd-word"></div>
-    <div class="wotd-german" id="wotd-german"></div>
-    <div class="wotd-def" id="wotd-def"></div>
-  </div>
-
-  <div id="weekly-goal" style="display:none;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
-      <span style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">🎯 Weekly Class Goal</span>
-      <span style="font-size:0.72rem;opacity:0.6;" id="wg-period"></span>
-    </div>
-    <div id="wg-track"><div id="wg-fill" style="width:0%"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
-      <span><span id="wg-current">0</span> / <span id="wg-target">3000</span> XP</span>
-      <span id="wg-status" style="font-weight:600;"></span>
+    <div class="today-divider"></div>
+    <div class="today-section">
+      <div class="today-header">
+        <span class="today-label">⚡ Daily Challenge</span>
+        <span class="today-date" id="daily-date"></span>
+      </div>
+      <div class="today-daily-desc">10 words · same for everyone today</div>
+      <div id="daily-action"></div>
     </div>
   </div>
 
-  <div class="card">
-    <h3>Select Sources</h3>
-    <div class="source-section">
-      <div class="source-section-label unit-label">📗 MORE! 1 Units</div>
-      <div class="source-grid" id="source-grid-units"></div>
+  <div id="weekly-goal-card" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <span style="font-weight:800;font-size:0.85rem;color:var(--correct);">🎯 Weekly Class Goal</span>
+      <span id="weekly-goal-label" style="font-size:0.68rem;color:var(--muted);"></span>
     </div>
-    <div class="quick-btns">
-      <button class="quick-btn" onclick="selectAll('all')">Select All</button>
-      <button class="quick-btn" onclick="selectAll('none')">Clear</button>
+    <div style="height:10px;background:rgba(255,255,255,0.08);border-radius:5px;overflow:hidden;margin-bottom:4px;">
+      <div id="weekly-goal-fill" style="height:100%;background:linear-gradient(90deg,var(--correct),#4ade80);border-radius:5px;transition:width 0.6s ease;width:0%;"></div>
     </div>
+    <div id="weekly-goal-text" style="font-size:0.75rem;color:var(--text-secondary);text-align:center;"></div>
   </div>
-
-  <div class="card">
-    <h3>Exercise Type</h3>
-    <div class="type-grid" id="type-grid">
-      <button class="type-btn selected" data-type="mix" onclick="selectType(this)" title="Random mix of all exercise types">Mix</button>
-      <button class="type-btn" data-type="context" onclick="selectType(this)" title="Complete the sentence — first letter + exact letter count shown">Context (easy)</button>
-      <button class="type-btn" data-type="context-hard" onclick="selectType(this)" title="Complete the sentence — only the first letter is shown, no letter count">Context (hard)</button>
-      <button class="type-btn" data-type="definition" onclick="selectType(this)" title="Read an English definition — first letters and word count shown">Definition (easy)</button>
-      <button class="type-btn" data-type="definition-hard" onclick="selectType(this)" title="Read an English definition — no hints given">Definition (hard)</button>
-      <button class="type-btn" data-type="translation" onclick="selectType(this)" title="See the German word and type the English translation">Translation</button>
-      <button class="type-btn" data-type="multiple-choice" onclick="selectType(this)" title="Choose the correct answer from 4 options">Multiple Choice</button>
-    </div>
-  </div>
-
-  <div class="word-count-display" id="word-count">Select sources to begin</div>
 
   <div class="home-actions">
-    <button class="btn btn-primary btn-block" id="start-btn" disabled onclick="startPractice()">Full Practice</button>
-    <div class="mode-row">
-      <button class="btn btn-sprint" id="sprint-btn" disabled onclick="startSprint()">🏃 Sprint (10)</button>
-      <button class="btn btn-speed" id="speed-btn" disabled onclick="startSpeedRound()">⚡ Speed Round</button>
-    </div>
+    <button class="btn btn-primary btn-block btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
     <button class="btn btn-review btn-block btn-small" id="review-btn" style="display:none;" onclick="startSmartReview()">🔄 Smart Review</button>
-    <button class="btn btn-block" id="battle-btn" onclick="openBattleLobby()" style="margin-top:8px;padding:12px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#15803D,#16A34A);color:#fff;border:none;letter-spacing:0.01em;">⚔️ Battle a Classmate</button>
+    <button id="btn-battle" class="btn-battle" onclick="openBattleLobby()" style="display:none;">⚔️ Battle</button>
     <div class="home-actions-row">
-      <button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊 My Progress</button>
+      <button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊 Progress</button>
       <button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆 Leaderboard</button>
-      <button class="btn btn-secondary btn-small" onclick="showWordReference()">📖 Word Reference</button>
-    </div>
-    <div style="text-align:center;margin-top:8px;">
-      <button id="sfx-toggle-btn" onclick="toggleSfx()" style="font-size:13px;padding:8px 16px;border-radius:10px;cursor:pointer;background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.08);color:#4a3520;">🔊 Sound: ON</button>
+      <button class="btn btn-secondary btn-small" onclick="showWordReference()">📖 Words</button>
+      <button id="sfx-toggle-btn" onclick="toggleSfx()" style="font-size:13px;padding:8px 16px;border-radius:10px;cursor:pointer;background:var(--card);border:1px solid var(--card-border);color:var(--text);">🔊</button>
     </div>
   </div>
 </div>
@@ -3308,6 +3469,8 @@ function showHomeScreen() {
   document.getElementById('stat-streak').textContent = state.studentData?.streak || 0;
   updateRankDisplay();
   renderBadgeRow();
+  renderWordOfTheDay();
+  renderWeeklyGoal();
   renderDailyCard();
 
   // Smart review button (replaces old weak words)
@@ -3322,13 +3485,11 @@ function showHomeScreen() {
     }
   }
 
-  initSourceGrid();
-  renderWOTD();
-  loadWeeklyGoal();
-  // Update SFX button state
-  const sfxBtn = document.getElementById('sfx-toggle-btn');
-  if (sfxBtn) sfxBtn.textContent = SFX.enabled ? '🔊 Sound: ON' : '🔇 Sound: OFF';
   showScreen('home-screen');
+  setupPresence();
+  const battleBtn = document.getElementById('btn-battle');
+  if (battleBtn) battleBtn.style.display = '';
+  setTimeout(cleanupStaleBattleData, 5000);
 }
 
 function toggleSource(btn) {
@@ -3362,44 +3523,242 @@ function selectAll(mode) {
 
 function selectType(btn) {
   const type = btn.dataset.type;
-  const allBtns = document.querySelectorAll('.type-btn');
-  const mixBtn = document.querySelector('.type-btn[data-type="mix"]');
+  const container = btn.closest('.type-grid');
+  const allBtns = container.querySelectorAll('.type-btn');
+  const mixBtn = container.querySelector('.type-btn[data-type="mix"]');
   if (type === 'mix') {
+    // Mix: deselect all individuals, select mix
     allBtns.forEach(b => b.classList.remove('selected'));
     mixBtn.classList.add('selected');
     state.exerciseType = 'mix';
   } else {
+    // Toggle this type
     mixBtn.classList.remove('selected');
     btn.classList.toggle('selected');
-    const selected = [...document.querySelectorAll('.type-btn.selected')].map(b => b.dataset.type).filter(t => t !== 'mix');
+    // Collect selected types
+    const selected = [...container.querySelectorAll('.type-btn.selected')].map(b => b.dataset.type).filter(t => t !== 'mix');
     if (selected.length === 0) {
+      // Nothing selected — revert to mix
       mixBtn.classList.add('selected');
       state.exerciseType = 'mix';
     } else if (selected.length === 1) {
       state.exerciseType = selected[0];
     } else {
-      state.exerciseType = selected;
+      state.exerciseType = selected; // Array = custom mix
     }
   }
 }
 
 function updateWordCount() {
+  // Legacy function — word count now handled by updateSetupWordCount() in overlay
   let count = 0;
-  state.selectedSources.forEach(src => { count += vocabData[src].length; });
-  const el = document.getElementById('word-count');
-  const startBtn = document.getElementById('start-btn');
-  const sprintBtn = document.getElementById('sprint-btn');
-  const speedBtn = document.getElementById('speed-btn');
+  state.selectedSources.forEach(src => { if (vocabData[src]) count += vocabData[src].length; });
+  return count;
+}
+
+// ===== PRACTICE SETUP OVERLAY =====
+let selectedMode = 'full';
+
+function openPracticeSetup() {
+  // Remove existing overlay if any
+  const old = document.getElementById('practice-setup-overlay');
+  if (old) old.remove();
+
+  // Reset selections
+  state.selectedSources.clear();
+  state.exerciseType = 'mix';
+  selectedMode = 'full';
+
+  const overlay = document.createElement('div');
+  overlay.id = 'practice-setup-overlay';
+  overlay.className = 'practice-setup-overlay';
+
+  // Step 1: Unit Selection
+  const step1 = document.createElement('div');
+  step1.id = 'setup-step-1';
+  step1.className = 'setup-step';
+  step1.innerHTML = `
+    <div class="setup-header">
+      <button class="setup-close" onclick="closePracticeSetup()">✕</button>
+      <h2>Select Units</h2>
+      <div class="setup-step-indicator">Step 1 of 2</div>
+    </div>
+    <div class="setup-body">
+      <div class="source-grid" id="setup-source-grid"></div>
+      <div class="quick-btns">
+        <button class="quick-btn" onclick="setupSelectAll('all')">Select All</button>
+        <button class="quick-btn" onclick="setupSelectAll('none')">Clear</button>
+      </div>
+      <div class="word-count-display" id="setup-word-count">Select units to begin</div>
+    </div>
+    <div class="setup-footer">
+      <button class="btn btn-primary btn-block" id="setup-next-btn" disabled onclick="practiceSetupNext()">Next →</button>
+    </div>
+  `;
+
+  // Step 2: Mode & Type Selection
+  const step2 = document.createElement('div');
+  step2.id = 'setup-step-2';
+  step2.className = 'setup-step';
+  step2.style.display = 'none';
+  step2.innerHTML = `
+    <div class="setup-header">
+      <button class="setup-back" onclick="practiceSetupBack()">← Back</button>
+      <h2>Choose Mode</h2>
+      <div class="setup-step-indicator">Step 2 of 2</div>
+    </div>
+    <div class="setup-body">
+      <div class="mode-select" id="mode-select">
+        <button class="mode-card selected" data-mode="full" onclick="selectMode(this)">
+          <span class="mode-icon">📚</span>
+          <div class="mode-info"><div class="mode-name">Full Run</div><div class="mode-desc">All selected words, mixed types</div></div>
+        </button>
+        <button class="mode-card" data-mode="sprint" onclick="selectMode(this)">
+          <span class="mode-icon">🏃</span>
+          <div class="mode-info"><div class="mode-name">Sprint</div><div class="mode-desc">10 random words, quick round</div></div>
+        </button>
+        <button class="mode-card" data-mode="speed" onclick="selectMode(this)">
+          <span class="mode-icon">⚡</span>
+          <div class="mode-info"><div class="mode-name">Speed Round</div><div class="mode-desc">60 seconds, answer fast!</div></div>
+        </button>
+        <button class="mode-card" data-mode="mc" onclick="selectMode(this)">
+          <span class="mode-icon">🎯</span>
+          <div class="mode-info"><div class="mode-name">Multiple Choice</div><div class="mode-desc">Choose from 4 options</div></div>
+        </button>
+        <button class="mode-card disabled" data-mode="flashcards">
+          <span class="mode-icon">📇</span>
+          <div class="mode-info"><div class="mode-name">Flashcards</div><div class="mode-desc">Coming soon</div></div>
+        </button>
+      </div>
+      <div id="type-select-wrap" class="type-select-wrap">
+        <div class="type-select-label">Exercise Type</div>
+        <div class="type-grid" id="setup-type-grid">
+          <button class="type-btn selected" data-type="mix" onclick="selectType(this)">Mix</button>
+          <button class="type-btn" data-type="context" onclick="selectType(this)">Context (easy)</button>
+          <button class="type-btn" data-type="context-hard" onclick="selectType(this)">Context (hard)</button>
+          <button class="type-btn" data-type="definition" onclick="selectType(this)">Definition (easy)</button>
+          <button class="type-btn" data-type="definition-hard" onclick="selectType(this)">Definition (hard)</button>
+          <button class="type-btn" data-type="translation" onclick="selectType(this)">Translation</button>
+        </div>
+      </div>
+    </div>
+    <div class="setup-footer">
+      <button class="btn btn-primary btn-block" onclick="practiceSetupGo()">Go! 🚀</button>
+    </div>
+  `;
+
+  overlay.appendChild(step1);
+  overlay.appendChild(step2);
+  document.body.appendChild(overlay);
+
+  // Populate source grid
+  initSetupSourceGrid();
+}
+
+function closePracticeSetup() {
+  const overlay = document.getElementById('practice-setup-overlay');
+  if (overlay) overlay.remove();
+}
+
+function initSetupSourceGrid() {
+  const grid = document.getElementById('setup-source-grid');
+  grid.innerHTML = '';
+  for (const key of Object.keys(vocabData)) {
+    const btn = document.createElement('button');
+    btn.className = 'source-btn';
+    btn.dataset.source = key;
+    const prog = getSourceProgress(key);
+    const pct = prog.total > 0 ? Math.round((prog.mastered / prog.total) * 100) : 0;
+    btn.innerHTML = `${key}<span class="count">${vocabData[key].length} words</span><div class="progress-indicator" style="width:${pct}%"></div>`;
+    btn.onclick = () => {
+      const src = btn.dataset.source;
+      if (state.selectedSources.has(src)) {
+        state.selectedSources.delete(src);
+        btn.classList.remove('selected');
+      } else {
+        state.selectedSources.add(src);
+        btn.classList.add('selected');
+      }
+      updateSetupWordCount();
+    };
+    grid.appendChild(btn);
+  }
+}
+
+function setupSelectAll(mode) {
+  const btns = document.querySelectorAll('#setup-source-grid .source-btn');
+  state.selectedSources.clear();
+  btns.forEach(b => b.classList.remove('selected'));
+  if (mode === 'all') {
+    btns.forEach(b => {
+      state.selectedSources.add(b.dataset.source);
+      b.classList.add('selected');
+    });
+  }
+  updateSetupWordCount();
+}
+
+function updateSetupWordCount() {
+  let count = 0;
+  state.selectedSources.forEach(src => { if (vocabData[src]) count += vocabData[src].length; });
+  const el = document.getElementById('setup-word-count');
+  const nextBtn = document.getElementById('setup-next-btn');
   if (count === 0) {
-    el.innerHTML = 'Select sources to begin';
-    startBtn.disabled = true;
-    sprintBtn.disabled = true;
-    speedBtn.disabled = true;
+    el.innerHTML = 'Select units to begin';
+    nextBtn.disabled = true;
   } else {
     el.innerHTML = `<strong>${count}</strong> words selected`;
-    startBtn.disabled = false;
-    sprintBtn.disabled = false;
-    speedBtn.disabled = false;
+    nextBtn.disabled = false;
+  }
+}
+
+function practiceSetupNext() {
+  document.getElementById('setup-step-1').style.display = 'none';
+  document.getElementById('setup-step-2').style.display = '';
+}
+
+function practiceSetupBack() {
+  document.getElementById('setup-step-2').style.display = 'none';
+  document.getElementById('setup-step-1').style.display = '';
+}
+
+function selectMode(btn) {
+  if (btn.classList.contains('disabled')) return;
+  document.querySelectorAll('.mode-card').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedMode = btn.dataset.mode;
+  // Show/hide type selection based on mode
+  const typeWrap = document.getElementById('type-select-wrap');
+  if (selectedMode === 'mc' || selectedMode === 'flashcards') {
+    typeWrap.style.display = 'none';
+  } else {
+    typeWrap.style.display = '';
+  }
+}
+
+function practiceSetupGo() {
+  closePracticeSetup();
+
+  if (selectedMode === 'mc') {
+    state.exerciseType = 'multiple-choice';
+  }
+  // exerciseType is already set by selectType() for other modes
+
+  switch (selectedMode) {
+    case 'sprint':
+      startSprint();
+      break;
+    case 'speed':
+      startSpeedRound();
+      break;
+    case 'flashcards':
+      // Phase 2 — not yet implemented
+      break;
+    case 'mc':
+    case 'full':
+    default:
+      startPractice();
+      break;
   }
 }
 
@@ -4170,80 +4529,74 @@ document.getElementById('section-pin')?.addEventListener('keydown', e => { if (e
 function getWordOfTheDay() {
   const allWords = [];
   for (const [src, entries] of Object.entries(vocabData)) {
-    for (const e of entries) allWords.push(e);
+    for (const e of entries) allWords.push({ ...e, source: src });
   }
   if (allWords.length === 0) return null;
-  const today = new Date().toISOString().slice(0, 10);
-  let h = 0;
-  for (let i = 0; i < today.length; i++) h = Math.imul(31, h) + today.charCodeAt(i) | 0;
-  return allWords[Math.abs(h) % allWords.length];
+  // Deterministic daily seed
+  const today = new Date();
+  const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  const idx = seed % allWords.length;
+  return allWords[idx];
 }
 
-function renderWOTD() {
-  const word = getWordOfTheDay();
-  const card = document.getElementById('wotd-card');
-  if (!word || !card) return;
+function renderWordOfTheDay() {
+  const wotd = getWordOfTheDay();
+  const card = document.getElementById('today-card');
+  if (!wotd || !card) return;
   card.style.display = '';
-  document.getElementById('wotd-word').textContent = word.w;
-  document.getElementById('wotd-german').textContent = word.g;
-  document.getElementById('wotd-def').textContent = word.d || '';
+  document.getElementById('wotd-word').textContent = wotd.w;
+  document.getElementById('wotd-german').textContent = wotd.g;
+  document.getElementById('wotd-def').textContent = wotd.d;
+  document.getElementById('wotd-source').textContent = wotd.source;
 }
 
 // ===== WEEKLY CLASS GOAL =====
-const WEEKLY_GOAL_TARGET = 3000;
+const WEEKLY_GOAL_TARGET = 5000;
+let weeklyGoalRef = null;
+let weeklyGoalData = { xp: 0 };
 
-function getWeekBounds() {
-  const now = new Date();
-  const day = now.getDay();
-  const diff = day === 0 ? 6 : day - 1;
-  const mon = new Date(now);
-  mon.setDate(now.getDate() - diff);
-  mon.setHours(0, 0, 0, 0);
-  const sun = new Date(mon);
-  sun.setDate(mon.getDate() + 6);
-  sun.setHours(23, 59, 59, 999);
-  return { start: mon, end: sun };
-}
-
-function getWeekLabel() {
-  const { start, end } = getWeekBounds();
-  const fmt = d => `${d.getDate()}.${d.getMonth() + 1}`;
-  return `${fmt(start)} – ${fmt(end)}`;
+function getCurrentWeekMonday() {
+  const d = new Date();
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(d.setDate(diff));
+  return monday.toISOString().slice(0, 10);
 }
 
 async function loadWeeklyGoal() {
-  const el = document.getElementById('weekly-goal');
-  if (!el || !CLASS_ID) return;
+  if (!classRef) return;
+  const weekKey = getCurrentWeekMonday();
+  weeklyGoalRef = classRef.collection('weeklyGoals').doc(weekKey);
   try {
-    const { start, end } = getWeekBounds();
-    const studentsSnap = await firebase.firestore().collection('classes').doc(CLASS_ID).collection('students').get();
-    let totalXP = 0;
-    const promises = [];
-    studentsSnap.forEach(studentDoc => {
-      const p = studentDoc.ref.collection('sessions')
-        .where('date', '>=', start)
-        .where('date', '<=', end)
-        .get()
-        .then(sessSnap => {
-          sessSnap.forEach(sessDoc => {
-            const s = sessDoc.data();
-            // Estimate XP from score: each correct ~ 5 XP avg
-            totalXP += (s.score || 0) * 5;
-          });
-        });
-      promises.push(p);
-    });
-    await Promise.all(promises);
-    el.style.display = '';
-    const pct = Math.min(100, (totalXP / WEEKLY_GOAL_TARGET) * 100);
-    document.getElementById('wg-fill').style.width = pct + '%';
-    document.getElementById('wg-current').textContent = totalXP.toLocaleString();
-    document.getElementById('wg-target').textContent = WEEKLY_GOAL_TARGET.toLocaleString();
-    document.getElementById('wg-period').textContent = getWeekLabel();
-    const reached = totalXP >= WEEKLY_GOAL_TARGET;
-    el.classList.toggle('wg-reached', reached);
-    document.getElementById('wg-status').textContent = reached ? '✅ Goal reached!' : `${Math.round(pct)}%`;
-  } catch (e) { console.error('Weekly goal error:', e); }
+    const doc = await weeklyGoalRef.get();
+    if (doc.exists) {
+      weeklyGoalData = doc.data();
+    } else {
+      weeklyGoalData = { xp: 0, target: WEEKLY_GOAL_TARGET, week: weekKey };
+      await weeklyGoalRef.set(weeklyGoalData);
+    }
+  } catch(e) { console.error('Weekly goal load error:', e); }
+  renderWeeklyGoal();
+}
+
+async function contributeToWeeklyGoal(sessionXp) {
+  if (!weeklyGoalRef || !sessionXp) return;
+  try {
+    await weeklyGoalRef.update({ xp: firebase.firestore.FieldValue.increment(sessionXp) });
+    weeklyGoalData.xp = (weeklyGoalData.xp || 0) + sessionXp;
+    renderWeeklyGoal();
+  } catch(e) { console.error('Weekly goal update error:', e); }
+}
+
+function renderWeeklyGoal() {
+  const card = document.getElementById('weekly-goal-card');
+  if (!card) return;
+  card.style.display = '';
+  const current = weeklyGoalData.xp || 0;
+  const pct = Math.min(100, Math.round((current / WEEKLY_GOAL_TARGET) * 100));
+  document.getElementById('weekly-goal-fill').style.width = pct + '%';
+  document.getElementById('weekly-goal-text').textContent = `${current.toLocaleString()} / ${WEEKLY_GOAL_TARGET.toLocaleString()} XP (${pct}%)`;
+  document.getElementById('weekly-goal-label').textContent = 'Week of ' + getCurrentWeekMonday();
 }
 
 // ===== INIT =====
