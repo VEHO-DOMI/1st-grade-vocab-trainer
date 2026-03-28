@@ -249,10 +249,18 @@ h1 { display: none; }
 .profile-rank-pill.zone-silver { background: linear-gradient(135deg, #b8b8b8, #6b6b6b); color: #fff; }
 .profile-rank-pill.zone-gold { background: linear-gradient(135deg, #f0c040, #a67c2e); color: #412402; }
 .profile-rank-pill.zone-diamond { background: linear-gradient(135deg, #b8a9f0, #6e5cbf); color: #fff; }
+.profile-rank-pill.zone-prestige { background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff; }
+#rank-progress-fill { background: var(--accent); }
+.zone-bronze ~ .profile-xp-bar #rank-progress-fill, #rank-progress-fill.fill-bronze { background: #d4874a; }
+.zone-silver ~ .profile-xp-bar #rank-progress-fill, #rank-progress-fill.fill-silver { background: #9e9e9e; }
+.zone-gold ~ .profile-xp-bar #rank-progress-fill, #rank-progress-fill.fill-gold { background: #f0c040; }
+.zone-diamond ~ .profile-xp-bar #rank-progress-fill, #rank-progress-fill.fill-diamond { background: #b8a9f0; }
+.zone-prestige ~ .profile-xp-bar #rank-progress-fill, #rank-progress-fill.fill-prestige { background: #a855f7; }
 .rank-pill.zone-bronze { background: #f5c4a1; color: #4a1b0c; }
 .rank-pill.zone-silver { background: #d3d1c7; color: #2c2c2a; }
 .rank-pill.zone-gold { background: #fac775; color: #412402; }
 .rank-pill.zone-diamond { background: #cecbf6; color: #26215c; }
+.rank-pill.zone-prestige { background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff; }
 
 /* Level roadmap */
 .roadmap-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
@@ -1690,7 +1698,11 @@ body.playing .header-container { display: none; }
     <div class="results-list" id="results-list"></div>
   </div>
   <div class="results-actions">
-    <button class="btn btn-primary" onclick="retryWrong()">Practice Wrong Words</button>
+    <div id="retry-wrong-section" style="display:none;">
+      <button class="btn btn-block" id="retry-wrong-btn" onclick="retryWrong()" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;font-size:1.05rem;padding:1rem;font-weight:700;border:none;border-radius:var(--radius);margin-bottom:0.5rem;width:100%;cursor:pointer;">
+        🔄 Review <span id="retry-wrong-count">0</span> wrong answers (+15 bonus XP)
+      </button>
+    </div>
     <button class="btn btn-sprint sprint-again" id="sprint-again-btn" style="display:none;" onclick="startSprint()">🏃 Another Sprint</button>
     <button class="btn btn-secondary" onclick="goHome()">New Practice</button>
   </div>
@@ -2707,19 +2719,25 @@ const LEVELS = [
   {level:18,xp:15000,name:'Vocab Titan',zone:'diamond',vibe:'final boss energy'},
   {level:19,xp:20000,name:'Language Overlord',zone:'diamond',vibe:'nothing left to prove'},
   {level:20,xp:30000,name:'Grandmaster',zone:'diamond',vibe:'GG'},
+  {level:21,xp:30000,name:'Grandmaster',zone:'prestige',prestige:1,vibe:'prestige unlocked'},
+  {level:22,xp:45000,name:'Grandmaster',zone:'prestige',prestige:2,vibe:'rising legend'},
+  {level:23,xp:65000,name:'Grandmaster',zone:'prestige',prestige:3,vibe:'elite status'},
+  {level:24,xp:90000,name:'Grandmaster',zone:'prestige',prestige:4,vibe:'mythic tier'},
+  {level:25,xp:120000,name:'Grandmaster',zone:'prestige',prestige:5,vibe:'ultimate master'},
 ];
 function getLevel(xp) {
   let lvl = LEVELS[0];
   for (let i = LEVELS.length - 1; i >= 0; i--) { if (xp >= LEVELS[i].xp) { lvl = LEVELS[i]; break; } }
   const next = LEVELS[lvl.level] || null;
   const progress = next ? (xp - lvl.xp) / (next.xp - lvl.xp) : 1;
-  return { ...lvl, next, progress, currentXp: xp };
+  return { ...lvl, next, progress, currentXp: xp, prestige: lvl.prestige || 0 };
 }
 const ZONE_COLORS = {
   bronze:{bg:'#92572a',light:'#f5c4a1',text:'#4a1b0c',accent:'#d4874a'},
   silver:{bg:'#6b6b6b',light:'#d3d1c7',text:'#2c2c2a',accent:'#9e9e9e'},
   gold:{bg:'#a67c2e',light:'#fac775',text:'#412402',accent:'#d4a43a'},
   diamond:{bg:'#6e5cbf',light:'#cecbf6',text:'#26215c',accent:'#8f83d8'},
+  prestige:{bg:'linear-gradient(135deg, #a855f7, #6366f1)',text:'#e9d5ff',pill:'#a855f7'},
 };
 
 // ===== COMBO MULTIPLIER =====
@@ -2744,7 +2762,8 @@ function updateRankDisplay() {
   const badge = document.getElementById('rank-badge');
   if (badge) {
     badge.className = 'profile-rank-pill zone-' + lv.zone;
-    badge.textContent = 'Lv ' + lv.level + ' \u00B7 ' + lv.name;
+    const stars = lv.prestige ? '⭐'.repeat(lv.prestige) + ' ' : '';
+    badge.textContent = stars + 'Lv ' + lv.level + ' \u00B7 ' + lv.name;
     badge.style.display = '';
   }
   const cl = document.getElementById('rank-current-label');
@@ -2894,6 +2913,18 @@ const BADGE_DEFS = [
   { id:'speed-demon', icon:'⚡', name:'Speed Demon', desc:'Get 15+ correct in a Speed Round', check:(d)=>(d.bestSpeedRound||0)>=15 },
   { id:'sprinter', icon:'🏃', name:'Sprinter', desc:'Complete 10 sprints', check:(d)=>(d.totalSprints||0)>=10 },
   { id:'sharp-eye', icon:'👁️', name:'Sharp Eye', desc:'Get 20+ correct in Multiple Choice', check:(d)=>(d.bestMCStreak||0)>=20 },
+  { id:'context-ace', icon:'🎯', name:'Context Ace', desc:'Score 90%+ on a context-hard session (min 10 words)', check:(d,m,r)=>r&&r.length>=10&&r.filter(x=>x.type==='context-hard').length>=10&&r.filter(x=>x.type==='context-hard'&&x.correct).length/r.filter(x=>x.type==='context-hard').length>=0.9 },
+  { id:'definition-master', icon:'📖', name:'Definition Master', desc:'Score 90%+ on a definition-hard session (min 10 words)', check:(d,m,r)=>r&&r.length>=10&&r.filter(x=>x.type==='definition-hard').length>=10&&r.filter(x=>x.type==='definition-hard'&&x.correct).length/r.filter(x=>x.type==='definition-hard').length>=0.9 },
+  { id:'giant-killer', icon:'🗡️', name:'Giant Killer', desc:'Win a battle against someone ranked higher', check:(d)=>(d.giantKills||0)>=1 },
+  { id:'variety-pack', icon:'🎨', name:'Variety Pack', desc:'Use all 5 exercise types in one day', check:(d)=>(d.dailyVarietyAchieved||0)>=1 },
+  { id:'comeback-kid', icon:'🔄', name:'Comeback Kid', desc:'Score 100% on a retry-wrong session', check:(d)=>(d.perfectRetries||0)>=1 },
+  { id:'review-warrior', icon:'🛡️', name:'Review Warrior', desc:'Complete 5 Smart Review sessions', check:(d)=>(d.smartReviewCount||0)>=5 },
+  { id:'full-sweep', icon:'🧹', name:'Full Sweep', desc:'Practice every single unit at least once', check:(d)=>{ const used = new Set(d.unitsAttempted||[]); return used.size >= Object.keys(vocabData).length; }},
+  { id:'flash-scholar', icon:'📇', name:'Flash Scholar', desc:'Study 100 flashcards', check:(d)=>(d.totalFlashcards||0)>=100 },
+  { id:'duo-champion', icon:'🏅', name:'Duo Champion', desc:'Win 5 Word Duels', check:(d)=>(d.duelWins||0)>=5 },
+  { id:'prestige-1', icon:'⭐', name:'Prestige I', desc:'Reach Prestige level 1 (30,000 XP)', check:(d)=>(d.xp||0)>=30000 },
+  { id:'prestige-2', icon:'⭐⭐', name:'Prestige II', desc:'Reach Prestige level 2 (45,000 XP)', check:(d)=>(d.xp||0)>=45000 },
+  { id:'prestige-3', icon:'⭐⭐⭐', name:'Prestige III', desc:'Reach Prestige level 3 (65,000 XP)', check:(d)=>(d.xp||0)>=65000 },
 ];
 
 function dailySeed(dateStr, classId) {
@@ -2979,6 +3010,14 @@ function showBadgePopups(badges) {
   }
 }
 
+function showBonusNotification(msg) {
+  const el = document.getElementById('save-status');
+  if (el) {
+    const existing = el.innerHTML;
+    el.innerHTML = existing + `<div style="color:#a855f7;font-weight:700;margin-top:4px;">🎁 ${msg}</div>`;
+  }
+}
+
 function renderBadgeRow() {
   const row = document.getElementById('badge-row');
   const earned = state.studentData?.badges || [];
@@ -2997,7 +3036,7 @@ function showBadgeModal() {
   const earned = state.studentData?.badges || [];
   list.innerHTML = BADGE_DEFS.map(b => {
     const has = earned.includes(b.id);
-    return `<div class="badge-item ${has ? '' : 'locked'}"><div class="badge-item-icon">${b.icon}</div><div class="badge-item-info"><div class="badge-item-name">${has ? b.name : '???'}</div><div class="badge-item-desc">${b.desc}</div></div></div>`;
+    return `<div class="badge-item ${has ? '' : 'locked'}"><div class="badge-item-icon">${b.icon}</div><div class="badge-item-info"><div class="badge-item-name">${b.name}</div><div class="badge-item-desc">${b.desc}</div></div></div>`;
   }).join('');
   document.getElementById('badge-modal').classList.add('show');
 }
@@ -3078,7 +3117,8 @@ async function showLeaderboard() {
     const tag = showSection ? ` <span class="section-tag section-tag-${s.section.toLowerCase()}">${s.section}</span>` : '';
     const av = `<img src="${avatarSrc(s.avatarId)}" class="avatar avatar-sm" style="vertical-align:middle;margin-right:6px;">`;
     const sLv = getLevel(s.xp);
-    const rankPill = `<span class="rank-pill zone-${sLv.zone}" style="font-size:10px;padding:2px 8px;border-radius:10px;margin-left:6px;font-weight:600;">${sLv.name}</span>`;
+    const prestigeStars = sLv.prestige ? '⭐'.repeat(sLv.prestige) + ' ' : '';
+    const rankPill = `<span class="rank-pill zone-${sLv.zone}" style="font-size:10px;padding:2px 8px;border-radius:10px;margin-left:6px;font-weight:600;">${prestigeStars}${sLv.name}</span>`;
     return `<div class="lb-row ${isMe ? 'me' : ''}"><span class="lb-rank">${rank}</span><span class="lb-name">${av}${s.name}${rankPill}${tag}${isMe ? ' ← you' : ''}</span><span class="lb-xp">${s.xp.toLocaleString()} XP</span></div>`;
   }).join('') || '<p style="color:var(--muted);text-align:center;padding:1rem;">No students yet</p>';
 
@@ -3174,6 +3214,11 @@ function startSmartReview() {
   state.answered = false;
   state.comboStreak = 0; state.comboMult = 1; state.comboMax = 0;
   isDailyChallenge = false;
+  // Track smart review count for Review Warrior badge
+  if (state.studentId && state.studentData) {
+    state.studentData.smartReviewCount = (state.studentData.smartReviewCount || 0) + 1;
+    studentsRef.doc(state.studentId).update({ smartReviewCount: firebase.firestore.FieldValue.increment(1) }).catch(e => console.error('smartReviewCount update error:', e));
+  }
   showScreen('practice-screen');
   showWord();
 }
@@ -3451,12 +3496,60 @@ async function saveSessionResults() {
       const best = Math.max(state.studentData.bestSpeedRound || 0, state.score);
       updateObj.bestSpeedRound = best;
     }
+
+    // === BONUS XP: Daily variety bonus (+25 XP for 3+ types today) ===
+    let bonusXP = 0;
+    const today = getTodayStr();
+    const dailyTypes = state.studentData.dailyExerciseTypes || {};
+    const todayTypes = dailyTypes[today] || [];
+    const mergedTodayTypes = [...new Set([...todayTypes, ...usedTypes])];
+    updateObj['dailyExerciseTypes.' + today] = mergedTodayTypes;
+    if (mergedTodayTypes.length >= 3 && todayTypes.length < 3) {
+      bonusXP += 25;
+      showBonusNotification('+25 XP Daily Variety Bonus!');
+    }
+    if (mergedTodayTypes.length >= 5 && todayTypes.length < 5) {
+      updateObj.dailyVarietyAchieved = firebase.firestore.FieldValue.increment(1);
+      state.studentData.dailyVarietyAchieved = (state.studentData.dailyVarietyAchieved || 0) + 1;
+    }
+    if (!state.studentData.dailyExerciseTypes) state.studentData.dailyExerciseTypes = {};
+    state.studentData.dailyExerciseTypes[today] = mergedTodayTypes;
+
+    // === BONUS XP: Review bonus (+15 XP for retry-wrong sessions) ===
+    if (state.isRetrySession) {
+      bonusXP += 15;
+      showBonusNotification('+15 XP Review Bonus!');
+      if (pct === 100) {
+        updateObj.perfectRetries = firebase.firestore.FieldValue.increment(1);
+        state.studentData.perfectRetries = (state.studentData.perfectRetries || 0) + 1;
+      }
+    }
+
+    // === BONUS XP: Battle + Practice combo (+20 XP, once per day) ===
+    const dailyComboKey = 'dailyCombo_' + today;
+    if (!state.studentData[dailyComboKey]) {
+      state.studentData.dailyHasPracticed = true;
+      const lastBattle = state.studentData.lastBattle || '';
+      if (lastBattle.startsWith(today)) {
+        bonusXP += 20;
+        updateObj[dailyComboKey] = true;
+        state.studentData[dailyComboKey] = true;
+        showBonusNotification('+20 XP Battle+Practice Combo!');
+      }
+    }
+
+    // Apply bonus XP
+    if (bonusXP > 0) {
+      updateObj.xp = firebase.firestore.FieldValue.increment(earnedXP + bonusXP);
+    }
+
     await studentsRef.doc(state.studentId).update(updateObj);
-    state.studentData.xp = (state.studentData.xp || 0) + earnedXP;
+    state.studentData.xp = (state.studentData.xp || 0) + earnedXP + bonusXP;
     state.studentData.streak = streakUpdate.streak;
     state.studentData.lastSessionDate = streakUpdate.lastSessionDate;
     state.studentData.exerciseTypesUsed = allUsed;
     state.studentData.totalSessions = (state.studentData.totalSessions || 0) + 1;
+    contributeToWeeklyGoal(earnedXP + bonusXP);
 
     // Update per-source word progress (with spaced repetition fields)
     const progressBySource = {};
@@ -4214,7 +4307,18 @@ function startPractice() {
   state.isSprint = false;
   state.isSpeedRound = false;
   state.isMultipleChoice = state.exerciseType === 'multiple-choice' || (Array.isArray(state.exerciseType) && state.exerciseType.includes('multiple-choice'));
+  state.isRetrySession = false;
   resetSpeedTimer();
+  // Track units attempted for Full Sweep badge
+  if (state.studentId && state.studentData) {
+    const srcKeys = [...state.selectedSources];
+    const existing = state.studentData.unitsAttempted || [];
+    const merged = [...new Set([...existing, ...srcKeys])];
+    if (merged.length > existing.length) {
+      state.studentData.unitsAttempted = merged;
+      studentsRef.doc(state.studentId).update({ unitsAttempted: merged }).catch(e => console.error('unitsAttempted update error:', e));
+    }
+  }
   document.body.classList.add('playing');
   showScreen('practice-screen');
   showWord();
@@ -5071,12 +5175,25 @@ async function endPractice() {
     const item = document.createElement('div');
     item.className = 'result-item ' + (r.correct ? 'correct' : 'wrong');
     const reasonTag = r.word.reason ? `<span style="font-size:0.65rem;padding:1px 6px;border-radius:6px;background:rgba(255,255,255,0.07);color:var(--text-secondary);font-weight:500;margin-left:4px;">${escapeHtml(r.word.reason)}</span>` : '';
+    const correctAnswer = !r.correct ? ` <span style="color:#4ade80;font-weight:600;">→ ${escapeHtml(r.word.w)}</span>` : '';
     item.innerHTML = `
       <span class="result-icon">${r.correct ? '✓' : '✗'}</span>
       <span class="result-word">${r.word.w}${reasonTag}</span>
-      <span class="result-answer">${r.correct ? '' : 'You: ' + r.userAnswer}</span>
+      <span class="result-answer">${r.correct ? '' : 'You: ' + escapeHtml(r.userAnswer) + correctAnswer}</span>
     `;
     list.appendChild(item);
+  }
+
+  // Show retry-wrong section if there are wrong answers
+  var wrongCount = state.results.filter(r => !r.correct).length;
+  var retrySection = document.getElementById('retry-wrong-section');
+  if (retrySection) {
+    if (wrongCount > 0) {
+      retrySection.style.display = '';
+      document.getElementById('retry-wrong-count').textContent = wrongCount;
+    } else {
+      retrySection.style.display = 'none';
+    }
   }
 
   // Update mode-specific stats for badges before saving
@@ -5102,12 +5219,14 @@ async function endPractice() {
   await checkBadges(state.studentData, state.results);
   isDailyChallenge = false;
   state.isSpeedRound = false;
+  state.isRetrySession = false;
   state.comboStreak = 0; state.comboMult = 1;
 }
 
 function retryWrong() {
   const wrongWords = state.results.filter(r => !r.correct).map(r => r.word);
   if (wrongWords.length === 0) { goHome(); return; }
+  state.isRetrySession = true;
   startPracticeWith(wrongWords);
 }
 
@@ -5734,13 +5853,23 @@ async function saveBattleResults(data, xpEarned) {
     const slug = state.studentName.toLowerCase().replace(/\s+/g, '-');
     const myRole = state.battleRole;
     const opRole = myRole === 'p1' ? 'p2' : 'p1';
-    await studentsRef.doc(slug).update({
+    const battleUpdate = {
       xp: state.xp,
       battlesPlayed: firebase.firestore.FieldValue.increment(1),
       battlesWon: firebase.firestore.FieldValue.increment(data.winner === myRole ? 1 : 0),
       battleXpEarned: firebase.firestore.FieldValue.increment(xpEarned),
       lastBattle: new Date().toISOString()
-    });
+    };
+    // Track giant kills: winning against higher-ranked opponent
+    if (data.winner === myRole) {
+      const myXp = state.studentData?.xp || 0;
+      const opXp = data.xp && data.xp[opRole] ? data.xp[opRole] : 0;
+      if (opXp > myXp) {
+        battleUpdate.giantKills = firebase.firestore.FieldValue.increment(1);
+        if (state.studentData) state.studentData.giantKills = (state.studentData.giantKills || 0) + 1;
+      }
+    }
+    await studentsRef.doc(slug).update(battleUpdate);
     // Save individual battle record
     await studentsRef.doc(slug).collection('battleHistory').add({
       opponent: data.playerNames[opRole] || 'Unknown',
@@ -6280,7 +6409,18 @@ async function finishDuelTurn() {
       var xpEarned = iWon ? 40 : isDraw ? 20 : 10;
       xpEarned += myTotal * 3;
       state.xp = (state.xp || 0) + xpEarned;
-      await studentsRef.doc(state.studentId).update({ xp: state.xp });
+      const duelUpdate = { xp: state.xp };
+      if (iWon) {
+        duelUpdate.duelWins = firebase.firestore.FieldValue.increment(1);
+        if (state.studentData) state.studentData.duelWins = (state.studentData.duelWins || 0) + 1;
+        // Check giant kill: opponent had more XP
+        const opXpField = myRole === 'p1' ? freshData.p2Xp : freshData.p1Xp;
+        if (opXpField && opXpField > (state.studentData?.xp || 0)) {
+          duelUpdate.giantKills = firebase.firestore.FieldValue.increment(1);
+          if (state.studentData) state.studentData.giantKills = (state.studentData.giantKills || 0) + 1;
+        }
+      }
+      await studentsRef.doc(state.studentId).update(duelUpdate);
       // Save to battle history
       try {
         var opName = myRole === 'p1' ? freshData.p2Name : freshData.p1Name;
