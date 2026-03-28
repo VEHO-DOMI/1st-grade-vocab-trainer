@@ -4381,8 +4381,6 @@ function initFlashcardSwipe() {
     deltaX = 0;
     isMoving = true;
     startTime = Date.now();
-    var card = getCard();
-    if (card) { card.style.transition = 'none'; }
   }
 
   function onTouchMove(e) {
@@ -4392,6 +4390,7 @@ function initFlashcardSwipe() {
     if (Math.abs(deltaX) > 10) e.preventDefault();
     var card = getCard();
     if (card && Math.abs(deltaX) > 5) {
+      card.style.transition = 'none';
       var rotate = deltaX * 0.06;
       var base = fcFlipped ? 'rotateY(180deg) ' : '';
       card.style.transform = base + 'translateX(' + deltaX + 'px) rotate(' + rotate + 'deg)';
@@ -4420,16 +4419,16 @@ function initFlashcardSwipe() {
         card.style.opacity = '0';
       }
       setTimeout(deltaX > 0 ? flashcardGotIt : flashcardAgain, 300);
-    } else if (Math.abs(deltaX) < 15 && elapsed < 400) {
-      // Tap — toggle flip
-      if (card) { card.style.transform = ''; card.style.transition = ''; }
+    } else if (Math.abs(deltaX) < 15 && elapsed < 500) {
+      // Tap — clear all inline styles so CSS .flipped class animates properly
+      if (card) { card.removeAttribute('style'); }
       flipCard();
     } else {
       // Snap back
       if (card) {
         card.style.transition = 'transform 0.3s ease';
         card.style.transform = fcFlipped ? 'rotateY(180deg)' : '';
-        setTimeout(function() { if (card) card.style.transition = ''; }, 300);
+        setTimeout(function() { if (card) card.removeAttribute('style'); }, 300);
       }
     }
     deltaX = 0;
