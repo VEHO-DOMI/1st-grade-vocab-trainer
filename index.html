@@ -4368,28 +4368,27 @@ function flashcardAgain() {
 function initFlashcardSwipe() {
   var container = document.getElementById('flashcard-container');
   if (!container) return;
-  // Remove old listeners
-  if (container._fcCleanup) container._fcCleanup();
+  if (container._fcBound) return;
+  container._fcBound = true;
 
-  var startX = 0, deltaX = 0, isMoving = false, startTime = 0;
+  var startX = 0, deltaX = 0, didSwipe = false;
 
   function getCard() { return document.getElementById('flashcard'); }
 
-  function onTouchStart(e) {
-    var touch = e.touches[0];
-    startX = touch.clientX;
+  container.addEventListener('touchstart', function(e) {
+    startX = e.touches[0].clientX;
     deltaX = 0;
-    isMoving = true;
-    startTime = Date.now();
-  }
+    didSwipe = false;
+  }, { passive: true });
 
-  function onTouchMove(e) {
-    if (!isMoving) return;
-    var touch = e.touches[0];
-    deltaX = touch.clientX - startX;
-    if (Math.abs(deltaX) > 10) e.preventDefault();
+  container.addEventListener('touchmove', function(e) {
+    deltaX = e.touches[0].clientX - startX;
+    if (Math.abs(deltaX) > 10) {
+      e.preventDefault();
+      didSwipe = true;
+    }
     var card = getCard();
-    if (card && Math.abs(deltaX) > 5) {
+    if (card && Math.abs(deltaX) > 10) {
       card.style.transition = 'none';
       var rotate = deltaX * 0.06;
       var base = fcFlipped ? 'rotateY(180deg) ' : '';
@@ -4399,55 +4398,38 @@ function initFlashcardSwipe() {
     var ir = document.getElementById('swipe-indicator-right');
     if (il) il.style.opacity = deltaX < -30 ? Math.min(1, (-deltaX - 30) / 60) : 0;
     if (ir) ir.style.opacity = deltaX > 30 ? Math.min(1, (deltaX - 30) / 60) : 0;
-  }
+  }, { passive: false });
 
-  function onTouchEnd() {
-    if (!isMoving) return;
-    isMoving = false;
+  container.addEventListener('touchend', function() {
     var card = getCard();
-    var elapsed = Date.now() - startTime;
     var il = document.getElementById('swipe-indicator-left');
     var ir = document.getElementById('swipe-indicator-right');
     if (il) il.style.opacity = '0';
     if (ir) ir.style.opacity = '0';
 
     if (Math.abs(deltaX) > 80) {
-      // Swipe dismiss
+      didSwipe = true;
       if (card) {
         card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
         card.style.transform = deltaX > 0 ? 'translateX(120%) rotate(15deg)' : 'translateX(-120%) rotate(-15deg)';
         card.style.opacity = '0';
       }
       setTimeout(deltaX > 0 ? flashcardGotIt : flashcardAgain, 300);
-    } else if (Math.abs(deltaX) < 15 && elapsed < 500) {
-      // Tap — clear all inline styles so CSS .flipped class animates properly
-      if (card) { card.removeAttribute('style'); }
-      flipCard();
-    } else {
-      // Snap back
+    } else if (didSwipe) {
       if (card) {
         card.style.transition = 'transform 0.3s ease';
         card.style.transform = fcFlipped ? 'rotateY(180deg)' : '';
         setTimeout(function() { if (card) card.removeAttribute('style'); }, 300);
       }
     }
-    deltaX = 0;
-  }
+  }, { passive: true });
 
-  container.addEventListener('touchstart', onTouchStart, { passive: true });
-  container.addEventListener('touchmove', onTouchMove, { passive: false });
-  container.addEventListener('touchend', onTouchEnd, { passive: true });
-  // Mouse fallback for desktop
-  container.addEventListener('click', function(e) {
-    if (!e.isTrusted) return;
+  container.addEventListener('click', function() {
+    if (didSwipe) { didSwipe = false; return; }
+    var card = getCard();
+    if (card) card.removeAttribute('style');
     flipCard();
   });
-
-  container._fcCleanup = function() {
-    container.removeEventListener('touchstart', onTouchStart);
-    container.removeEventListener('touchmove', onTouchMove);
-    container.removeEventListener('touchend', onTouchEnd);
-  };
 }
 
 async function saveFlashcardProgress(word) {
