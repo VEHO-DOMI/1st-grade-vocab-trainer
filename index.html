@@ -538,6 +538,9 @@ h1 { display: none; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ===== LIGHT MODE COMPONENT OVERRIDES ===== */
+[data-theme="light"] .header-tagline { color: rgba(0,0,0,0.32); }
+[data-theme="light"] .header-grade { color: var(--accent); }
+[data-theme="light"] .header-school { color: rgba(0,0,0,0.28); }
 [data-theme="light"] .btn-secondary { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); color: var(--text-secondary); }
 [data-theme="light"] .btn-secondary:hover { background: rgba(0,0,0,0.07); color: var(--text); border-color: rgba(0,0,0,0.15); }
 [data-theme="light"] .today-card { background: rgba(22,163,74,0.05); border-color: rgba(22,163,74,0.12); }
@@ -550,6 +553,9 @@ h1 { display: none; }
 [data-theme="light"] .mode-card.selected { background: rgba(22,163,74,0.08); border-color: var(--accent); }
 [data-theme="light"] .answer-input { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.12); color: var(--text); }
 [data-theme="light"] .mc-option { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); color: var(--text); }
+[data-theme="light"] #avatar-picker-modal { background: white; color: var(--text); }
+[data-theme="light"] .battle-modal-bg { background: white; color: var(--text); }
+[data-theme="light"] .setup-step { background: white; }
 
 /* Responsive — Mobile */
 @media (max-width: 600px) {
@@ -4139,20 +4145,23 @@ function renderProgressMap() {
   var svgWidth = cols * cellW + padX * 2;
   var svgHeight = rows * cellH + padTop + 20;
 
-  // Tier colors based on mastery %
+  var isLight = document.documentElement.getAttribute('data-theme') !== 'dark';
+  var textColor = isLight ? '#1e293b' : '#eef0f6';
+  var mutedColor = isLight ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.5)';
+  var trackColor = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.08)';
+  var trackInner = isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)';
+
   var tierColors = {
-    diamond: { bg: '#312e81', ring: '#818cf8', outer: '#a78bfa' },
-    gold: { bg: '#854d0e', ring: '#eab308', outer: '#fde047' },
-    silver: { bg: '#374151', ring: '#9ca3af', outer: '#d1d5db' },
-    bronze: { bg: '#92400e', ring: '#d97706', outer: '#fbbf24' },
-    locked: { bg: 'rgba(255,255,255,0.04)', ring: 'rgba(255,255,255,0.1)', outer: 'rgba(255,255,255,0.06)' }
+    gold:   { bg: '#854d0e', ring: '#eab308' },
+    silver: { bg: '#374151', ring: '#9ca3af' },
+    bronze: { bg: '#92400e', ring: '#d97706' },
+    locked: { bg: isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.04)', ring: isLight ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.1)' }
   };
 
-  function getTier(masteredPct, practiced) {
+  function getTier(masteredPct, solvedPct, practiced) {
     if (!practiced) return 'locked';
-    if (masteredPct >= 90) return 'diamond';
-    if (masteredPct >= 60) return 'gold';
-    if (masteredPct >= 30) return 'silver';
+    if (masteredPct >= 100) return 'gold';
+    if (solvedPct >= 100) return 'silver';
     return 'bronze';
   }
 
@@ -4164,7 +4173,7 @@ function renderProgressMap() {
     var solvedPct = prog.total > 0 ? Math.round(((prog.mastered + prog.solved) / prog.total) * 100) : 0;
     var masteredPct = prog.total > 0 ? Math.round((prog.mastered / prog.total) * 100) : 0;
     var practiced = prog.practiced > 0;
-    var tier = getTier(masteredPct, practiced);
+    var tier = getTier(masteredPct, solvedPct, practiced);
     var tc = tierColors[tier];
 
     var col = i % cols;
@@ -4183,14 +4192,14 @@ function renderProgressMap() {
     svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (outerR + 2) + '" fill="' + tc.bg + '" />';
 
     // Outer ring track (mastered)
-    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + outerR + '" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5" />';
+    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + outerR + '" fill="none" stroke="' + trackColor + '" stroke-width="5" />';
     if (practiced && masteredPct > 0) {
       var dashOuter = circumOuter * (masteredPct / 100);
       svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + outerR + '" fill="none" stroke="#22c55e" stroke-width="5" stroke-dasharray="' + dashOuter + ' ' + circumOuter + '" stroke-linecap="round" transform="rotate(-90 ' + cx + ' ' + cy + ')" />';
     }
 
     // Inner ring track (solved)
-    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + innerR + '" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4" />';
+    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + innerR + '" fill="none" stroke="' + trackInner + '" stroke-width="4" />';
     if (practiced && solvedPct > 0) {
       var dashInner = circumInner * (solvedPct / 100);
       svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + innerR + '" fill="none" stroke="#3b82f6" stroke-width="4" stroke-dasharray="' + dashInner + ' ' + circumInner + '" stroke-linecap="round" transform="rotate(-90 ' + cx + ' ' + cy + ')" />';
@@ -4198,7 +4207,8 @@ function renderProgressMap() {
 
     // Center text
     if (!practiced) {
-      svg += '<text x="' + cx + '" y="' + (cy + 5) + '" text-anchor="middle" font-size="16" fill="rgba(255,255,255,0.15)">&#x1F512;</text>';
+      var lockColor = isLight ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.15)';
+      svg += '<text x="' + cx + '" y="' + (cy + 5) + '" text-anchor="middle" font-size="16" fill="' + lockColor + '">&#x1F512;</text>';
     } else {
       svg += '<text x="' + cx + '" y="' + (cy - 2) + '" text-anchor="middle" font-size="15" font-weight="800" fill="white">' + solvedPct + '%</text>';
       svg += '<text x="' + cx + '" y="' + (cy + 11) + '" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.5)">solved</text>';
@@ -4207,12 +4217,12 @@ function renderProgressMap() {
     // Unit label below
     var labelY = cy + outerR + 14;
     var shortKey = key.length > 12 ? key.substring(0, 12) + '\u2026' : key;
-    svg += '<text x="' + cx + '" y="' + labelY + '" class="map-node-label">' + escapeHtml(shortKey) + '</text>';
+    svg += '<text x="' + cx + '" y="' + labelY + '" text-anchor="middle" font-size="11" font-weight="700" fill="' + textColor + '">' + escapeHtml(shortKey) + '</text>';
 
     // Tier indicator
     if (practiced && tier !== 'locked') {
       var tierLabel = tier.charAt(0).toUpperCase() + tier.slice(1);
-      svg += '<text x="' + cx + '" y="' + (labelY + 12) + '" text-anchor="middle" font-size="8" font-weight="600" fill="' + tc.ring + '" opacity="0.7">' + tierLabel + '</text>';
+      svg += '<text x="' + cx + '" y="' + (labelY + 12) + '" text-anchor="middle" font-size="8" font-weight="600" fill="' + tc.ring + '" opacity="0.8">' + tierLabel + '</text>';
     }
 
     svg += '</g>';
@@ -4221,9 +4231,9 @@ function renderProgressMap() {
   // Legend at bottom
   var legendY = svgHeight - 14;
   svg += '<circle cx="' + (svgWidth / 2 - 60) + '" cy="' + legendY + '" r="4" fill="none" stroke="#22c55e" stroke-width="2" />';
-  svg += '<text x="' + (svgWidth / 2 - 52) + '" y="' + (legendY + 3) + '" font-size="8" fill="rgba(255,255,255,0.5)">Mastered</text>';
+  svg += '<text x="' + (svgWidth / 2 - 52) + '" y="' + (legendY + 3) + '" font-size="8" fill="' + mutedColor + '">Mastered</text>';
   svg += '<circle cx="' + (svgWidth / 2 + 20) + '" cy="' + legendY + '" r="4" fill="none" stroke="#3b82f6" stroke-width="2" />';
-  svg += '<text x="' + (svgWidth / 2 + 28) + '" y="' + (legendY + 3) + '" font-size="8" fill="rgba(255,255,255,0.5)">Solved</text>';
+  svg += '<text x="' + (svgWidth / 2 + 28) + '" y="' + (legendY + 3) + '" font-size="8" fill="' + mutedColor + '">Solved</text>';
 
   svg += '</svg>';
   container.innerHTML = svg;
@@ -4235,7 +4245,7 @@ function mapNodeTapped(unitIdx) {
   var prog = getSourceProgress(key);
   var masteredPct = prog.total > 0 ? Math.round((prog.mastered / prog.total) * 100) : 0;
   var solvedPct = prog.total > 0 ? Math.round(((prog.mastered + prog.solved) / prog.total) * 100) : 0;
-  var tier = masteredPct >= 90 ? 'Diamond' : masteredPct >= 60 ? 'Gold' : masteredPct >= 30 ? 'Silver' : prog.practiced > 0 ? 'Bronze' : 'Locked';
+  var tier = masteredPct >= 100 ? 'Gold' : solvedPct >= 100 ? 'Silver' : prog.practiced > 0 ? 'Bronze' : 'Locked';
   showBattleMessage(
     key + ' \u2014 ' + tier,
     prog.mastered + ' of ' + prog.total + ' words mastered (' + masteredPct + '%)\n' +
