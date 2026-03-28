@@ -1307,21 +1307,35 @@ body.playing .header-container { display: none; }
 .duel-option.correct { border-color: var(--correct); background: rgba(22,163,74,0.12); }
 .duel-option.wrong { border-color: var(--wrong); background: rgba(220,38,38,0.12); }
 .duel-option.disabled { pointer-events: none; opacity: 0.6; }
-.duel-item {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 0.8rem 0; border-bottom: 1px solid var(--card-border);
-  cursor: pointer;
-}
-.duel-item:last-child { border-bottom: none; }
-.duel-item-info { flex: 1; }
-.duel-item-name { font-weight: 600; font-size: 0.95rem; }
-.duel-item-status { font-size: 0.75rem; color: var(--muted); }
-.duel-item-score { font-weight: 700; font-size: 0.9rem; }
-.duel-badge-turn {
-  display: inline-block; padding: 2px 8px; border-radius: 8px;
-  font-size: 0.7rem; font-weight: 700; color: white;
-  background: var(--accent); margin-left: 6px;
-}
+/* Duel scoreboard */
+.duel-scoreboard-header { text-align: center; padding: 1.2rem 0; }
+.duel-scoreboard-names { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.duel-scoreboard-player { text-align: center; font-weight: 600; font-size: 0.85rem; }
+.duel-scoreboard-vs { font-size: 2rem; font-weight: 800; }
+.duel-scoreboard-score { font-size: 0.75rem; color: var(--muted); }
+.duel-round-row { display: flex; align-items: center; padding: 0.7rem 0; border-top: 1px solid var(--card-border); }
+.duel-round-info { flex: 1; text-align: center; font-size: 0.75rem; font-weight: 600; color: var(--muted); }
+.duel-round-blocks { display: flex; gap: 3px; width: 80px; }
+.duel-block { width: 14px; height: 14px; border-radius: 3px; }
+.duel-block.correct { background: #22c55e; }
+.duel-block.wrong { background: #ef4444; }
+.duel-block.hidden { background: var(--card-border); opacity: 0.4; }
+.duel-block.empty { background: var(--card-border); opacity: 0.15; }
+.duel-round-status { font-size: 0.7rem; font-weight: 700; color: var(--accent); text-transform: uppercase; }
+.duel-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 1rem; margin-bottom: 0.6rem; cursor: pointer; transition: background 0.15s; }
+.duel-card:active { background: var(--card-hover); }
+.duel-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.duel-card-opponent { font-weight: 700; font-size: 1rem; }
+.duel-card-status { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 8px; }
+.duel-card-status.your-turn { background: rgba(239,68,68,0.15); color: #ef4444; }
+.duel-card-status.waiting { background: var(--card-border); color: var(--muted); }
+.duel-card-status.done { color: var(--correct); }
+.duel-card-mini-rounds { display: flex; gap: 6px; }
+.duel-card-mini-round { display: flex; gap: 2px; }
+.duel-mini-block { width: 8px; height: 8px; border-radius: 2px; }
+.duel-mini-block.correct { background: #22c55e; }
+.duel-mini-block.wrong { background: #ef4444; }
+.duel-mini-block.pending { background: var(--card-border); opacity: 0.3; }
 /* Battle modal classes */
 .battle-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -5707,8 +5721,8 @@ function leaveBattle() {
   showHomeScreen()
 }
 
-// ===== ASYNC QUIZ DUEL =====
-let duelState = { currentDuel: null, currentRound: 0, currentQuestion: 0, answers: [], timer: null, timeLeft: 15 };
+// ===== ASYNC QUIZ DUEL (QuizDuell model) =====
+let duelState = { duel: null, myRole: null, pendingRounds: [], newRoundIdx: -1, currentQ: 0, answers: [], timer: null, timeLeft: 15, roundAnswers: [] };
 
 async function openDuelHub() {
   showScreen('duel-hub-screen');
@@ -5720,69 +5734,187 @@ async function loadDuels() {
   var mySlug = state.studentId;
   var duelsRef = classRef.collection('duels');
   try {
-    // Simple queries without orderBy to avoid needing composite indexes
     var p1Snap = await duelsRef.where('p1', '==', mySlug).limit(30).get();
     var p2Snap = await duelsRef.where('p2', '==', mySlug).limit(30).get();
     var duels = [];
     var seen = new Set();
     p1Snap.forEach(function(doc) { if (!seen.has(doc.id)) { seen.add(doc.id); duels.push({ id: doc.id, ...doc.data(), myRole: 'p1' }); } });
     p2Snap.forEach(function(doc) { if (!seen.has(doc.id)) { seen.add(doc.id); duels.push({ id: doc.id, ...doc.data(), myRole: 'p2' }); } });
-    // Sort in JS — newest first
     duels.sort(function(a, b) {
       var aTime = a.updatedAt ? (a.updatedAt.seconds || 0) : (a.createdAt ? (a.createdAt.seconds || 0) : 0);
       var bTime = b.updatedAt ? (b.updatedAt.seconds || 0) : (b.createdAt ? (b.createdAt.seconds || 0) : 0);
       return bTime - aTime;
     });
-    state._loadedDuels = duels; // Cache for duplicate checking
-    renderDuelHub(duels);
+    state._loadedDuels = duels;
+    renderDuelList(duels);
   } catch (e) { console.error('Load duels error:', e); }
 }
 
-function renderDuelHub(duels) {
-  var yourTurn = [], waiting = [], completed = [];
-  for (var i = 0; i < duels.length; i++) {
-    var d = duels[i];
-    if (d.status === 'complete') { completed.push(d); continue; }
-    var isMyTurn = (d.status === 'p1-turn' && d.myRole === 'p1') ||
-                   (d.status === 'p2-turn-partial' && d.myRole === 'p2') ||
-                   (d.status === 'p1-turn-final' && d.myRole === 'p1');
-    if (isMyTurn) yourTurn.push(d); else waiting.push(d);
+function getWhoseTurn(duel) {
+  var rounds = duel.rounds || [];
+  var p1Done = 0, p2Done = 0;
+  for (var i = 0; i < rounds.length; i++) {
+    if (rounds[i].p1Answers) p1Done++;
+    if (rounds[i].p2Answers) p2Done++;
   }
-  function renderList(items, containerId, mode) {
-    var el = document.getElementById(containerId);
-    var list = document.getElementById(containerId + '-list');
-    if (!el || !list) return;
-    if (items.length === 0) { el.style.display = 'none'; return; }
-    el.style.display = '';
-    list.innerHTML = items.map(function(d) {
-      var opName = d.myRole === 'p1' ? d.p2Name : d.p1Name;
-      var myScore = d.myRole === 'p1' ? (d.p1Score || 0) : (d.p2Score || 0);
-      var opScore = d.myRole === 'p1' ? (d.p2Score || 0) : (d.p1Score || 0);
-      var statusText, action;
-      if (mode === 'play') {
-        statusText = 'Your turn! · ' + myScore + '-' + opScore;
-        action = 'playDuel(\'' + d.id + '\')';
-      } else if (mode === 'wait') {
-        statusText = 'Waiting for ' + escapeHtml(opName) + ' · ' + myScore + '-' + opScore;
-        action = '';
-      } else {
-        var result = myScore > opScore ? '🏆 Won' : myScore < opScore ? '💪 Lost' : '🤝 Draw';
-        statusText = result + ' ' + myScore + '-' + opScore;
-        action = 'viewDuelResult(\'' + d.id + '\')';
-      }
-      return '<div class="duel-item"' + (action ? ' onclick="' + action + '"' : '') + ' style="' + (action ? 'cursor:pointer;' : '') + '"><div class="duel-item-info"><div class="duel-item-name">vs ' + escapeHtml(opName) + (mode === 'play' ? '<span class="duel-badge-turn">YOUR TURN</span>' : '') + '</div><div class="duel-item-status">' + statusText + '</div></div></div>';
-    }).join('');
+  var totalRounds = rounds.length;
+  if (totalRounds === 5 && p1Done === 5 && p2Done === 5) return 'complete';
+  if (p2Done < p1Done) return 'p2';
+  if (p1Done < p2Done) return 'p1';
+  // Both caught up - next round picker's turn
+  if (totalRounds < 5) {
+    var nextPicker = totalRounds % 2 === 0 ? 'p1' : 'p2';
+    return nextPicker;
   }
-  renderList(yourTurn, 'duel-your-turn', 'play');
-  renderList(waiting, 'duel-waiting', 'wait');
-  renderList(completed, 'duel-completed', 'done');
-  // Show empty state if no duels at all
-  if (yourTurn.length === 0 && waiting.length === 0 && completed.length === 0) {
-    var ytEl = document.getElementById('duel-your-turn');
-    if (ytEl) { ytEl.style.display = ''; document.getElementById('duel-your-turn-list').innerHTML = '<div style="text-align:center;padding:1rem;color:var(--muted);font-size:0.85rem;">No duels yet. Challenge someone!</div>'; }
-  }
+  return 'complete';
 }
 
+function renderDuelList(duels) {
+  var el = document.getElementById('duel-list');
+  if (!el) return;
+  if (duels.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem;">No duels yet. Challenge someone!</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < duels.length; i++) {
+    var d = duels[i];
+    var myRole = d.myRole;
+    var opName = myRole === 'p1' ? d.p2Name : d.p1Name;
+    var myScore = myRole === 'p1' ? (d.p1Score || 0) : (d.p2Score || 0);
+    var opScore = myRole === 'p1' ? (d.p2Score || 0) : (d.p1Score || 0);
+    var turn = d.status === 'complete' ? 'complete' : getWhoseTurn(d);
+    var isMyTurn = turn === myRole;
+    var statusClass, statusText;
+    if (d.status === 'complete') {
+      statusClass = 'done';
+      statusText = myScore > opScore ? 'Won' : myScore < opScore ? 'Lost' : 'Draw';
+    } else if (isMyTurn) {
+      statusClass = 'your-turn';
+      statusText = 'Your Turn';
+    } else {
+      statusClass = 'waiting';
+      statusText = 'Waiting';
+    }
+    // Mini round blocks
+    var rounds = d.rounds || [];
+    var miniHtml = '<div class="duel-card-mini-rounds">';
+    for (var r = 0; r < 5; r++) {
+      miniHtml += '<div class="duel-card-mini-round">';
+      if (r < rounds.length) {
+        var myAns = myRole === 'p1' ? rounds[r].p1Answers : rounds[r].p2Answers;
+        if (myAns) {
+          for (var q = 0; q < 5; q++) {
+            miniHtml += '<div class="duel-mini-block ' + (q < myAns.length ? (myAns[q] ? 'correct' : 'wrong') : 'pending') + '"></div>';
+          }
+        } else {
+          for (var q = 0; q < 5; q++) miniHtml += '<div class="duel-mini-block pending"></div>';
+        }
+      } else {
+        for (var q = 0; q < 5; q++) miniHtml += '<div class="duel-mini-block pending"></div>';
+      }
+      miniHtml += '</div>';
+    }
+    miniHtml += '</div>';
+    html += '<div class="duel-card" onclick="openDuelScoreboard(\'' + d.id + '\')">' +
+      '<div class="duel-card-header"><div class="duel-card-opponent">vs ' + escapeHtml(opName) + '</div>' +
+      '<div class="duel-card-status ' + statusClass + '">' + statusText + '</div></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+      '<div style="font-size:0.85rem;font-weight:700;">' + myScore + ' - ' + opScore + '</div>' +
+      miniHtml + '</div></div>';
+  }
+  el.innerHTML = html;
+}
+
+// --- Duel Scoreboard ---
+async function openDuelScoreboard(duelId) {
+  try {
+    var doc = await classRef.collection('duels').doc(duelId).get();
+    if (!doc.exists) return;
+    var duel = { id: doc.id, ...doc.data() };
+    var myRole = duel.p1 === state.studentId ? 'p1' : 'p2';
+    duelState.duel = duel;
+    duelState.myRole = myRole;
+    showScreen('duel-scoreboard-screen');
+    renderScoreboard(duel, myRole);
+  } catch (e) { console.error('Open scoreboard error:', e); }
+}
+
+function renderScoreboard(duel, myRole) {
+  var el = document.getElementById('duel-scoreboard');
+  if (!el) return;
+  var myName = myRole === 'p1' ? duel.p1Name : duel.p2Name;
+  var opName = myRole === 'p1' ? duel.p2Name : duel.p1Name;
+  var myScore = myRole === 'p1' ? (duel.p1Score || 0) : (duel.p2Score || 0);
+  var opScore = myRole === 'p1' ? (duel.p2Score || 0) : (duel.p1Score || 0);
+  var rounds = duel.rounds || [];
+  var turn = duel.status === 'complete' ? 'complete' : getWhoseTurn(duel);
+  var isMyTurn = turn === myRole;
+
+  var html = '<div class="card"><div class="duel-scoreboard-header">';
+  html += '<div class="duel-scoreboard-names"><div class="duel-scoreboard-player">' + escapeHtml(myName) + '</div>';
+  html += '<div class="duel-scoreboard-vs">' + myScore + ' - ' + opScore + '</div>';
+  html += '<div class="duel-scoreboard-player">' + escapeHtml(opName) + '</div></div>';
+  if (duel.status === 'complete') {
+    var resultText = myScore > opScore ? 'Victory!' : myScore < opScore ? 'Defeat' : 'Draw';
+    html += '<div class="duel-scoreboard-score">' + resultText + '</div>';
+  }
+  html += '</div>';
+
+  // Round rows
+  for (var r = 0; r < 5; r++) {
+    html += '<div class="duel-round-row">';
+    // My blocks
+    html += '<div class="duel-round-blocks">';
+    if (r < rounds.length) {
+      var myAns = myRole === 'p1' ? rounds[r].p1Answers : rounds[r].p2Answers;
+      if (myAns) {
+        for (var q = 0; q < 5; q++) html += '<div class="duel-block ' + (q < myAns.length ? (myAns[q] ? 'correct' : 'wrong') : 'empty') + '"></div>';
+      } else {
+        // My turn to play this round
+        html += '<div class="duel-round-status">Your Turn</div>';
+      }
+    } else {
+      for (var q = 0; q < 5; q++) html += '<div class="duel-block empty"></div>';
+    }
+    html += '</div>';
+    // Round info
+    html += '<div class="duel-round-info">';
+    if (r < rounds.length) {
+      html += 'Round ' + (r + 1) + '<br><span style="font-weight:400;">' + escapeHtml(rounds[r].unit) + '</span>';
+    } else {
+      html += 'Round ' + (r + 1);
+    }
+    html += '</div>';
+    // Opponent blocks
+    html += '<div class="duel-round-blocks" style="justify-content:flex-end;">';
+    if (r < rounds.length) {
+      var opAns = myRole === 'p1' ? rounds[r].p2Answers : rounds[r].p1Answers;
+      var myAns2 = myRole === 'p1' ? rounds[r].p1Answers : rounds[r].p2Answers;
+      if (opAns) {
+        for (var q = 0; q < 5; q++) html += '<div class="duel-block ' + (q < opAns.length ? (opAns[q] ? 'correct' : 'wrong') : 'empty') + '"></div>';
+      } else if (myAns2) {
+        // Opponent hasn't played yet - show hidden
+        for (var q = 0; q < 5; q++) html += '<div class="duel-block hidden"></div>';
+      } else {
+        for (var q = 0; q < 5; q++) html += '<div class="duel-block empty"></div>';
+      }
+    } else {
+      for (var q = 0; q < 5; q++) html += '<div class="duel-block empty"></div>';
+    }
+    html += '</div>';
+    html += '</div>';
+  }
+
+  // Play button
+  if (duel.status !== 'complete' && isMyTurn) {
+    html += '<div style="padding:1rem 0;"><button class="btn btn-primary btn-block" onclick="startDuelTurn(\'' + duel.id + '\')">Play</button></div>';
+  }
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// --- Challenge & Create ---
 function openDuelChallenge() {
   if (!presenceRef) { showBattleMessage('Not connected', 'Battle system not available.'); return; }
   presenceRef.once('value', snap => {
@@ -5816,107 +5948,141 @@ async function createDuel(opSlug, opName) {
   var overlay = document.getElementById('duel-challenge-overlay');
   if (overlay) overlay.remove();
   var mySlug = state.studentId;
-  // Prevent duplicate active duels with same opponent
+  // Duplicate prevention
   try {
-    var existCheck1 = await classRef.collection('duels').where('p1', '==', mySlug).where('p2', '==', opSlug).where('status', 'in', ['p1-turn','p2-turn-partial','p1-turn-final']).limit(1).get();
-    var existCheck2 = await classRef.collection('duels').where('p1', '==', opSlug).where('p2', '==', mySlug).where('status', 'in', ['p1-turn','p2-turn-partial','p1-turn-final']).limit(1).get();
+    var existCheck1 = await classRef.collection('duels').where('p1', '==', mySlug).where('p2', '==', opSlug).where('status', '==', 'active').limit(1).get();
+    var existCheck2 = await classRef.collection('duels').where('p1', '==', opSlug).where('p2', '==', mySlug).where('status', '==', 'active').limit(1).get();
     if (!existCheck1.empty || !existCheck2.empty) {
       showBattleMessage('Already dueling!', 'You already have an active duel with ' + opName + '. Finish it first!');
       return;
     }
   } catch(e) { /* If index missing, allow anyway */ }
-  const unitKeys = Object.keys(vocabData);
-  shuffle(unitKeys);
-  const categories = unitKeys.slice(0, Math.min(6, unitKeys.length));
-  while (categories.length < 6 && unitKeys.length > 0) { categories.push(unitKeys[categories.length % unitKeys.length]); }
-  const questions = [];
-  for (let r = 0; r < 6; r++) {
-    const cat = categories[r];
-    const words = [...vocabData[cat]];
-    shuffle(words);
-    const picked = words.slice(0, Math.min(3, words.length));
-    for (const word of picked) {
-      const correct = word.w.replace(/^to\s+/, '');
-      const allWords = [];
-      for (const entries of Object.values(vocabData)) { for (const e of entries) allWords.push(e.w.replace(/^to\s+/, '')); }
-      const distractors = allWords.filter(w => w !== correct);
-      shuffle(distractors);
-      const options = [correct, ...distractors.slice(0, 3)];
-      shuffle(options);
-      questions.push({ german: word.g, english: word.w, definition: word.d, options: options, correctIdx: options.indexOf(correct), unitKey: cat });
-    }
-  }
-  while (questions.length < 18) {
-    const allW = [];
-    for (const [k,v] of Object.entries(vocabData)) { for (const w of v) allW.push({...w, unitKey: k}); }
-    shuffle(allW);
-    const word = allW[0];
-    const correct = word.w.replace(/^to\s+/, '');
-    const opts = [correct]; const allE = allW.map(w => w.w.replace(/^to\s+/, '')).filter(w => w !== correct); shuffle(allE);
-    opts.push(...allE.slice(0,3)); shuffle(opts);
-    questions.push({ german: word.g, english: word.w, definition: word.d, options: opts, correctIdx: opts.indexOf(correct), unitKey: word.unitKey });
-  }
   try {
     var docRef = await classRef.collection('duels').add({
       p1: mySlug, p2: opSlug,
       p1Name: state.studentName, p2Name: opName,
-      status: 'p1-turn',
-      categories: categories,
-      questions: questions,
-      p1Answers: [], p2Answers: [],
+      status: 'active',
+      rounds: [],
       p1Score: 0, p2Score: 0,
       winner: null,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    // Auto-start the duel immediately
-    playDuel(docRef.id);
+    // P1 picks unit for Round 1, then plays it
+    duelState.duel = { id: docRef.id, p1: mySlug, p2: opSlug, p1Name: state.studentName, p2Name: opName, status: 'active', rounds: [], p1Score: 0, p2Score: 0, winner: null };
+    duelState.myRole = 'p1';
+    showDuelUnitPicker(0);
   } catch (e) { console.error('Create duel error:', e); showBattleMessage('Error', 'Could not create duel.'); }
 }
 
-async function playDuel(duelId) {
+// --- Playing a Turn ---
+async function startDuelTurn(duelId) {
   try {
-    const doc = await classRef.collection('duels').doc(duelId).get();
+    var doc = await classRef.collection('duels').doc(duelId).get();
     if (!doc.exists) return;
-    const duel = { id: doc.id, ...doc.data() };
-    const myRole = duel.p1 === state.studentId ? 'p1' : 'p2';
-    duelState.currentDuel = { ...duel, myRole: myRole };
-    let startQ, endQ;
-    if (duel.status === 'p1-turn' && myRole === 'p1') { startQ = 0; endQ = 9; }
-    else if (duel.status === 'p2-turn-partial' && myRole === 'p2') { startQ = 0; endQ = 18; }
-    else if (duel.status === 'p1-turn-final' && myRole === 'p1') { startQ = 9; endQ = 18; }
-    else return;
-    duelState.startQ = startQ;
-    duelState.endQ = endQ;
-    duelState.currentQuestion = startQ;
-    duelState.currentRound = Math.floor(startQ / 3);
-    duelState.answers = [];
-    duelState.roundCorrect = 0;
-    showScreen('duel-play-screen');
-    showDuelQuestion();
-  } catch (e) { console.error('Play duel error:', e); }
+    var duel = { id: doc.id, ...doc.data() };
+    var myRole = duel.p1 === state.studentId ? 'p1' : 'p2';
+    duelState.duel = duel;
+    duelState.myRole = myRole;
+    duelState.pendingRounds = [];
+    duelState.roundAnswers = [];
+
+    var rounds = duel.rounds || [];
+    var myKey = myRole + 'Answers';
+
+    // Find pending rounds (rounds with questions I haven't answered)
+    for (var i = 0; i < rounds.length; i++) {
+      if (!rounds[i][myKey]) {
+        duelState.pendingRounds.push(i);
+      }
+    }
+
+    if (duelState.pendingRounds.length > 0) {
+      // Play first pending round
+      playDuelRound(duelState.pendingRounds.shift());
+    } else {
+      // Need to pick a new round
+      var nextRoundIdx = rounds.length;
+      if (nextRoundIdx < 5) {
+        showDuelUnitPicker(nextRoundIdx);
+      } else {
+        openDuelScoreboard(duelId);
+      }
+    }
+  } catch (e) { console.error('Start duel turn error:', e); }
+}
+
+function showDuelUnitPicker(roundIdx) {
+  duelState.newRoundIdx = roundIdx;
+  document.getElementById('duel-pick-round').textContent = (roundIdx + 1);
+  var grid = document.getElementById('duel-unit-grid');
+  var unitKeys = Object.keys(vocabData);
+  grid.innerHTML = unitKeys.map(function(k) {
+    return '<button class="source-btn" onclick="onDuelUnitPicked(\'' + k.replace(/'/g, "\\'") + '\')">' +
+      '<div class="source-btn-label">' + escapeHtml(k) + '</div>' +
+      '<div class="source-btn-count">' + vocabData[k].length + ' words</div></button>';
+  }).join('');
+  showScreen('duel-pick-screen');
+}
+
+async function onDuelUnitPicked(unitKey) {
+  var roundIdx = duelState.newRoundIdx;
+  var questions = generateDuelQuestions(unitKey, 5);
+  var myRole = duelState.myRole;
+  var newRound = {
+    unit: unitKey,
+    pickedBy: myRole,
+    questions: questions,
+    p1Answers: null,
+    p2Answers: null
+  };
+
+  // Save new round to Firestore
+  try {
+    var duelRef = classRef.collection('duels').doc(duelState.duel.id);
+    var duel = duelState.duel;
+    var rounds = duel.rounds ? duel.rounds.slice() : [];
+    rounds.push(newRound);
+    await duelRef.update({ rounds: rounds, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    duelState.duel.rounds = rounds;
+    // Now play the round I just created
+    playDuelRound(roundIdx);
+  } catch (e) { console.error('Save round error:', e); showBattleMessage('Error', 'Could not save round.'); }
+}
+
+function playDuelRound(roundIdx) {
+  var duel = duelState.duel;
+  var round = duel.rounds[roundIdx];
+  if (!round) return;
+  duelState.currentQ = 0;
+  duelState.answers = [];
+  duelState._playingRoundIdx = roundIdx;
+  showScreen('duel-play-screen');
+  document.getElementById('duel-question-area').style.display = '';
+  document.getElementById('duel-round-summary').style.display = 'none';
+  showDuelQuestion();
 }
 
 function showDuelQuestion() {
-  const duel = duelState.currentDuel;
-  if (!duel) return;
-  const qIdx = duelState.currentQuestion;
-  if (qIdx >= duelState.endQ || qIdx >= duel.questions.length) {
-    endDuelTurn();
+  var duel = duelState.duel;
+  var roundIdx = duelState._playingRoundIdx;
+  var round = duel.rounds[roundIdx];
+  var qIdx = duelState.currentQ;
+  if (qIdx >= round.questions.length) {
+    showDuelRoundResult(roundIdx);
     return;
   }
-  const roundIdx = Math.floor(qIdx / 3);
-  const qInRound = qIdx % 3;
-  duelState.currentRound = roundIdx;
-  const q = duel.questions[qIdx];
-  const cat = duel.categories[roundIdx] || q.unitKey;
-  document.getElementById('duel-round-label').textContent = 'Round ' + (roundIdx + 1) + ' · ' + cat;
-  document.getElementById('duel-question-num').textContent = 'Question ' + (qInRound + 1) + ' of 3';
+  var q = round.questions[qIdx];
+  document.getElementById('duel-round-label').textContent = 'Round ' + (roundIdx + 1) + ' \u00B7 ' + round.unit;
+  document.getElementById('duel-question-num').textContent = 'Question ' + (qIdx + 1) + ' of 5';
   document.getElementById('duel-prompt').innerHTML = '<div style="font-size:0.8rem;opacity:0.5;margin-bottom:8px;">Translate to English</div><div style="font-size:1.5rem;font-weight:700;">' + escapeHtml(q.german) + '</div>';
-  const optionsEl = document.getElementById('duel-options');
-  optionsEl.innerHTML = q.options.map((opt, i) => '<button class="duel-option" data-idx="' + i + '" onclick="duelSelectAnswer(this,' + i + ',' + q.correctIdx + ')">' + escapeHtml(opt) + '</button>').join('');
+  var optionsEl = document.getElementById('duel-options');
+  optionsEl.innerHTML = q.options.map(function(opt, i) {
+    return '<button class="duel-option" data-idx="' + i + '" onclick="duelSelectAnswer(this,' + i + ',' + q.correctIdx + ')">' + escapeHtml(opt) + '</button>';
+  }).join('');
   document.getElementById('duel-question-area').style.display = '';
   document.getElementById('duel-round-summary').style.display = 'none';
+  // Timer
   duelState.timeLeft = 15;
   clearInterval(duelState.timer);
   var fillEl = document.getElementById('duel-timer-fill');
@@ -5933,10 +6099,9 @@ function showDuelQuestion() {
 
 function duelSelectAnswer(btn, selectedIdx, correctIdx) {
   clearInterval(duelState.timer);
-  const correct = selectedIdx === correctIdx;
-  const timeMs = Math.round((15 - duelState.timeLeft) * 1000);
-  duelState.answers.push({ correct: correct, timeMs: timeMs });
-  if (correct) duelState.roundCorrect = (duelState.roundCorrect || 0) + 1;
+  var correct = selectedIdx === correctIdx;
+  duelState.answers.push(correct);
+  // Highlight
   var options = document.querySelectorAll('.duel-option');
   options.forEach(function(o) {
     o.classList.add('disabled');
@@ -5944,85 +6109,139 @@ function duelSelectAnswer(btn, selectedIdx, correctIdx) {
     if (parseInt(o.dataset.idx) === selectedIdx && selectedIdx !== correctIdx) o.classList.add('wrong');
   });
   setTimeout(function() {
-    duelState.currentQuestion++;
-    var qInRound = duelState.currentQuestion % 3;
-    if (qInRound === 0 && duelState.currentQuestion < duelState.endQ) {
-      showDuelRoundSummary();
-    } else {
-      showDuelQuestion();
-    }
+    duelState.currentQ++;
+    showDuelQuestion();
   }, 1200);
 }
 
-function showDuelRoundSummary() {
+function showDuelRoundResult(roundIdx) {
   document.getElementById('duel-question-area').style.display = 'none';
   var summary = document.getElementById('duel-round-summary');
   summary.style.display = '';
-  var roundNum = duelState.currentRound + 1;
-  var correct = duelState.roundCorrect || 0;
-  document.getElementById('duel-round-summary-content').innerHTML = '<div style="text-align:center;padding:1rem 0;"><div style="font-size:2rem;margin-bottom:8px;">' + (correct === 3 ? '🎯' : correct >= 2 ? '👍' : '💪') + '</div><div style="font-size:1.1rem;font-weight:700;margin-bottom:4px;">Round ' + roundNum + ' Complete</div><div style="font-size:0.9rem;color:var(--muted);">' + correct + ' of 3 correct</div></div>';
-  duelState.roundCorrect = 0;
-  var isLast = duelState.currentQuestion >= duelState.endQ;
-  document.getElementById('duel-continue-btn').textContent = isLast ? 'See Results' : 'Next Round →';
-  document.getElementById('duel-continue-btn').onclick = isLast ? endDuelTurn : duelNextRound;
+  var correctCount = duelState.answers.filter(function(a) { return a; }).length;
+  var roundNum = roundIdx + 1;
+  document.getElementById('duel-round-summary-content').innerHTML = '<div style="text-align:center;padding:1rem 0;">' +
+    '<div style="font-size:2rem;margin-bottom:8px;">' + (correctCount === 5 ? '🎯' : correctCount >= 3 ? '👍' : '💪') + '</div>' +
+    '<div style="font-size:1.1rem;font-weight:700;margin-bottom:4px;">Round ' + roundNum + ' Complete</div>' +
+    '<div style="font-size:0.9rem;color:var(--muted);">' + correctCount + ' of 5 correct</div></div>';
+  // Store this round's answers for later saving
+  duelState.roundAnswers.push({ roundIdx: roundIdx, answers: duelState.answers.slice() });
+  document.getElementById('duel-continue-btn').textContent = 'Continue';
+  document.getElementById('duel-continue-btn').onclick = function() { duelContinueAfterRound(); };
 }
 
-function duelNextRound() {
-  showDuelQuestion();
+function duelContinueAfterRound() {
+  // Check if there are more pending rounds to play
+  if (duelState.pendingRounds && duelState.pendingRounds.length > 0) {
+    playDuelRound(duelState.pendingRounds.shift());
+    return;
+  }
+  // Check if I need to pick a new round
+  var duel = duelState.duel;
+  var myRole = duelState.myRole;
+  var rounds = duel.rounds || [];
+  var totalRounds = rounds.length;
+  // After playing pending rounds, do I pick a new one?
+  // Odd rounds (idx 0,2,4) by P1; even rounds (idx 1,3) by P2
+  if (totalRounds < 5) {
+    var nextPicker = totalRounds % 2 === 0 ? 'p1' : 'p2';
+    if (nextPicker === myRole) {
+      showDuelUnitPicker(totalRounds);
+      return;
+    }
+  }
+  // Done with my turn - save everything
+  finishDuelTurn();
 }
 
-async function endDuelTurn() {
-  var duel = duelState.currentDuel;
-  if (!duel) { goHome(); return; }
-  var myRole = duel.myRole;
-  var duelRef = classRef.collection('duels').doc(duel.id);
+async function finishDuelTurn() {
+  var duel = duelState.duel;
+  var myRole = duelState.myRole;
+  var myKey = myRole + 'Answers';
+  var myScoreKey = myRole === 'p1' ? 'p1Score' : 'p2Score';
   try {
-    var totalCorrect = duelState.answers.filter(a => a.correct).length;
-    var update = { updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
-    if (myRole === 'p1' && duel.status === 'p1-turn') {
-      update.p1Answers = duelState.answers;
-      update.p1Score = totalCorrect;
-      update.status = 'p2-turn-partial';
-    } else if (myRole === 'p2' && duel.status === 'p2-turn-partial') {
-      update.p2Answers = duelState.answers;
-      update.p2Score = totalCorrect;
-      update.status = 'p1-turn-final';
-    } else if (myRole === 'p1' && duel.status === 'p1-turn-final') {
-      var existingP1 = duel.p1Answers || [];
-      var combined = existingP1.concat(duelState.answers);
-      var totalP1 = combined.filter(a => a.correct).length;
-      update.p1Answers = combined;
-      update.p1Score = totalP1;
+    var duelRef = classRef.collection('duels').doc(duel.id);
+    // Re-read to get latest
+    var freshDoc = await duelRef.get();
+    var freshData = freshDoc.data();
+    var rounds = freshData.rounds ? freshData.rounds.slice() : [];
+    var totalCorrect = 0;
+
+    // Apply all round answers
+    for (var i = 0; i < duelState.roundAnswers.length; i++) {
+      var ra = duelState.roundAnswers[i];
+      if (ra.roundIdx < rounds.length) {
+        rounds[ra.roundIdx][myKey] = ra.answers;
+        totalCorrect += ra.answers.filter(function(a) { return a; }).length;
+      }
+    }
+
+    // Recalculate total score across all rounds
+    var totalScore = 0;
+    for (var i = 0; i < rounds.length; i++) {
+      var ans = rounds[i][myKey];
+      if (ans) totalScore += ans.filter(function(a) { return a; }).length;
+    }
+
+    var update = { rounds: rounds, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+    update[myScoreKey] = totalScore;
+
+    // Check if duel is complete
+    var p1Done = 0, p2Done = 0;
+    for (var i = 0; i < rounds.length; i++) {
+      if (rounds[i].p1Answers) p1Done++;
+      if (rounds[i].p2Answers) p2Done++;
+    }
+    if (rounds.length === 5 && p1Done === 5 && p2Done === 5) {
       update.status = 'complete';
-      var p2Score = duel.p2Score || 0;
-      update.winner = totalP1 > p2Score ? 'p1' : totalP1 < p2Score ? 'p2' : 'draw';
-      var iWon = update.winner === 'p1';
-      var isDraw = update.winner === 'draw';
+      var p1Total = 0, p2Total = 0;
+      for (var i = 0; i < rounds.length; i++) {
+        if (rounds[i].p1Answers) p1Total += rounds[i].p1Answers.filter(function(a) { return a; }).length;
+        if (rounds[i].p2Answers) p2Total += rounds[i].p2Answers.filter(function(a) { return a; }).length;
+      }
+      update.p1Score = p1Total;
+      update.p2Score = p2Total;
+      update.winner = p1Total > p2Total ? 'p1' : p1Total < p2Total ? 'p2' : 'draw';
+      // XP for both players' perspective (only award to me)
+      var myTotal = myRole === 'p1' ? p1Total : p2Total;
+      var opTotal = myRole === 'p1' ? p2Total : p1Total;
+      var iWon = myTotal > opTotal;
+      var isDraw = myTotal === opTotal;
       var xpEarned = iWon ? 40 : isDraw ? 20 : 10;
-      xpEarned += totalP1 * 3;
+      xpEarned += myTotal * 3;
       state.xp = (state.xp || 0) + xpEarned;
       await studentsRef.doc(state.studentId).update({ xp: state.xp });
     }
+
     await duelRef.update(update);
-    showBattleMessage('Turn Complete!', 'You got ' + totalCorrect + ' correct. ' + (update.status === 'complete' ? 'Duel finished!' : 'Waiting for opponent...'));
+    showBattleMessage('Turn Complete!', 'You got ' + totalCorrect + ' correct.' + (update.status === 'complete' ? ' Duel finished!' : ' Waiting for opponent...'));
     openDuelHub();
-  } catch (e) { console.error('End duel turn error:', e); goHome(); }
+  } catch (e) { console.error('Finish duel turn error:', e); goHome(); }
 }
 
-function viewDuelResult(duelId) {
-  classRef.collection('duels').doc(duelId).get().then(function(doc) {
-    if (!doc.exists) return;
-    var d = doc.data();
-    var myRole = d.p1 === state.studentId ? 'p1' : 'p2';
-    var myScore = myRole === 'p1' ? d.p1Score : d.p2Score;
-    var opScore = myRole === 'p1' ? d.p2Score : d.p1Score;
-    var opName = myRole === 'p1' ? d.p2Name : d.p1Name;
-    var iWon = d.winner === myRole;
-    var isDraw = d.winner === 'draw';
-    showBattleMessage(iWon ? '🏆 Victory!' : isDraw ? '🤝 Draw' : '💪 Defeat', 'vs ' + opName + ': ' + myScore + ' - ' + opScore);
+// --- Question Generation ---
+function generateDuelQuestions(unitKey, count) {
+  var words = vocabData[unitKey] ? vocabData[unitKey].slice() : [];
+  shuffle(words);
+  var picked = words.slice(0, Math.min(count, words.length));
+  return picked.map(function(word) {
+    var correct = word.w.replace(/^to\s+/, '');
+    var options;
+    if (word.mc && word.mc.length >= 3) {
+      options = [correct].concat(word.mc.slice(0, 3));
+    } else {
+      var all = [];
+      for (var k in vocabData) { for (var j = 0; j < vocabData[k].length; j++) all.push(vocabData[k][j].w.replace(/^to\s+/, '')); }
+      var dist = all.filter(function(w) { return w !== correct; });
+      shuffle(dist);
+      options = [correct].concat(dist.slice(0, 3));
+    }
+    shuffle(options);
+    return { german: word.g, english: word.w, definition: word.d, options: options, correctIdx: options.indexOf(correct) };
   });
 }
 
+// --- Notifications ---
 function getDuelNotificationCount() {
   if (!classRef || !state.studentId) return 0;
   return state._pendingDuelCount || 0;
@@ -6032,13 +6251,20 @@ async function checkPendingDuels() {
   if (!classRef || !state.studentId) return;
   try {
     var mySlug = state.studentId;
+    // Load all active duels to check whose turn
+    var p1Snap = await classRef.collection('duels').where('p1', '==', mySlug).where('status', '==', 'active').get();
+    var p2Snap = await classRef.collection('duels').where('p2', '==', mySlug).where('status', '==', 'active').get();
     var count = 0;
-    var snap1 = await classRef.collection('duels').where('p1', '==', mySlug).where('status', '==', 'p1-turn').get();
-    count += snap1.size;
-    var snap2 = await classRef.collection('duels').where('p2', '==', mySlug).where('status', '==', 'p2-turn-partial').get();
-    count += snap2.size;
-    var snap3 = await classRef.collection('duels').where('p1', '==', mySlug).where('status', '==', 'p1-turn-final').get();
-    count += snap3.size;
+    p1Snap.forEach(function(doc) {
+      var d = doc.data();
+      var turn = getWhoseTurn(d);
+      if (turn === 'p1') count++;
+    });
+    p2Snap.forEach(function(doc) {
+      var d = doc.data();
+      var turn = getWhoseTurn(d);
+      if (turn === 'p2') count++;
+    });
     state._pendingDuelCount = count;
     var battleBtn = document.getElementById('btn-battle');
     if (battleBtn) {
@@ -6080,6 +6306,7 @@ async function cleanupStaleBattleData() {
     if (Object.keys(ru).length > 0) await roomsRef.update(ru);
   } catch(e) {}
 }
+
 </script>
 
 <div class="badge-popup" id="badge-popup">
@@ -6124,25 +6351,31 @@ async function cleanupStaleBattleData() {
   <div class="card">
     <button class="btn btn-primary btn-block" onclick="openDuelChallenge()">⚔️ Challenge Someone</button>
   </div>
-  <div id="duel-your-turn" class="card" style="display:none;">
-    <h3>🔴 Your Turn</h3>
-    <div id="duel-your-turn-list"></div>
+  <div id="duel-list"></div>
+</div>
+
+<!-- DUEL SCOREBOARD SCREEN -->
+<div id="duel-scoreboard-screen" class="screen">
+  <div class="progress-nav">
+    <button class="btn btn-secondary" onclick="openDuelHub()">← Back</button>
   </div>
-  <div id="duel-waiting" class="card" style="display:none;">
-    <h3>⏳ Waiting for Opponent</h3>
-    <div id="duel-waiting-list"></div>
+  <div id="duel-scoreboard"></div>
+</div>
+
+<!-- DUEL UNIT PICKER SCREEN -->
+<div id="duel-pick-screen" class="screen">
+  <div style="text-align:center;padding:1rem 0;">
+    <h2>Pick a Unit</h2>
+    <p style="color:var(--muted);font-size:0.85rem;">Choose the topic for Round <span id="duel-pick-round">1</span></p>
   </div>
-  <div id="duel-completed" class="card" style="display:none;">
-    <h3>✅ Completed</h3>
-    <div id="duel-completed-list"></div>
-  </div>
+  <div class="source-grid" id="duel-unit-grid"></div>
 </div>
 
 <!-- DUEL PLAY SCREEN -->
 <div id="duel-play-screen" class="screen">
   <div class="duel-play-header">
     <div class="duel-round-label" id="duel-round-label">Round 1 · Unit 3</div>
-    <div class="duel-question-num" id="duel-question-num">Question 1 of 3</div>
+    <div class="duel-question-num" id="duel-question-num">Question 1 of 5</div>
   </div>
   <div class="duel-timer-bar" id="duel-timer-bar">
     <div class="duel-timer-fill" id="duel-timer-fill"></div>
@@ -6153,9 +6386,10 @@ async function cleanupStaleBattleData() {
   </div>
   <div id="duel-round-summary" style="display:none;" class="card">
     <div id="duel-round-summary-content"></div>
-    <button class="btn btn-primary btn-block" id="duel-continue-btn" onclick="duelNextRound()">Next Round →</button>
+    <button class="btn btn-primary btn-block" id="duel-continue-btn" onclick="duelContinueAfterRound()">Continue</button>
   </div>
 </div>
+
 
 <div id="avatar-picker-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10000;overflow-y:auto;padding:20px;" onclick="if(event.target===this)closeAvatarPicker()">
   <div id="avatar-picker-modal" style="max-width:400px;margin:40px auto;border-radius:16px;padding:24px;position:relative;">
