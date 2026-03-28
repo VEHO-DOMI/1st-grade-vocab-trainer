@@ -1283,6 +1283,61 @@ body.playing .header-container { display: none; }
   border: 3px solid var(--correct);
   background: rgba(22,163,74,0.1);
 }
+/* Duel CSS */
+.duel-play-header { text-align: center; padding: 1rem 0; }
+.duel-round-label { font-size: 1.1rem; font-weight: 700; }
+.duel-question-num { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+.duel-timer-bar { height: 4px; background: var(--card-border); border-radius: 2px; overflow: hidden; margin-bottom: 1rem; }
+.duel-timer-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.1s linear; width: 100%; }
+.duel-prompt { font-size: 1.2rem; font-weight: 600; text-align: center; padding: 1.5rem; margin-bottom: 1rem; }
+.duel-options { display: flex; flex-direction: column; gap: 0.6rem; }
+.duel-option {
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--card-border);
+  background: var(--card);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  color: var(--text);
+  transition: all 0.15s;
+}
+.duel-option:active { transform: scale(0.98); }
+.duel-option.correct { border-color: var(--correct); background: rgba(22,163,74,0.12); }
+.duel-option.wrong { border-color: var(--wrong); background: rgba(220,38,38,0.12); }
+.duel-option.disabled { pointer-events: none; opacity: 0.6; }
+.duel-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.8rem 0; border-bottom: 1px solid var(--card-border);
+  cursor: pointer;
+}
+.duel-item:last-child { border-bottom: none; }
+.duel-item-info { flex: 1; }
+.duel-item-name { font-weight: 600; font-size: 0.95rem; }
+.duel-item-status { font-size: 0.75rem; color: var(--muted); }
+.duel-item-score { font-weight: 700; font-size: 0.9rem; }
+.duel-badge-turn {
+  display: inline-block; padding: 2px 8px; border-radius: 8px;
+  font-size: 0.7rem; font-weight: 700; color: white;
+  background: var(--accent); margin-left: 6px;
+}
+/* Battle modal classes */
+.battle-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7); z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+.battle-modal {
+  max-width: 380px; width: 90%; border-radius: 16px; padding: 24px; text-align: center;
+}
+.battle-modal-sm { max-width: 320px; width: 85%; }
+.battle-modal-close {
+  margin-top: 4px; padding: 8px 20px; border-radius: 10px;
+  font-size: 13px; cursor: pointer; background: transparent;
+  border: 1px solid var(--card-border,rgba(255,255,255,0.1)); color: inherit;
+}
 </style>
 </head>
 <body>
@@ -3783,6 +3838,7 @@ function showHomeScreen() {
   setupPresence();
   const battleBtn = document.getElementById('btn-battle');
   if (battleBtn) battleBtn.style.display = '';
+  checkPendingDuels();
   setTimeout(cleanupStaleBattleData, 5000);
 }
 
@@ -5278,7 +5334,7 @@ function openBattleLobby() {
 function showBattleLobby(players) {
   const overlay = document.createElement('div');
   overlay.id = 'battle-lobby-overlay';
-  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s ease;';
+  overlay.className = 'battle-overlay';
   overlay.onclick = function(e) { if (e.target === this) this.remove(); };
   let listHtml = '';
   players.forEach(p => {
@@ -5289,9 +5345,8 @@ function showBattleLobby(players) {
     '</div>';
   });
   const modal = document.createElement('div');
-  modal.className = 'battle-modal-bg';
-  modal.style.cssText = 'max-width:380px;width:90%;border-radius:16px;padding:24px;';
-  modal.innerHTML = '<div style="text-align:center;margin-bottom:16px;"><div style="font-size:18px;font-weight:600;">\u2694\uFE0F Choose your opponent</div><div style="font-size:13px;opacity:0.5;margin-top:4px;">' + players.length + ' classmate' + (players.length > 1 ? 's' : '') + ' online</div></div><div>' + listHtml + '</div><div style="text-align:center;margin-top:16px;"><button onclick="document.getElementById(\'battle-lobby-overlay\').remove()" style="padding:8px 20px;border-radius:10px;font-size:13px;cursor:pointer;background:var(--card,rgba(255,255,255,0.05));border:1px solid var(--card-border,rgba(255,255,255,0.1));color:inherit;">Cancel</button></div>';
+  modal.className = 'battle-modal-bg battle-modal';
+  modal.innerHTML = '<div style="text-align:center;margin-bottom:16px;"><div style="font-size:18px;font-weight:600;">\u2694\uFE0F Choose your opponent</div><div style="font-size:13px;opacity:0.5;margin-top:4px;">' + players.length + ' classmate' + (players.length > 1 ? 's' : '') + ' online</div></div><div>' + listHtml + '</div><div style="border-top:1px solid var(--card-border,rgba(255,255,255,0.1));margin-top:12px;padding-top:12px;"><button onclick="document.getElementById(\'battle-lobby-overlay\').remove();openDuelHub();" style="width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--accent-glow,rgba(59,130,246,0.15));border:1px solid var(--accent,#3b82f6);color:var(--accent,#3b82f6);">📋 Quiz Duels (async)</button></div><div style="text-align:center;margin-top:12px;"><button onclick="document.getElementById(\'battle-lobby-overlay\').remove()" class="battle-modal-close">Cancel</button></div>';
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
 }
@@ -5299,10 +5354,10 @@ function showBattleLobby(players) {
 function showBattleModeSelect(slug, name) {
   const overlay = document.createElement('div');
   overlay.id = 'battle-mode-overlay';
-  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s ease;';
+  overlay.className = 'battle-overlay';
   overlay.onclick = function(e) { if (e.target === this) this.remove(); };
   const modal = document.createElement('div');
-  modal.className = 'battle-modal-bg';
+  modal.className = 'battle-modal-bg battle-modal';
   modal.style.cssText = 'max-width:340px;width:90%;border-radius:16px;padding:24px;text-align:center;';
   const modes = [
     { id: 'translation', icon: '\uD83C\uDF0D', name: 'Translation Duel', desc: 'German \u2192 English' },
@@ -5315,7 +5370,7 @@ function showBattleModeSelect(slug, name) {
       '<div><div style="font-weight:700;font-size:15px;">' + m.name + '</div><div style="font-size:12px;opacity:0.5;">' + m.desc + '</div></div>' +
     '</button>'
   ).join('');
-  modal.innerHTML = '<div style="font-size:18px;font-weight:700;margin-bottom:4px;">\u2694\uFE0F Challenge ' + escapeHtml(name) + '</div><div style="font-size:13px;opacity:0.5;margin-bottom:16px;">Choose a battle mode</div>' + btnsHtml + '<button onclick="document.getElementById(\'battle-mode-overlay\').remove()" style="margin-top:4px;padding:8px 20px;border-radius:10px;font-size:13px;cursor:pointer;background:transparent;border:1px solid rgba(0,0,0,0.1);color:inherit;">Cancel</button>';
+  modal.innerHTML = '<div style="font-size:18px;font-weight:700;margin-bottom:4px;">\u2694\uFE0F Challenge ' + escapeHtml(name) + '</div><div style="font-size:13px;opacity:0.5;margin-bottom:16px;">Choose a battle mode</div>' + btnsHtml + '<button onclick="document.getElementById(\'battle-mode-overlay\').remove()" class="battle-modal-close">Cancel</button>';
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
 }
@@ -5325,7 +5380,7 @@ async function sendBattleInvite(opponentSlug, opponentName, mode) {
   const mySlug = state.studentName.toLowerCase().replace(/\s+/g, '-');
   const roomRef = roomsRef.push();
   const roomId = roomRef.key;
-  const battleWords = pickBattleWords(10);
+  const battleWords = pickBattleWords(5);
   await roomRef.set({
     players: { p1: mySlug, p2: opponentSlug },
     playerNames: { p1: state.studentName, p2: opponentName },
@@ -5353,10 +5408,9 @@ async function sendBattleInvite(opponentSlug, opponentName, mode) {
 function showInviteWaiting(opponentName, inviteKey) {
   const overlay = document.createElement('div');
   overlay.id = 'invite-waiting-overlay';
-  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;';
+  overlay.className = 'battle-overlay';
   const card = document.createElement('div');
-  card.className = 'battle-modal-bg';
-  card.style.cssText = 'max-width:320px;width:85%;border-radius:16px;padding:28px;text-align:center;';
+  card.className = 'battle-modal-bg battle-modal battle-modal-sm';
   card.innerHTML = '<div style="font-size:36px;margin-bottom:12px;animation:comboPulse 1.5s ease-in-out infinite;">\u2694\uFE0F</div><div style="font-size:16px;font-weight:600;margin-bottom:4px;">Waiting for ' + escapeHtml(opponentName) + '...</div><div style="font-size:13px;opacity:0.5;margin-bottom:20px;">They have 30 seconds to accept</div><button onclick="cancelInvite(\'' + inviteKey + '\')" style="padding:8px 20px;border-radius:10px;font-size:13px;cursor:pointer;background:var(--card,rgba(255,255,255,0.05));border:1px solid var(--card-border,rgba(255,255,255,0.1));color:inherit;">Cancel</button>';
   overlay.appendChild(card);
   document.body.appendChild(overlay);
@@ -5369,10 +5423,10 @@ function showIncomingInvite(inviteKey, invite) {
   window._pendingInvite = { key: inviteKey, data: invite };
   const overlay = document.createElement('div');
   overlay.id = 'invite-popup-overlay';
-  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10001;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s ease;';
+  overlay.className = 'battle-overlay'; overlay.style.zIndex = '10001';
   const card = document.createElement('div');
-  card.className = 'battle-modal-bg';
-  card.style.cssText = 'max-width:320px;width:85%;border-radius:16px;padding:28px;text-align:center;animation:popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275);';
+  card.className = 'battle-modal-bg battle-modal battle-modal-sm';
+  card.style.animation = 'popIn 0.3s cubic-bezier(0.175,0.885,0.32,1.275)';
   const modeLabels = {translation:'\uD83C\uDF0D Translation Duel',definition:'\uD83D\uDCD6 Definition Duel',context:'\uD83D\uDCDD Context Clash'};
   const modeLabel = modeLabels[invite.mode] || modeLabels.translation;
   card.innerHTML = '<div style="font-size:36px;margin-bottom:8px;">\u2694\uFE0F</div><div style="font-size:18px;font-weight:700;margin-bottom:4px;">' + escapeHtml(invite.fromName) + '</div><div style="font-size:14px;opacity:0.6;margin-bottom:4px;">challenges you to a battle!</div><div style="font-size:13px;padding:6px 14px;border-radius:8px;background:rgba(0,0,0,0.07);display:inline-block;margin-bottom:16px;">' + modeLabel + '</div><div style="display:flex;gap:10px;justify-content:center;"><button onclick="declineInvite(window._pendingInvite.key)" style="flex:1;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:rgba(220,60,60,0.15);color:#f87171;border:1px solid rgba(220,60,60,0.3);">Decline</button><button onclick="acceptInvite(window._pendingInvite.key,window._pendingInvite.data)" style="flex:1;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:rgba(80,200,120,0.15);color:#4ade80;border:1px solid rgba(80,200,120,0.3);">Accept!</button></div>';
@@ -5462,7 +5516,7 @@ function renderBattleCountdown(value) {
 
 function renderBattleRound(data) {
   const round = data.round;
-  if (!round || round < 1 || round > 10) return;
+  if (!round || round < 1 || round > 5) return;
   const word = data.words[round - 1];
   if (!word) return;
   if (state.battleRound === round) return;
@@ -5474,7 +5528,7 @@ function renderBattleRound(data) {
   const inputEl = document.getElementById('battle-input');
   const feedbackEl = document.getElementById('battle-feedback');
   const roundEl = document.getElementById('battle-round-num');
-  if (roundEl) roundEl.textContent = 'Round ' + round + ' of 10';
+  if (roundEl) roundEl.textContent = 'Round ' + round + ' of 5';
   if (feedbackEl) { feedbackEl.textContent = ''; feedbackEl.style.color = ''; }
   const bMode = data.mode || 'translation';
   const modeLabelEl = document.getElementById('battle-mode-label');
@@ -5531,15 +5585,15 @@ async function checkRoundComplete(roomId, round) {
     if (roundWinner === 'p2') scores.p2++;
     await roomRef.update({ status: 'round-result', ['answers/' + round + '/winner']: roundWinner, scores: scores });
     setTimeout(async () => {
-      if (round >= 10) {
+      if (round >= 5) {
         let winner = 'draw';
         if (scores.p1 > scores.p2) winner = 'p1';
         if (scores.p2 > scores.p1) winner = 'p2';
         await roomRef.update({ status: 'done', winner: winner });
       } else {
-        const remaining = 10 - round;
+        const remaining = 5 - round;
         const lead = Math.abs(scores.p1 - scores.p2);
-        if (lead > remaining) {
+        if (lead > remaining || (round >= 3 && lead >= 3)) {
           await roomRef.update({ status: 'done', winner: scores.p1 > scores.p2 ? 'p1' : 'p2' });
         } else {
           await roomRef.update({ status: 'active', round: round + 1 });
@@ -5605,7 +5659,7 @@ function renderBattleResults(data) {
   const isDraw = data.winner === 'draw';
   const opName = data.playerNames[opRole] || 'Opponent';
   let xpEarned = iWon ? 50 : isDraw ? 25 : 15;
-  xpEarned += myScore * 5;
+  xpEarned += myScore * 10;
   state.xp = (state.xp || 0) + xpEarned;
   const area = document.getElementById('battle-area');
   if (area) area.innerHTML = '<div style="text-align:center;padding:20px;"><div style="font-size:48px;margin-bottom:12px;">' + (iWon ? '\uD83C\uDFC6' : isDraw ? '\uD83E\uDD1D' : '\uD83D\uDCAA') + '</div><div style="font-size:24px;font-weight:700;margin-bottom:4px;">' + (iWon ? 'Victory!' : isDraw ? 'Draw!' : escapeHtml(opName) + ' wins!') + '</div><div style="font-size:16px;opacity:0.7;margin-bottom:16px;">' + myScore + ' \u2013 ' + opScore + '</div><div style="font-size:14px;opacity:0.6;margin-bottom:24px;">+' + xpEarned + ' XP earned</div><button onclick="leaveBattle()" class="btn btn-primary" style="padding:10px 28px;">Back to Home</button></div>';
@@ -5652,14 +5706,332 @@ function leaveBattle() {
   showHomeScreen()
 }
 
+// ===== ASYNC QUIZ DUEL =====
+let duelState = { currentDuel: null, currentRound: 0, currentQuestion: 0, answers: [], timer: null, timeLeft: 15 };
+
+async function openDuelHub() {
+  showScreen('duel-hub-screen');
+  await loadDuels();
+}
+
+async function loadDuels() {
+  if (!classRef || !state.studentId) return;
+  const mySlug = state.studentId;
+  const duelsRef = classRef.collection('duels');
+  try {
+    const p1Snap = await duelsRef.where('p1', '==', mySlug).orderBy('updatedAt', 'desc').limit(20).get();
+    const p2Snap = await duelsRef.where('p2', '==', mySlug).orderBy('updatedAt', 'desc').limit(20).get();
+    const duels = [];
+    const seen = new Set();
+    p1Snap.forEach(doc => { if (!seen.has(doc.id)) { seen.add(doc.id); duels.push({ id: doc.id, ...doc.data(), myRole: 'p1' }); } });
+    p2Snap.forEach(doc => { if (!seen.has(doc.id)) { seen.add(doc.id); duels.push({ id: doc.id, ...doc.data(), myRole: 'p2' }); } });
+    duels.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
+    renderDuelHub(duels);
+  } catch (e) { console.error('Load duels error:', e); }
+}
+
+function renderDuelHub(duels) {
+  const yourTurn = [], waiting = [], completed = [];
+  const mySlug = state.studentId;
+  for (const d of duels) {
+    if (d.status === 'complete') { completed.push(d); continue; }
+    const isMyTurn = (d.status === 'p1-turn' && d.myRole === 'p1') ||
+                     (d.status === 'p2-turn-partial' && d.myRole === 'p2') ||
+                     (d.status === 'p1-turn-final' && d.myRole === 'p1');
+    if (isMyTurn) yourTurn.push(d); else waiting.push(d);
+  }
+  function renderList(items, containerId, showPlay) {
+    const el = document.getElementById(containerId);
+    const list = document.getElementById(containerId.replace('-card','') + '-list') || el.querySelector('div:last-child');
+    if (!el || !list) return;
+    if (items.length === 0) { el.style.display = 'none'; return; }
+    el.style.display = '';
+    list.innerHTML = items.map(d => {
+      const opName = d.myRole === 'p1' ? d.p2Name : d.p1Name;
+      const myScore = d.myRole === 'p1' ? (d.p1Score || 0) : (d.p2Score || 0);
+      const opScore = d.myRole === 'p1' ? (d.p2Score || 0) : (d.p1Score || 0);
+      const statusText = d.status === 'complete' ? (myScore > opScore ? '🏆 Won' : myScore < opScore ? '💪 Lost' : '🤝 Draw') + ' ' + myScore + '-' + opScore : myScore + '-' + opScore;
+      return '<div class="duel-item" onclick="' + (showPlay ? 'playDuel(\'' + d.id + '\')' : d.status === 'complete' ? 'viewDuelResult(\'' + d.id + '\')' : '') + '"><div class="duel-item-info"><div class="duel-item-name">vs ' + escapeHtml(opName) + (showPlay ? '<span class="duel-badge-turn">YOUR TURN</span>' : '') + '</div><div class="duel-item-status">' + statusText + '</div></div></div>';
+    }).join('');
+  }
+  renderList(yourTurn, 'duel-your-turn', true);
+  renderList(waiting, 'duel-waiting', false);
+  renderList(completed, 'duel-completed', false);
+}
+
+function openDuelChallenge() {
+  if (!presenceRef) { showBattleMessage('Not connected', 'Battle system not available.'); return; }
+  presenceRef.once('value', snap => {
+    const players = snap.val() || {};
+    const mySlug = state.studentId;
+    const online = Object.entries(players).filter(([k,v]) => k !== mySlug && v.online && Date.now() - (v.lastSeen || 0) < 120000);
+    studentsRef.get().then(studSnap => {
+      const allStudents = [];
+      studSnap.forEach(doc => { if (doc.id !== mySlug) allStudents.push({ slug: doc.id, name: doc.data().name }); });
+      const onlineSlugs = new Set(online.map(([k]) => k));
+      const overlay = document.createElement('div');
+      overlay.id = 'duel-challenge-overlay';
+      overlay.className = 'practice-setup-overlay';
+      let listHtml = '<div style="padding:0.5rem 0;">';
+      if (allStudents.length === 0) { listHtml += '<div style="text-align:center;padding:2rem;color:var(--muted);">No classmates found</div>'; }
+      for (const s of allStudents) {
+        const isOnline = onlineSlugs.has(s.slug);
+        listHtml += '<div onclick="createDuel(\'' + s.slug + '\',\'' + escapeHtml(s.name).replace(/'/g, "\\'") + '\')" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background=\'var(--card-hover)\'" onmouseout="this.style.background=\'transparent\'">' +
+          '<div style="width:8px;height:8px;border-radius:50%;background:' + (isOnline ? '#4ade80' : '#666') + ';flex-shrink:0;"></div>' +
+          '<div style="flex:1;font-weight:500;">' + escapeHtml(s.name) + '</div>' +
+          '<div style="font-size:0.75rem;color:var(--muted);">' + (isOnline ? 'Online' : 'Offline') + '</div></div>';
+      }
+      listHtml += '</div>';
+      overlay.innerHTML = '<div class="setup-step"><div class="setup-header"><button class="setup-close" onclick="document.getElementById(\'duel-challenge-overlay\').remove()">✕</button><h2>Challenge to Duel</h2><div class="setup-step-indicator">Pick a classmate — they can play when ready</div></div><div class="setup-body">' + listHtml + '</div></div>';
+      document.body.appendChild(overlay);
+    });
+  });
+}
+
+async function createDuel(opSlug, opName) {
+  const overlay = document.getElementById('duel-challenge-overlay');
+  if (overlay) overlay.remove();
+  const mySlug = state.studentId;
+  const unitKeys = Object.keys(vocabData);
+  shuffle(unitKeys);
+  const categories = unitKeys.slice(0, Math.min(6, unitKeys.length));
+  while (categories.length < 6 && unitKeys.length > 0) { categories.push(unitKeys[categories.length % unitKeys.length]); }
+  const questions = [];
+  for (let r = 0; r < 6; r++) {
+    const cat = categories[r];
+    const words = [...vocabData[cat]];
+    shuffle(words);
+    const picked = words.slice(0, Math.min(3, words.length));
+    for (const word of picked) {
+      const correct = word.w.replace(/^to\s+/, '');
+      const allWords = [];
+      for (const entries of Object.values(vocabData)) { for (const e of entries) allWords.push(e.w.replace(/^to\s+/, '')); }
+      const distractors = allWords.filter(w => w !== correct);
+      shuffle(distractors);
+      const options = [correct, ...distractors.slice(0, 3)];
+      shuffle(options);
+      questions.push({ german: word.g, english: word.w, definition: word.d, options: options, correctIdx: options.indexOf(correct), unitKey: cat });
+    }
+  }
+  while (questions.length < 18) {
+    const allW = [];
+    for (const [k,v] of Object.entries(vocabData)) { for (const w of v) allW.push({...w, unitKey: k}); }
+    shuffle(allW);
+    const word = allW[0];
+    const correct = word.w.replace(/^to\s+/, '');
+    const opts = [correct]; const allE = allW.map(w => w.w.replace(/^to\s+/, '')).filter(w => w !== correct); shuffle(allE);
+    opts.push(...allE.slice(0,3)); shuffle(opts);
+    questions.push({ german: word.g, english: word.w, definition: word.d, options: opts, correctIdx: opts.indexOf(correct), unitKey: word.unitKey });
+  }
+  try {
+    await classRef.collection('duels').add({
+      p1: mySlug, p2: opSlug,
+      p1Name: state.studentName, p2Name: opName,
+      status: 'p1-turn',
+      categories: categories,
+      questions: questions,
+      p1Answers: [], p2Answers: [],
+      p1Score: 0, p2Score: 0,
+      winner: null,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    showBattleMessage('Duel Created!', 'Challenge sent to ' + opName + '. Play your first 3 rounds now!');
+    await loadDuels();
+  } catch (e) { console.error('Create duel error:', e); showBattleMessage('Error', 'Could not create duel.'); }
+}
+
+async function playDuel(duelId) {
+  try {
+    const doc = await classRef.collection('duels').doc(duelId).get();
+    if (!doc.exists) return;
+    const duel = { id: doc.id, ...doc.data() };
+    const myRole = duel.p1 === state.studentId ? 'p1' : 'p2';
+    duelState.currentDuel = { ...duel, myRole: myRole };
+    let startQ, endQ;
+    if (duel.status === 'p1-turn' && myRole === 'p1') { startQ = 0; endQ = 9; }
+    else if (duel.status === 'p2-turn-partial' && myRole === 'p2') { startQ = 0; endQ = 18; }
+    else if (duel.status === 'p1-turn-final' && myRole === 'p1') { startQ = 9; endQ = 18; }
+    else return;
+    duelState.startQ = startQ;
+    duelState.endQ = endQ;
+    duelState.currentQuestion = startQ;
+    duelState.currentRound = Math.floor(startQ / 3);
+    duelState.answers = [];
+    duelState.roundCorrect = 0;
+    showScreen('duel-play-screen');
+    showDuelQuestion();
+  } catch (e) { console.error('Play duel error:', e); }
+}
+
+function showDuelQuestion() {
+  const duel = duelState.currentDuel;
+  if (!duel) return;
+  const qIdx = duelState.currentQuestion;
+  if (qIdx >= duelState.endQ || qIdx >= duel.questions.length) {
+    endDuelTurn();
+    return;
+  }
+  const roundIdx = Math.floor(qIdx / 3);
+  const qInRound = qIdx % 3;
+  duelState.currentRound = roundIdx;
+  const q = duel.questions[qIdx];
+  const cat = duel.categories[roundIdx] || q.unitKey;
+  document.getElementById('duel-round-label').textContent = 'Round ' + (roundIdx + 1) + ' · ' + cat;
+  document.getElementById('duel-question-num').textContent = 'Question ' + (qInRound + 1) + ' of 3';
+  document.getElementById('duel-prompt').innerHTML = '<div style="font-size:0.8rem;opacity:0.5;margin-bottom:8px;">Translate to English</div><div style="font-size:1.5rem;font-weight:700;">' + escapeHtml(q.german) + '</div>';
+  const optionsEl = document.getElementById('duel-options');
+  optionsEl.innerHTML = q.options.map((opt, i) => '<button class="duel-option" data-idx="' + i + '" onclick="duelSelectAnswer(this,' + i + ',' + q.correctIdx + ')">' + escapeHtml(opt) + '</button>').join('');
+  document.getElementById('duel-question-area').style.display = '';
+  document.getElementById('duel-round-summary').style.display = 'none';
+  duelState.timeLeft = 15;
+  clearInterval(duelState.timer);
+  var fillEl = document.getElementById('duel-timer-fill');
+  if (fillEl) fillEl.style.width = '100%';
+  duelState.timer = setInterval(function() {
+    duelState.timeLeft -= 0.1;
+    if (fillEl) fillEl.style.width = Math.max(0, (duelState.timeLeft / 15) * 100) + '%';
+    if (duelState.timeLeft <= 0) {
+      clearInterval(duelState.timer);
+      duelSelectAnswer(null, -1, q.correctIdx);
+    }
+  }, 100);
+}
+
+function duelSelectAnswer(btn, selectedIdx, correctIdx) {
+  clearInterval(duelState.timer);
+  const correct = selectedIdx === correctIdx;
+  const timeMs = Math.round((15 - duelState.timeLeft) * 1000);
+  duelState.answers.push({ correct: correct, timeMs: timeMs });
+  if (correct) duelState.roundCorrect = (duelState.roundCorrect || 0) + 1;
+  var options = document.querySelectorAll('.duel-option');
+  options.forEach(function(o) {
+    o.classList.add('disabled');
+    if (parseInt(o.dataset.idx) === correctIdx) o.classList.add('correct');
+    if (parseInt(o.dataset.idx) === selectedIdx && selectedIdx !== correctIdx) o.classList.add('wrong');
+  });
+  setTimeout(function() {
+    duelState.currentQuestion++;
+    var qInRound = duelState.currentQuestion % 3;
+    if (qInRound === 0 && duelState.currentQuestion < duelState.endQ) {
+      showDuelRoundSummary();
+    } else {
+      showDuelQuestion();
+    }
+  }, 1200);
+}
+
+function showDuelRoundSummary() {
+  document.getElementById('duel-question-area').style.display = 'none';
+  var summary = document.getElementById('duel-round-summary');
+  summary.style.display = '';
+  var roundNum = duelState.currentRound + 1;
+  var correct = duelState.roundCorrect || 0;
+  document.getElementById('duel-round-summary-content').innerHTML = '<div style="text-align:center;padding:1rem 0;"><div style="font-size:2rem;margin-bottom:8px;">' + (correct === 3 ? '🎯' : correct >= 2 ? '👍' : '💪') + '</div><div style="font-size:1.1rem;font-weight:700;margin-bottom:4px;">Round ' + roundNum + ' Complete</div><div style="font-size:0.9rem;color:var(--muted);">' + correct + ' of 3 correct</div></div>';
+  duelState.roundCorrect = 0;
+  var isLast = duelState.currentQuestion >= duelState.endQ;
+  document.getElementById('duel-continue-btn').textContent = isLast ? 'See Results' : 'Next Round →';
+  document.getElementById('duel-continue-btn').onclick = isLast ? endDuelTurn : duelNextRound;
+}
+
+function duelNextRound() {
+  showDuelQuestion();
+}
+
+async function endDuelTurn() {
+  var duel = duelState.currentDuel;
+  if (!duel) { goHome(); return; }
+  var myRole = duel.myRole;
+  var duelRef = classRef.collection('duels').doc(duel.id);
+  try {
+    var totalCorrect = duelState.answers.filter(a => a.correct).length;
+    var update = { updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+    if (myRole === 'p1' && duel.status === 'p1-turn') {
+      update.p1Answers = duelState.answers;
+      update.p1Score = totalCorrect;
+      update.status = 'p2-turn-partial';
+    } else if (myRole === 'p2' && duel.status === 'p2-turn-partial') {
+      update.p2Answers = duelState.answers;
+      update.p2Score = totalCorrect;
+      update.status = 'p1-turn-final';
+    } else if (myRole === 'p1' && duel.status === 'p1-turn-final') {
+      var existingP1 = duel.p1Answers || [];
+      var combined = existingP1.concat(duelState.answers);
+      var totalP1 = combined.filter(a => a.correct).length;
+      update.p1Answers = combined;
+      update.p1Score = totalP1;
+      update.status = 'complete';
+      var p2Score = duel.p2Score || 0;
+      update.winner = totalP1 > p2Score ? 'p1' : totalP1 < p2Score ? 'p2' : 'draw';
+      var iWon = update.winner === 'p1';
+      var isDraw = update.winner === 'draw';
+      var xpEarned = iWon ? 40 : isDraw ? 20 : 10;
+      xpEarned += totalP1 * 3;
+      state.xp = (state.xp || 0) + xpEarned;
+      await studentsRef.doc(state.studentId).update({ xp: state.xp });
+    }
+    await duelRef.update(update);
+    showBattleMessage('Turn Complete!', 'You got ' + totalCorrect + ' correct. ' + (update.status === 'complete' ? 'Duel finished!' : 'Waiting for opponent...'));
+    openDuelHub();
+  } catch (e) { console.error('End duel turn error:', e); goHome(); }
+}
+
+function viewDuelResult(duelId) {
+  classRef.collection('duels').doc(duelId).get().then(function(doc) {
+    if (!doc.exists) return;
+    var d = doc.data();
+    var myRole = d.p1 === state.studentId ? 'p1' : 'p2';
+    var myScore = myRole === 'p1' ? d.p1Score : d.p2Score;
+    var opScore = myRole === 'p1' ? d.p2Score : d.p1Score;
+    var opName = myRole === 'p1' ? d.p2Name : d.p1Name;
+    var iWon = d.winner === myRole;
+    var isDraw = d.winner === 'draw';
+    showBattleMessage(iWon ? '🏆 Victory!' : isDraw ? '🤝 Draw' : '💪 Defeat', 'vs ' + opName + ': ' + myScore + ' - ' + opScore);
+  });
+}
+
+function getDuelNotificationCount() {
+  if (!classRef || !state.studentId) return 0;
+  return state._pendingDuelCount || 0;
+}
+
+async function checkPendingDuels() {
+  if (!classRef || !state.studentId) return;
+  try {
+    var mySlug = state.studentId;
+    var count = 0;
+    var snap1 = await classRef.collection('duels').where('p1', '==', mySlug).where('status', '==', 'p1-turn').get();
+    count += snap1.size;
+    var snap2 = await classRef.collection('duels').where('p2', '==', mySlug).where('status', '==', 'p2-turn-partial').get();
+    count += snap2.size;
+    var snap3 = await classRef.collection('duels').where('p1', '==', mySlug).where('status', '==', 'p1-turn-final').get();
+    count += snap3.size;
+    state._pendingDuelCount = count;
+    var battleBtn = document.getElementById('btn-battle');
+    if (battleBtn) {
+      var badge = battleBtn.querySelector('.duel-notif-badge');
+      if (count > 0) {
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'duel-notif-badge';
+          badge.style.cssText = 'display:inline-block;background:#ef4444;color:white;font-size:11px;font-weight:700;border-radius:50%;min-width:18px;height:18px;line-height:18px;text-align:center;margin-left:6px;';
+          battleBtn.appendChild(badge);
+        }
+        badge.textContent = count;
+      } else if (badge) {
+        badge.remove();
+      }
+    }
+  } catch(e) { console.error('Check duels error:', e); }
+}
+
 function showBattleMessage(title, message) {
   const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.2s ease;';
+  overlay.className = 'battle-overlay';
   overlay.onclick = function(e) { if (e.target === this) this.remove(); };
   const card = document.createElement('div');
-  card.className = 'battle-modal-bg';
-  card.style.cssText = 'max-width:300px;width:85%;border-radius:16px;padding:24px;text-align:center;';
-  card.innerHTML = '<div style="font-size:16px;font-weight:600;margin-bottom:8px;">' + escapeHtml(title) + '</div><div style="font-size:14px;opacity:0.6;margin-bottom:16px;">' + message + '</div><button onclick="this.closest(\'div[style]\').parentElement.remove()" style="padding:8px 20px;border-radius:10px;font-size:13px;cursor:pointer;background:var(--card,rgba(255,255,255,0.05));border:1px solid var(--card-border,rgba(255,255,255,0.1));color:inherit;">OK</button>';
+  card.className = 'battle-modal-bg battle-modal battle-modal-sm';
+  card.innerHTML = '<div style="font-size:16px;font-weight:600;margin-bottom:8px;">' + escapeHtml(title) + '</div><div style="font-size:14px;opacity:0.6;margin-bottom:16px;">' + message + '</div><button onclick="this.closest(\'.battle-overlay\').remove()" class="battle-modal-close">OK</button>';
   overlay.appendChild(card);
   document.body.appendChild(overlay);
 }
@@ -5696,7 +6068,7 @@ async function cleanupStaleBattleData() {
     <div id="battle-scores" style="margin-bottom:12px;"></div>
     <div id="battle-timer-bar"><div id="battle-timer-fill" style="width:100%;"></div></div>
     <div id="battle-mode-label" style="text-align:center;font-size:12px;opacity:0.4;margin-bottom:2px;"></div>
-    <div id="battle-round-num" style="text-align:center;font-size:13px;opacity:0.5;margin:8px 0;">Round 1 of 10</div>
+    <div id="battle-round-num" style="text-align:center;font-size:13px;opacity:0.5;margin:8px 0;">Round 1 of 5</div>
     <div id="battle-area" style="padding:24px 16px;">
       <div id="battle-countdown" style="display:none;"></div>
       <div id="battle-prompt" style="text-align:center;margin-bottom:16px;"></div>
@@ -5706,6 +6078,49 @@ async function cleanupStaleBattleData() {
     <div style="text-align:center;margin-top:16px;">
       <button onclick="leaveBattle()" class="btn btn-secondary" style="padding:8px 20px;">Leave Battle</button>
     </div>
+  </div>
+</div>
+
+<!-- DUEL HUB SCREEN -->
+<div id="duel-hub-screen" class="screen">
+  <div class="progress-nav">
+    <button class="btn btn-secondary" onclick="goHome()">← Back</button>
+    <h2 style="flex:1;text-align:center;margin:0;">Quiz Duels</h2>
+    <div style="width:60px;"></div>
+  </div>
+  <div class="card">
+    <button class="btn btn-primary btn-block" onclick="openDuelChallenge()">⚔️ Challenge Someone</button>
+  </div>
+  <div id="duel-your-turn" class="card" style="display:none;">
+    <h3>🔴 Your Turn</h3>
+    <div id="duel-your-turn-list"></div>
+  </div>
+  <div id="duel-waiting" class="card" style="display:none;">
+    <h3>⏳ Waiting for Opponent</h3>
+    <div id="duel-waiting-list"></div>
+  </div>
+  <div id="duel-completed" class="card" style="display:none;">
+    <h3>✅ Completed</h3>
+    <div id="duel-completed-list"></div>
+  </div>
+</div>
+
+<!-- DUEL PLAY SCREEN -->
+<div id="duel-play-screen" class="screen">
+  <div class="duel-play-header">
+    <div class="duel-round-label" id="duel-round-label">Round 1 · Unit 3</div>
+    <div class="duel-question-num" id="duel-question-num">Question 1 of 3</div>
+  </div>
+  <div class="duel-timer-bar" id="duel-timer-bar">
+    <div class="duel-timer-fill" id="duel-timer-fill"></div>
+  </div>
+  <div class="duel-question-area" id="duel-question-area">
+    <div class="duel-prompt" id="duel-prompt"></div>
+    <div class="duel-options" id="duel-options"></div>
+  </div>
+  <div id="duel-round-summary" style="display:none;" class="card">
+    <div id="duel-round-summary-content"></div>
+    <button class="btn btn-primary btn-block" id="duel-continue-btn" onclick="duelNextRound()">Next Round →</button>
   </div>
 </div>
 
