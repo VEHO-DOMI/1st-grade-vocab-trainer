@@ -1410,6 +1410,61 @@ body.playing .header-container { display: none; }
   text-anchor: middle;
   opacity: 0.3;
 }
+/* ===== CLASS QUIZ ===== */
+.cq-teacher-link { display:block; text-align:center; margin-top:16px; font-size:13px; color:var(--muted); cursor:pointer; text-decoration:underline; }
+.cq-room-code { font-family:'Fredoka',sans-serif; font-size:52px; font-weight:700; letter-spacing:10px; color:var(--accent2); text-align:center; margin:16px 0; text-shadow:0 0 20px rgba(99,102,241,0.3); }
+.cq-player-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; margin:12px 0; }
+.cq-player-chip { display:flex; align-items:center; gap:6px; padding:8px 12px; border-radius:10px; background:var(--card); border:1px solid var(--card-border); font-size:13px; color:var(--text); }
+.cq-player-chip img { width:24px; height:24px; border-radius:50%; }
+.cq-player-count { text-align:center; color:var(--muted); font-size:14px; margin:8px 0; }
+.cq-option-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+.cq-option { padding:20px 14px; border-radius:14px; font-size:15px; font-weight:600; cursor:pointer; border:3px solid transparent; transition:transform 0.1s,opacity 0.3s; text-align:center; color:#fff; min-height:60px; display:flex; align-items:center; justify-content:center; }
+.cq-option:nth-child(1) { background:#e21b3c; }
+.cq-option:nth-child(2) { background:#1368ce; }
+.cq-option:nth-child(3) { background:#d89e00; }
+.cq-option:nth-child(4) { background:#26890c; }
+.cq-option:active { transform:scale(0.96); }
+.cq-option.cq-selected { border-color:#fff; box-shadow:0 0 0 3px rgba(255,255,255,0.3); }
+.cq-option.cq-correct-reveal { border-color:#fff; opacity:1 !important; }
+.cq-option.cq-wrong-reveal { opacity:0.35; }
+.cq-option.cq-disabled { pointer-events:none; }
+.cq-timer-bar { height:8px; background:rgba(255,255,255,0.08); border-radius:4px; overflow:hidden; margin:12px 0; }
+.cq-timer-fill { height:100%; border-radius:4px; transition:width 0.15s linear; background:linear-gradient(90deg,#ef4444,var(--accent2)); }
+.cq-question-num { text-align:center; font-size:13px; color:var(--muted); margin-bottom:4px; }
+.cq-question-prompt { font-size:1.3rem; font-weight:700; text-align:center; padding:16px; margin-bottom:8px; color:var(--text); line-height:1.4; }
+.cq-feedback { text-align:center; padding:24px 16px; }
+.cq-feedback-icon { font-size:48px; margin-bottom:8px; }
+.cq-feedback-points { font-size:24px; font-weight:700; color:var(--accent2); }
+.cq-accuracy-bar { height:12px; background:rgba(255,255,255,0.08); border-radius:6px; overflow:hidden; margin:8px 0; }
+.cq-accuracy-fill { height:100%; background:var(--correct); border-radius:6px; transition:width 0.5s ease; }
+.cq-leaderboard { margin:12px 0; }
+.cq-leaderboard-row { display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:10px; margin-bottom:4px; font-size:14px; color:var(--text); }
+.cq-leaderboard-row:nth-child(1) { background:rgba(245,158,11,0.15); }
+.cq-leaderboard-row:nth-child(2) { background:rgba(148,163,184,0.1); }
+.cq-leaderboard-row:nth-child(3) { background:rgba(180,83,9,0.08); }
+.cq-leaderboard-rank { font-weight:700; min-width:24px; }
+.cq-leaderboard-name { flex:1; }
+.cq-leaderboard-score { font-weight:600; color:var(--accent2); }
+.cq-podium { display:flex; justify-content:center; align-items:flex-end; gap:12px; margin:24px 0; }
+.cq-podium-place { text-align:center; border-radius:14px; padding:16px 14px; background:var(--card); border:1px solid var(--card-border); min-width:90px; }
+.cq-podium-place.cq-gold { order:2; transform:scale(1.1); border-color:rgba(245,158,11,0.4); background:rgba(245,158,11,0.08); }
+.cq-podium-place.cq-silver { order:1; }
+.cq-podium-place.cq-bronze { order:3; }
+.cq-podium-medal { font-size:28px; }
+.cq-podium-name { font-size:13px; font-weight:600; margin-top:4px; color:var(--text); }
+.cq-podium-score { font-size:12px; color:var(--muted); }
+.cq-setup-units { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:8px; margin:12px 0; max-height:40vh; overflow-y:auto; }
+.cq-unit-btn { padding:10px; border-radius:10px; background:var(--card); border:2px solid var(--card-border); color:var(--text); font-size:13px; cursor:pointer; text-align:center; transition:border-color 0.15s,background 0.15s; }
+.cq-unit-btn.selected { border-color:var(--accent); background:rgba(99,102,241,0.1); }
+.cq-count-row { display:flex; gap:8px; justify-content:center; margin:16px 0; }
+.cq-count-btn { padding:10px 20px; border-radius:10px; background:var(--card); border:2px solid var(--card-border); color:var(--text); font-size:15px; font-weight:600; cursor:pointer; }
+.cq-count-btn.selected { border-color:var(--accent); background:rgba(99,102,241,0.1); }
+.cq-waiting-dots::after { content:''; animation:cqDots 1.5s infinite; }
+@keyframes cqDots { 0% { content:''; } 25% { content:'.'; } 50% { content:'..'; } 75% { content:'...'; } }
+.cq-join-input { font-size:32px; text-align:center; letter-spacing:12px; font-weight:700; padding:16px; width:100%; max-width:220px; background:var(--card); border:2px solid var(--card-border); border-radius:14px; color:var(--text); }
+.cq-join-input::placeholder { letter-spacing:4px; font-size:16px; }
+.cq-btn-start { background:linear-gradient(135deg,#8b5cf6,#6d28d9); color:#fff; border:none; padding:14px 32px; border-radius:12px; font-size:16px; font-weight:700; cursor:pointer; }
+.cq-btn-start:disabled { opacity:0.4; cursor:not-allowed; }
 </style>
 </head>
 <body>
@@ -1436,6 +1491,7 @@ body.playing .header-container { display: none; }
       </div>
       <div class="section-error" id="section-error"></div>
       <button class="btn btn-primary btn-block" id="section-go-btn" style="display:none;" onclick="handleSectionSubmit()">Continue</button>
+      <div class="cq-teacher-link" onclick="openTeacherMode()">🎓 Teacher Mode</div>
     </div>
   </div>
 </div>
@@ -1548,6 +1604,7 @@ body.playing .header-container { display: none; }
     <button class="btn btn-primary btn-block btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
     <button class="btn btn-review btn-block btn-small" id="review-btn" style="display:none;" onclick="startSmartReview()">🔄 Smart Review</button>
     <button id="btn-battle" class="btn-battle" onclick="openBattleLobby()" style="display:none;">⚔️ Battle</button>
+    <button class="btn-battle" onclick="openClassQuizJoin()" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">🎓 Class Quiz</button>
     <div class="home-actions-row">
       <button class="btn btn-secondary btn-small" onclick="showProgressMap()">🗺️ Map</button>
       <button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊 Progress</button>
@@ -1734,6 +1791,15 @@ body.playing .header-container { display: none; }
   </div>
 </div>
 
+<!-- CLASS QUIZ: TEACHER SCREEN -->
+<div id="cq-teacher-screen" class="screen">
+  <div id="cq-teacher-content"></div>
+</div>
+
+<!-- CLASS QUIZ: STUDENT SCREEN -->
+<div id="cq-student-screen" class="screen">
+  <div id="cq-student-content"></div>
+</div>
 
 <div id="map-screen" class="screen">
   <div class="progress-nav">
@@ -1817,6 +1883,7 @@ const SECTIONS = [
 ];
 const GRADE_LABEL = '1st Grade';
 const LS_KEY = '1st-grade-vocab-student';
+const TEACHER_PIN = '1304';
 
 let CLASS_ID = null;
 let classRef = null;
@@ -1827,6 +1894,7 @@ function setClassId(id) {
   classRef = db.collection('classes').doc(CLASS_ID);
   studentsRef = classRef.collection('students');
   if (typeof initBattleRefs === 'function') initBattleRefs();
+  if (typeof initClassQuizRef === 'function') initClassQuizRef();
 }
 
 // ===== VOCABULARY DATA =====
@@ -2754,6 +2822,7 @@ let state = {
   _inviteListener: null,
   _inviteChangeListener: null,
   _battleRoundTimer: null,
+  cqRoom: null, cqRole: null, cqData: null, cqAnswered: false, cqTimerInterval: null, cqListener: null, cqCurrentQ: -1, cqServerOffset: 0,
 };
 
 // ===== RANK SYSTEM =====
@@ -5690,6 +5759,13 @@ function initBattleRefs() {
   roomsRef = battleRoot.child('rooms');
 }
 
+let classQuizRef = null;
+
+function initClassQuizRef() {
+  classQuizRef = rtdb.ref('classQuiz');
+  rtdb.ref('.info/serverTimeOffset').on('value', snap => { state.cqServerOffset = snap.val() || 0; });
+}
+
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
@@ -6145,6 +6221,654 @@ function leaveBattle() {
     var bi = document.getElementById('battle-input'); if (bi) bi.addEventListener('keydown', function(e){ if(e.key==='Enter') submitBattleAnswer(this.value); });
   }
   showHomeScreen()
+}
+
+// ===== CLASS QUIZ (Kahoot-style) =====
+
+function openTeacherMode() {
+  // Show PIN modal overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'cq-pin-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;';
+  overlay.innerHTML = '<div style="background:var(--bg);border:1px solid var(--card-border);border-radius:16px;padding:32px;max-width:320px;width:90%;text-align:center;">' +
+    '<h3 style="margin:0 0 16px;color:var(--text);">🎓 Teacher Mode</h3>' +
+    '<p style="color:var(--muted);font-size:14px;margin-bottom:16px;">Enter the teacher PIN</p>' +
+    '<input type="password" id="cq-teacher-pin-input" maxlength="10" style="font-size:24px;text-align:center;padding:12px;width:100%;max-width:160px;background:var(--card);border:2px solid var(--card-border);border-radius:10px;color:var(--text);box-sizing:border-box;" autocomplete="off">' +
+    '<div id="cq-pin-error" style="color:#ef4444;font-size:13px;margin-top:8px;min-height:20px;"></div>' +
+    '<div style="display:flex;gap:8px;margin-top:16px;justify-content:center;">' +
+    '<button class="btn btn-secondary" onclick="document.getElementById(\'cq-pin-overlay\').remove()">Cancel</button>' +
+    '<button class="btn btn-primary" onclick="verifyTeacherPin()">Enter</button>' +
+    '</div></div>';
+  document.body.appendChild(overlay);
+  setTimeout(() => document.getElementById('cq-teacher-pin-input').focus(), 100);
+  document.getElementById('cq-teacher-pin-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') verifyTeacherPin();
+  });
+}
+
+function verifyTeacherPin() {
+  const pin = document.getElementById('cq-teacher-pin-input').value.trim();
+  if (pin !== TEACHER_PIN) {
+    document.getElementById('cq-pin-error').textContent = 'Wrong PIN';
+    return;
+  }
+  document.getElementById('cq-pin-overlay').remove();
+  state.cqRole = 'teacher';
+  // Need a CLASS_ID — pick first section by default if not set
+  if (!CLASS_ID) {
+    setClassId(SECTIONS[0].id);
+  }
+  showScreen('cq-teacher-screen');
+  renderTeacherSetup();
+}
+
+function renderTeacherSetup() {
+  const units = Object.keys(vocabData);
+  const selectedUnits = new Set();
+  let questionCount = 10;
+
+  const el = document.getElementById('cq-teacher-content');
+  el.innerHTML = '<div style="padding:16px;">' +
+    '<div style="display:flex;align-items:center;margin-bottom:16px;">' +
+    '<button class="btn btn-secondary" onclick="leaveTeacherQuiz()" style="margin-right:12px;">← Back</button>' +
+    '<h2 style="margin:0;flex:1;text-align:center;color:var(--text);">🎓 Create Class Quiz</h2><div style="width:60px;"></div></div>' +
+    '<p style="color:var(--muted);text-align:center;font-size:14px;">Select units and number of questions</p>' +
+    '<div class="card"><h3 style="margin:0 0 8px;font-size:15px;color:var(--text);">Units</h3>' +
+    '<div class="cq-setup-units" id="cq-unit-grid"></div>' +
+    '<button class="btn btn-secondary btn-small" id="cq-select-all-btn" style="margin-top:8px;font-size:12px;" onclick="">Select All</button></div>' +
+    '<div class="card" style="margin-top:12px;"><h3 style="margin:0 0 8px;font-size:15px;color:var(--text);">Questions</h3>' +
+    '<div class="cq-count-row" id="cq-count-row"></div></div>' +
+    '<div style="text-align:center;margin-top:16px;">' +
+    '<button class="cq-btn-start" id="cq-create-btn" disabled onclick="">🚀 Create Quiz</button></div></div>';
+
+  // Render unit buttons
+  const grid = document.getElementById('cq-unit-grid');
+  units.forEach(u => {
+    const btn = document.createElement('button');
+    btn.className = 'cq-unit-btn';
+    btn.textContent = u + ' (' + vocabData[u].length + ')';
+    btn.onclick = () => {
+      if (selectedUnits.has(u)) { selectedUnits.delete(u); btn.classList.remove('selected'); }
+      else { selectedUnits.add(u); btn.classList.add('selected'); }
+      updateCreateBtn();
+    };
+    grid.appendChild(btn);
+  });
+
+  // Select all button
+  document.getElementById('cq-select-all-btn').onclick = () => {
+    const allSelected = selectedUnits.size === units.length;
+    units.forEach(u => { if (allSelected) selectedUnits.delete(u); else selectedUnits.add(u); });
+    grid.querySelectorAll('.cq-unit-btn').forEach(b => { if (allSelected) b.classList.remove('selected'); else b.classList.add('selected'); });
+    updateCreateBtn();
+  };
+
+  // Render count buttons
+  const countRow = document.getElementById('cq-count-row');
+  [5, 10, 15, 20].forEach(n => {
+    const btn = document.createElement('button');
+    btn.className = 'cq-count-btn' + (n === 10 ? ' selected' : '');
+    btn.textContent = n;
+    btn.onclick = () => {
+      questionCount = n;
+      countRow.querySelectorAll('.cq-count-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    };
+    countRow.appendChild(btn);
+  });
+
+  function updateCreateBtn() {
+    document.getElementById('cq-create-btn').disabled = selectedUnits.size === 0;
+  }
+
+  document.getElementById('cq-create-btn').onclick = () => createClassQuiz(Array.from(selectedUnits), questionCount);
+}
+
+async function generateRoomCode() {
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const code = String(1000 + Math.floor(Math.random() * 9000));
+    const snap = await classQuizRef.child(code).once('value');
+    if (!snap.exists()) return code;
+  }
+  return String(1000 + Math.floor(Math.random() * 9000));
+}
+
+function generateQuizQuestions(units, count) {
+  let pool = [];
+  units.forEach(u => {
+    if (vocabData[u]) pool = pool.concat(vocabData[u].map(w => ({...w, _unit: u})));
+  });
+  shuffle(pool);
+  const picked = pool.slice(0, Math.min(count, pool.length));
+  const types = ['mc-translation', 'mc-definition', 'mc-context'];
+
+  return picked.map(word => {
+    // Pick type — skip context if no sentence
+    let type = types[Math.floor(Math.random() * types.length)];
+    if ((type === 'mc-context') && (!word.s || !word.s.includes('_____'))) type = 'mc-translation';
+
+    // Build prompt
+    let prompt = '';
+    if (type === 'mc-translation') prompt = '🇩🇪 ' + word.g;
+    else if (type === 'mc-definition') prompt = '📖 ' + word.d;
+    else prompt = '✏️ ' + word.s.replace(/_____/g, '_______');
+
+    // Build options
+    const correctAnswer = getMCAnswer(word, type);
+    const distractorEntries = getDistractors(word, 3, type);
+    const options = [correctAnswer];
+    distractorEntries.forEach(d => {
+      const t = getMCAnswer(d, type);
+      if (!options.map(o => o.toLowerCase()).includes(t.toLowerCase())) options.push(t);
+    });
+    // Pad if needed
+    while (options.length < 4) options.push('—');
+
+    // Find correct index after shuffle
+    const correctText = options[0];
+    shuffle(options);
+    const correctIndex = options.indexOf(correctText);
+
+    return { word: word.w, german: word.g, type, prompt, options, correctIndex };
+  });
+}
+
+async function createClassQuiz(units, count) {
+  document.getElementById('cq-create-btn').disabled = true;
+  document.getElementById('cq-create-btn').textContent = 'Creating...';
+
+  try {
+    const roomCode = await generateRoomCode();
+    const questions = generateQuizQuestions(units, count);
+
+    await classQuizRef.child(roomCode).set({
+      classId: CLASS_ID,
+      status: 'lobby',
+      currentQuestion: -1,
+      questionRevealed: false,
+      questionRevealedAt: 0,
+      questions: questions,
+      players: {},
+      settings: { timeLimit: 15, questionCount: questions.length },
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    });
+
+    state.cqRoom = roomCode;
+    state.cqData = null;
+    state.cqCurrentQ = -1;
+
+    // Listen for changes
+    state.cqListener = classQuizRef.child(roomCode).on('value', snap => {
+      if (!snap.exists()) return;
+      state.cqData = snap.val();
+      handleTeacherQuizUpdate(state.cqData);
+    });
+  } catch(e) {
+    console.error('Create quiz error:', e);
+    document.getElementById('cq-create-btn').disabled = false;
+    document.getElementById('cq-create-btn').textContent = '🚀 Create Quiz';
+  }
+}
+
+function handleTeacherQuizUpdate(data) {
+  if (!data) return;
+  switch(data.status) {
+    case 'lobby': renderTeacherLobby(data); break;
+    case 'active':
+    case 'reviewing': renderTeacherLive(data); break;
+    case 'done': renderTeacherResults(data); break;
+  }
+}
+
+function renderTeacherLobby(data) {
+  const players = data.players || {};
+  const count = Object.keys(players).length;
+  const el = document.getElementById('cq-teacher-content');
+  el.innerHTML = '<div style="padding:16px;text-align:center;">' +
+    '<h2 style="color:var(--text);margin-bottom:4px;">Class Quiz</h2>' +
+    '<p style="color:var(--muted);font-size:14px;">Share this code with your students</p>' +
+    '<div class="cq-room-code">' + state.cqRoom + '</div>' +
+    '<div class="cq-player-count">' + count + ' player' + (count !== 1 ? 's' : '') + ' joined</div>' +
+    '<div class="cq-player-grid" id="cq-lobby-players"></div>' +
+    '<div style="margin-top:20px;">' +
+    '<button class="cq-btn-start" ' + (count < 1 ? 'disabled' : '') + ' onclick="teacherStartQuiz()">▶️ Start Quiz (' + data.settings.questionCount + ' Qs)</button>' +
+    '</div>' +
+    '<button class="btn btn-secondary" style="margin-top:12px;" onclick="leaveTeacherQuiz()">Cancel</button></div>';
+
+  const grid = document.getElementById('cq-lobby-players');
+  Object.values(players).forEach(p => {
+    const chip = document.createElement('div');
+    chip.className = 'cq-player-chip';
+    chip.innerHTML = '<img src="' + avatarSrc(p.avatarId || 1) + '" alt="">' + '<span>' + (p.name || 'Student') + '</span>';
+    grid.appendChild(chip);
+  });
+}
+
+async function teacherStartQuiz() {
+  if (!state.cqRoom) return;
+  await classQuizRef.child(state.cqRoom).update({
+    status: 'active',
+    currentQuestion: 0,
+    questionRevealed: true,
+    questionRevealedAt: firebase.database.ServerValue.TIMESTAMP
+  });
+}
+
+async function teacherNextQuestion() {
+  if (!state.cqRoom || !state.cqData) return;
+  const next = (state.cqData.currentQuestion || 0) + 1;
+  if (next >= state.cqData.questions.length) {
+    await classQuizRef.child(state.cqRoom).update({ status: 'done' });
+  } else {
+    await classQuizRef.child(state.cqRoom).update({
+      currentQuestion: next,
+      questionRevealed: true,
+      questionRevealedAt: firebase.database.ServerValue.TIMESTAMP
+    });
+  }
+}
+
+function renderTeacherLive(data) {
+  const qIdx = data.currentQuestion || 0;
+  const q = data.questions[qIdx];
+  const total = data.questions.length;
+  const players = data.players || {};
+  const playerCount = Object.keys(players).length;
+  const timeLimit = (data.settings && data.settings.timeLimit) || 15;
+
+  // Calculate accuracy for current question
+  let answered = 0, correct = 0;
+  Object.values(players).forEach(p => {
+    if (p.answers && p.answers[String(qIdx)]) {
+      answered++;
+      if (p.answers[String(qIdx)].correct) correct++;
+    }
+  });
+  const accuracyPct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  const allAnswered = playerCount > 0 && answered >= playerCount;
+
+  // Top 5 leaderboard
+  const ranked = Object.entries(players).map(([slug, p]) => ({name: p.name || slug, score: p.score || 0}))
+    .sort((a, b) => b.score - a.score).slice(0, 5);
+
+  const el = document.getElementById('cq-teacher-content');
+  el.innerHTML = '<div style="padding:16px;">' +
+    '<div class="cq-question-num">Question ' + (qIdx + 1) + ' of ' + total + '</div>' +
+    '<div class="cq-question-prompt">' + q.prompt + '</div>' +
+    '<div class="cq-option-grid" style="pointer-events:none;opacity:0.8;">' +
+    q.options.map((o, i) => '<div class="cq-option' + (i === q.correctIndex ? ' cq-correct-reveal' : '') + '">' + o + '</div>').join('') +
+    '</div>' +
+    '<div style="margin-top:16px;">' +
+    '<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);">' +
+    '<span>' + answered + '/' + playerCount + ' answered</span>' +
+    '<span>' + accuracyPct + '% correct</span></div>' +
+    '<div class="cq-accuracy-bar"><div class="cq-accuracy-fill" style="width:' + accuracyPct + '%"></div></div>' +
+    '</div>' +
+    '<div class="cq-leaderboard" style="margin-top:16px;">' +
+    '<h3 style="font-size:14px;color:var(--muted);margin:0 0 8px;">🏆 Leaderboard</h3>' +
+    ranked.map((p, i) => '<div class="cq-leaderboard-row"><span class="cq-leaderboard-rank">' + (i + 1) + '.</span><span class="cq-leaderboard-name">' + p.name + '</span><span class="cq-leaderboard-score">' + p.score + '</span></div>').join('') +
+    '</div>' +
+    '<div style="text-align:center;margin-top:20px;">' +
+    '<button class="cq-btn-start" onclick="teacherNextQuestion()"' + (!allAnswered ? ' style="opacity:0.7;"' : '') + '>' +
+    (qIdx + 1 >= total ? '🏁 Show Results' : '➡️ Next Question') + '</button>' +
+    (allAnswered ? '<div style="color:var(--correct);font-size:13px;margin-top:6px;">✓ All students answered!</div>' : '') +
+    '</div></div>';
+}
+
+function renderTeacherResults(data) {
+  const players = data.players || {};
+  const ranked = Object.entries(players)
+    .map(([slug, p]) => ({name: p.name || slug, score: p.score || 0, avatarId: p.avatarId || 1}))
+    .sort((a, b) => b.score - a.score);
+
+  // Podium
+  let podiumHTML = '<div class="cq-podium">';
+  const medals = ['🥇', '🥈', '🥉'];
+  const classes = ['cq-gold', 'cq-silver', 'cq-bronze'];
+  for (let i = 0; i < Math.min(3, ranked.length); i++) {
+    podiumHTML += '<div class="cq-podium-place ' + classes[i] + '">' +
+      '<div class="cq-podium-medal">' + medals[i] + '</div>' +
+      '<img src="' + avatarSrc(ranked[i].avatarId) + '" style="width:40px;height:40px;border-radius:50%;margin:4px 0;">' +
+      '<div class="cq-podium-name">' + ranked[i].name + '</div>' +
+      '<div class="cq-podium-score">' + ranked[i].score + ' pts</div></div>';
+  }
+  podiumHTML += '</div>';
+
+  // Full leaderboard
+  let lbHTML = '<div class="cq-leaderboard">';
+  ranked.forEach((p, i) => {
+    lbHTML += '<div class="cq-leaderboard-row"><span class="cq-leaderboard-rank">' + (i + 1) + '.</span>' +
+      '<span class="cq-leaderboard-name">' + p.name + '</span>' +
+      '<span class="cq-leaderboard-score">' + p.score + ' pts</span></div>';
+  });
+  lbHTML += '</div>';
+
+  const el = document.getElementById('cq-teacher-content');
+  el.innerHTML = '<div style="padding:16px;text-align:center;">' +
+    '<h2 style="color:var(--text);margin-bottom:4px;">🏁 Quiz Complete!</h2>' +
+    '<p style="color:var(--muted);font-size:14px;">' + data.questions.length + ' questions · ' + ranked.length + ' players</p>' +
+    podiumHTML + lbHTML +
+    '<button class="btn btn-primary btn-block" style="margin-top:20px;" onclick="leaveTeacherQuiz()">End Quiz</button></div>';
+}
+
+function leaveTeacherQuiz() {
+  if (state.cqRoom && state.cqListener) {
+    classQuizRef.child(state.cqRoom).off('value', state.cqListener);
+  }
+  // Delete room if it exists and we're the teacher
+  if (state.cqRoom && state.cqRole === 'teacher') {
+    classQuizRef.child(state.cqRoom).remove().catch(() => {});
+  }
+  clearInterval(state.cqTimerInterval);
+  state.cqRoom = null;
+  state.cqRole = null;
+  state.cqData = null;
+  state.cqListener = null;
+  state.cqAnswered = false;
+  state.cqCurrentQ = -1;
+  showScreen('section-screen');
+}
+
+// ===== CLASS QUIZ: STUDENT FLOW =====
+
+function openClassQuizJoin() {
+  showScreen('cq-student-screen');
+  const el = document.getElementById('cq-student-content');
+  el.innerHTML = '<div style="padding:16px;text-align:center;">' +
+    '<div style="display:flex;align-items:center;margin-bottom:20px;">' +
+    '<button class="btn btn-secondary" onclick="leaveClassQuiz()">← Back</button>' +
+    '<h2 style="margin:0;flex:1;text-align:center;color:var(--text);">🎓 Class Quiz</h2><div style="width:60px;"></div></div>' +
+    '<p style="color:var(--muted);font-size:14px;">Enter the quiz code from your teacher</p>' +
+    '<div style="margin:24px 0;">' +
+    '<input type="tel" class="cq-join-input" id="cq-join-code" maxlength="4" placeholder="Code" autocomplete="off">' +
+    '</div>' +
+    '<div id="cq-join-error" style="color:#ef4444;font-size:13px;min-height:20px;margin-bottom:12px;"></div>' +
+    '<button class="cq-btn-start" onclick="joinClassQuiz()">Join Quiz</button></div>';
+  setTimeout(() => document.getElementById('cq-join-code').focus(), 100);
+  document.getElementById('cq-join-code').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') joinClassQuiz();
+  });
+}
+
+async function joinClassQuiz() {
+  const code = document.getElementById('cq-join-code').value.trim();
+  const errEl = document.getElementById('cq-join-error');
+  if (!code || code.length !== 4) { errEl.textContent = 'Enter a 4-digit code'; return; }
+
+  errEl.textContent = 'Joining...';
+  try {
+    const snap = await classQuizRef.child(code).once('value');
+    if (!snap.exists()) { errEl.textContent = 'Quiz not found'; return; }
+    const data = snap.val();
+    if (data.status !== 'lobby') { errEl.textContent = 'Quiz already started'; return; }
+
+    const slug = state.studentId;
+    const playerData = {
+      name: state.studentName,
+      avatarId: state.avatarId || 1,
+      score: 0,
+      answers: {}
+    };
+
+    await classQuizRef.child(code).child('players').child(slug).set(playerData);
+    classQuizRef.child(code).child('players').child(slug).onDisconnect().remove();
+
+    state.cqRoom = code;
+    state.cqRole = 'student';
+    state.cqData = data;
+    state.cqAnswered = false;
+    state.cqCurrentQ = -1;
+
+    // Listen for updates
+    state.cqListener = classQuizRef.child(code).on('value', snap => {
+      if (!snap.exists()) { leaveClassQuiz(); return; }
+      state.cqData = snap.val();
+      handleStudentQuizUpdate(state.cqData);
+    });
+  } catch(e) {
+    console.error('Join quiz error:', e);
+    errEl.textContent = 'Connection error. Try again.';
+  }
+}
+
+function handleStudentQuizUpdate(data) {
+  if (!data) return;
+  switch(data.status) {
+    case 'lobby': renderStudentLobby(data); break;
+    case 'active': renderStudentQuestion(data); break;
+    case 'done': renderStudentResults(data); break;
+  }
+}
+
+function renderStudentLobby(data) {
+  const players = data.players || {};
+  const count = Object.keys(players).length;
+  const el = document.getElementById('cq-student-content');
+  el.innerHTML = '<div style="padding:16px;text-align:center;">' +
+    '<h2 style="color:var(--text);">🎓 You\'re in!</h2>' +
+    '<div class="cq-room-code" style="font-size:36px;">' + state.cqRoom + '</div>' +
+    '<div class="cq-player-count">' + count + ' player' + (count !== 1 ? 's' : '') + ' in lobby</div>' +
+    '<p style="color:var(--muted);font-size:15px;margin-top:24px;">Waiting for teacher to start<span class="cq-waiting-dots"></span></p>' +
+    '<button class="btn btn-secondary" style="margin-top:20px;" onclick="leaveClassQuiz()">Leave</button></div>';
+}
+
+function renderStudentQuestion(data) {
+  const qIdx = data.currentQuestion || 0;
+  const q = data.questions[qIdx];
+  const total = data.questions.length;
+  const timeLimit = (data.settings && data.settings.timeLimit) || 15;
+  const slug = state.studentId;
+  const myAnswers = (data.players && data.players[slug] && data.players[slug].answers) || {};
+
+  // Check if already answered this question
+  if (myAnswers[String(qIdx)]) {
+    renderStudentFeedback(data, qIdx);
+    return;
+  }
+
+  // New question?
+  if (qIdx !== state.cqCurrentQ) {
+    state.cqCurrentQ = qIdx;
+    state.cqAnswered = false;
+    clearInterval(state.cqTimerInterval);
+  }
+
+  if (state.cqAnswered) return;
+
+  const el = document.getElementById('cq-student-content');
+  el.innerHTML = '<div style="padding:16px;">' +
+    '<div class="cq-question-num">Question ' + (qIdx + 1) + ' of ' + total + '</div>' +
+    '<div class="cq-timer-bar"><div class="cq-timer-fill" id="cq-timer-fill" style="width:100%"></div></div>' +
+    '<div class="cq-question-prompt">' + q.prompt + '</div>' +
+    '<div class="cq-option-grid" id="cq-options-grid"></div></div>';
+
+  // Render options
+  const grid = document.getElementById('cq-options-grid');
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'cq-option';
+    btn.textContent = opt;
+    btn.onclick = () => handleClassQuizAnswer(i);
+    grid.appendChild(btn);
+  });
+
+  // Timer
+  const revealedAt = data.questionRevealedAt || Date.now();
+  const timerFill = document.getElementById('cq-timer-fill');
+  state.cqTimerInterval = setInterval(() => {
+    const serverNow = Date.now() + state.cqServerOffset;
+    const elapsed = (serverNow - revealedAt) / 1000;
+    const remaining = Math.max(0, timeLimit - elapsed);
+    const pct = (remaining / timeLimit) * 100;
+    if (timerFill) timerFill.style.width = pct + '%';
+    if (remaining <= 0) {
+      clearInterval(state.cqTimerInterval);
+      if (!state.cqAnswered) handleClassQuizAnswer(-1); // timeout
+    }
+  }, 100);
+}
+
+async function handleClassQuizAnswer(choiceIndex) {
+  if (state.cqAnswered || !state.cqRoom || !state.cqData) return;
+  state.cqAnswered = true;
+  clearInterval(state.cqTimerInterval);
+
+  const qIdx = state.cqData.currentQuestion || 0;
+  const q = state.cqData.questions[qIdx];
+  const timeLimit = (state.cqData.settings && state.cqData.settings.timeLimit) || 15;
+  const revealedAt = state.cqData.questionRevealedAt || Date.now();
+  const serverNow = Date.now() + state.cqServerOffset;
+  const timeMs = Math.max(0, serverNow - revealedAt);
+  const correct = choiceIndex === q.correctIndex;
+
+  // Score: 500-1000 for correct, 0 for wrong
+  let points = 0;
+  if (correct) {
+    const timePenalty = Math.floor((timeMs / (timeLimit * 1000)) * 500);
+    points = Math.max(500, 1000 - timePenalty);
+  }
+
+  const slug = state.studentId;
+
+  // Disable all buttons visually
+  const btns = document.querySelectorAll('#cq-options-grid .cq-option');
+  btns.forEach((btn, i) => {
+    btn.classList.add('cq-disabled');
+    if (i === q.correctIndex) btn.classList.add('cq-correct-reveal');
+    else btn.classList.add('cq-wrong-reveal');
+    if (i === choiceIndex && !correct) btn.style.border = '3px solid #ef4444';
+    if (i === choiceIndex && correct) btn.classList.add('cq-selected');
+  });
+
+  // Write to RTDB
+  try {
+    const playerRef = classQuizRef.child(state.cqRoom).child('players').child(slug);
+    await playerRef.child('answers').child(String(qIdx)).set({ choice: choiceIndex, correct, timeMs });
+    // Increment score
+    const currentScore = (state.cqData.players && state.cqData.players[slug] && state.cqData.players[slug].score) || 0;
+    await playerRef.child('score').set(currentScore + points);
+  } catch(e) {
+    console.error('Submit answer error:', e);
+  }
+
+  // Show quick feedback
+  setTimeout(() => {
+    if (state.cqData && state.cqData.status === 'active') {
+      renderStudentFeedback(state.cqData, qIdx);
+    }
+  }, 800);
+}
+
+function renderStudentFeedback(data, qIdx) {
+  const q = data.questions[qIdx];
+  const slug = state.studentId;
+  const myAnswer = (data.players && data.players[slug] && data.players[slug].answers && data.players[slug].answers[String(qIdx)]);
+  if (!myAnswer) return;
+
+  const correct = myAnswer.correct;
+  const timeMs = myAnswer.timeMs || 0;
+  const timeLimit = (data.settings && data.settings.timeLimit) || 15;
+  let points = 0;
+  if (correct) {
+    const timePenalty = Math.floor((timeMs / (timeLimit * 1000)) * 500);
+    points = Math.max(500, 1000 - timePenalty);
+  }
+
+  const el = document.getElementById('cq-student-content');
+  el.innerHTML = '<div class="cq-feedback">' +
+    '<div class="cq-feedback-icon">' + (correct ? '✅' : '❌') + '</div>' +
+    '<div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:4px;">' + (correct ? 'Correct!' : 'Wrong!') + '</div>' +
+    '<div class="cq-feedback-points">' + (points > 0 ? '+' + points + ' pts' : '0 pts') + '</div>' +
+    (!correct ? '<div style="color:var(--muted);font-size:14px;margin-top:8px;">Answer: ' + q.options[q.correctIndex] + '</div>' : '') +
+    '<p style="color:var(--muted);font-size:14px;margin-top:24px;">Waiting for next question<span class="cq-waiting-dots"></span></p></div>';
+}
+
+function renderStudentResults(data) {
+  clearInterval(state.cqTimerInterval);
+  const slug = state.studentId;
+  const players = data.players || {};
+  const myData = players[slug];
+  const myScore = myData ? (myData.score || 0) : 0;
+
+  // Calculate rank
+  const ranked = Object.entries(players)
+    .map(([s, p]) => ({slug: s, score: p.score || 0}))
+    .sort((a, b) => b.score - a.score);
+  const myRank = ranked.findIndex(r => r.slug === slug) + 1;
+
+  // Calculate correct answers
+  let correctCount = 0;
+  if (myData && myData.answers) {
+    Object.values(myData.answers).forEach(a => { if (a.correct) correctCount++; });
+  }
+
+  // XP calculation
+  let xp = 10; // participation
+  xp += correctCount * 2;
+  if (myRank === 1) xp += 30;
+  else if (myRank === 2) xp += 20;
+  else if (myRank === 3) xp += 10;
+
+  const rankEmoji = myRank === 1 ? '🥇' : myRank === 2 ? '🥈' : myRank === 3 ? '🥉' : '🏅';
+
+  const el = document.getElementById('cq-student-content');
+  el.innerHTML = '<div style="padding:16px;text-align:center;">' +
+    '<h2 style="color:var(--text);">🏁 Quiz Complete!</h2>' +
+    '<div style="font-size:48px;margin:16px 0;">' + rankEmoji + '</div>' +
+    '<div style="font-size:24px;font-weight:700;color:var(--text);">' +
+    (myRank <= 3 ? ['1st', '2nd', '3rd'][myRank - 1] + ' Place!' : '#' + myRank) + '</div>' +
+    '<div style="font-size:32px;font-weight:700;color:var(--accent2);margin:8px 0;">' + myScore + ' pts</div>' +
+    '<div style="color:var(--muted);font-size:14px;">' + correctCount + '/' + data.questions.length + ' correct</div>' +
+    '<div class="card" style="margin-top:16px;text-align:left;">' +
+    '<h3 style="margin:0 0 8px;font-size:14px;color:var(--muted);">XP Earned</h3>' +
+    '<div style="font-size:14px;color:var(--text);">' +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Participation</span><span>+10</span></div>' +
+    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Correct answers (' + correctCount + ')</span><span>+' + (correctCount * 2) + '</span></div>' +
+    (myRank <= 3 ? '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Top 3 Bonus</span><span>+' + [30, 20, 10][myRank - 1] + '</span></div>' : '') +
+    '<div style="display:flex;justify-content:space-between;font-weight:700;border-top:1px solid var(--card-border);padding-top:6px;margin-top:6px;"><span>Total</span><span>+' + xp + ' XP</span></div>' +
+    '</div></div>' +
+    '<button class="btn btn-primary btn-block" style="margin-top:16px;" onclick="leaveClassQuizAndSave()">Back to Home</button></div>';
+
+  // Save XP (once)
+  saveClassQuizXP(xp);
+}
+
+async function saveClassQuizXP(xp) {
+  if (!state.studentId || !studentsRef) return;
+  try {
+    await studentsRef.doc(state.studentId).update({
+      xp: firebase.firestore.FieldValue.increment(xp)
+    });
+    if (state.studentData) state.studentData.xp = (state.studentData.xp || 0) + xp;
+    contributeToWeeklyGoal(xp);
+  } catch(e) { console.error('Save CQ XP error:', e); }
+}
+
+function leaveClassQuizAndSave() {
+  leaveClassQuiz();
+}
+
+function leaveClassQuiz() {
+  if (state.cqRoom && state.cqListener) {
+    classQuizRef.child(state.cqRoom).off('value', state.cqListener);
+  }
+  // Remove player on disconnect cleanup
+  if (state.cqRoom && state.cqRole === 'student' && state.studentId) {
+    classQuizRef.child(state.cqRoom).child('players').child(state.studentId).onDisconnect().cancel();
+  }
+  clearInterval(state.cqTimerInterval);
+  state.cqRoom = null;
+  state.cqRole = null;
+  state.cqData = null;
+  state.cqListener = null;
+  state.cqAnswered = false;
+  state.cqCurrentQ = -1;
+  if (state.studentId) {
+    showScreen('home-screen');
+    showHomeScreen();
+  } else {
+    showScreen('section-screen');
+  }
 }
 
 // ===== ASYNC QUIZ DUEL (QuizDuell model) =====
