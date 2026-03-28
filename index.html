@@ -1108,10 +1108,10 @@ body.playing .header-container { display: none; }
 #battle-countdown { font-size:64px;font-weight:900;text-align:center;padding:40px 0; }
 @keyframes countdownPulse { 0%{transform:scale(1.4);opacity:0.5} 100%{transform:scale(1);opacity:1} }
 /* Flashcard screen */
-#flashcard-screen {
+#flashcard-screen.active {
   padding: 0 !important;
   max-width: 100% !important;
-  display: flex;
+  display: flex !important;
   flex-direction: column;
   height: 100vh;
   height: 100dvh;
@@ -4330,12 +4330,15 @@ function showFlashcard() {
 
 function flipCard() {
   var card = document.getElementById('flashcard');
+  if (!card) return;
+  // Clear any inline transform so CSS class takes effect
+  card.style.transform = '';
+  card.style.transition = '';
+  card.style.opacity = '';
   if (fcFlipped) {
-    // Flip back to front
     fcFlipped = false;
     card.classList.remove('flipped');
   } else {
-    // Flip to back
     fcFlipped = true;
     card.classList.add('flipped');
   }
@@ -4363,83 +4366,89 @@ function flashcardAgain() {
 }
 
 function initFlashcardSwipe() {
-  var stage = document.getElementById('flashcard-stage');
-  if (!stage) return;
-  // Remove old listeners by cloning
-  var newStage = stage.cloneNode(true);
-  stage.parentNode.replaceChild(newStage, stage);
-
-  var container = newStage.querySelector('#flashcard-container');
+  var container = document.getElementById('flashcard-container');
   if (!container) return;
+  // Remove old listeners
+  if (container._fcCleanup) container._fcCleanup();
 
-  var startX = 0, startY = 0, deltaX = 0, isMoving = false, hasMoved = false;
+  var startX = 0, deltaX = 0, isMoving = false, startTime = 0;
 
-  function onStart(e) {
-    var touch = e.touches ? e.touches[0] : e;
+  function getCard() { return document.getElementById('flashcard'); }
+
+  function onTouchStart(e) {
+    var touch = e.touches[0];
     startX = touch.clientX;
-    startY = touch.clientY;
     deltaX = 0;
     isMoving = true;
-    hasMoved = false;
-    var card = newStage.querySelector('#flashcard');
-    if (card) card.classList.add('swiping');
+    startTime = Date.now();
+    var card = getCard();
+    if (card) { card.style.transition = 'none'; }
   }
 
-  function onMove(e) {
+  function onTouchMove(e) {
     if (!isMoving) return;
-    var touch = e.touches ? e.touches[0] : e;
+    var touch = e.touches[0];
     deltaX = touch.clientX - startX;
-    var deltaY = touch.clientY - startY;
-    if (Math.abs(deltaX) < Math.abs(deltaY) && Math.abs(deltaX) < 10) return;
-    if (Math.abs(deltaX) > 8) hasMoved = true;
-    e.preventDefault();
-    var card = newStage.querySelector('#flashcard');
-    var rotate = deltaX * 0.06;
-    var flipOffset = fcFlipped ? ' rotateY(180deg)' : '';
-    if (card) card.style.transform = 'translateX(' + deltaX + 'px) rotate(' + rotate + 'deg)' + flipOffset;
-    var il = newStage.querySelector('#swipe-indicator-left');
-    var ir = newStage.querySelector('#swipe-indicator-right');
+    if (Math.abs(deltaX) > 10) e.preventDefault();
+    var card = getCard();
+    if (card && Math.abs(deltaX) > 5) {
+      var rotate = deltaX * 0.06;
+      var base = fcFlipped ? 'rotateY(180deg) ' : '';
+      card.style.transform = base + 'translateX(' + deltaX + 'px) rotate(' + rotate + 'deg)';
+    }
+    var il = document.getElementById('swipe-indicator-left');
+    var ir = document.getElementById('swipe-indicator-right');
     if (il) il.style.opacity = deltaX < -30 ? Math.min(1, (-deltaX - 30) / 60) : 0;
     if (ir) ir.style.opacity = deltaX > 30 ? Math.min(1, (deltaX - 30) / 60) : 0;
   }
 
-  function onEnd() {
+  function onTouchEnd() {
     if (!isMoving) return;
     isMoving = false;
-    var card = newStage.querySelector('#flashcard');
-    if (card) card.classList.remove('swiping');
-    var il = newStage.querySelector('#swipe-indicator-left');
-    var ir = newStage.querySelector('#swipe-indicator-right');
+    var card = getCard();
+    var elapsed = Date.now() - startTime;
+    var il = document.getElementById('swipe-indicator-left');
+    var ir = document.getElementById('swipe-indicator-right');
+    if (il) il.style.opacity = '0';
+    if (ir) ir.style.opacity = '0';
 
     if (Math.abs(deltaX) > 80) {
-      // Swipe threshold reached — swipe to dismiss
-      if (deltaX > 80) {
-        if (card) { card.style.transition = 'transform 0.3s ease, opacity 0.3s ease'; card.style.transform = 'translateX(120%) rotate(15deg)'; card.style.opacity = '0'; }
-        setTimeout(function() { flashcardGotIt(); }, 300);
-      } else {
-        if (card) { card.style.transition = 'transform 0.3s ease, opacity 0.3s ease'; card.style.transform = 'translateX(-120%) rotate(-15deg)'; card.style.opacity = '0'; }
-        setTimeout(function() { flashcardAgain(); }, 300);
+      // Swipe dismiss
+      if (card) {
+        card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+        card.style.transform = deltaX > 0 ? 'translateX(120%) rotate(15deg)' : 'translateX(-120%) rotate(-15deg)';
+        card.style.opacity = '0';
       }
-    } else if (!hasMoved) {
+      setTimeout(deltaX > 0 ? flashcardGotIt : flashcardAgain, 300);
+    } else if (Math.abs(deltaX) < 15 && elapsed < 400) {
       // Tap — toggle flip
       if (card) { card.style.transform = ''; card.style.transition = ''; }
       flipCard();
     } else {
-      // Not enough swipe — snap back
-      if (card) { card.style.transition = 'transform 0.3s ease'; card.style.transform = fcFlipped ? 'rotateY(180deg)' : ''; setTimeout(function() { if(card) card.style.transition = ''; }, 300); }
+      // Snap back
+      if (card) {
+        card.style.transition = 'transform 0.3s ease';
+        card.style.transform = fcFlipped ? 'rotateY(180deg)' : '';
+        setTimeout(function() { if (card) card.style.transition = ''; }, 300);
+      }
     }
-    if (il) il.style.opacity = '0';
-    if (ir) ir.style.opacity = '0';
     deltaX = 0;
   }
 
-  container.addEventListener('touchstart', onStart, { passive: true });
-  container.addEventListener('touchmove', onMove, { passive: false });
-  container.addEventListener('touchend', onEnd, { passive: true });
-  container.addEventListener('mousedown', onStart);
-  container.addEventListener('mousemove', onMove);
-  container.addEventListener('mouseup', onEnd);
-  container.addEventListener('mouseleave', onEnd);
+  container.addEventListener('touchstart', onTouchStart, { passive: true });
+  container.addEventListener('touchmove', onTouchMove, { passive: false });
+  container.addEventListener('touchend', onTouchEnd, { passive: true });
+  // Mouse fallback for desktop
+  container.addEventListener('click', function(e) {
+    if (!e.isTrusted) return;
+    flipCard();
+  });
+
+  container._fcCleanup = function() {
+    container.removeEventListener('touchstart', onTouchStart);
+    container.removeEventListener('touchmove', onTouchMove);
+    container.removeEventListener('touchend', onTouchEnd);
+  };
 }
 
 async function saveFlashcardProgress(word) {
