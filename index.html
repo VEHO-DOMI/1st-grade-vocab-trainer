@@ -137,12 +137,13 @@ h1 { display: none; }
 .profile-info { flex: 1; min-width: 0; }
 .profile-name { font-weight: 800; font-size: 1.05rem; letter-spacing: -0.02em; display: flex; align-items: center; gap: 6px; }
 .profile-name .class-tag { font-size: 0.65rem; font-weight: 600; padding: 2px 8px; border-radius: 6px; background: rgba(0,0,0,0.06); color: var(--muted); letter-spacing: 0.5px; }
-.profile-xp-row { display: flex; align-items: center; gap: 6px; margin-top: 2px; flex-wrap: wrap; }
-.profile-xp { font-size: 0.78rem; color: var(--accent2); font-weight: 600; }
-.profile-rank-pill { font-size: 0.65rem; padding: 2px 8px; border-radius: 8px; font-weight: 600; white-space: nowrap; }
-.profile-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
-.profile-badges { display: flex; gap: 4px; }
-.profile-badges .badge-icon { width: 22px; height: 22px; font-size: 13px; }
+.profile-xp-row { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
+.profile-xp { font-size: 0.92rem; color: var(--accent2); font-weight: 700; }
+.profile-rank-row { margin-top: 4px; }
+.profile-rank-pill { font-size: 0.72rem; padding: 3px 10px; border-radius: 8px; font-weight: 600; white-space: nowrap; }
+.profile-badges-row { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+.profile-badges-row .badge-icon { width: 28px; height: 28px; font-size: 16px; }
+.profile-logout-row { display: flex; justify-content: flex-end; margin-top: 8px; }
 .profile-xp-bar { width: 100%; margin-top: 0.7rem; }
 .profile-xp-track { height: 8px; border-radius: 4px; background: rgba(0,0,0,0.06); overflow: hidden; }
 .profile-xp-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; background: var(--accent); }
@@ -236,7 +237,7 @@ h1 { display: none; }
 .avatar { width: 44px; height: 44px; border-radius: 12px; object-fit: contain; background: rgba(0,0,0,0.04); flex-shrink: 0; }
 .avatar-xs { width: 28px; height: 28px; border-radius: 8px; }
 .avatar-sm { width: 34px; height: 34px; border-radius: 10px; }
-.avatar-lg { width: 64px; height: 64px; border-radius: 16px; }
+.avatar-lg { width: 80px; height: 80px; border-radius: 20px; }
 .avatar-pick-item { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; cursor: pointer; border: 3px solid transparent; transition: transform 0.15s, border-color 0.15s; }
 .avatar-pick-item:hover { transform: scale(1.12); }
 .avatar-pick-item.selected { border-color: #f0c040; transform: scale(1.15); }
@@ -637,6 +638,8 @@ h1 { display: none; }
   .source-btn { padding: 1rem 0.9rem; font-size: 0.92rem; }
   .type-grid { justify-content: center; }
   .home-actions { max-width: 640px; margin-left: auto; margin-right: auto; }
+  .home-actions-grid { max-width: 640px; margin-left: auto; margin-right: auto; }
+  .home-nav-grid { max-width: 640px; margin-left: auto; margin-right: auto; }
   .mode-row { max-width: 640px; margin-left: auto; margin-right: auto; }
   #wotd-card { width: 100%; }
   #weekly-goal { width: 100%; }
@@ -678,6 +681,13 @@ body.playing .header-container { display: none; }
 .home-actions { width: 100%; display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.2rem; }
 .home-actions-row { display: flex; gap: 0.5rem; }
 .home-actions-row .btn { flex: 1; }
+.home-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; width: 100%; margin-bottom: 0.8rem; }
+.home-actions-grid .btn, .home-actions-grid .btn-battle { width: 100%; font-size: 0.82rem; padding: 0.7rem 0.5rem; }
+.home-nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; width: 100%; margin-top: 0.5rem; }
+.home-nav-grid .btn { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.7rem; padding: 0.6rem 0.3rem; }
+.home-nav-grid .btn span { font-size: 0.6rem; opacity: 0.8; }
+.home-nav-footer { display: flex; justify-content: center; margin-top: 0.4rem; }
+.home-nav-footer .btn { font-size: 0.72rem; padding: 0.5rem 1.2rem; }
 .mode-row { display: flex; gap: 0.5rem; }
 .mode-row .btn { flex: 1; }
 .btn-sprint {
@@ -1542,20 +1552,19 @@ body.playing .header-container { display: none; }
         </div>
         <div class="profile-xp-row">
           <span class="profile-xp" id="welcome-xp">0 XP</span>
-          <span class="profile-rank-pill" id="rank-badge"></span>
         </div>
-      </div>
-      <div class="profile-right">
-        <div class="profile-badges" id="badge-row"></div>
-        <div style="display:flex;gap:4px;">
-          <button class="logout-btn" onclick="toggleSfx()" id="sfx-toggle-btn" title="Toggle sounds">🔊</button>
-          <button class="logout-btn" onclick="logout()">Log Out</button>
+        <div class="profile-rank-row">
+          <span class="profile-rank-pill" id="rank-badge"></span>
         </div>
       </div>
     </div>
     <div class="profile-xp-bar" id="rank-display" style="display:none;">
       <div class="profile-xp-track"><div class="profile-xp-fill" id="rank-progress-fill"></div></div>
       <div class="profile-xp-labels"><span id="rank-current-label"></span><span id="rank-xp-to-next"></span><span id="rank-next-label"></span></div>
+    </div>
+    <div class="profile-badges-row" id="badge-row"></div>
+    <div class="profile-logout-row">
+      <button class="logout-btn" onclick="logout()">Log Out</button>
     </div>
   </div>
 
@@ -1566,6 +1575,12 @@ body.playing .header-container { display: none; }
     <div class="stat-card"><div class="stat-value" id="stat-streak">0</div><div class="stat-label">Streak 🔥</div></div>
   </div>
 
+  <div class="home-actions-grid">
+    <button class="btn btn-primary btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
+    <button class="btn btn-review" id="review-btn" style="display:none;" onclick="startSmartReview()">🔄 Smart Review</button>
+    <button id="btn-battle" class="btn-battle" onclick="openBattleLobby()" style="display:none;">⚔️ Battle Arena</button>
+    <button class="btn-battle" onclick="openClassQuizJoin()" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">🎓 Class Quiz</button>
+  </div>
 
   <div class="today-card" id="today-card" style="display:none;">
     <div class="today-section">
@@ -1601,18 +1616,14 @@ body.playing .header-container { display: none; }
     <div id="weekly-goal-text" style="font-size:0.75rem;color:var(--text-secondary);text-align:center;"></div>
   </div>
 
-  <div class="home-actions">
-    <button class="btn btn-primary btn-block btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
-    <button class="btn btn-review btn-block btn-small" id="review-btn" style="display:none;" onclick="startSmartReview()">🔄 Smart Review</button>
-    <button id="btn-battle" class="btn-battle" onclick="openBattleLobby()" style="display:none;">⚔️ Battle</button>
-    <button class="btn-battle" onclick="openClassQuizJoin()" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">🎓 Class Quiz</button>
-    <div class="home-actions-row">
-      <button class="btn btn-secondary btn-small" onclick="showProgressMap()">🗺️ Map</button>
-      <button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊 Progress</button>
-      <button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆 Leaderboard</button>
-      <button class="btn btn-secondary btn-small" onclick="showWordReference()">📖 Words</button>
-      <button id="sfx-toggle-btn" onclick="toggleSfx()" style="font-size:13px;padding:8px 16px;border-radius:10px;cursor:pointer;background:var(--card);border:1px solid var(--card-border);color:var(--text);">🔊</button>
-    </div>
+  <div class="home-nav-grid">
+    <button class="btn btn-secondary btn-small" onclick="showProgressMap()">🗺️<span>Map</span></button>
+    <button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>Progress</span></button>
+    <button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>Leaderboard</span></button>
+    <button class="btn btn-secondary btn-small" onclick="showWordReference()">📖<span>Words</span></button>
+  </div>
+  <div class="home-nav-footer">
+    <button id="sfx-toggle-btn" onclick="toggleSfx()" class="btn btn-secondary btn-small">🔊 Sound: ON</button>
   </div>
 </div>
 
@@ -3574,7 +3585,15 @@ async function loadProgress() {
   state.progressData = {};
   try {
     const snap = await studentsRef.doc(state.studentId).collection('progress').get();
-    snap.forEach(doc => { state.progressData[doc.id] = doc.data(); });
+    snap.forEach(doc => {
+      const data = doc.data();
+      if (data.words) {
+        for (const key of Object.keys(data.words)) {
+          data.words[key] = migrateWordProgress(data.words[key]);
+        }
+      }
+      state.progressData[doc.id] = data;
+    });
   } catch (e) { console.error('Error loading progress:', e); }
 }
 
@@ -3655,16 +3674,16 @@ async function saveSessionResults() {
       }
     }
 
-    // === BONUS XP: Battle + Practice combo (+20 XP, once per day) ===
+    // === BONUS XP: Battle + Practice combo (+40 XP, once per day) ===
     const dailyComboKey = 'dailyCombo_' + today;
     if (!state.studentData[dailyComboKey]) {
       state.studentData.dailyHasPracticed = true;
       const lastBattle = state.studentData.lastBattle || '';
       if (lastBattle.startsWith(today)) {
-        bonusXP += 20;
+        bonusXP += 40;
         updateObj[dailyComboKey] = true;
         state.studentData[dailyComboKey] = true;
-        showBonusNotification('+20 XP Battle+Practice Combo!');
+        showBonusNotification('+40 XP Battle+Practice Combo!');
       }
     }
 
@@ -3687,8 +3706,12 @@ async function saveSessionResults() {
       const src = r.word.source;
       if (!progressBySource[src]) progressBySource[src] = {};
       const key = r.word.w;
-      if (!progressBySource[src][key]) progressBySource[src][key] = { c: 0, w: 0, correct: r.correct };
-      if (r.correct) progressBySource[src][key].c++;
+      if (!progressBySource[src][key]) progressBySource[src][key] = { c: 0, w: 0, correct: r.correct, newTypes: [] };
+      if (r.correct) {
+        progressBySource[src][key].c++;
+        const cat = getTypeCategory(r.type);
+        if (cat && !progressBySource[src][key].newTypes.includes(cat)) progressBySource[src][key].newTypes.push(cat);
+      }
       else progressBySource[src][key].w++;
       // Track last answer correctness for spaced repetition calc
       progressBySource[src][key].lastCorrect = r.correct;
@@ -3704,10 +3727,14 @@ async function saveSessionResults() {
         const merged = { ...existing.words };
         for (const [w, counts] of Object.entries(words)) {
           if (merged[w]) {
-            merged[w] = { c: (merged[w].c || 0) + counts.c, w: (merged[w].w || 0) + counts.w };
+            merged[w] = { ...merged[w], c: (merged[w].c || 0) + counts.c, w: (merged[w].w || 0) + counts.w };
           } else {
             merged[w] = { c: counts.c, w: counts.w };
           }
+          // Update solvedTypes
+          const prev = merged[w].solvedTypes || [];
+          const combined = [...new Set([...prev, ...(counts.newTypes || [])])];
+          merged[w].solvedTypes = combined;
           // Spaced repetition: update lastSeen, interval, dueDate
           merged[w].lastSeen = nowISO;
           const oldInterval = merged[w].interval || 0;
@@ -3735,7 +3762,7 @@ async function saveSessionResults() {
           const newInterval = counts.lastCorrect ? 1 : 1;
           const due = new Date();
           due.setDate(due.getDate() + newInterval);
-          withSR[w] = { c: counts.c, w: counts.w, lastSeen: nowISO, interval: newInterval, dueDate: due.toISOString() };
+          withSR[w] = { c: counts.c, w: counts.w, lastSeen: nowISO, interval: newInterval, dueDate: due.toISOString(), solvedTypes: counts.newTypes || [] };
         }
         await docRef.set({ source: src, words: withSR });
         state.progressData[slug] = { source: src, words: withSR };
@@ -3779,18 +3806,60 @@ function logout() {
   showScreen('section-screen');
 }
 
+// ===== MASTERY SYSTEM =====
+function getTypeCategory(exerciseType) {
+  if (['context', 'context-hard', 'mc-context'].includes(exerciseType)) return 'context';
+  if (['definition', 'definition-hard', 'mc-definition'].includes(exerciseType)) return 'definition';
+  if (['translation', 'mc-translation'].includes(exerciseType)) return 'translation';
+  if (exerciseType && exerciseType.startsWith('mc-')) return 'mc';
+  if (['collocation', 'mc-collocation'].includes(exerciseType)) return 'collocation';
+  return null;
+}
+
+function isWordMastered(wp) {
+  const types = wp.solvedTypes || [];
+  const hasCtx = types.includes('context');
+  const hasDef = types.includes('definition');
+  const hasTrans = types.includes('translation');
+  const hasMC = types.includes('mc');
+  const core = [hasCtx, hasDef, hasTrans].filter(Boolean).length;
+  return core >= 3 || (core >= 2 && hasMC);
+}
+
+function getWordStatus(wp) {
+  if (!wp) return 'unseen';
+  if (isWordMastered(wp)) return 'mastered';
+  if (wp.c > 0) return 'solved';
+  if (wp.w > 0 && wp.w > (wp.c || 0)) return 'weak';
+  if (wp.w > 0 || wp.c === 0) return 'seen';
+  return 'seen';
+}
+
+function migrateWordProgress(wp) {
+  if (wp.solvedTypes) return wp;
+  const types = [];
+  if (wp.c >= 3) { types.push('context', 'definition', 'translation'); }
+  else if (wp.c >= 2) { types.push('context', 'definition'); }
+  else if (wp.c >= 1) { types.push('context'); }
+  wp.solvedTypes = types;
+  return wp;
+}
+
 // ===== PROGRESS HELPERS =====
 function getSourceProgress(sourceKey) {
   const slug = slugify(sourceKey);
   const prog = state.progressData[slug];
-  if (!prog || !prog.words) return { practiced: 0, mastered: 0, total: vocabData[sourceKey].length };
+  if (!prog || !prog.words) return { practiced: 0, mastered: 0, solved: 0, weak: 0, total: vocabData[sourceKey].length };
   const total = vocabData[sourceKey].length;
-  let practiced = 0, mastered = 0;
+  let practiced = 0, mastered = 0, solved = 0, weak = 0;
   for (const w of Object.values(prog.words)) {
     practiced++;
-    if (w.c >= 3 && w.c > w.w && (w.interval || 0) >= 14) mastered++;
+    const status = getWordStatus(w);
+    if (status === 'mastered') mastered++;
+    else if (status === 'solved') solved++;
+    else if (status === 'weak') weak++;
   }
-  return { practiced, mastered, total };
+  return { practiced, mastered, solved, weak, total };
 }
 
 function getTotalMastered() {
@@ -3999,182 +4068,118 @@ function renderProgressMap() {
 
   var unitKeys = Object.keys(vocabData);
   var numUnits = unitKeys.length;
+  var cols = 3;
+  var nodeR = 38;
+  var cellW = 108;
+  var cellH = 120;
+  var padX = 8;
+  var padTop = 16;
+  var rows = Math.ceil(numUnits / cols);
+  var svgWidth = cols * cellW + padX * 2;
+  var svgHeight = rows * cellH + padTop + 20;
 
-  // Layout: units bottom to top, winding path left-right
-  var svgWidth = 340;
-  var nodeSpacing = 100;
-  var svgHeight = (numUnits + 1) * nodeSpacing + 120;
-  var centerX = svgWidth / 2;
-  var nodeRadius = 28;
-
-  // Calculate positions — winding path (alternating left/right)
-  var nodes = [];
-  for (var i = 0; i < numUnits; i++) {
-    var unitIdx = numUnits - 1 - i; // Reverse: bottom = first unit
-    var key = unitKeys[unitIdx];
-    var prog = getSourceProgress(key);
-    var pct = prog.total > 0 ? Math.round((prog.mastered / prog.total) * 100) : 0;
-    var practiced = prog.practiced > 0;
-    var stars = pct >= 100 ? 4 : pct >= 75 ? 3 : pct >= 50 ? 2 : pct >= 25 ? 1 : 0;
-
-    // Position: winding left-right
-    var x = centerX + (i % 2 === 0 ? -55 : 55);
-    var y = svgHeight - 80 - (i * nodeSpacing);
-
-    // Zone assignment based on position in list
-    var zoneProgress = numUnits > 1 ? i / (numUnits - 1) : 0;
-    var zone = zoneProgress < 0.25 ? 'bronze' : zoneProgress < 0.5 ? 'silver' : zoneProgress < 0.75 ? 'gold' : 'diamond';
-
-    nodes.push({ key: key, x: x, y: y, pct: pct, practiced: practiced, stars: stars, zone: zone, idx: unitIdx });
-  }
-
-  // Zone colors for SVG
-  var zoneColors = {
-    bronze: { bg: '#92400e', ring: '#d97706', path: '#b45309', label: '#fbbf24', glow: 'rgba(217,119,6,0.2)' },
-    silver: { bg: '#374151', ring: '#9ca3af', path: '#6b7280', label: '#d1d5db', glow: 'rgba(156,163,175,0.2)' },
-    gold: { bg: '#854d0e', ring: '#eab308', path: '#ca8a04', label: '#fde047', glow: 'rgba(234,179,8,0.2)' },
-    diamond: { bg: '#312e81', ring: '#818cf8', path: '#6366f1', label: '#c7d2fe', glow: 'rgba(129,140,248,0.2)' }
+  // Tier colors based on mastery %
+  var tierColors = {
+    diamond: { bg: '#312e81', ring: '#818cf8', outer: '#a78bfa' },
+    gold: { bg: '#854d0e', ring: '#eab308', outer: '#fde047' },
+    silver: { bg: '#374151', ring: '#9ca3af', outer: '#d1d5db' },
+    bronze: { bg: '#92400e', ring: '#d97706', outer: '#fbbf24' },
+    locked: { bg: 'rgba(255,255,255,0.04)', ring: 'rgba(255,255,255,0.1)', outer: 'rgba(255,255,255,0.06)' }
   };
 
-  // Build SVG
+  function getTier(masteredPct, practiced) {
+    if (!practiced) return 'locked';
+    if (masteredPct >= 90) return 'diamond';
+    if (masteredPct >= 60) return 'gold';
+    if (masteredPct >= 30) return 'silver';
+    return 'bronze';
+  }
+
   var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + svgWidth + ' ' + svgHeight + '" style="width:100%;height:auto;">';
 
-  // Gradient for completed path (define early so it can be referenced)
-  svg += '<defs><linearGradient id="pathGrad" x1="0" y1="1" x2="0" y2="0">';
-  svg += '<stop offset="0%" stop-color="#d97706" />';
-  svg += '<stop offset="33%" stop-color="#9ca3af" />';
-  svg += '<stop offset="66%" stop-color="#eab308" />';
-  svg += '<stop offset="100%" stop-color="#818cf8" />';
-  svg += '</linearGradient></defs>';
+  for (var i = 0; i < numUnits; i++) {
+    var key = unitKeys[i];
+    var prog = getSourceProgress(key);
+    var solvedPct = prog.total > 0 ? Math.round(((prog.mastered + prog.solved) / prog.total) * 100) : 0;
+    var masteredPct = prog.total > 0 ? Math.round((prog.mastered / prog.total) * 100) : 0;
+    var practiced = prog.practiced > 0;
+    var tier = getTier(masteredPct, practiced);
+    var tc = tierColors[tier];
 
-  // Zone background bands
-  var zoneHeight = svgHeight / 4;
-  var zones = ['diamond', 'gold', 'silver', 'bronze'];
-  for (var z = 0; z < 4; z++) {
-    var zy = z * zoneHeight;
-    var zc = zoneColors[zones[z]];
-    svg += '<rect x="0" y="' + zy + '" width="' + svgWidth + '" height="' + zoneHeight + '" fill="' + zc.glow + '" />';
-    svg += '<text x="' + centerX + '" y="' + (zy + 20) + '" class="map-zone-label" fill="' + zc.label + '">' + zones[z].toUpperCase() + '</text>';
-  }
+    var col = i % cols;
+    var row = Math.floor(i / cols);
+    var cx = padX + col * cellW + cellW / 2;
+    var cy = padTop + row * cellH + cellH / 2 - 8;
 
-  // Draw path connecting nodes (background track)
-  if (nodes.length > 1) {
-    svg += '<path d="';
-    for (var i = 0; i < nodes.length; i++) {
-      var n = nodes[i];
-      if (i === 0) {
-        svg += 'M' + n.x + ',' + n.y;
-      } else {
-        var prev = nodes[i - 1];
-        var cpx1 = prev.x;
-        var cpy1 = prev.y - nodeSpacing * 0.4;
-        var cpx2 = n.x;
-        var cpy2 = n.y + nodeSpacing * 0.4;
-        svg += ' C' + cpx1 + ',' + cpy1 + ' ' + cpx2 + ',' + cpy2 + ' ' + n.x + ',' + n.y;
-      }
-    }
-    svg += '" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4" stroke-linecap="round" />';
-  }
+    var outerR = nodeR;
+    var innerR = nodeR - 6;
+    var circumOuter = 2 * Math.PI * outerR;
+    var circumInner = 2 * Math.PI * innerR;
 
-  // Draw completed path (filled portion)
-  var lastPracticedIdx = -1;
-  for (var i = 0; i < nodes.length; i++) {
-    if (nodes[i].practiced) lastPracticedIdx = i;
-  }
+    svg += '<g onclick="mapNodeTapped(' + i + ')" style="cursor:pointer;">';
 
-  if (lastPracticedIdx >= 0 && nodes.length > 1) {
-    svg += '<path d="';
-    for (var i = 0; i <= lastPracticedIdx; i++) {
-      var n = nodes[i];
-      if (i === 0) {
-        svg += 'M' + n.x + ',' + n.y;
-      } else {
-        var prev = nodes[i - 1];
-        svg += ' C' + prev.x + ',' + (prev.y - nodeSpacing * 0.4) + ' ' + n.x + ',' + (n.y + nodeSpacing * 0.4) + ' ' + n.x + ',' + n.y;
-      }
-    }
-    svg += '" fill="none" stroke="url(#pathGrad)" stroke-width="4" stroke-linecap="round" />';
-  }
+    // Background circle
+    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (outerR + 2) + '" fill="' + tc.bg + '" />';
 
-  // Draw nodes
-  for (var i = 0; i < nodes.length; i++) {
-    var n = nodes[i];
-    var zc = zoneColors[n.zone];
-    var isLocked = !n.practiced;
-    var lockedClass = isLocked ? ' class="map-node-locked"' : '';
-
-    svg += '<g' + lockedClass + ' onclick="mapNodeTapped(' + n.idx + ')" style="cursor:pointer;">';
-
-    // Glow for practiced nodes
-    if (n.practiced && n.pct < 100) {
-      svg += '<circle cx="' + n.x + '" cy="' + n.y + '" r="' + (nodeRadius + 6) + '" fill="' + zc.glow + '" opacity="0.5"><animate attributeName="r" values="' + (nodeRadius + 4) + ';' + (nodeRadius + 8) + ';' + (nodeRadius + 4) + '" dur="3s" repeatCount="indefinite" /></circle>';
+    // Outer ring track (mastered)
+    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + outerR + '" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5" />';
+    if (practiced && masteredPct > 0) {
+      var dashOuter = circumOuter * (masteredPct / 100);
+      svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + outerR + '" fill="none" stroke="#22c55e" stroke-width="5" stroke-dasharray="' + dashOuter + ' ' + circumOuter + '" stroke-linecap="round" transform="rotate(-90 ' + cx + ' ' + cy + ')" />';
     }
 
-    // Node background circle
-    svg += '<circle cx="' + n.x + '" cy="' + n.y + '" r="' + nodeRadius + '" fill="' + (isLocked ? 'rgba(255,255,255,0.05)' : zc.bg) + '" stroke="' + (isLocked ? 'rgba(255,255,255,0.1)' : zc.ring) + '" stroke-width="2.5" />';
-
-    // Mastery ring (progress arc)
-    if (n.practiced && n.pct > 0) {
-      var circumference = 2 * Math.PI * (nodeRadius - 1);
-      var dashLen = circumference * (n.pct / 100);
-      svg += '<circle cx="' + n.x + '" cy="' + n.y + '" r="' + (nodeRadius - 1) + '" fill="none" stroke="' + zc.ring + '" stroke-width="3" stroke-dasharray="' + dashLen + ' ' + circumference + '" stroke-linecap="round" transform="rotate(-90 ' + n.x + ' ' + n.y + ')" opacity="0.8" />';
+    // Inner ring track (solved)
+    svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + innerR + '" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4" />';
+    if (practiced && solvedPct > 0) {
+      var dashInner = circumInner * (solvedPct / 100);
+      svg += '<circle cx="' + cx + '" cy="' + cy + '" r="' + innerR + '" fill="none" stroke="#3b82f6" stroke-width="4" stroke-dasharray="' + dashInner + ' ' + circumInner + '" stroke-linecap="round" transform="rotate(-90 ' + cx + ' ' + cy + ')" />';
     }
 
-    // Lock icon for unpracticed
-    if (isLocked) {
-      svg += '<text x="' + n.x + '" y="' + (n.y + 5) + '" text-anchor="middle" font-size="18" fill="rgba(255,255,255,0.15)">&#x1F512;</text>';
+    // Center text
+    if (!practiced) {
+      svg += '<text x="' + cx + '" y="' + (cy + 5) + '" text-anchor="middle" font-size="16" fill="rgba(255,255,255,0.15)">&#x1F512;</text>';
     } else {
-      // Mastery percentage inside node
-      svg += '<text x="' + n.x + '" y="' + (n.y + 1) + '" text-anchor="middle" font-size="13" font-weight="800" fill="white">' + n.pct + '%</text>';
+      svg += '<text x="' + cx + '" y="' + (cy - 2) + '" text-anchor="middle" font-size="15" font-weight="800" fill="white">' + solvedPct + '%</text>';
+      svg += '<text x="' + cx + '" y="' + (cy + 11) + '" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.5)">solved</text>';
     }
 
-    // Unit label below node
-    svg += '<text x="' + n.x + '" y="' + (n.y + nodeRadius + 16) + '" class="map-node-label">' + escapeHtml(n.key) + '</text>';
+    // Unit label below
+    var labelY = cy + outerR + 14;
+    var shortKey = key.length > 12 ? key.substring(0, 12) + '\u2026' : key;
+    svg += '<text x="' + cx + '" y="' + labelY + '" class="map-node-label">' + escapeHtml(shortKey) + '</text>';
 
-    // Stars below label
-    if (n.stars > 0) {
-      var starStr = '';
-      for (var s = 0; s < 4; s++) starStr += s < n.stars ? '\u2605' : '\u2606';
-      svg += '<text x="' + n.x + '" y="' + (n.y + nodeRadius + 28) + '" class="map-node-stars">' + starStr + '</text>';
+    // Tier indicator
+    if (practiced && tier !== 'locked') {
+      var tierLabel = tier.charAt(0).toUpperCase() + tier.slice(1);
+      svg += '<text x="' + cx + '" y="' + (labelY + 12) + '" text-anchor="middle" font-size="8" font-weight="600" fill="' + tc.ring + '" opacity="0.7">' + tierLabel + '</text>';
     }
 
     svg += '</g>';
   }
 
-  // Student avatar marker — position at last practiced node
-  if (lastPracticedIdx >= 0) {
-    var avatarNode = nodes[lastPracticedIdx];
-    var avatarX = avatarNode.x;
-    var avatarY = avatarNode.y - nodeRadius - 20;
-    svg += '<g class="map-avatar-marker">';
-    svg += '<polygon points="' + avatarX + ',' + (avatarY + 16) + ' ' + (avatarX - 5) + ',' + (avatarY + 10) + ' ' + (avatarX + 5) + ',' + (avatarY + 10) + '" fill="var(--accent, #3b82f6)" />';
-    svg += '<circle cx="' + avatarX + '" cy="' + avatarY + '" r="14" fill="var(--accent, #3b82f6)" stroke="white" stroke-width="2" />';
-    var initial = (state.studentName || 'S').charAt(0).toUpperCase();
-    svg += '<text x="' + avatarX + '" y="' + (avatarY + 5) + '" text-anchor="middle" font-size="12" font-weight="800" fill="white">' + initial + '</text>';
-    svg += '</g>';
-  }
+  // Legend at bottom
+  var legendY = svgHeight - 14;
+  svg += '<circle cx="' + (svgWidth / 2 - 60) + '" cy="' + legendY + '" r="4" fill="none" stroke="#22c55e" stroke-width="2" />';
+  svg += '<text x="' + (svgWidth / 2 - 52) + '" y="' + (legendY + 3) + '" font-size="8" fill="rgba(255,255,255,0.5)">Mastered</text>';
+  svg += '<circle cx="' + (svgWidth / 2 + 20) + '" cy="' + legendY + '" r="4" fill="none" stroke="#3b82f6" stroke-width="2" />';
+  svg += '<text x="' + (svgWidth / 2 + 28) + '" y="' + (legendY + 3) + '" font-size="8" fill="rgba(255,255,255,0.5)">Solved</text>';
 
   svg += '</svg>';
-
   container.innerHTML = svg;
-
-  // Scroll to the avatar position
-  if (lastPracticedIdx >= 0) {
-    var scrollTarget = nodes[lastPracticedIdx].y - container.clientHeight / 2;
-    container.scrollTop = Math.max(0, scrollTarget);
-  }
 }
 
 function mapNodeTapped(unitIdx) {
   var key = Object.keys(vocabData)[unitIdx];
   if (!key) return;
   var prog = getSourceProgress(key);
-  var pct = prog.total > 0 ? Math.round((prog.mastered / prog.total) * 100) : 0;
-  var stars = pct >= 100 ? '\u2605\u2605\u2605\u2605' : pct >= 75 ? '\u2605\u2605\u2605\u2606' : pct >= 50 ? '\u2605\u2605\u2606\u2606' : pct >= 25 ? '\u2605\u2606\u2606\u2606' : '\u2606\u2606\u2606\u2606';
+  var masteredPct = prog.total > 0 ? Math.round((prog.mastered / prog.total) * 100) : 0;
+  var solvedPct = prog.total > 0 ? Math.round(((prog.mastered + prog.solved) / prog.total) * 100) : 0;
+  var tier = masteredPct >= 90 ? 'Diamond' : masteredPct >= 60 ? 'Gold' : masteredPct >= 30 ? 'Silver' : prog.practiced > 0 ? 'Bronze' : 'Locked';
   showBattleMessage(
-    key + ' ' + stars,
-    prog.mastered + ' of ' + prog.total + ' words mastered (' + pct + '%)\n' +
-    prog.practiced + ' words practiced'
+    key + ' \u2014 ' + tier,
+    prog.mastered + ' of ' + prog.total + ' words mastered (' + masteredPct + '%)\n' +
+    (prog.mastered + prog.solved) + ' of ' + prog.total + ' words solved (' + solvedPct + '%)\n' +
+    (prog.weak > 0 ? prog.weak + ' weak words' : '')
   );
 }
 
@@ -6218,8 +6223,8 @@ function renderBattleResults(data) {
   const iWon = data.winner === myRole;
   const isDraw = data.winner === 'draw';
   const opName = data.playerNames[opRole] || 'Opponent';
-  let xpEarned = iWon ? 50 : isDraw ? 25 : 15;
-  xpEarned += myScore * 10;
+  let xpEarned = iWon ? 120 : isDraw ? 60 : 30;
+  xpEarned += myScore * 15;
   state.xp = (state.xp || 0) + xpEarned;
   const area = document.getElementById('battle-area');
   if (area) area.innerHTML = '<div style="text-align:center;padding:20px;"><div style="font-size:48px;margin-bottom:12px;">' + (iWon ? '\uD83C\uDFC6' : isDraw ? '\uD83E\uDD1D' : '\uD83D\uDCAA') + '</div><div style="font-size:24px;font-weight:700;margin-bottom:4px;">' + (iWon ? 'Victory!' : isDraw ? 'Draw!' : escapeHtml(opName) + ' wins!') + '</div><div style="font-size:16px;opacity:0.7;margin-bottom:16px;">' + myScore + ' \u2013 ' + opScore + '</div><div style="font-size:14px;opacity:0.6;margin-bottom:24px;">+' + xpEarned + ' XP earned</div><button onclick="leaveBattle()" class="btn btn-primary" style="padding:10px 28px;">Back to Home</button></div>';
@@ -7433,8 +7438,8 @@ async function finishDuelTurn() {
       var opTotal = myRole === 'p1' ? p2Total : p1Total;
       var iWon = myTotal > opTotal;
       var isDraw = myTotal === opTotal;
-      var xpEarned = iWon ? 40 : isDraw ? 20 : 10;
-      xpEarned += myTotal * 3;
+      var xpEarned = iWon ? 100 : isDraw ? 50 : 25;
+      xpEarned += myTotal * 8;
       state.xp = (state.xp || 0) + xpEarned;
       const duelUpdate = { xp: state.xp };
       if (iWon) {
