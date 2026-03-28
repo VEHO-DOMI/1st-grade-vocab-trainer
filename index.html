@@ -5706,47 +5706,70 @@ async function openDuelHub() {
 
 async function loadDuels() {
   if (!classRef || !state.studentId) return;
-  const mySlug = state.studentId;
-  const duelsRef = classRef.collection('duels');
+  var mySlug = state.studentId;
+  var duelsRef = classRef.collection('duels');
   try {
-    const p1Snap = await duelsRef.where('p1', '==', mySlug).orderBy('updatedAt', 'desc').limit(20).get();
-    const p2Snap = await duelsRef.where('p2', '==', mySlug).orderBy('updatedAt', 'desc').limit(20).get();
-    const duels = [];
-    const seen = new Set();
-    p1Snap.forEach(doc => { if (!seen.has(doc.id)) { seen.add(doc.id); duels.push({ id: doc.id, ...doc.data(), myRole: 'p1' }); } });
-    p2Snap.forEach(doc => { if (!seen.has(doc.id)) { seen.add(doc.id); duels.push({ id: doc.id, ...doc.data(), myRole: 'p2' }); } });
-    duels.sort((a, b) => (b.updatedAt?.seconds || 0) - (a.updatedAt?.seconds || 0));
+    // Simple queries without orderBy to avoid needing composite indexes
+    var p1Snap = await duelsRef.where('p1', '==', mySlug).limit(30).get();
+    var p2Snap = await duelsRef.where('p2', '==', mySlug).limit(30).get();
+    var duels = [];
+    var seen = new Set();
+    p1Snap.forEach(function(doc) { if (!seen.has(doc.id)) { seen.add(doc.id); duels.push({ id: doc.id, ...doc.data(), myRole: 'p1' }); } });
+    p2Snap.forEach(function(doc) { if (!seen.has(doc.id)) { seen.add(doc.id); duels.push({ id: doc.id, ...doc.data(), myRole: 'p2' }); } });
+    // Sort in JS — newest first
+    duels.sort(function(a, b) {
+      var aTime = a.updatedAt ? (a.updatedAt.seconds || 0) : (a.createdAt ? (a.createdAt.seconds || 0) : 0);
+      var bTime = b.updatedAt ? (b.updatedAt.seconds || 0) : (b.createdAt ? (b.createdAt.seconds || 0) : 0);
+      return bTime - aTime;
+    });
+    state._loadedDuels = duels; // Cache for duplicate checking
     renderDuelHub(duels);
   } catch (e) { console.error('Load duels error:', e); }
 }
 
 function renderDuelHub(duels) {
-  const yourTurn = [], waiting = [], completed = [];
-  const mySlug = state.studentId;
-  for (const d of duels) {
+  var yourTurn = [], waiting = [], completed = [];
+  for (var i = 0; i < duels.length; i++) {
+    var d = duels[i];
     if (d.status === 'complete') { completed.push(d); continue; }
-    const isMyTurn = (d.status === 'p1-turn' && d.myRole === 'p1') ||
-                     (d.status === 'p2-turn-partial' && d.myRole === 'p2') ||
-                     (d.status === 'p1-turn-final' && d.myRole === 'p1');
+    var isMyTurn = (d.status === 'p1-turn' && d.myRole === 'p1') ||
+                   (d.status === 'p2-turn-partial' && d.myRole === 'p2') ||
+                   (d.status === 'p1-turn-final' && d.myRole === 'p1');
     if (isMyTurn) yourTurn.push(d); else waiting.push(d);
   }
-  function renderList(items, containerId, showPlay) {
-    const el = document.getElementById(containerId);
-    const list = document.getElementById(containerId.replace('-card','') + '-list') || el.querySelector('div:last-child');
+  function renderList(items, containerId, mode) {
+    var el = document.getElementById(containerId);
+    var list = document.getElementById(containerId + '-list');
     if (!el || !list) return;
     if (items.length === 0) { el.style.display = 'none'; return; }
     el.style.display = '';
-    list.innerHTML = items.map(d => {
-      const opName = d.myRole === 'p1' ? d.p2Name : d.p1Name;
-      const myScore = d.myRole === 'p1' ? (d.p1Score || 0) : (d.p2Score || 0);
-      const opScore = d.myRole === 'p1' ? (d.p2Score || 0) : (d.p1Score || 0);
-      const statusText = d.status === 'complete' ? (myScore > opScore ? '🏆 Won' : myScore < opScore ? '💪 Lost' : '🤝 Draw') + ' ' + myScore + '-' + opScore : myScore + '-' + opScore;
-      return '<div class="duel-item" onclick="' + (showPlay ? 'playDuel(\'' + d.id + '\')' : d.status === 'complete' ? 'viewDuelResult(\'' + d.id + '\')' : '') + '"><div class="duel-item-info"><div class="duel-item-name">vs ' + escapeHtml(opName) + (showPlay ? '<span class="duel-badge-turn">YOUR TURN</span>' : '') + '</div><div class="duel-item-status">' + statusText + '</div></div></div>';
+    list.innerHTML = items.map(function(d) {
+      var opName = d.myRole === 'p1' ? d.p2Name : d.p1Name;
+      var myScore = d.myRole === 'p1' ? (d.p1Score || 0) : (d.p2Score || 0);
+      var opScore = d.myRole === 'p1' ? (d.p2Score || 0) : (d.p1Score || 0);
+      var statusText, action;
+      if (mode === 'play') {
+        statusText = 'Your turn! · ' + myScore + '-' + opScore;
+        action = 'playDuel(\'' + d.id + '\')';
+      } else if (mode === 'wait') {
+        statusText = 'Waiting for ' + escapeHtml(opName) + ' · ' + myScore + '-' + opScore;
+        action = '';
+      } else {
+        var result = myScore > opScore ? '🏆 Won' : myScore < opScore ? '💪 Lost' : '🤝 Draw';
+        statusText = result + ' ' + myScore + '-' + opScore;
+        action = 'viewDuelResult(\'' + d.id + '\')';
+      }
+      return '<div class="duel-item"' + (action ? ' onclick="' + action + '"' : '') + ' style="' + (action ? 'cursor:pointer;' : '') + '"><div class="duel-item-info"><div class="duel-item-name">vs ' + escapeHtml(opName) + (mode === 'play' ? '<span class="duel-badge-turn">YOUR TURN</span>' : '') + '</div><div class="duel-item-status">' + statusText + '</div></div></div>';
     }).join('');
   }
-  renderList(yourTurn, 'duel-your-turn', true);
-  renderList(waiting, 'duel-waiting', false);
-  renderList(completed, 'duel-completed', false);
+  renderList(yourTurn, 'duel-your-turn', 'play');
+  renderList(waiting, 'duel-waiting', 'wait');
+  renderList(completed, 'duel-completed', 'done');
+  // Show empty state if no duels at all
+  if (yourTurn.length === 0 && waiting.length === 0 && completed.length === 0) {
+    var ytEl = document.getElementById('duel-your-turn');
+    if (ytEl) { ytEl.style.display = ''; document.getElementById('duel-your-turn-list').innerHTML = '<div style="text-align:center;padding:1rem;color:var(--muted);font-size:0.85rem;">No duels yet. Challenge someone!</div>'; }
+  }
 }
 
 function openDuelChallenge() {
@@ -5779,9 +5802,18 @@ function openDuelChallenge() {
 }
 
 async function createDuel(opSlug, opName) {
-  const overlay = document.getElementById('duel-challenge-overlay');
+  var overlay = document.getElementById('duel-challenge-overlay');
   if (overlay) overlay.remove();
-  const mySlug = state.studentId;
+  var mySlug = state.studentId;
+  // Prevent duplicate active duels with same opponent
+  try {
+    var existCheck1 = await classRef.collection('duels').where('p1', '==', mySlug).where('p2', '==', opSlug).where('status', 'in', ['p1-turn','p2-turn-partial','p1-turn-final']).limit(1).get();
+    var existCheck2 = await classRef.collection('duels').where('p1', '==', opSlug).where('p2', '==', mySlug).where('status', 'in', ['p1-turn','p2-turn-partial','p1-turn-final']).limit(1).get();
+    if (!existCheck1.empty || !existCheck2.empty) {
+      showBattleMessage('Already dueling!', 'You already have an active duel with ' + opName + '. Finish it first!');
+      return;
+    }
+  } catch(e) { /* If index missing, allow anyway */ }
   const unitKeys = Object.keys(vocabData);
   shuffle(unitKeys);
   const categories = unitKeys.slice(0, Math.min(6, unitKeys.length));
