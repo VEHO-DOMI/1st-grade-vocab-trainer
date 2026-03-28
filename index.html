@@ -4561,7 +4561,7 @@ function openPracticeSetup() {
           </button>
           <button class="type-card" data-type="collocation" onclick="selectType(this)">
             <span class="type-card-name">🤝 Word Partners</span>
-            <span class="type-card-desc">Fill in the missing word in a collocation</span>
+            <span class="type-card-desc">Odd one out &amp; word partners</span>
           </button>
         </div>
       </div>
@@ -5146,9 +5146,7 @@ function getMCAnswer(word, type) {
   return word.w.replace(/^to\s+/, '').replace(/\(.*?\)/g, '').replace(/\bsth\.?\s*/g, '').replace(/\bsb\.?\s*/g, '').replace(/[.!?]+$/g, '').trim().replace(/\s+/g, ' ');
 }
 
-const COLLOCATION_DISTRACTORS = ['make','do','take','have','get','give','keep','put','pay','set','break','catch','hold','run','come','find','reach','cause','earn','save','miss','meet','gain','suffer','launch','strong','serious','heavy','large','close','good','big','clean','difficult','tight','balanced','healthy','bad','annual','official','medical'];
-
-function renderCollocationMC(word, colEntry) {
+function renderCollocationMC(word) {
   const grid = document.getElementById('mc-grid');
   const answerRow = document.getElementById('answer-row');
   const actions = document.getElementById('quiz-actions');
@@ -5157,18 +5155,23 @@ function renderCollocationMC(word, colEntry) {
   actions.style.display = 'none';
   grid.innerHTML = '';
 
-  const correctAnswer = colEntry.answer;
-  // Pick 3 distractors from the pool, excluding the correct answer
-  const pool = COLLOCATION_DISTRACTORS.filter(d => d.toLowerCase() !== correctAnswer.toLowerCase());
-  shuffle(pool);
-  const distractors = pool.slice(0, 3);
+  const entry = word.col[Math.floor(Math.random() * word.col.length)];
+  state.colEntry = entry;
 
-  const options = [
-    { text: correctAnswer, correct: true },
-    ...distractors.map(d => ({ text: d, correct: false }))
-  ];
+  const prompt = document.getElementById('quiz-prompt');
+  const label = document.getElementById('task-label');
+  label.className = 'task-type-label collocation';
+
+  if (entry.type === 'odd') {
+    label.textContent = 'Odd One Out';
+    prompt.innerHTML = '<em>' + entry.prompt + '</em>';
+  } else {
+    label.textContent = 'Word Partners';
+    prompt.innerHTML = entry.prompt.replace('_____', '<span class="gap">_____</span>');
+  }
+
+  const options = entry.options.map(o => ({ text: o, correct: o === entry.answer }));
   shuffle(options);
-
   for (const opt of options) {
     const btn = document.createElement('button');
     btn.className = 'mc-option';
@@ -5265,7 +5268,7 @@ function getTaskType() {
     return easyTypes[Math.floor(Math.random() * easyTypes.length)];
   }
   const sel = state.exerciseType;
-  const pool = Array.isArray(sel) ? sel : sel === 'mix' ? ['context', 'context-hard', 'definition', 'definition-hard', 'translation', 'collocation'] : [sel];
+  const pool = Array.isArray(sel) ? sel : sel === 'mix' ? ['context', 'context-hard', 'definition', 'definition-hard', 'translation', 'mc-collocation'] : sel === 'collocation' ? ['mc-collocation'] : [sel];
   const expanded = [];
   for (const t of pool) {
     if (t === 'multiple-choice') expanded.push('mc-context', 'mc-definition', 'mc-translation', 'mc-collocation');
@@ -5319,14 +5322,13 @@ function showWord() {
   const word = state.words[state.currentIdx];
   let type = getTaskType();
   // Fallback: if collocation type but word has no col data, re-roll
-  if ((type === 'collocation' || type === 'mc-collocation') && (!word.col || word.col.length === 0)) {
+  if (type === 'mc-collocation' && (!word.col || word.col.length === 0)) {
     const fallbacks = ['context', 'definition', 'translation'];
     type = fallbacks[Math.floor(Math.random() * fallbacks.length)];
   }
   state.currentType = type;
   state.answered = false;
-  // Pick and store a random collocation entry for this word
-  state.colEntry = (type === 'collocation' || type === 'mc-collocation') && word.col ? word.col[Math.floor(Math.random() * word.col.length)] : null;
+  state.colEntry = null;
 
   const isMC = type.startsWith('mc-');
   const pct = state.isSpeedRound ? 0 : (state.currentIdx / state.words.length) * 100;
@@ -5344,7 +5346,7 @@ function showWord() {
   const baseType = isMC ? type.replace('mc-', '') : type;
   const isContext = baseType === 'context' || baseType === 'context-hard';
   const isDef = baseType === 'definition' || baseType === 'definition-hard';
-  const isCol = baseType === 'collocation';
+  const isCol = type === 'mc-collocation';
   label.className = 'task-type-label ' + (isContext ? 'context' : isDef ? 'definition' : isCol ? 'collocation' : baseType);
   label.textContent = isCol ? 'Word Partners' : isMC ? 'Choose the answer' : isContext ? 'Complete the sentence' : isDef ? 'Guess the word' : 'Translate to English';
 
@@ -5384,16 +5386,14 @@ function showWord() {
       // Hard mode: just the definition, no hints
       prompt.innerHTML = `<em>${word.d}</em>`;
     }
-  } else if (isCol && state.colEntry) {
-    prompt.innerHTML = state.colEntry.gap.replace('_____', '<span class="gap">_____</span>');
-  } else {
+  } else if (!isCol) {
     prompt.innerHTML = `<span class="german-word">${word.g}</span>`;
   }
 
   document.getElementById('source-tag').textContent = word.source;
 
-  if (isMC && isCol && state.colEntry) {
-    renderCollocationMC(word, state.colEntry);
+  if (isCol && word.col && word.col.length > 0) {
+    renderCollocationMC(word);
   } else if (isMC) {
     renderMultipleChoice(word, type);
   } else {
@@ -5426,8 +5426,7 @@ function checkAnswer() {
   if (!userAnswer) return;
 
   const word = state.words[state.currentIdx];
-  const isColType = state.currentType === 'collocation';
-  const correct = isColType && state.colEntry ? userAnswer.toLowerCase().trim() === state.colEntry.answer.toLowerCase().trim() : isCorrect(userAnswer, word);
+  const correct = isCorrect(userAnswer, word);
   state.answered = true;
 
   const feedback = document.getElementById('feedback');
@@ -5456,10 +5455,8 @@ function checkAnswer() {
     feedback.className = 'feedback wrong';
     const isCtx = state.currentType === 'context' || state.currentType === 'context-hard';
     const isDef = state.currentType === 'definition' || state.currentType === 'definition-hard';
-    const isColW = state.currentType === 'collocation';
     let displayAnswer;
-    if (isColW && state.colEntry) { displayAnswer = state.colEntry.answer + ' <span style="font-weight:400;color:var(--muted);font-size:0.85em;">(' + state.colEntry.phrase + ')</span>'; }
-    else if (isCtx) { displayAnswer = getContextForm(word); }
+    if (isCtx) { displayAnswer = getContextForm(word); }
     else if (isDef) {
       displayAnswer = word.w.replace(/^to\s+/, '').replace(/\(.*?\)/g, '').replace(/\bsth\.?\s*/g, '').replace(/\bsb\.?\s*/g, '').replace(/[.!?]+$/g, '').trim().replace(/\s+/g, ' ');
       if (displayAnswer !== word.w) displayAnswer += ' <span style="font-weight:400;color:var(--muted);font-size:0.85em;">(' + word.w + ')</span>';
