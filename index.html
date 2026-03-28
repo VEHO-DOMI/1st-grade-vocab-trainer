@@ -1362,6 +1362,54 @@ body.playing .header-container { display: none; }
   font-size: 13px; cursor: pointer; background: transparent;
   border: 1px solid var(--card-border,rgba(255,255,255,0.1)); color: inherit;
 }
+.map-container {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 0.5rem;
+}
+.map-container svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.map-node {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.map-node:active {
+  transform: scale(0.95);
+}
+.map-node-label {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  fill: var(--text, #fff);
+  text-anchor: middle;
+}
+.map-node-stars {
+  font-size: 9px;
+  fill: #fbbf24;
+  text-anchor: middle;
+}
+.map-node-locked {
+  opacity: 0.35;
+}
+.map-avatar-marker {
+  animation: avatarPulse 2s ease-in-out infinite;
+}
+@keyframes avatarPulse {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.map-zone-label {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  text-anchor: middle;
+  opacity: 0.3;
+}
 </style>
 </head>
 <body>
@@ -1501,6 +1549,7 @@ body.playing .header-container { display: none; }
     <button class="btn btn-review btn-block btn-small" id="review-btn" style="display:none;" onclick="startSmartReview()">🔄 Smart Review</button>
     <button id="btn-battle" class="btn-battle" onclick="openBattleLobby()" style="display:none;">⚔️ Battle</button>
     <div class="home-actions-row">
+      <button class="btn btn-secondary btn-small" onclick="showProgressMap()">🗺️ Map</button>
       <button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊 Progress</button>
       <button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆 Leaderboard</button>
       <button class="btn btn-secondary btn-small" onclick="showWordReference()">📖 Words</button>
@@ -1683,6 +1732,16 @@ body.playing .header-container { display: none; }
     </div>
     <div id="battle-history-list"></div>
   </div>
+</div>
+
+
+<div id="map-screen" class="screen">
+  <div class="progress-nav">
+    <button class="btn btn-secondary" onclick="goHome()">\u2190 Back</button>
+    <h2 style="flex:1;text-align:center;margin:0;">Journey Map</h2>
+    <div style="width:60px;"></div>
+  </div>
+  <div class="map-container" id="map-container"></div>
 </div>
 
 <!-- RESULTS SCREEN -->
@@ -3854,6 +3913,198 @@ function toggleBattleHistory() {
   const hidden = list.style.display === 'none';
   list.style.display = hidden ? '' : 'none';
   toggle.innerHTML = (hidden ? '\u25B2' : '\u25BC') + ' Recent battles';
+}
+
+
+// ===== PROGRESSION MAP =====
+function showProgressMap() {
+  showScreen('map-screen');
+  renderProgressMap();
+}
+
+function renderProgressMap() {
+  var container = document.getElementById('map-container');
+  if (!container) return;
+
+  var unitKeys = Object.keys(vocabData);
+  var numUnits = unitKeys.length;
+
+  // Layout: units bottom to top, winding path left-right
+  var svgWidth = 340;
+  var nodeSpacing = 100;
+  var svgHeight = (numUnits + 1) * nodeSpacing + 120;
+  var centerX = svgWidth / 2;
+  var nodeRadius = 28;
+
+  // Calculate positions — winding path (alternating left/right)
+  var nodes = [];
+  for (var i = 0; i < numUnits; i++) {
+    var unitIdx = numUnits - 1 - i; // Reverse: bottom = first unit
+    var key = unitKeys[unitIdx];
+    var prog = getSourceProgress(key);
+    var pct = prog.total > 0 ? Math.round((prog.mastered / prog.total) * 100) : 0;
+    var practiced = prog.practiced > 0;
+    var stars = pct >= 100 ? 4 : pct >= 75 ? 3 : pct >= 50 ? 2 : pct >= 25 ? 1 : 0;
+
+    // Position: winding left-right
+    var x = centerX + (i % 2 === 0 ? -55 : 55);
+    var y = svgHeight - 80 - (i * nodeSpacing);
+
+    // Zone assignment based on position in list
+    var zoneProgress = numUnits > 1 ? i / (numUnits - 1) : 0;
+    var zone = zoneProgress < 0.25 ? 'bronze' : zoneProgress < 0.5 ? 'silver' : zoneProgress < 0.75 ? 'gold' : 'diamond';
+
+    nodes.push({ key: key, x: x, y: y, pct: pct, practiced: practiced, stars: stars, zone: zone, idx: unitIdx });
+  }
+
+  // Zone colors for SVG
+  var zoneColors = {
+    bronze: { bg: '#92400e', ring: '#d97706', path: '#b45309', label: '#fbbf24', glow: 'rgba(217,119,6,0.2)' },
+    silver: { bg: '#374151', ring: '#9ca3af', path: '#6b7280', label: '#d1d5db', glow: 'rgba(156,163,175,0.2)' },
+    gold: { bg: '#854d0e', ring: '#eab308', path: '#ca8a04', label: '#fde047', glow: 'rgba(234,179,8,0.2)' },
+    diamond: { bg: '#312e81', ring: '#818cf8', path: '#6366f1', label: '#c7d2fe', glow: 'rgba(129,140,248,0.2)' }
+  };
+
+  // Build SVG
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + svgWidth + ' ' + svgHeight + '" style="width:100%;height:auto;">';
+
+  // Gradient for completed path (define early so it can be referenced)
+  svg += '<defs><linearGradient id="pathGrad" x1="0" y1="1" x2="0" y2="0">';
+  svg += '<stop offset="0%" stop-color="#d97706" />';
+  svg += '<stop offset="33%" stop-color="#9ca3af" />';
+  svg += '<stop offset="66%" stop-color="#eab308" />';
+  svg += '<stop offset="100%" stop-color="#818cf8" />';
+  svg += '</linearGradient></defs>';
+
+  // Zone background bands
+  var zoneHeight = svgHeight / 4;
+  var zones = ['diamond', 'gold', 'silver', 'bronze'];
+  for (var z = 0; z < 4; z++) {
+    var zy = z * zoneHeight;
+    var zc = zoneColors[zones[z]];
+    svg += '<rect x="0" y="' + zy + '" width="' + svgWidth + '" height="' + zoneHeight + '" fill="' + zc.glow + '" />';
+    svg += '<text x="' + centerX + '" y="' + (zy + 20) + '" class="map-zone-label" fill="' + zc.label + '">' + zones[z].toUpperCase() + '</text>';
+  }
+
+  // Draw path connecting nodes (background track)
+  if (nodes.length > 1) {
+    svg += '<path d="';
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      if (i === 0) {
+        svg += 'M' + n.x + ',' + n.y;
+      } else {
+        var prev = nodes[i - 1];
+        var cpx1 = prev.x;
+        var cpy1 = prev.y - nodeSpacing * 0.4;
+        var cpx2 = n.x;
+        var cpy2 = n.y + nodeSpacing * 0.4;
+        svg += ' C' + cpx1 + ',' + cpy1 + ' ' + cpx2 + ',' + cpy2 + ' ' + n.x + ',' + n.y;
+      }
+    }
+    svg += '" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4" stroke-linecap="round" />';
+  }
+
+  // Draw completed path (filled portion)
+  var lastPracticedIdx = -1;
+  for (var i = 0; i < nodes.length; i++) {
+    if (nodes[i].practiced) lastPracticedIdx = i;
+  }
+
+  if (lastPracticedIdx >= 0 && nodes.length > 1) {
+    svg += '<path d="';
+    for (var i = 0; i <= lastPracticedIdx; i++) {
+      var n = nodes[i];
+      if (i === 0) {
+        svg += 'M' + n.x + ',' + n.y;
+      } else {
+        var prev = nodes[i - 1];
+        svg += ' C' + prev.x + ',' + (prev.y - nodeSpacing * 0.4) + ' ' + n.x + ',' + (n.y + nodeSpacing * 0.4) + ' ' + n.x + ',' + n.y;
+      }
+    }
+    svg += '" fill="none" stroke="url(#pathGrad)" stroke-width="4" stroke-linecap="round" />';
+  }
+
+  // Draw nodes
+  for (var i = 0; i < nodes.length; i++) {
+    var n = nodes[i];
+    var zc = zoneColors[n.zone];
+    var isLocked = !n.practiced;
+    var lockedClass = isLocked ? ' class="map-node-locked"' : '';
+
+    svg += '<g' + lockedClass + ' onclick="mapNodeTapped(' + n.idx + ')" style="cursor:pointer;">';
+
+    // Glow for practiced nodes
+    if (n.practiced && n.pct < 100) {
+      svg += '<circle cx="' + n.x + '" cy="' + n.y + '" r="' + (nodeRadius + 6) + '" fill="' + zc.glow + '" opacity="0.5"><animate attributeName="r" values="' + (nodeRadius + 4) + ';' + (nodeRadius + 8) + ';' + (nodeRadius + 4) + '" dur="3s" repeatCount="indefinite" /></circle>';
+    }
+
+    // Node background circle
+    svg += '<circle cx="' + n.x + '" cy="' + n.y + '" r="' + nodeRadius + '" fill="' + (isLocked ? 'rgba(255,255,255,0.05)' : zc.bg) + '" stroke="' + (isLocked ? 'rgba(255,255,255,0.1)' : zc.ring) + '" stroke-width="2.5" />';
+
+    // Mastery ring (progress arc)
+    if (n.practiced && n.pct > 0) {
+      var circumference = 2 * Math.PI * (nodeRadius - 1);
+      var dashLen = circumference * (n.pct / 100);
+      svg += '<circle cx="' + n.x + '" cy="' + n.y + '" r="' + (nodeRadius - 1) + '" fill="none" stroke="' + zc.ring + '" stroke-width="3" stroke-dasharray="' + dashLen + ' ' + circumference + '" stroke-linecap="round" transform="rotate(-90 ' + n.x + ' ' + n.y + ')" opacity="0.8" />';
+    }
+
+    // Lock icon for unpracticed
+    if (isLocked) {
+      svg += '<text x="' + n.x + '" y="' + (n.y + 5) + '" text-anchor="middle" font-size="18" fill="rgba(255,255,255,0.15)">&#x1F512;</text>';
+    } else {
+      // Mastery percentage inside node
+      svg += '<text x="' + n.x + '" y="' + (n.y + 1) + '" text-anchor="middle" font-size="13" font-weight="800" fill="white">' + n.pct + '%</text>';
+    }
+
+    // Unit label below node
+    svg += '<text x="' + n.x + '" y="' + (n.y + nodeRadius + 16) + '" class="map-node-label">' + escapeHtml(n.key) + '</text>';
+
+    // Stars below label
+    if (n.stars > 0) {
+      var starStr = '';
+      for (var s = 0; s < 4; s++) starStr += s < n.stars ? '\u2605' : '\u2606';
+      svg += '<text x="' + n.x + '" y="' + (n.y + nodeRadius + 28) + '" class="map-node-stars">' + starStr + '</text>';
+    }
+
+    svg += '</g>';
+  }
+
+  // Student avatar marker — position at last practiced node
+  if (lastPracticedIdx >= 0) {
+    var avatarNode = nodes[lastPracticedIdx];
+    var avatarX = avatarNode.x;
+    var avatarY = avatarNode.y - nodeRadius - 20;
+    svg += '<g class="map-avatar-marker">';
+    svg += '<polygon points="' + avatarX + ',' + (avatarY + 16) + ' ' + (avatarX - 5) + ',' + (avatarY + 10) + ' ' + (avatarX + 5) + ',' + (avatarY + 10) + '" fill="var(--accent, #3b82f6)" />';
+    svg += '<circle cx="' + avatarX + '" cy="' + avatarY + '" r="14" fill="var(--accent, #3b82f6)" stroke="white" stroke-width="2" />';
+    var initial = (state.studentName || 'S').charAt(0).toUpperCase();
+    svg += '<text x="' + avatarX + '" y="' + (avatarY + 5) + '" text-anchor="middle" font-size="12" font-weight="800" fill="white">' + initial + '</text>';
+    svg += '</g>';
+  }
+
+  svg += '</svg>';
+
+  container.innerHTML = svg;
+
+  // Scroll to the avatar position
+  if (lastPracticedIdx >= 0) {
+    var scrollTarget = nodes[lastPracticedIdx].y - container.clientHeight / 2;
+    container.scrollTop = Math.max(0, scrollTarget);
+  }
+}
+
+function mapNodeTapped(unitIdx) {
+  var key = Object.keys(vocabData)[unitIdx];
+  if (!key) return;
+  var prog = getSourceProgress(key);
+  var pct = prog.total > 0 ? Math.round((prog.mastered / prog.total) * 100) : 0;
+  var stars = pct >= 100 ? '\u2605\u2605\u2605\u2605' : pct >= 75 ? '\u2605\u2605\u2605\u2606' : pct >= 50 ? '\u2605\u2605\u2606\u2606' : pct >= 25 ? '\u2605\u2606\u2606\u2606' : '\u2606\u2606\u2606\u2606';
+  showBattleMessage(
+    key + ' ' + stars,
+    prog.mastered + ' of ' + prog.total + ' words mastered (' + pct + '%)\n' +
+    prog.practiced + ' words practiced'
+  );
 }
 
 // ===== WORD REFERENCE =====
