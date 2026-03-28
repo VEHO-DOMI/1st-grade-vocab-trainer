@@ -1157,17 +1157,7 @@ body.playing .header-container { display: none; }
   transform: rotateY(180deg);
 }
 .flashcard.swiping {
-  transition: transform 0.1s ease;
-}
-.flashcard.swipe-right {
-  transition: transform 0.3s ease;
-  transform: translateX(120%) rotate(15deg);
-  opacity: 0;
-}
-.flashcard.swipe-left {
-  transition: transform 0.3s ease;
-  transform: translateX(-120%) rotate(-15deg);
-  opacity: 0;
+  transition: none !important;
 }
 .flashcard-front, .flashcard-back {
   position: absolute;
@@ -1212,10 +1202,12 @@ body.playing .header-container { display: none; }
   opacity: 0.6;
 }
 .flashcard-swipe-hint {
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   font-size: 0.72rem;
   color: var(--muted);
   opacity: 0.4;
+  text-align: center;
+  flex-shrink: 0;
 }
 .flashcard-german {
   font-size: 1.5rem;
@@ -1624,19 +1616,20 @@ body.playing .header-container { display: none; }
     <div class="flashcard-container" id="flashcard-container">
       <div class="flashcard" id="flashcard">
         <div class="flashcard-front" id="flashcard-front">
-          <div class="flashcard-word" id="fc-word"></div>
-          <div class="flashcard-sentence" id="fc-sentence"></div>
+          <div class="flashcard-word" id="fc-front-word"></div>
+          <div class="flashcard-sentence" id="fc-front-detail"></div>
           <div class="flashcard-tap-hint">Tap to flip</div>
-          <div class="flashcard-swipe-hint">or swipe &larr; / &rarr;</div>
         </div>
         <div class="flashcard-back" id="flashcard-back">
-          <div class="flashcard-german" id="fc-german"></div>
-          <div class="flashcard-definition" id="fc-definition"></div>
+          <div class="flashcard-word" id="fc-back-word"></div>
+          <div class="flashcard-sentence" id="fc-back-detail"></div>
+          <div class="flashcard-tap-hint" style="opacity:0.4;">Tap to flip back</div>
         </div>
       </div>
     </div>
+    <div class="flashcard-swipe-hint">swipe &rarr; Got it &nbsp;·&nbsp; swipe &larr; Study again</div>
   </div>
-  <div class="flashcard-actions" id="flashcard-actions" style="display:none;">
+  <div class="flashcard-actions" id="flashcard-actions">
     <button class="btn flashcard-btn-again" onclick="flashcardAgain()">&#10007; Study again</button>
     <button class="btn flashcard-btn-got-it" onclick="flashcardGotIt()">&#10003; Got it</button>
   </div>
@@ -4211,15 +4204,33 @@ let flashcardDeck = [];
 let flashcardGotCount = 0;
 let flashcardGotWords = new Set();
 let fcFlipped = false;
+let fcDirection = 'en-de'; // 'en-de' or 'de-en'
 
 function startFlashcards() {
+  // Show direction picker overlay
+  const old = document.getElementById('fc-direction-overlay');
+  if (old) old.remove();
+  const ov = document.createElement('div');
+  ov.id = 'fc-direction-overlay';
+  ov.className = 'practice-setup-overlay';
+  ov.innerHTML = '<div class="setup-step"><div class="setup-header"><button class="setup-close" onclick="document.getElementById(\'fc-direction-overlay\').remove()">✕</button><h2>Flashcard Direction</h2></div><div class="setup-body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem 1rem;">' +
+    '<button class="mode-card" onclick="launchFlashcards(\'en-de\')" style="max-width:400px;"><span class="mode-icon">🇬🇧→🇩🇪</span><div class="mode-info"><div class="mode-name">English → German</div><div class="mode-desc">See the English word, reveal the German translation</div></div></button>' +
+    '<button class="mode-card" onclick="launchFlashcards(\'de-en\')" style="max-width:400px;"><span class="mode-icon">🇩🇪→🇬🇧</span><div class="mode-info"><div class="mode-name">German → English</div><div class="mode-desc">See the German word, reveal the English translation</div></div></button>' +
+    '</div></div>';
+  document.body.appendChild(ov);
+}
+
+function launchFlashcards(direction) {
+  const ov = document.getElementById('fc-direction-overlay');
+  if (ov) ov.remove();
+  fcDirection = direction;
   flashcardDeck = [];
   flashcardGotCount = 0;
   flashcardGotWords = new Set();
   fcFlipped = false;
-  state.selectedSources.forEach(src => {
+  state.selectedSources.forEach(function(src) {
     if (vocabData[src]) {
-      vocabData[src].forEach(word => flashcardDeck.push({ ...word, source: src }));
+      vocabData[src].forEach(function(word) { flashcardDeck.push({ ...word, source: src }); });
     }
   });
   shuffle(flashcardDeck);
@@ -4240,29 +4251,42 @@ function showFlashcard() {
   card.classList.remove('flipped', 'swiping', 'swipe-left', 'swipe-right');
   card.style.transform = '';
   card.style.opacity = '';
-  document.getElementById('flashcard-actions').style.display = 'none';
-  document.getElementById('fc-word').textContent = word.w;
-  document.getElementById('fc-sentence').innerHTML = word.s ? word.s.replace(/_+/g, '<span style="border-bottom:2px solid var(--accent);padding:0 8px;">______</span>') : '';
-  document.getElementById('fc-german').textContent = word.g;
-  document.getElementById('fc-definition').textContent = word.d;
+  // Fill front and back based on direction
+  if (fcDirection === 'de-en') {
+    // Front: German + definition, Back: English + full sentence
+    document.getElementById('fc-front-word').textContent = word.g;
+    document.getElementById('fc-front-detail').textContent = word.d;
+    document.getElementById('fc-back-word').textContent = word.w;
+    document.getElementById('fc-back-detail').textContent = word.s ? word.s.replace(/_+/g, word.cf || word.w) : '';
+  } else {
+    // Front: English + full sentence, Back: German + definition
+    document.getElementById('fc-front-word').textContent = word.w;
+    document.getElementById('fc-front-detail').textContent = word.s ? word.s.replace(/_+/g, word.cf || word.w) : '';
+    document.getElementById('fc-back-word').textContent = word.g;
+    document.getElementById('fc-back-detail').textContent = word.d;
+  }
   document.getElementById('flashcard-counter').textContent = flashcardDeck.length + ' remaining';
-  // Reset swipe indicators
-  const il = document.getElementById('swipe-indicator-left');
-  const ir = document.getElementById('swipe-indicator-right');
+  var il = document.getElementById('swipe-indicator-left');
+  var ir = document.getElementById('swipe-indicator-right');
   if (il) il.style.opacity = '0';
   if (ir) ir.style.opacity = '0';
 }
 
 function flipCard() {
-  const card = document.getElementById('flashcard');
-  if (fcFlipped) return;
-  fcFlipped = true;
-  card.classList.add('flipped');
-  document.getElementById('flashcard-actions').style.display = 'flex';
+  var card = document.getElementById('flashcard');
+  if (fcFlipped) {
+    // Flip back to front
+    fcFlipped = false;
+    card.classList.remove('flipped');
+  } else {
+    // Flip to back
+    fcFlipped = true;
+    card.classList.add('flipped');
+  }
 }
 
 function flashcardGotIt() {
-  const word = flashcardDeck.shift();
+  var word = flashcardDeck.shift();
   if (word && !flashcardGotWords.has(word.w)) {
     flashcardGotWords.add(word.w);
     flashcardGotCount++;
@@ -4272,9 +4296,9 @@ function flashcardGotIt() {
 }
 
 function flashcardAgain() {
-  const word = flashcardDeck.shift();
+  var word = flashcardDeck.shift();
   if (word && flashcardDeck.length > 0) {
-    const pos = Math.floor(Math.random() * flashcardDeck.length) + 1;
+    var pos = Math.floor(Math.random() * flashcardDeck.length) + 1;
     flashcardDeck.splice(Math.min(pos, flashcardDeck.length), 0, word);
   } else if (word) {
     flashcardDeck.push(word);
@@ -4283,42 +4307,42 @@ function flashcardAgain() {
 }
 
 function initFlashcardSwipe() {
-  const stage = document.getElementById('flashcard-stage');
+  var stage = document.getElementById('flashcard-stage');
   if (!stage) return;
   // Remove old listeners by cloning
-  const newStage = stage.cloneNode(true);
+  var newStage = stage.cloneNode(true);
   stage.parentNode.replaceChild(newStage, stage);
 
-  const container = newStage.querySelector('#flashcard-container');
+  var container = newStage.querySelector('#flashcard-container');
   if (!container) return;
 
-  let startX = 0, startY = 0, deltaX = 0, isMoving = false;
+  var startX = 0, startY = 0, deltaX = 0, isMoving = false, hasMoved = false;
 
   function onStart(e) {
-    if (fcFlipped) return; // Don't swipe when flipped -- use buttons
-    const touch = e.touches ? e.touches[0] : e;
+    var touch = e.touches ? e.touches[0] : e;
     startX = touch.clientX;
     startY = touch.clientY;
     deltaX = 0;
     isMoving = true;
-    const card = newStage.querySelector('#flashcard');
+    hasMoved = false;
+    var card = newStage.querySelector('#flashcard');
     if (card) card.classList.add('swiping');
   }
 
   function onMove(e) {
-    if (!isMoving || fcFlipped) return;
-    const touch = e.touches ? e.touches[0] : e;
+    if (!isMoving) return;
+    var touch = e.touches ? e.touches[0] : e;
     deltaX = touch.clientX - startX;
-    const deltaY = touch.clientY - startY;
-    // Only swipe horizontally
+    var deltaY = touch.clientY - startY;
     if (Math.abs(deltaX) < Math.abs(deltaY) && Math.abs(deltaX) < 10) return;
+    if (Math.abs(deltaX) > 8) hasMoved = true;
     e.preventDefault();
-    const card = newStage.querySelector('#flashcard');
-    const rotate = deltaX * 0.08;
-    if (card) card.style.transform = 'translateX(' + deltaX + 'px) rotate(' + rotate + 'deg)';
-    // Show indicators
-    const il = newStage.querySelector('#swipe-indicator-left');
-    const ir = newStage.querySelector('#swipe-indicator-right');
+    var card = newStage.querySelector('#flashcard');
+    var rotate = deltaX * 0.06;
+    var flipOffset = fcFlipped ? ' rotateY(180deg)' : '';
+    if (card) card.style.transform = 'translateX(' + deltaX + 'px) rotate(' + rotate + 'deg)' + flipOffset;
+    var il = newStage.querySelector('#swipe-indicator-left');
+    var ir = newStage.querySelector('#swipe-indicator-right');
     if (il) il.style.opacity = deltaX < -30 ? Math.min(1, (-deltaX - 30) / 60) : 0;
     if (ir) ir.style.opacity = deltaX > 30 ? Math.min(1, (deltaX - 30) / 60) : 0;
   }
@@ -4326,28 +4350,27 @@ function initFlashcardSwipe() {
   function onEnd() {
     if (!isMoving) return;
     isMoving = false;
-    const card = newStage.querySelector('#flashcard');
+    var card = newStage.querySelector('#flashcard');
     if (card) card.classList.remove('swiping');
-    const il = newStage.querySelector('#swipe-indicator-left');
-    const ir = newStage.querySelector('#swipe-indicator-right');
+    var il = newStage.querySelector('#swipe-indicator-left');
+    var ir = newStage.querySelector('#swipe-indicator-right');
 
-    if (Math.abs(deltaX) > 80 && !fcFlipped) {
-      // Swipe threshold reached
+    if (Math.abs(deltaX) > 80) {
+      // Swipe threshold reached — swipe to dismiss
       if (deltaX > 80) {
-        // Swipe right = Got it
-        if (card) card.classList.add('swipe-right');
+        if (card) { card.style.transition = 'transform 0.3s ease, opacity 0.3s ease'; card.style.transform = 'translateX(120%) rotate(15deg)'; card.style.opacity = '0'; }
         setTimeout(function() { flashcardGotIt(); }, 300);
       } else {
-        // Swipe left = Study again
-        if (card) card.classList.add('swipe-left');
+        if (card) { card.style.transition = 'transform 0.3s ease, opacity 0.3s ease'; card.style.transform = 'translateX(-120%) rotate(-15deg)'; card.style.opacity = '0'; }
         setTimeout(function() { flashcardAgain(); }, 300);
       }
-    } else if (Math.abs(deltaX) < 5 && !fcFlipped) {
-      // Tap -- flip the card
+    } else if (!hasMoved) {
+      // Tap — toggle flip
+      if (card) { card.style.transform = ''; card.style.transition = ''; }
       flipCard();
     } else {
-      // Not enough swipe -- snap back
-      if (card) { card.style.transform = ''; }
+      // Not enough swipe — snap back
+      if (card) { card.style.transition = 'transform 0.3s ease'; card.style.transform = fcFlipped ? 'rotateY(180deg)' : ''; setTimeout(function() { if(card) card.style.transition = ''; }, 300); }
     }
     if (il) il.style.opacity = '0';
     if (ir) ir.style.opacity = '0';
