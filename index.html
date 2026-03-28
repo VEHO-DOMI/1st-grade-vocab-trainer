@@ -4697,9 +4697,17 @@ function shuffle(arr) {
 
 function startPractice() {
   state.words = [];
+  const isColMode = state.exerciseType === 'collocation';
   state.selectedSources.forEach(src => {
-    vocabData[src].forEach(word => { state.words.push({ ...word, source: src }); });
+    vocabData[src].forEach(word => {
+      if (isColMode && (!word.col || word.col.length === 0)) return;
+      state.words.push({ ...word, source: src });
+    });
   });
+  if (state.words.length === 0) {
+    showBattleMessage('No words found', 'The selected units have no Word Partners data. Try different units or a different exercise type.');
+    return;
+  }
   shuffle(state.words);
   state.currentIdx = 0;
   state.score = 0;
@@ -4747,9 +4755,17 @@ function practiceWeakWords() {
 // ===== SPRINT MODE =====
 function startSprint() {
   state.words = [];
+  const isColMode = state.exerciseType === 'collocation';
   state.selectedSources.forEach(src => {
-    vocabData[src].forEach(word => { state.words.push({ ...word, source: src }); });
+    vocabData[src].forEach(word => {
+      if (isColMode && (!word.col || word.col.length === 0)) return;
+      state.words.push({ ...word, source: src });
+    });
   });
+  if (state.words.length === 0) {
+    showBattleMessage('No words found', 'The selected units have no Word Partners data. Try different units or a different exercise type.');
+    return;
+  }
   shuffle(state.words);
   state.words = state.words.slice(0, 10);
   state.currentIdx = 0;
@@ -4769,9 +4785,17 @@ function startSprint() {
 // ===== SPEED ROUND =====
 function startSpeedRound() {
   state.words = [];
+  const isColMode = state.exerciseType === 'collocation';
   state.selectedSources.forEach(src => {
-    vocabData[src].forEach(word => { state.words.push({ ...word, source: src }); });
+    vocabData[src].forEach(word => {
+      if (isColMode && (!word.col || word.col.length === 0)) return;
+      state.words.push({ ...word, source: src });
+    });
   });
+  if (state.words.length === 0) {
+    showBattleMessage('No words found', 'The selected units have no Word Partners data. Try different units or a different exercise type.');
+    return;
+  }
   shuffle(state.words);
   // Lots of words — keep going until time runs out
   state.words = state.words.slice(0, 200);
