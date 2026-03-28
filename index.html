@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <!-- v1.0 – 2026-03-26 · DomiVocab 1st Grade -->
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme-mode') || 'light');</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,33 +16,58 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
-:root {
-  --bg: #F0FFF4;
-  --bg2: #DCFCE7;
-  --card: rgba(22,163,74,0.04);
-  --card-border: rgba(22,163,74,0.10);
-  --card-hover: rgba(22,163,74,0.07);
-  --card-solid: #DCFCE7;
-  --text: #14532D;
-  --text-secondary: #166534;
-  --muted: #4D7C5A;
-  --accent: #16A34A;
-  --accent-light: #15803D;
+:root, [data-theme="light"] {
+  --bg: #f0fdf4;
+  --bg2: #dcfce7;
+  --card: #ffffff;
+  --card-border: rgba(22,163,74,0.15);
+  --card-hover: #f7fdf9;
+  --card-solid: #ffffff;
+  --text: #14532d;
+  --text-secondary: #365a3e;
+  --muted: #6b8f76;
+  --accent: #16a34a;
+  --accent-light: #22c55e;
   --accent-glow: rgba(22,163,74,0.15);
-  --accent-deep: #166534;
-  --accent2: #0D9488;
-  --accent2-glow: rgba(13,148,136,0.2);
-  --correct: #16A34A;
-  --correct-glow: rgba(22,163,74,0.15);
-  --wrong: #DC2626;
-  --wrong-glow: rgba(220,38,38,0.15);
-  --context-color: #2563EB;
-  --def-color: #B45309;
-  --trans-color: #BE185D;
-  --radius: 14px;
-  --radius-lg: 20px;
-  --shadow-card: 0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(22,163,74,0.06);
-  --shadow-elevated: 0 8px 24px rgba(0,0,0,0.10), 0 0 0 1px rgba(22,163,74,0.08);
+  --accent-deep: #15803d;
+  --accent2: #d97706;
+  --accent2-glow: rgba(217,119,6,0.15);
+  --correct: #16a34a;
+  --correct-glow: rgba(22,163,74,0.12);
+  --wrong: #dc2626;
+  --wrong-glow: rgba(220,38,38,0.12);
+  --context-color: #0d9488;
+  --def-color: #b45309;
+  --trans-color: #be185d;
+  --radius: 14px; --radius-lg: 20px;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.1);
+}
+[data-theme="dark"] {
+  --bg: #0b1120;
+  --bg2: #111827;
+  --card: rgba(255,255,255,0.045);
+  --card-border: rgba(255,255,255,0.08);
+  --card-hover: rgba(255,255,255,0.07);
+  --card-solid: #162033;
+  --text: #eef0f6;
+  --text-secondary: #a8b4c8;
+  --muted: #6b7a94;
+  --accent: #22c55e;
+  --accent-light: #4ade80;
+  --accent-glow: rgba(34,197,94,0.25);
+  --accent-deep: #15803d;
+  --accent2: #f59e0b;
+  --accent2-glow: rgba(245,158,11,0.3);
+  --correct: #22c55e;
+  --correct-glow: rgba(34,197,94,0.2);
+  --wrong: #ef4444;
+  --wrong-glow: rgba(239,68,68,0.2);
+  --context-color: #2dd4bf;
+  --def-color: #fbbf24;
+  --trans-color: #f472b6;
+  --shadow-card: 0 2px 16px rgba(0,0,0,0.3), 0 0 0 1px rgba(34,197,94,0.06);
+  --shadow-elevated: 0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(34,197,94,0.1);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html { overscroll-behavior: none; scroll-behavior: smooth; }
@@ -49,13 +75,16 @@ button, input, select { touch-action: manipulation; }
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background: var(--bg);
-  background-image:
-    radial-gradient(ellipse 100% 60% at 50% -30%, rgba(22,163,74,0.08), transparent 70%),
-    radial-gradient(ellipse 80% 50% at 100% 100%, rgba(13,148,136,0.04), transparent 70%),
-    radial-gradient(ellipse 50% 40% at 0% 80%, rgba(34,197,94,0.04), transparent);
-  background-attachment: fixed;
   color: var(--text);
   min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
+[data-theme="dark"] body {
+  background-image:
+    radial-gradient(ellipse 100% 60% at 50% -30%, rgba(22,163,74,0.18), transparent 70%),
+    radial-gradient(ellipse 80% 50% at 100% 100%, rgba(34,197,94,0.08), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 0% 80%, rgba(245,158,11,0.05), transparent);
+  background-attachment: fixed;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -508,6 +537,20 @@ h1 { display: none; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ===== LIGHT MODE COMPONENT OVERRIDES ===== */
+[data-theme="light"] .btn-secondary { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); color: var(--text-secondary); }
+[data-theme="light"] .btn-secondary:hover { background: rgba(0,0,0,0.07); color: var(--text); border-color: rgba(0,0,0,0.15); }
+[data-theme="light"] .today-card { background: rgba(22,163,74,0.05); border-color: rgba(22,163,74,0.12); }
+[data-theme="light"] #weekly-goal-card { background: rgba(22,163,74,0.05); border-color: rgba(22,163,74,0.12); }
+[data-theme="light"] .badge-icon { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); }
+[data-theme="light"] .avatar { background: rgba(0,0,0,0.06); }
+[data-theme="light"] .source-btn { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); }
+[data-theme="light"] .source-btn.selected { background: rgba(22,163,74,0.1); border-color: var(--accent); }
+[data-theme="light"] .mode-card { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); }
+[data-theme="light"] .mode-card.selected { background: rgba(22,163,74,0.08); border-color: var(--accent); }
+[data-theme="light"] .answer-input { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.12); color: var(--text); }
+[data-theme="light"] .mc-option { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); color: var(--text); }
+
 /* Responsive — Mobile */
 @media (max-width: 600px) {
   .profile-card { padding: 0.7rem 0.8rem; }
@@ -686,7 +729,7 @@ body.playing .header-container { display: none; }
 .home-nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; width: 100%; margin-top: 0.5rem; }
 .home-nav-grid .btn { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.7rem; padding: 0.6rem 0.3rem; }
 .home-nav-grid .btn span { font-size: 0.6rem; opacity: 0.8; }
-.home-nav-footer { display: flex; justify-content: center; margin-top: 0.4rem; }
+.home-nav-footer { display: flex; justify-content: center; gap: 0.5rem; margin-top: 0.4rem; }
 .home-nav-footer .btn { font-size: 0.72rem; padding: 0.5rem 1.2rem; }
 .mode-row { display: flex; gap: 0.5rem; }
 .mode-row .btn { flex: 1; }
@@ -1623,6 +1666,7 @@ body.playing .header-container { display: none; }
     <button class="btn btn-secondary btn-small" onclick="showWordReference()">📖<span>Words</span></button>
   </div>
   <div class="home-nav-footer">
+    <button id="theme-toggle-btn" onclick="toggleTheme()" class="btn btn-secondary btn-small">☀️ Light</button>
     <button id="sfx-toggle-btn" onclick="toggleSfx()" class="btn btn-secondary btn-small">🔊 Sound: ON</button>
   </div>
 </div>
@@ -3033,6 +3077,23 @@ function toggleSfx() {
   const btn = document.getElementById('sfx-toggle-btn');
   if (btn) btn.textContent = SFX.enabled ? '🔊 Sound: ON' : '🔇 Sound: OFF';
   SFX.play('click');
+}
+
+function toggleTheme() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const newTheme = isDark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) btn.textContent = newTheme === 'dark' ? '\uD83C\uDF19 Dark' : '\u2600\uFE0F Light';
+  localStorage.setItem('theme-mode', newTheme);
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('theme-mode');
+  const theme = saved || 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) btn.textContent = theme === 'dark' ? '\uD83C\uDF19 Dark' : '\u2600\uFE0F Light';
 }
 
 // ===== GAMIFICATION =====
@@ -5800,6 +5861,7 @@ SFX.init();
   }
   // Show section screen if no auto-login
   showScreen('section-screen');
+  initTheme();
 })();
 
 // ===== BATTLE SYSTEM =====
