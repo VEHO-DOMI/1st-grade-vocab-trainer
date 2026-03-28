@@ -30,15 +30,15 @@
   --accent-light: #22c55e;
   --accent-glow: rgba(22,163,74,0.15);
   --accent-deep: #15803d;
-  --accent2: #d97706;
-  --accent2-glow: rgba(217,119,6,0.15);
+  --accent2: #15803d;
+  --accent2-glow: rgba(21,128,61,0.15);
   --correct: #16a34a;
   --correct-glow: rgba(22,163,74,0.12);
   --wrong: #dc2626;
   --wrong-glow: rgba(220,38,38,0.12);
   --context-color: #0d9488;
-  --def-color: #b45309;
-  --trans-color: #be185d;
+  --def-color: #15803d;
+  --trans-color: #0d9488;
   --radius: 14px; --radius-lg: 20px;
   --shadow-card: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
   --shadow-elevated: 0 4px 12px rgba(0,0,0,0.1);
@@ -57,15 +57,15 @@
   --accent-light: #4ade80;
   --accent-glow: rgba(34,197,94,0.25);
   --accent-deep: #15803d;
-  --accent2: #f59e0b;
-  --accent2-glow: rgba(245,158,11,0.3);
+  --accent2: #4ade80;
+  --accent2-glow: rgba(74,222,128,0.25);
   --correct: #22c55e;
   --correct-glow: rgba(34,197,94,0.2);
   --wrong: #ef4444;
   --wrong-glow: rgba(239,68,68,0.2);
   --context-color: #2dd4bf;
-  --def-color: #fbbf24;
-  --trans-color: #f472b6;
+  --def-color: #4ade80;
+  --trans-color: #2dd4bf;
   --shadow-card: 0 2px 16px rgba(0,0,0,0.3), 0 0 0 1px rgba(34,197,94,0.06);
   --shadow-elevated: 0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(34,197,94,0.1);
 }
@@ -200,11 +200,11 @@ h1 { display: none; }
   opacity: 0.6;
 }
 .stat-card:nth-child(1)::before { background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
-.stat-card:nth-child(2)::before { background: linear-gradient(90deg, var(--accent2), #fbbf24); }
-.stat-card:nth-child(3)::before { background: linear-gradient(90deg, var(--correct), #4ade80); }
+.stat-card:nth-child(2)::before { background: linear-gradient(90deg, var(--accent), var(--accent-light)); }
+.stat-card:nth-child(3)::before { background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
 .stat-value { font-size: 1.4rem; font-weight: 900; color: var(--accent-light); letter-spacing: -0.02em; }
-.stat-card:nth-child(2) .stat-value { color: var(--accent2); }
-.stat-card:nth-child(3) .stat-value { color: var(--correct); }
+.stat-card:nth-child(2) .stat-value { color: var(--accent-light); }
+.stat-card:nth-child(3) .stat-value { color: var(--accent-light); }
 .stat-label { font-size: 0.58rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.2rem; font-weight: 600; }
 
 /* Source Selection */
@@ -368,8 +368,8 @@ h1 { display: none; }
 }
 
 /* Gamification: XP, Streak, Badges, Leaderboard, Daily Challenge */
-.stat-card:nth-child(4)::before { background: linear-gradient(90deg, #f97316, #fb923c); }
-.stat-card:nth-child(4) .stat-value { color: #EA580C; }
+.stat-card:nth-child(4)::before { background: linear-gradient(90deg, var(--accent), var(--accent-light)); }
+.stat-card:nth-child(4) .stat-value { color: var(--accent-light); }
 .welcome-xp { display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: var(--accent2); font-weight: 600; margin-top: 0.15rem; }
 
 .badge-icon { font-size: 1.4rem; min-width: 2.2rem; height: 2.2rem; display: flex; align-items: center; justify-content: center; background: var(--card); border: 1px solid var(--card-border); border-radius: 10px; cursor: pointer; transition: transform 0.15s; }
@@ -401,11 +401,11 @@ h1 { display: none; }
 .daily-card-date { font-size: 0.75rem; color: var(--muted); }
 .daily-card-desc { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.8rem; }
 .daily-card-done { font-size: 0.9rem; color: var(--correct); font-weight: 600; }
-.btn-daily { background: linear-gradient(135deg, var(--accent2), #0D9488); color: #000; font-weight: 700; border: none; border-radius: var(--radius); padding: 0.6rem 1.5rem; cursor: pointer; font-size: 0.85rem; width: 100%; }
+.btn-daily { background: linear-gradient(135deg, var(--accent), var(--accent-deep)); color: #fff; font-weight: 700; border: none; border-radius: var(--radius); padding: 0.6rem 1.5rem; cursor: pointer; font-size: 0.85rem; width: 100%; }
 .btn-daily:hover { filter: brightness(1.1); }
 
-.btn-review { background: linear-gradient(135deg, rgba(124,58,237,0.08), rgba(124,58,237,0.03)); border: 1px solid rgba(124,58,237,0.2); color: #7C3AED; }
-.btn-review:hover { background: rgba(124,58,237,0.12); border-color: rgba(124,58,237,0.3); }
+.btn-review { background: var(--accent-glow); border: 1px solid var(--card-border); color: var(--accent-light); }
+.btn-review:hover { background: var(--accent-glow); border-color: var(--accent); opacity: 0.9; }
 
 #leaderboard-screen .progress-nav { margin-bottom: 1rem; }
 .lb-section-title { font-weight: 800; font-size: 0.85rem; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.08em; margin: 1.2rem 0 0.6rem; }
@@ -544,7 +544,7 @@ h1 { display: none; }
 [data-theme="light"] .btn-secondary { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); color: var(--text-secondary); }
 [data-theme="light"] .btn-secondary:hover { background: rgba(0,0,0,0.07); color: var(--text); border-color: rgba(0,0,0,0.15); }
 [data-theme="light"] .today-card { background: rgba(22,163,74,0.05); border-color: rgba(22,163,74,0.12); }
-[data-theme="light"] #weekly-goal-card { background: rgba(22,163,74,0.05); border-color: rgba(22,163,74,0.12); }
+[data-theme="light"] #weekly-goal-card { background: var(--accent-glow); border-color: var(--card-border); }
 [data-theme="light"] .badge-icon { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); }
 [data-theme="light"] .avatar { background: rgba(0,0,0,0.06); }
 [data-theme="light"] .source-btn { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); }
@@ -932,7 +932,7 @@ body.playing .header-container { display: none; }
 #wotd-card { background: rgba(200,60,40,0.06); border: 1px solid rgba(200,60,40,0.12); color: #4a3520; border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 0.8rem; }
 
 /* Weekly Goal card */
-#weekly-goal-card { background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.15); border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 0.8rem; }
+#weekly-goal-card { background: var(--accent-glow); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 0.8rem; }
 
 /* Tighter home screen spacing */
 .stats-bar { margin-bottom: 0.5rem; }
@@ -1523,7 +1523,7 @@ body.playing .header-container { display: none; }
 @keyframes cqDots { 0% { content:''; } 25% { content:'.'; } 50% { content:'..'; } 75% { content:'...'; } }
 .cq-join-input { font-size:32px; text-align:center; letter-spacing:12px; font-weight:700; padding:16px; width:100%; max-width:220px; background:var(--card); border:2px solid var(--card-border); border-radius:14px; color:var(--text); }
 .cq-join-input::placeholder { letter-spacing:4px; font-size:16px; }
-.cq-btn-start { background:linear-gradient(135deg,#8b5cf6,#6d28d9); color:#fff; border:none; padding:14px 32px; border-radius:12px; font-size:16px; font-weight:700; cursor:pointer; }
+.cq-btn-start { background:linear-gradient(135deg,var(--accent-light),var(--accent)); color:#fff; border:none; padding:14px 32px; border-radius:12px; font-size:16px; font-weight:700; cursor:pointer; }
 .cq-btn-start:disabled { opacity:0.4; cursor:not-allowed; }
 </style>
 </head>
@@ -1628,7 +1628,7 @@ body.playing .header-container { display: none; }
     <button class="btn btn-primary btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
     <button class="btn btn-review" id="review-btn" style="display:none;" onclick="startSmartReview()">🔄 Smart Review</button>
     <button id="btn-battle" class="btn-battle" onclick="openBattleLobby()" style="display:none;">⚔️ Battle Arena</button>
-    <button class="btn-battle" onclick="openClassQuizJoin()" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">🎓 Class Quiz</button>
+    <button class="btn-battle" onclick="openClassQuizJoin()" style="background:linear-gradient(135deg,var(--accent-light),var(--accent));">🎓 Class Quiz</button>
   </div>
 
   <div class="today-card" id="today-card" style="display:none;">
@@ -1656,11 +1656,11 @@ body.playing .header-container { display: none; }
 
   <div id="weekly-goal-card" style="display:none;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-      <span style="font-weight:800;font-size:0.85rem;color:var(--correct);">🎯 Weekly Class Goal</span>
+      <span style="font-weight:800;font-size:0.85rem;color:var(--accent);">🎯 Weekly Class Goal</span>
       <span id="weekly-goal-label" style="font-size:0.68rem;color:var(--muted);"></span>
     </div>
     <div style="height:10px;background:rgba(255,255,255,0.08);border-radius:5px;overflow:hidden;margin-bottom:4px;">
-      <div id="weekly-goal-fill" style="height:100%;background:linear-gradient(90deg,var(--correct),#4ade80);border-radius:5px;transition:width 0.6s ease;width:0%;"></div>
+      <div id="weekly-goal-fill" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-light));border-radius:5px;transition:width 0.6s ease;width:0%;"></div>
     </div>
     <div id="weekly-goal-text" style="font-size:0.75rem;color:var(--text-secondary);text-align:center;"></div>
   </div>
