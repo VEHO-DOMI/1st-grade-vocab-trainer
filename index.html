@@ -5758,7 +5758,6 @@ function openBattleLobby() {
       const d = child.val();
       if (child.key !== mySlug && d.online === true) players.push({ slug: child.key, name: d.name, avatarId: d.avatarId || 1 });
     });
-    if (players.length === 0) { showBattleMessage('No opponents online', 'Nobody else is online right now. Try again later!'); return; }
     showBattleLobby(players);
   });
 }
