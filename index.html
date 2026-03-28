@@ -1287,8 +1287,8 @@ body.playing .header-container { display: none; }
 .duel-play-header { text-align: center; padding: 1rem 0; }
 .duel-round-label { font-size: 1.1rem; font-weight: 700; }
 .duel-question-num { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
-.duel-timer-bar { height: 4px; background: var(--card-border); border-radius: 2px; overflow: hidden; margin-bottom: 1rem; }
-.duel-timer-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.1s linear; width: 100%; }
+.duel-timer-bar { height: 6px; background: var(--card-border); border-radius: 3px; overflow: hidden; margin-bottom: 1rem; position: relative; z-index: 1; }
+.duel-timer-fill { height: 100%; background: linear-gradient(90deg, #ef4444, var(--accent)); border-radius: 3px; transition: width 0.1s linear; width: 100%; }
 .duel-prompt { font-size: 1.2rem; font-weight: 600; text-align: center; padding: 1.5rem; margin-bottom: 1rem; }
 .duel-options { display: flex; flex-direction: column; gap: 0.6rem; }
 .duel-option {
@@ -1298,10 +1298,12 @@ body.playing .header-container { display: none; }
   background: var(--card);
   cursor: pointer;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   text-align: left;
+  width: 100%;
   color: var(--text);
   transition: all 0.15s;
+  min-height: 48px;
 }
 .duel-option:active { transform: scale(0.98); }
 .duel-option.correct { border-color: var(--correct); background: rgba(22,163,74,0.12); }
@@ -1313,16 +1315,16 @@ body.playing .header-container { display: none; }
 .duel-scoreboard-player { text-align: center; font-weight: 600; font-size: 0.85rem; }
 .duel-scoreboard-vs { font-size: 2rem; font-weight: 800; }
 .duel-scoreboard-score { font-size: 0.75rem; color: var(--muted); }
-.duel-round-row { display: flex; align-items: center; padding: 0.7rem 0; border-top: 1px solid var(--card-border); }
-.duel-round-info { flex: 1; text-align: center; font-size: 0.75rem; font-weight: 600; color: var(--muted); }
-.duel-round-blocks { display: flex; gap: 3px; width: 80px; }
-.duel-block { width: 14px; height: 14px; border-radius: 3px; }
+.duel-round-row { display: flex; align-items: center; padding: 0.6rem 0; border-top: 1px solid var(--card-border); gap: 0.3rem; }
+.duel-round-info { flex: 1; text-align: center; font-size: 0.7rem; font-weight: 600; color: var(--muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.duel-round-blocks { display: flex; gap: 3px; min-width: 65px; flex-shrink: 0; }
+.duel-block { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; }
 .duel-block.correct { background: #22c55e; }
 .duel-block.wrong { background: #ef4444; }
 .duel-block.hidden { background: var(--card-border); opacity: 0.4; }
 .duel-block.empty { background: var(--card-border); opacity: 0.15; }
 .duel-round-status { font-size: 0.7rem; font-weight: 700; color: var(--accent); text-transform: uppercase; }
-.duel-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 1rem; margin-bottom: 0.6rem; cursor: pointer; transition: background 0.15s; }
+#duel-play-screen { padding: 0 1rem !important; }.duel-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 1rem; margin-bottom: 0.6rem; cursor: pointer; transition: background 0.15s; }
 .duel-card:active { background: var(--card-hover); }
 .duel-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
 .duel-card-opponent { font-weight: 700; font-size: 1rem; }
@@ -1509,6 +1511,9 @@ body.playing .header-container { display: none; }
   <hr class="lb-divider">
   <div class="lb-section-title">⚡ Today's Challenge</div>
   <div id="lb-daily"></div>
+  <hr class="lb-divider">
+  <div class="lb-section-title">⚔️ Battle Leaderboard</div>
+  <div id="lb-battles"></div>
 </div>
 
 <!-- PROGRESS SCREEN -->
@@ -1652,6 +1657,24 @@ body.playing .header-container { display: none; }
     <div class="source-tag" id="source-tag"></div>
   </div>
   <button class="btn btn-danger btn-small" onclick="endPractice()" style="align-self:center;opacity:0.6;">End Practice</button>
+</div>
+
+
+<!-- BATTLE HISTORY SCREEN -->
+<div id="battle-history-screen" class="screen">
+  <div class="progress-nav">
+    <button class="btn btn-secondary" onclick="goHome()">← Back</button>
+    <h2 style="flex:1;text-align:center;margin:0;">Battle History</h2>
+    <div style="width:60px;"></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+      <button class="type-card selected" id="bh-tab-all" onclick="loadBattleHistory('all')" style="flex:1;text-align:center;"><span class="type-card-name">All</span></button>
+      <button class="type-card" id="bh-tab-live" onclick="loadBattleHistory('live')" style="flex:1;text-align:center;"><span class="type-card-name">Live Battles</span></button>
+      <button class="type-card" id="bh-tab-duel" onclick="loadBattleHistory('duel')" style="flex:1;text-align:center;"><span class="type-card-name">Word Duels</span></button>
+    </div>
+    <div id="battle-history-list"></div>
+  </div>
 </div>
 
 <!-- RESULTS SCREEN -->
@@ -3072,6 +3095,30 @@ async function showLeaderboard() {
     const isMe = s.id === state.studentId;
     return `<div class="lb-row ${isMe ? 'me' : ''}"><span class="lb-rank">${i + 1}.</span><span class="lb-name">${s.name}</span><span class="lb-score">${s.score}/${s.total}</span></div>`;
   }).join('') || "<p style=\"color:var(--muted);text-align:center;padding:0.5rem;font-size:0.85rem;\">No one has done today's challenge yet</p>";
+
+  // Battle leaderboard
+  const battleStudents = allStudents.filter(s => (s.battlesWon || 0) > 0 || (s.battlesPlayed || 0) > 0);
+  // Re-read with battle fields
+  const battleData = [];
+  for (const sec of SECTIONS) {
+    try {
+      const snap = await db.collection('classes').doc(sec.id).collection('students').get();
+      snap.forEach(doc => {
+        const d = doc.data();
+        if ((d.battlesWon || 0) > 0 || (d.battlesPlayed || 0) > 0) {
+          battleData.push({ id: doc.id, name: d.name, avatarId: d.avatarId || 1, battlesWon: d.battlesWon || 0, battlesPlayed: d.battlesPlayed || 0, sectionId: sec.id });
+        }
+      });
+    } catch (e) { /* skip */ }
+  }
+  battleData.sort((a, b) => b.battlesWon - a.battlesWon);
+  document.getElementById('lb-battles').innerHTML = battleData.length > 0 ? battleData.map((s, i) => {
+    const isMe = s.id === state.studentId && s.sectionId === CLASS_ID;
+    const rank = i < 3 ? medals[i] : `${i + 1}.`;
+    const av = `<img src="${avatarSrc(s.avatarId)}" class="avatar avatar-sm" style="vertical-align:middle;margin-right:6px;">`;
+    const winRate = s.battlesPlayed > 0 ? Math.round((s.battlesWon / s.battlesPlayed) * 100) : 0;
+    return `<div class="lb-row ${isMe ? 'me' : ''}"><span class="lb-rank">${rank}</span><span class="lb-name">${av}${s.name}</span><span class="lb-xp">${s.battlesWon}W \u00B7 ${winRate}%</span></div>`;
+  }).join('') : '<p style="color:var(--muted);text-align:center;padding:0.5rem;font-size:0.85rem;">No battles played yet</p>';
 }
 
 function getSmartReviewWords(limit = 20) {
@@ -5361,7 +5408,7 @@ function showBattleLobby(players) {
   });
   const modal = document.createElement('div');
   modal.className = 'battle-modal-bg battle-modal';
-  modal.innerHTML = '<div style="text-align:center;margin-bottom:16px;"><div style="font-size:18px;font-weight:600;">\u2694\uFE0F Choose your opponent</div><div style="font-size:13px;opacity:0.5;margin-top:4px;">' + players.length + ' classmate' + (players.length > 1 ? 's' : '') + ' online</div></div><div>' + listHtml + '</div><div style="border-top:1px solid var(--card-border,rgba(255,255,255,0.1));margin-top:12px;padding-top:12px;"><button onclick="document.getElementById(\'battle-lobby-overlay\').remove();openDuelHub();" style="width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--accent-glow,rgba(59,130,246,0.15));border:1px solid var(--accent,#3b82f6);color:var(--accent,#3b82f6);">📋 Quiz Duels (async)</button></div><div style="text-align:center;margin-top:12px;"><button onclick="document.getElementById(\'battle-lobby-overlay\').remove()" class="battle-modal-close">Cancel</button></div>';
+  modal.innerHTML = '<div style="text-align:center;margin-bottom:16px;"><div style="font-size:18px;font-weight:600;">\u2694\uFE0F Choose your opponent</div><div style="font-size:13px;opacity:0.5;margin-top:4px;">' + players.length + ' classmate' + (players.length > 1 ? 's' : '') + ' online</div></div><div>' + listHtml + '</div><div style="border-top:1px solid var(--card-border,rgba(255,255,255,0.1));margin-top:12px;padding-top:12px;"><button onclick="document.getElementById(\'battle-lobby-overlay\').remove();openDuelHub();" style="width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--accent-glow,rgba(59,130,246,0.15));border:1px solid var(--accent,#3b82f6);color:var(--accent,#3b82f6);">🏆 Word Duel</button><button onclick="document.getElementById(\'battle-lobby-overlay\').remove();showBattleHistory();" style="width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--card);border:1px solid var(--card-border);color:var(--text);margin-top:8px;">📜 Battle History</button></div><div style="text-align:center;margin-top:12px;"><button onclick="document.getElementById(\'battle-lobby-overlay\').remove()" class="battle-modal-close">Cancel</button></div>';
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
 }
@@ -5851,10 +5898,16 @@ function renderScoreboard(duel, myRole) {
   var turn = duel.status === 'complete' ? 'complete' : getWhoseTurn(duel);
   var isMyTurn = turn === myRole;
 
+  var myAvatarId = myRole === 'p1' ? duel.p1Avatar : duel.p2Avatar;
+  var opAvatarId = myRole === 'p1' ? duel.p2Avatar : duel.p1Avatar;
   var html = '<div class="card"><div class="duel-scoreboard-header">';
-  html += '<div class="duel-scoreboard-names"><div class="duel-scoreboard-player">' + escapeHtml(myName) + '</div>';
+  html += '<div class="duel-scoreboard-names"><div class="duel-scoreboard-player">';
+  if (myAvatarId) html += '<img src="' + avatarSrc(myAvatarId) + '" class="avatar avatar-md" style="display:block;margin:0 auto 4px;">';
+  html += escapeHtml(myName) + '</div>';
   html += '<div class="duel-scoreboard-vs">' + myScore + ' - ' + opScore + '</div>';
-  html += '<div class="duel-scoreboard-player">' + escapeHtml(opName) + '</div></div>';
+  html += '<div class="duel-scoreboard-player">';
+  if (opAvatarId) html += '<img src="' + avatarSrc(opAvatarId) + '" class="avatar avatar-md" style="display:block;margin:0 auto 4px;">';
+  html += escapeHtml(opName) + '</div></div>';
   if (duel.status === 'complete') {
     var resultText = myScore > opScore ? 'Victory!' : myScore < opScore ? 'Defeat' : 'Draw';
     html += '<div class="duel-scoreboard-score">' + resultText + '</div>';
@@ -5961,6 +6014,7 @@ async function createDuel(opSlug, opName) {
     var docRef = await classRef.collection('duels').add({
       p1: mySlug, p2: opSlug,
       p1Name: state.studentName, p2Name: opName,
+      p1Avatar: state.avatarId || 1,
       status: 'active',
       rounds: [],
       p1Score: 0, p2Score: 0,
@@ -6017,7 +6071,17 @@ function showDuelUnitPicker(roundIdx) {
   document.getElementById('duel-pick-round').textContent = (roundIdx + 1);
   var grid = document.getElementById('duel-unit-grid');
   var unitKeys = Object.keys(vocabData);
+  var usedUnits = new Set();
+  var rounds = duelState.duel.rounds || [];
+  for (var i = 0; i < rounds.length; i++) {
+    usedUnits.add(rounds[i].unit);
+  }
   grid.innerHTML = unitKeys.map(function(k) {
+    if (usedUnits.has(k)) {
+      return '<button class="source-btn disabled" style="opacity:0.4;pointer-events:none;">' +
+        '<div class="source-btn-label">' + escapeHtml(k) + '</div>' +
+        '<div class="source-btn-count">Already played</div></button>';
+    }
     return '<button class="source-btn" onclick="onDuelUnitPicked(\'' + k.replace(/'/g, "\\'") + '\')">' +
       '<div class="source-btn-label">' + escapeHtml(k) + '</div>' +
       '<div class="source-btn-count">' + vocabData[k].length + ' words</div></button>';
@@ -6101,6 +6165,7 @@ function duelSelectAnswer(btn, selectedIdx, correctIdx) {
   clearInterval(duelState.timer);
   var correct = selectedIdx === correctIdx;
   duelState.answers.push(correct);
+  if (typeof SFX !== 'undefined') SFX.play(correct ? 'correct' : 'wrong');
   // Highlight
   var options = document.querySelectorAll('.duel-option');
   options.forEach(function(o) {
@@ -6119,6 +6184,7 @@ function showDuelRoundResult(roundIdx) {
   var summary = document.getElementById('duel-round-summary');
   summary.style.display = '';
   var correctCount = duelState.answers.filter(function(a) { return a; }).length;
+  if (typeof SFX !== 'undefined') SFX.play(correctCount >= 4 ? 'combo' : 'correct');
   var roundNum = roundIdx + 1;
   document.getElementById('duel-round-summary-content').innerHTML = '<div style="text-align:center;padding:1rem 0;">' +
     '<div style="font-size:2rem;margin-bottom:8px;">' + (correctCount === 5 ? '🎯' : correctCount >= 3 ? '👍' : '💪') + '</div>' +
@@ -6185,6 +6251,10 @@ async function finishDuelTurn() {
 
     var update = { rounds: rounds, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
     update[myScoreKey] = totalScore;
+    // Save avatar for P2 if not yet saved
+    if (myRole === 'p2' && !freshData.p2Avatar) {
+      update.p2Avatar = state.avatarId || 1;
+    }
 
     // Check if duel is complete
     var p1Done = 0, p2Done = 0;
@@ -6211,6 +6281,19 @@ async function finishDuelTurn() {
       xpEarned += myTotal * 3;
       state.xp = (state.xp || 0) + xpEarned;
       await studentsRef.doc(state.studentId).update({ xp: state.xp });
+      // Save to battle history
+      try {
+        var opName = myRole === 'p1' ? freshData.p2Name : freshData.p1Name;
+        await studentsRef.doc(state.studentId).collection('battleHistory').add({
+          opponent: opName,
+          result: iWon ? 'win' : isDraw ? 'draw' : 'loss',
+          date: new Date().toISOString(),
+          type: 'duel',
+          myScore: myTotal,
+          theirScore: opTotal,
+          xpEarned: xpEarned
+        });
+      } catch(histErr) { console.error('Save battle history error:', histErr); }
     }
 
     await duelRef.update(update);
@@ -6307,6 +6390,54 @@ async function cleanupStaleBattleData() {
   } catch(e) {}
 }
 
+// ===== BATTLE HISTORY =====
+async function showBattleHistory(filter) {
+  showScreen('battle-history-screen');
+  loadBattleHistory(filter || 'all');
+}
+
+async function loadBattleHistory(filter) {
+  document.querySelectorAll('#battle-history-screen .type-card').forEach(function(b) { b.classList.remove('selected'); });
+  var tabId = 'bh-tab-' + filter;
+  var tab = document.getElementById(tabId);
+  if (tab) tab.classList.add('selected');
+
+  var list = document.getElementById('battle-history-list');
+  if (!list) return;
+  list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">Loading...</div>';
+
+  try {
+    var slug = state.studentId;
+    var snap = await studentsRef.doc(slug).collection('battleHistory').orderBy('date', 'desc').limit(50).get();
+    var items = [];
+    snap.forEach(function(doc) { items.push(doc.data()); });
+
+    if (filter === 'live') items = items.filter(function(i) { return !i.type || i.type === 'live'; });
+    if (filter === 'duel') items = items.filter(function(i) { return i.type === 'duel'; });
+
+    if (items.length === 0) {
+      list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">No battles yet.</div>';
+      return;
+    }
+
+    list.innerHTML = items.map(function(b) {
+      var icon = b.result === 'win' ? '\u{1F3C6}' : b.result === 'draw' ? '\u{1F91D}' : '\u{1F4AA}';
+      var color = b.result === 'win' ? 'var(--correct)' : b.result === 'loss' ? 'var(--wrong)' : 'var(--muted)';
+      var date = b.date ? new Date(b.date).toLocaleDateString('en-GB', {day:'numeric',month:'short'}) : '';
+      var typeLabel = b.type === 'duel' ? 'Word Duel' : b.mode ? ({translation:'Translation',definition:'Definition',context:'Context'}[b.mode] || 'Battle') : 'Battle';
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--card-border);">' +
+        '<div><div style="font-weight:600;">' + icon + ' vs ' + escapeHtml(b.opponent || 'Unknown') + '</div>' +
+        '<div style="font-size:0.75rem;color:var(--muted);">' + typeLabel + ' \u00B7 ' + date + '</div></div>' +
+        '<div style="text-align:right;"><div style="font-weight:700;color:' + color + ';">' + (b.myScore || 0) + ' - ' + (b.theirScore || 0) + '</div>' +
+        '<div style="font-size:0.7rem;color:var(--muted);">+' + (b.xpEarned || 0) + ' XP</div></div></div>';
+    }).join('');
+  } catch (e) {
+    console.error('Load battle history error:', e);
+    list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">Error loading history.</div>';
+  }
+}
+
+
 </script>
 
 <div class="badge-popup" id="badge-popup">
@@ -6345,7 +6476,7 @@ async function cleanupStaleBattleData() {
 <div id="duel-hub-screen" class="screen">
   <div class="progress-nav">
     <button class="btn btn-secondary" onclick="goHome()">← Back</button>
-    <h2 style="flex:1;text-align:center;margin:0;">Quiz Duels</h2>
+    <h2 style="flex:1;text-align:center;margin:0;">Word Duel</h2>
     <div style="width:60px;"></div>
   </div>
   <div class="card">
