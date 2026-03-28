@@ -4304,9 +4304,12 @@ function showFlashcard() {
   const word = flashcardDeck[0];
   const card = document.getElementById('flashcard');
   fcFlipped = false;
+  card.style.transition = 'none';
   card.classList.remove('flipped', 'swiping', 'swipe-left', 'swipe-right');
   card.style.transform = '';
   card.style.opacity = '';
+  card.offsetHeight;
+  card.style.transition = '';
   // Fill front and back based on direction
   if (fcDirection === 'de-en') {
     // Front: German + definition, Back: English + full sentence
