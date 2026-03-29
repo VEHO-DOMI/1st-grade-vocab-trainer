@@ -4030,6 +4030,8 @@ function logout() {
   state._inviteListener = null; state._inviteChangeListener = null; state._battleRoundTimer = null;
   localStorage.removeItem(LS_KEY);
   localStorage.removeItem(LS_KEY + '-section');
+  localStorage.removeItem(LS_KEY + '-mode');
+  state.mode = 'vocab';
   state.studentId = null;
   state.studentName = null;
   state.studentData = null;
@@ -6049,7 +6051,15 @@ SFX.init();
           preloadAvatars();
           updateAllAvatars();
           initBattleRefs(); setupPresence(); cleanupStaleBattleData();
-          showModeSelectScreen();
+          // Restore saved mode and go straight to home
+          const savedMode = localStorage.getItem(LS_KEY + '-mode');
+          if (savedMode) {
+            state.mode = savedMode;
+            if (savedMode === 'grammar') loadGrammarData();
+            showHomeScreen();
+          } else {
+            showModeSelectScreen();
+          }
           return;
         }
       }
@@ -7908,6 +7918,7 @@ function showModeSelectScreen() {
 
 function selectAppMode(mode) {
   state.mode = mode;
+  localStorage.setItem(LS_KEY + '-mode', mode);
   if (mode === 'grammar') loadGrammarData();
   showHomeScreen();
 }
