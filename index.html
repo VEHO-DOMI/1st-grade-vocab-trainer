@@ -3298,6 +3298,27 @@ const BADGE_DEFS = [
   { id:'prestige-3', icon:'⭐⭐⭐', name:'Prestige III', desc:'Reach Prestige level 3 (65,000 XP)', check:(d)=>(d.xp||0)>=65000 },
 ];
 
+const GRAMMAR_BADGE_DEFS = [
+  { id:'g-first-session', icon:'🧠', name:'Grammar Rookie', desc:'Complete your first grammar session', check:(d)=>(d.grammarSessions||0)>=1 },
+  { id:'g-ten-sessions', icon:'🔥', name:'Grammar Grinder', desc:'Complete 10 grammar sessions', check:(d)=>(d.grammarSessions||0)>=10 },
+  { id:'g-fifty-sessions', icon:'🚀', name:'Grammar Machine', desc:'Complete 50 grammar sessions', check:(d)=>(d.grammarSessions||0)>=50 },
+  { id:'g-perfect-10', icon:'💯', name:'Perfect 10', desc:'Get 10/10 in a grammar session', check:(d,m,r)=>r&&r.length>=10&&r.every(x=>x.correct) },
+  { id:'g-streak-3', icon:'🔥', name:'3-Day Grammar Streak', desc:'Practice grammar 3 days in a row', check:(d)=>(d.grammarStreak||0)>=3 },
+  { id:'g-streak-7', icon:'⚡', name:'Grammar Week', desc:'Practice grammar 7 days in a row', check:(d)=>(d.grammarStreak||0)>=7 },
+  { id:'g-mastered-5', icon:'⭐', name:'Rule Learner', desc:'Master 5 grammar structures', check:(d,m)=>m>=5 },
+  { id:'g-mastered-15', icon:'📚', name:'Grammar Scholar', desc:'Master 15 grammar structures', check:(d,m)=>m>=15 },
+  { id:'g-mastered-all', icon:'👑', name:'Grammar Crown', desc:'Master all 34 grammar structures', check:(d,m)=>m>=34 },
+  { id:'g-accuracy-80', icon:'🎯', name:'Sharpshooter', desc:'Reach 80% overall grammar accuracy (min 50 answers)', check:(d)=>(d.grammarAnswered||0)>=50&&(d.grammarCorrect||0)/(d.grammarAnswered||1)>=0.8 },
+  { id:'g-accuracy-95', icon:'💎', name:'Precision Master', desc:'Reach 95% overall grammar accuracy (min 100 answers)', check:(d)=>(d.grammarAnswered||0)>=100&&(d.grammarCorrect||0)/(d.grammarAnswered||1)>=0.95 },
+  { id:'g-tense-tamer', icon:'⏰', name:'Tense Tamer', desc:'Master all tense structures', check:(d)=>{ const p=d.grammarProgress||{}; const tenseIds=['m1-u6-present-simple-affirmative','m1-u7-present-simple-negative','m1-u8-present-simple-questions','m1-u11-present-continuous','m1-u12-past-simple-be','m1-u13-past-simple-regular','m1-u14-past-simple-negative','m1-u15-going-to']; return tenseIds.every(id=>{const s=p[id]; return s&&s.accuracy>=0.9&&s.total>=15;}); }},
+  { id:'g-error-hunter', icon:'🔍', name:'Error Hunter', desc:'Get 5 error-correction items right in a row', check:(d)=>(d.grammarEcStreak||0)>=5 },
+  { id:'g-translator', icon:'🌍', name:'Translator', desc:'Get 10 translation items right in a row', check:(d)=>(d.grammarTrStreak||0)>=10 },
+  { id:'g-all-units', icon:'🗺️', name:'Grammar Explorer', desc:'Practice at least one structure from every unit', check:(d)=>{ const p=d.grammarProgress||{}; const units=new Set(); Object.keys(p).forEach(k=>{const m=k.match(/m1-u(\d+)/); if(m)units.add(m[1]);}); return units.size>=15; }},
+  { id:'g-100-answers', icon:'💪', name:'Century', desc:'Answer 100 grammar questions', check:(d)=>(d.grammarAnswered||0)>=100 },
+  { id:'g-500-answers', icon:'🏋️', name:'Grammar Athlete', desc:'Answer 500 grammar questions', check:(d)=>(d.grammarAnswered||0)>=500 },
+  { id:'g-prestige-1', icon:'⭐', name:'Grammar Prestige I', desc:'Reach Grammar God (30,000 XP)', check:(d)=>(d.grammarXp||0)>=30000 },
+];
+
 function dailySeed(dateStr, classId) {
   let h = 0; const s = dateStr + classId;
   for (let i = 0; i < s.length; i++) h = Math.imul(31, h) + s.charCodeAt(i) | 0;
@@ -3391,21 +3412,25 @@ function showBonusNotification(msg) {
 
 function renderBadgeRow() {
   const row = document.getElementById('badge-row');
-  const earned = state.studentData?.badges || [];
+  const isGrammar = state.mode === 'grammar';
+  const earned = isGrammar ? (state.studentData?.grammarBadges || []) : (state.studentData?.badges || []);
+  const defs = isGrammar ? GRAMMAR_BADGE_DEFS : BADGE_DEFS;
   if (earned.length === 0) {
-    row.innerHTML = '<div class="badge-icon empty" onclick="showBadgeModal()" title="Earn badges by practising!">🏅</div>';
+    row.innerHTML = '<div class="badge-icon empty" onclick="showBadgeModal()" title="Earn badges by practising!">\uD83C\uDFC5</div>';
     return;
   }
   row.innerHTML = earned.map(id => {
-    const b = BADGE_DEFS.find(x => x.id === id);
+    const b = defs.find(x => x.id === id);
     return b ? `<div class="badge-icon" onclick="showBadgeModal()" title="${b.name}">${b.icon}</div>` : '';
   }).join('');
 }
 
 function showBadgeModal() {
   const list = document.getElementById('badge-modal-list');
-  const earned = state.studentData?.badges || [];
-  list.innerHTML = BADGE_DEFS.map(b => {
+  const isGrammar = state.mode === 'grammar';
+  const earned = isGrammar ? (state.studentData?.grammarBadges || []) : (state.studentData?.badges || []);
+  const defs = isGrammar ? GRAMMAR_BADGE_DEFS : BADGE_DEFS;
+  list.innerHTML = defs.map(b => {
     const has = earned.includes(b.id);
     return `<div class="badge-item ${has ? '' : 'locked'}"><div class="badge-item-icon">${b.icon}</div><div class="badge-item-info"><div class="badge-item-name">${b.name}</div><div class="badge-item-desc">${b.desc}</div></div></div>`;
   }).join('');
@@ -8514,8 +8539,26 @@ async function saveGrammarProgress() {
       for (let i = oldLevel + 1; i <= newLevel; i++) levelsToShow.push(GRAMMAR_LEVELS[i - 1]);
       showLevelUpQueue(levelsToShow);
     }
+    // Grammar badge check
+    await checkGrammarBadges(state.studentData, results);
   } catch (e) {
     console.error('Save grammar progress error:', e);
+  }
+}
+
+async function checkGrammarBadges(data, results) {
+  const mastered = getGrammarMasteredCount();
+  const earned = data.grammarBadges || [];
+  const newBadges = [];
+  for (const b of GRAMMAR_BADGE_DEFS) {
+    if (earned.includes(b.id)) continue;
+    if (b.check(data, mastered, results)) newBadges.push(b);
+  }
+  if (newBadges.length > 0) {
+    const allBadges = [...earned, ...newBadges.map(b => b.id)];
+    await studentsRef.doc(state.studentId).update({ grammarBadges: allBadges });
+    state.studentData.grammarBadges = allBadges;
+    showBadgePopups(newBadges);
   }
 }
 
