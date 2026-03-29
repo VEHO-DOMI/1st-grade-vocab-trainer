@@ -6530,7 +6530,7 @@ async function saveBattleResults(data, xpEarned) {
     const myRole = state.battleRole;
     const opRole = myRole === 'p1' ? 'p2' : 'p1';
     const battleUpdate = {
-      xp: state.xp,
+      xp: firebase.firestore.FieldValue.increment(xpEarned),
       battlesPlayed: firebase.firestore.FieldValue.increment(1),
       battlesWon: firebase.firestore.FieldValue.increment(data.winner === myRole ? 1 : 0),
       battleXpEarned: firebase.firestore.FieldValue.increment(xpEarned),
@@ -7732,8 +7732,8 @@ async function finishDuelTurn() {
       var isDraw = myTotal === opTotal;
       var xpEarned = iWon ? 100 : isDraw ? 50 : 25;
       xpEarned += myTotal * 8;
-      state.xp = (state.xp || 0) + xpEarned;
-      const duelUpdate = { xp: state.xp };
+      state.xp = (state.studentData?.xp || state.xp || 0) + xpEarned;
+      const duelUpdate = { xp: firebase.firestore.FieldValue.increment(xpEarned) };
       if (iWon) {
         duelUpdate.duelWins = firebase.firestore.FieldValue.increment(1);
         if (state.studentData) state.studentData.duelWins = (state.studentData.duelWins || 0) + 1;
