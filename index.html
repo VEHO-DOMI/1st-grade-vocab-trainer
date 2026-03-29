@@ -6053,6 +6053,28 @@ function renderWeeklyGoal() {
   document.getElementById('weekly-goal-label').textContent = 'Week of ' + getCurrentWeekMonday();
 }
 
+// ===== REALTIME DB + BATTLE REFS (must be before auto-login) =====
+const rtdb = firebase.database();
+let battleRoot = null;
+let presenceRef = null;
+let invitesRef = null;
+let roomsRef = null;
+
+function initBattleRefs() {
+  if (!CLASS_ID) return;
+  battleRoot = rtdb.ref('battles/' + CLASS_ID);
+  presenceRef = battleRoot.child('presence');
+  invitesRef = battleRoot.child('invites');
+  roomsRef = battleRoot.child('rooms');
+}
+
+let classQuizRef = null;
+
+function initClassQuizRef() {
+  classQuizRef = rtdb.ref('classQuiz');
+  rtdb.ref('.info/serverTimeOffset').on('value', snap => { state.cqServerOffset = snap.val() || 0; });
+}
+
 // ===== INIT =====
 SFX.init();
 (async function() {
@@ -6104,26 +6126,6 @@ SFX.init();
 })();
 
 // ===== BATTLE SYSTEM =====
-const rtdb = firebase.database();
-let battleRoot = null;
-let presenceRef = null;
-let invitesRef = null;
-let roomsRef = null;
-
-function initBattleRefs() {
-  if (!CLASS_ID) return;
-  battleRoot = rtdb.ref('battles/' + CLASS_ID);
-  presenceRef = battleRoot.child('presence');
-  invitesRef = battleRoot.child('invites');
-  roomsRef = battleRoot.child('rooms');
-}
-
-let classQuizRef = null;
-
-function initClassQuizRef() {
-  classQuizRef = rtdb.ref('classQuiz');
-  rtdb.ref('.info/serverTimeOffset').on('value', snap => { state.cqServerOffset = snap.val() || 0; });
-}
 
 function escapeHtml(str) {
   const div = document.createElement('div');
