@@ -1600,8 +1600,17 @@ body.playing .header-container { display: none; }
 
 /* ===== GRAMMAR REFERENCE ===== */
 .grammar-ref-content { display:flex; flex-direction:column; gap:10px; padding:0.5rem 0; }
-.grammar-ref-card { background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius); padding:1rem; box-shadow:var(--shadow-card); }
-.grammar-ref-card h3 { font-size:0.95rem; font-weight:800; color:var(--accent); margin:0 0 0.2rem; }
+.grammar-ref-card { background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius); box-shadow:var(--shadow-card); overflow:hidden; }
+.grammar-ref-header { padding:0.9rem 1rem; cursor:pointer; display:flex; align-items:center; gap:0.6rem; transition:background 0.15s; -webkit-tap-highlight-color:transparent; }
+.grammar-ref-header:hover, .grammar-ref-header:active { background:var(--card-hover); }
+.grammar-ref-header-info { flex:1; min-width:0; }
+.grammar-ref-header h3 { font-size:0.92rem; font-weight:800; color:var(--accent); margin:0; }
+.grammar-ref-header p { font-size:0.72rem; color:var(--text-secondary); margin:2px 0 0; line-height:1.3; }
+.grammar-ref-chevron { font-size:0.8rem; color:var(--muted); transition:transform 0.25s ease; flex-shrink:0; }
+.grammar-ref-card.open .grammar-ref-chevron { transform:rotate(180deg); }
+.grammar-ref-body { max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
+.grammar-ref-card.open .grammar-ref-body { max-height:2000px; }
+.grammar-ref-body-inner { padding:0 1rem 1rem; border-top:1px solid var(--card-border); }
 .grammar-ref-card h4 { font-size:0.82rem; font-weight:700; color:var(--text); margin:0.8rem 0 0.3rem; }
 .grammar-ref-card p { font-size:0.78rem; color:var(--text-secondary); line-height:1.5; margin:0.2rem 0; }
 .grammar-ref-card .rule-example { font-size:0.78rem; color:var(--accent-light); padding:0.4rem 0.6rem; background:var(--accent-glow); border-radius:8px; margin:4px 0; line-height:1.4; }
@@ -8586,27 +8595,40 @@ function showGrammarReference() {
   let html = '';
   grammarStructures.forEach(s => {
     html += '<div class="grammar-ref-card">';
+    // Collapsed header: title + description
+    html += '<div class="grammar-ref-header" onclick="toggleRefCard(this)">';
+    html += '<div class="grammar-ref-header-info">';
     html += '<h3>' + s.n + '</h3>';
-    html += '<p style="font-style:italic;color:var(--muted);font-size:0.72rem;">' + s.nd + '</p>';
     html += '<p>' + s.desc + '</p>';
+    html += '</div>';
+    html += '<span class="grammar-ref-chevron">\u25BC</span>';
+    html += '</div>';
+    // Expandable body
+    html += '<div class="grammar-ref-body"><div class="grammar-ref-body-inner">';
+    html += '<p style="font-style:italic;color:var(--muted);font-size:0.72rem;margin-top:0.5rem;">' + s.nd + '</p>';
     s.rules.forEach(r => {
       html += '<h4>' + r.t + '</h4>';
       html += '<p style="color:var(--muted);">' + r.td + '</p>';
       if (r.ex) r.ex.forEach(ex => {
-        html += '<div class="rule-example">🇬🇧 ' + ex.en + ' — 🇩🇪 ' + ex.de + '</div>';
+        html += '<div class="rule-example">\uD83C\uDDEC\uD83C\uDDE7 ' + ex.en + ' \u2014 \uD83C\uDDE9\uD83C\uDDEA ' + ex.de + '</div>';
       });
     });
     if (s.errs && s.errs.length > 0) {
-      html += '<h4>⚠️ Common Mistakes</h4>';
+      html += '<h4>\u26A0\uFE0F Common Mistakes</h4>';
       s.errs.forEach(e => {
-        html += '<div class="rule-error"><span class="wrong">✗ ' + e.w + '</span> → <span class="right">✓ ' + e.c + '</span><br><span style="font-size:0.72rem;color:var(--muted);">' + e.d + '</span></div>';
+        html += '<div class="rule-error"><span class="wrong">\u2717 ' + e.w + '</span> \u2192 <span class="right">\u2713 ' + e.c + '</span><br><span style="font-size:0.72rem;color:var(--muted);">' + e.d + '</span></div>';
       });
     }
-    html += '<div style="margin-top:0.6rem;"><button class="grammar-hint-btn" onclick="startGrammarExercise(\'' + s.id + '\')">▶ Practice this</button></div>';
+    html += '<div style="margin-top:0.6rem;"><button class="grammar-hint-btn" onclick="startGrammarExercise(\'' + s.id + '\')">\u25B6 Practice this</button></div>';
+    html += '</div></div>';
     html += '</div>';
   });
   document.getElementById('grammar-ref-content').innerHTML = html;
   showScreen('grammar-ref-screen');
+}
+
+function toggleRefCard(header) {
+  header.closest('.grammar-ref-card').classList.toggle('open');
 }
 
 // --- Restore vocab home when switching back ---
