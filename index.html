@@ -8466,6 +8466,7 @@ async function saveGrammarProgress() {
   const xp = grammarSession.xpEarned;
 
   const d = state.studentData || {};
+  const oldLevel = getLevel(d.grammarXp || 0, 'grammar').level;
   const newGrammarXp = (d.grammarXp || 0) + xp;
   const newGrammarSessions = (d.grammarSessions || 0) + 1;
   const newGrammarAnswered = (d.grammarAnswered || 0) + total;
@@ -8506,6 +8507,13 @@ async function saveGrammarProgress() {
   try {
     await studentsRef.doc(state.studentId).update(updateObj);
     state.studentData = { ...state.studentData, ...updateObj };
+    // Level-up detection
+    const newLevel = getLevel(newGrammarXp, 'grammar').level;
+    if (newLevel > oldLevel) {
+      const levelsToShow = [];
+      for (let i = oldLevel + 1; i <= newLevel; i++) levelsToShow.push(GRAMMAR_LEVELS[i - 1]);
+      showLevelUpQueue(levelsToShow);
+    }
   } catch (e) {
     console.error('Save grammar progress error:', e);
   }
