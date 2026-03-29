@@ -3465,6 +3465,9 @@ async function showLeaderboard() {
   showScreen('leaderboard-screen');
   const mySection = SECTIONS.find(s => s.id === CLASS_ID);
   const myLabel = mySection ? mySection.label : CLASS_ID;
+  const isGrammar = state.mode === 'grammar';
+  const xpField = isGrammar ? 'grammarXp' : 'xp';
+  const modeLabel = isGrammar ? '🧠 Grammar' : '📚 Vocab';
 
   // Load all sections for cross-class leaderboard
   const allStudents = [];
@@ -3473,7 +3476,7 @@ async function showLeaderboard() {
       const snap = await db.collection('classes').doc(sec.id).collection('students').get();
       snap.forEach(doc => {
         const d = doc.data();
-        allStudents.push({ id: doc.id, name: d.name, xp: d.xp || 0, daily: d.dailyChallengeLog || {}, section: sec.label, sectionId: sec.id, avatarId: d.avatarId || 1 });
+        allStudents.push({ id: doc.id, name: d.name, xp: d[xpField] || 0, daily: d.dailyChallengeLog || {}, section: sec.label, sectionId: sec.id, avatarId: d.avatarId || 1 });
       });
     } catch (e) { /* section may not exist yet */ }
   }
@@ -3481,22 +3484,22 @@ async function showLeaderboard() {
   // My class leaderboard
   const myStudents = allStudents.filter(s => s.sectionId === CLASS_ID);
   myStudents.sort((a, b) => b.xp - a.xp);
-  const medals = ['🥇', '🥈', '🥉'];
+  const medals = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
   const renderRows = (list, showSection) => list.map((s, i) => {
     const isMe = s.id === state.studentId && s.sectionId === CLASS_ID;
     const rank = i < 3 ? medals[i] : `${i + 1}.`;
     const tag = showSection ? ` <span class="section-tag section-tag-${s.section.toLowerCase()}">${s.section}</span>` : '';
     const av = `<img src="${avatarSrc(s.avatarId)}" class="avatar avatar-sm" style="vertical-align:middle;margin-right:6px;">`;
-    const sLv = getLevel(s.xp);
-    const prestigeStars = sLv.prestige ? '⭐'.repeat(sLv.prestige) + ' ' : '';
+    const sLv = getLevel(s.xp, state.mode);
+    const prestigeStars = sLv.prestige ? '\u2B50'.repeat(sLv.prestige) + ' ' : '';
     const rankPill = `<span class="rank-pill zone-${sLv.zone}" style="font-size:10px;padding:2px 8px;border-radius:10px;margin-left:6px;font-weight:600;">${prestigeStars}${sLv.name}</span>`;
-    return `<div class="lb-row ${isMe ? 'me' : ''}"><span class="lb-rank">${rank}</span><span class="lb-name">${av}${s.name}${rankPill}${tag}${isMe ? ' ← you' : ''}</span><span class="lb-xp">${s.xp.toLocaleString()} XP</span></div>`;
+    return `<div class="lb-row ${isMe ? 'me' : ''}"><span class="lb-rank">${rank}</span><span class="lb-name">${av}${s.name}${rankPill}${tag}${isMe ? ' \u2190 you' : ''}</span><span class="lb-xp">${s.xp.toLocaleString()} XP</span></div>`;
   }).join('') || '<p style="color:var(--muted);text-align:center;padding:1rem;">No students yet</p>';
 
   document.getElementById('lb-main').innerHTML =
-    `<div style="font-size:0.75rem;font-weight:700;color:var(--accent-light);margin-bottom:0.5rem;text-transform:uppercase;">My Class (${myLabel})</div>` +
+    `<div style="font-size:0.75rem;font-weight:700;color:var(--accent-light);margin-bottom:0.5rem;text-transform:uppercase;">${modeLabel} \u00B7 My Class (${myLabel})</div>` +
     renderRows(myStudents, false) +
-    `<div style="font-size:0.75rem;font-weight:700;color:var(--accent-light);margin:1rem 0 0.5rem;text-transform:uppercase;border-top:1px solid var(--card-border);padding-top:0.8rem;">All Classes</div>` +
+    `<div style="font-size:0.75rem;font-weight:700;color:var(--accent-light);margin:1rem 0 0.5rem;text-transform:uppercase;border-top:1px solid var(--card-border);padding-top:0.8rem;">${modeLabel} \u00B7 All Classes</div>` +
     renderRows([...allStudents].sort((a, b) => b.xp - a.xp), true);
 
   // Daily challenge leaderboard (my class only)
