@@ -853,9 +853,11 @@ body.playing .header-container { display: none; }
 .home-actions { width: 100%; display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.2rem; }
 .home-actions-row { display: flex; gap: 0.5rem; }
 .home-actions-row .btn { flex: 1; }
-.home-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; margin-bottom: 0.6rem; }
-.home-actions-grid .btn, .home-actions-grid .btn-battle { width: 100%; font-size: 0.85rem; padding: 0.8rem 0.6rem; font-family: 'Fredoka', sans-serif; border-radius: var(--radius-lg); }
-.home-nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; margin-top: 0.6rem; margin-bottom: 0.8rem; }
+.home-actions-area { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-bottom: 0.6rem; }
+.home-actions-area .btn-start-practice { width: 100%; }
+.home-actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.home-actions-row .btn, .home-actions-row .btn-battle, .home-actions-row .btn-review { width: 100%; font-size: 0.85rem; padding: 0.8rem 0.6rem; font-family: 'Fredoka', sans-serif; border-radius: var(--radius); }
+.home-nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin-top: 0.6rem; margin-bottom: 0.8rem; }
 .home-nav-grid .btn { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.85rem; padding: 0.7rem 0.4rem; font-family: 'Fredoka', sans-serif; border-radius: var(--radius); background: var(--card); border: 1.5px solid var(--card-border); box-shadow: var(--shadow-card); color: var(--text); font-weight: 600; }
 .home-nav-grid .btn:hover { border-color: var(--accent); background: var(--accent-glow); color: var(--accent); }
 .home-nav-grid .btn span { font-size: 0.68rem; font-family: 'Inter', sans-serif; font-weight: 600; opacity: 0.7; }
@@ -1911,18 +1913,22 @@ body.playing .header-container { display: none; }
     <div class="stat-card"><div class="stat-value" id="stat-streak">0</div><div class="stat-label">Streak 🔥</div></div>
   </div>
 
-  <div class="home-actions-grid">
+  <div class="home-actions-area">
     <button class="btn btn-primary btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
-    <button class="btn btn-review" id="review-btn" style="display:none;" onclick="startSmartReview()">🔄 Smart Review</button>
-    <button id="btn-battle" class="btn-battle" onclick="openBattleLobby()" style="display:none;">⚔️ Battle Arena</button>
-    <button class="btn-battle" onclick="openClassQuizJoin()" style="background:linear-gradient(135deg,var(--accent-light),var(--accent));">🎓 Class Quiz</button>
+    <div class="home-actions-row">
+      <button class="btn btn-review" id="review-btn" style="display:none;" onclick="startSmartReview()">🔄 Smart Review</button>
+      <button class="btn btn-secondary" id="home-words-btn" onclick="showWordReference()">📖 Words</button>
+    </div>
+    <div class="home-actions-row">
+      <button class="btn-battle" onclick="openClassQuizJoin()" style="background:linear-gradient(135deg,var(--accent-light),var(--accent));">🎓 Class Quiz</button>
+      <button id="btn-battle" class="btn-battle" onclick="openBattleLobby()" style="display:none;">⚔️ Battle Arena</button>
+    </div>
   </div>
 
   <div class="home-nav-grid">
     <button class="btn btn-secondary btn-small" onclick="showProgressMap()">🗺️<span>Map</span></button>
     <button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>Progress</span></button>
     <button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>Leaderboard</span></button>
-    <button class="btn btn-secondary btn-small" onclick="showWordReference()">📖<span>Words</span></button>
   </div>
 
   <div class="today-card" id="today-card" style="display:none;">
@@ -8200,12 +8206,17 @@ showHomeScreen = function() {
       practiceBtn.textContent = '\uD83C\uDFAF Start Practice';
       practiceBtn.onclick = openPracticeSetup;
     }
+    // Restore Words button (was Rules in grammar mode)
+    const wordsBtn = document.getElementById('home-words-btn');
+    if (wordsBtn) {
+      wordsBtn.textContent = '\uD83D\uDCD6 Words';
+      wordsBtn.onclick = function() { showWordReference(); };
+    }
     const navGrid = document.querySelector('.home-nav-grid');
     if (navGrid) {
       navGrid.innerHTML = '<button class="btn btn-secondary btn-small" onclick="showProgressMap()">\uD83D\uDDFA\uFE0F<span>Map</span></button>' +
         '<button class="btn btn-secondary btn-small" onclick="showProgressScreen()">\uD83D\uDCCA<span>Progress</span></button>' +
-        '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">\uD83C\uDFC6<span>Leaderboard</span></button>' +
-        '<button class="btn btn-secondary btn-small" onclick="showWordReference()">\uD83D\uDCD6<span>Words</span></button>';
+        '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">\uD83C\uDFC6<span>Leaderboard</span></button>';
     }
     // Update mode pill if present
     const pill = document.getElementById('mode-switch-pill');
@@ -8248,8 +8259,14 @@ function showGrammarHomeScreen() {
   // Update practice button
   const practiceBtn = document.querySelector('.btn-start-practice');
   if (practiceBtn) {
-    practiceBtn.textContent = '🧠 Start Grammar Practice';
+    practiceBtn.textContent = '\uD83E\uDDE0 Start Grammar Practice';
     practiceBtn.onclick = openGrammarPractice;
+  }
+  // Swap Words → Rules in action area
+  const wordsBtn = document.getElementById('home-words-btn');
+  if (wordsBtn) {
+    wordsBtn.textContent = '\uD83D\uDCDD Rules';
+    wordsBtn.onclick = function() { showGrammarReference(); };
   }
   // Smart review for grammar
   const reviewBtn = document.getElementById('review-btn');
@@ -8266,10 +8283,9 @@ function showGrammarHomeScreen() {
   // Update nav buttons
   const navGrid = document.querySelector('.home-nav-grid');
   if (navGrid) {
-    navGrid.innerHTML = '<button class="btn btn-secondary btn-small" onclick="showGrammarMap()">🗺️<span>Map</span></button>' +
-      '<button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>Progress</span></button>' +
-      '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>Leaderboard</span></button>' +
-      '<button class="btn btn-secondary btn-small" onclick="showGrammarReference()">📝<span>Rules</span></button>';
+    navGrid.innerHTML = '<button class="btn btn-secondary btn-small" onclick="showGrammarMap()">\uD83D\uDDFA\uFE0F<span>Map</span></button>' +
+      '<button class="btn btn-secondary btn-small" onclick="showProgressScreen()">\uD83D\uDCCA<span>Progress</span></button>' +
+      '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">\uD83C\uDFC6<span>Leaderboard</span></button>';
   }
   // Add mode switch pill
   addModeSwitchPill();
