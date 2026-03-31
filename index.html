@@ -7982,31 +7982,58 @@ async function finishDuelTurn() {
       var xpEarned = iWon ? 100 : isDraw ? 50 : 25;
       xpEarned += myTotal * 8;
       state.xp = (state.studentData?.xp || state.xp || 0) + xpEarned;
-      const duelUpdate = { xp: firebase.firestore.FieldValue.increment(xpEarned) };
+      // Update MY stats: XP, battlesPlayed, battlesWon, battleXpEarned, duelWins
+      const duelUpdate = {
+        xp: firebase.firestore.FieldValue.increment(xpEarned),
+        battlesPlayed: firebase.firestore.FieldValue.increment(1),
+        battleXpEarned: firebase.firestore.FieldValue.increment(xpEarned)
+      };
       if (iWon) {
         duelUpdate.duelWins = firebase.firestore.FieldValue.increment(1);
+        duelUpdate.battlesWon = firebase.firestore.FieldValue.increment(1);
         if (state.studentData) state.studentData.duelWins = (state.studentData.duelWins || 0) + 1;
-        // Check giant kill: opponent had more XP
         const opXpField = myRole === 'p1' ? freshData.p2Xp : freshData.p1Xp;
         if (opXpField && opXpField > (state.studentData?.xp || 0)) {
           duelUpdate.giantKills = firebase.firestore.FieldValue.increment(1);
           if (state.studentData) state.studentData.giantKills = (state.studentData.giantKills || 0) + 1;
         }
       }
+      if (state.studentData) {
+        state.studentData.battlesPlayed = (state.studentData.battlesPlayed || 0) + 1;
+        if (iWon) state.studentData.battlesWon = (state.studentData.battlesWon || 0) + 1;
+      }
       await studentsRef.doc(state.studentId).update(duelUpdate);
-      // Save to battle history
+      // Save battle history for ME
+      var opName = myRole === 'p1' ? freshData.p2Name : freshData.p1Name;
+      var opSlug = myRole === 'p1' ? freshData.p2 : freshData.p1;
+      var dateNow = new Date().toISOString();
       try {
-        var opName = myRole === 'p1' ? freshData.p2Name : freshData.p1Name;
         await studentsRef.doc(state.studentId).collection('battleHistory').add({
-          opponent: opName,
-          result: iWon ? 'win' : isDraw ? 'draw' : 'loss',
-          date: new Date().toISOString(),
-          type: 'duel',
-          myScore: myTotal,
-          theirScore: opTotal,
-          xpEarned: xpEarned
+          opponent: opName, result: iWon ? 'win' : isDraw ? 'draw' : 'loss',
+          date: dateNow, type: 'duel', myScore: myTotal, theirScore: opTotal, xpEarned: xpEarned
         });
       } catch(histErr) { console.error('Save battle history error:', histErr); }
+      // Save battle history for OPPONENT + update their battlesPlayed
+      var opWon = opTotal > myTotal;
+      var opDraw = opTotal === myTotal;
+      var opXpEarned = opWon ? 100 : opDraw ? 50 : 25;
+      opXpEarned += opTotal * 8;
+      try {
+        var opUpdate = {
+          xp: firebase.firestore.FieldValue.increment(opXpEarned),
+          battlesPlayed: firebase.firestore.FieldValue.increment(1),
+          battleXpEarned: firebase.firestore.FieldValue.increment(opXpEarned)
+        };
+        if (opWon) {
+          opUpdate.duelWins = firebase.firestore.FieldValue.increment(1);
+          opUpdate.battlesWon = firebase.firestore.FieldValue.increment(1);
+        }
+        await studentsRef.doc(opSlug).update(opUpdate);
+        await studentsRef.doc(opSlug).collection('battleHistory').add({
+          opponent: state.studentName || 'Opponent', result: opWon ? 'win' : opDraw ? 'draw' : 'loss',
+          date: dateNow, type: 'duel', myScore: opTotal, theirScore: myTotal, xpEarned: opXpEarned
+        });
+      } catch(opErr) { console.error('Save opponent history error:', opErr); }
     }
 
     await duelRef.update(update);
