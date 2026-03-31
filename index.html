@@ -2141,8 +2141,9 @@ body.playing .header-container { display: none; }
   <div class="card">
     <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
       <button class="type-card selected" id="bh-tab-all" onclick="loadBattleHistory('all')" style="flex:1;text-align:center;"><span class="type-card-name">All</span></button>
-      <button class="type-card" id="bh-tab-live" onclick="loadBattleHistory('live')" style="flex:1;text-align:center;"><span class="type-card-name">Live Battles</span></button>
-      <button class="type-card" id="bh-tab-duel" onclick="loadBattleHistory('duel')" style="flex:1;text-align:center;"><span class="type-card-name">Word Duels</span></button>
+      <button class="type-card" id="bh-tab-live" onclick="loadBattleHistory('live')" style="flex:1;text-align:center;"><span class="type-card-name">Live</span></button>
+      <button class="type-card" id="bh-tab-duel" onclick="loadBattleHistory('duel')" style="flex:1;text-align:center;"><span class="type-card-name">Vocab</span></button>
+      <button class="type-card" id="bh-tab-grammar-duel" onclick="loadBattleHistory('grammar-duel')" style="flex:1;text-align:center;"><span class="type-card-name">Grammar</span></button>
     </div>
     <div id="battle-history-list"></div>
   </div>
@@ -7467,9 +7468,11 @@ function leaveClassQuiz() {
 }
 
 // ===== ASYNC QUIZ DUEL (QuizDuell model) =====
-let duelState = { duel: null, myRole: null, pendingRounds: [], newRoundIdx: -1, currentQ: 0, answers: [], timer: null, timeLeft: 15, roundAnswers: [] };
+let duelState = { duel: null, myRole: null, pendingRounds: [], newRoundIdx: -1, currentQ: 0, answers: [], timer: null, timeLeft: 15, roundAnswers: [], mode: 'vocab' };
 
 async function openDuelHub() {
+  var title = document.getElementById('duel-hub-title');
+  if (title) title.textContent = state.mode === 'grammar' ? 'Grammar Duel' : 'Word Duel';
   showScreen('duel-hub-screen');
   await loadDuels();
 }
@@ -7485,6 +7488,9 @@ async function loadDuels() {
     var seen = new Set();
     p1Snap.forEach(function(doc) { if (!seen.has(doc.id)) { seen.add(doc.id); duels.push({ id: doc.id, ...doc.data(), myRole: 'p1' }); } });
     p2Snap.forEach(function(doc) { if (!seen.has(doc.id)) { seen.add(doc.id); duels.push({ id: doc.id, ...doc.data(), myRole: 'p2' }); } });
+    // Filter by current mode (vocab duels without mode field are treated as vocab)
+    var currentMode = state.mode || 'vocab';
+    duels = duels.filter(function(d) { return (d.mode || 'vocab') === currentMode; });
     duels.sort(function(a, b) {
       var aTime = a.updatedAt ? (a.updatedAt.seconds || 0) : (a.createdAt ? (a.createdAt.seconds || 0) : 0);
       var bTime = b.updatedAt ? (b.updatedAt.seconds || 0) : (b.createdAt ? (b.createdAt.seconds || 0) : 0);
@@ -7709,19 +7715,21 @@ async function createDuel(opSlug, opName) {
     }
   } catch(e) { /* If index missing, allow anyway */ }
   try {
+    var duelMode = state.mode || 'vocab';
     var docRef = await classRef.collection('duels').add({
       p1: mySlug, p2: opSlug,
       p1Name: state.studentName, p2Name: opName,
       p1Avatar: state.avatarId || 1,
       status: 'active',
+      mode: duelMode,
       rounds: [],
       p1Score: 0, p2Score: 0,
       winner: null,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    // P1 picks unit for Round 1, then plays it
-    duelState.duel = { id: docRef.id, p1: mySlug, p2: opSlug, p1Name: state.studentName, p2Name: opName, status: 'active', rounds: [], p1Score: 0, p2Score: 0, winner: null };
+    duelState.mode = duelMode;
+    duelState.duel = { id: docRef.id, p1: mySlug, p2: opSlug, p1Name: state.studentName, p2Name: opName, status: 'active', mode: duelMode, rounds: [], p1Score: 0, p2Score: 0, winner: null };
     duelState.myRole = 'p1';
     showDuelUnitPicker(0);
   } catch (e) { console.error('Create duel error:', e); showBattleMessage('Error', 'Could not create duel.'); }
@@ -7736,6 +7744,7 @@ async function startDuelTurn(duelId) {
     var myRole = duel.p1 === state.studentId ? 'p1' : 'p2';
     duelState.duel = duel;
     duelState.myRole = myRole;
+    duelState.mode = duel.mode || 'vocab';
     duelState.pendingRounds = [];
     duelState.roundAnswers = [];
 
@@ -7767,29 +7776,42 @@ async function startDuelTurn(duelId) {
 function showDuelUnitPicker(roundIdx) {
   duelState.newRoundIdx = roundIdx;
   document.getElementById('duel-pick-round').textContent = (roundIdx + 1);
+  var pickTitle = document.getElementById('duel-pick-title');
+  if (pickTitle) pickTitle.textContent = duelState.mode === 'grammar' ? 'Pick a Grammar Topic' : 'Pick a Unit';
   var grid = document.getElementById('duel-unit-grid');
-  var unitKeys = Object.keys(vocabData);
   var usedUnits = new Set();
   var rounds = duelState.duel.rounds || [];
-  for (var i = 0; i < rounds.length; i++) {
-    usedUnits.add(rounds[i].unit);
+  for (var i = 0; i < rounds.length; i++) usedUnits.add(rounds[i].unit);
+
+  if (duelState.mode === 'grammar' && typeof grammarStructures !== 'undefined') {
+    // Grammar mode: show grammar structures grouped by unit
+    var battleTypes = ['gap-fill', 'multiple-choice', 'context-picker'];
+    grid.innerHTML = grammarStructures.map(function(s) {
+      var battleItems = grammarItems.filter(function(it) { return it.sid === s.id && battleTypes.indexOf(it.t) >= 0 && it.ds && it.ds.length >= 3; });
+      if (usedUnits.has(s.id)) {
+        return '<button class="source-btn disabled" style="opacity:0.4;pointer-events:none;"><div class="source-btn-label">U' + s.u + ' ' + escapeHtml(s.n) + '</div><div class="source-btn-count">Already played</div></button>';
+      }
+      if (battleItems.length < 3) {
+        return '<button class="source-btn disabled" style="opacity:0.3;pointer-events:none;"><div class="source-btn-label">U' + s.u + ' ' + escapeHtml(s.n) + '</div><div class="source-btn-count">Not enough items</div></button>';
+      }
+      return '<button class="source-btn" onclick="onDuelUnitPicked(\'' + s.id.replace(/'/g, "\\'") + '\')"><div class="source-btn-label">U' + s.u + ' ' + escapeHtml(s.n) + '</div><div class="source-btn-count">' + battleItems.length + ' items</div></button>';
+    }).join('');
+  } else {
+    // Vocab mode: show units
+    var unitKeys = Object.keys(vocabData);
+    grid.innerHTML = unitKeys.map(function(k) {
+      if (usedUnits.has(k)) {
+        return '<button class="source-btn disabled" style="opacity:0.4;pointer-events:none;"><div class="source-btn-label">' + escapeHtml(k) + '</div><div class="source-btn-count">Already played</div></button>';
+      }
+      return '<button class="source-btn" onclick="onDuelUnitPicked(\'' + k.replace(/'/g, "\\'") + '\')"><div class="source-btn-label">' + escapeHtml(k) + '</div><div class="source-btn-count">' + vocabData[k].length + ' words</div></button>';
+    }).join('');
   }
-  grid.innerHTML = unitKeys.map(function(k) {
-    if (usedUnits.has(k)) {
-      return '<button class="source-btn disabled" style="opacity:0.4;pointer-events:none;">' +
-        '<div class="source-btn-label">' + escapeHtml(k) + '</div>' +
-        '<div class="source-btn-count">Already played</div></button>';
-    }
-    return '<button class="source-btn" onclick="onDuelUnitPicked(\'' + k.replace(/'/g, "\\'") + '\')">' +
-      '<div class="source-btn-label">' + escapeHtml(k) + '</div>' +
-      '<div class="source-btn-count">' + vocabData[k].length + ' words</div></button>';
-  }).join('');
   showScreen('duel-pick-screen');
 }
 
 async function onDuelUnitPicked(unitKey) {
   var roundIdx = duelState.newRoundIdx;
-  var questions = generateDuelQuestions(unitKey, 5);
+  var questions = duelState.mode === 'grammar' ? generateGrammarDuelQuestions(unitKey, 5) : generateDuelQuestions(unitKey, 5);
   var myRole = duelState.myRole;
   var newRound = {
     unit: unitKey,
@@ -7835,9 +7857,20 @@ function showDuelQuestion() {
     return;
   }
   var q = round.questions[qIdx];
-  document.getElementById('duel-round-label').textContent = 'Round ' + (roundIdx + 1) + ' \u00B7 ' + round.unit;
+  var isGrammarDuel = duelState.mode === 'grammar';
+  // Round label: show structure name for grammar, unit name for vocab
+  var roundLabel = round.unit;
+  if (isGrammarDuel && typeof grammarStructures !== 'undefined') {
+    var struct = grammarStructures.find(function(s) { return s.id === round.unit; });
+    if (struct) roundLabel = struct.n;
+  }
+  document.getElementById('duel-round-label').textContent = 'Round ' + (roundIdx + 1) + ' \u00B7 ' + roundLabel;
   document.getElementById('duel-question-num').textContent = 'Question ' + (qIdx + 1) + ' of 5';
-  document.getElementById('duel-prompt').innerHTML = '<div style="font-size:0.8rem;opacity:0.5;margin-bottom:8px;">Translate to English</div><div style="font-size:1.5rem;font-weight:700;">' + escapeHtml(q.german) + '</div>';
+  if (isGrammarDuel && q.prompt) {
+    document.getElementById('duel-prompt').innerHTML = '<div style="font-size:0.8rem;opacity:0.5;margin-bottom:8px;">Choose the correct answer</div><div style="font-size:1.1rem;font-weight:600;line-height:1.6;">' + q.prompt + '</div>';
+  } else {
+    document.getElementById('duel-prompt').innerHTML = '<div style="font-size:0.8rem;opacity:0.5;margin-bottom:8px;">Translate to English</div><div style="font-size:1.5rem;font-weight:700;">' + escapeHtml(q.german) + '</div>';
+  }
   var optionsEl = document.getElementById('duel-options');
   optionsEl.innerHTML = q.options.map(function(opt, i) {
     return '<button class="duel-option" data-idx="' + i + '" onclick="duelSelectAnswer(this,' + i + ',' + q.correctIdx + ')">' + escapeHtml(opt) + '</button>';
@@ -7977,19 +8010,26 @@ async function finishDuelTurn() {
       var isDraw = myTotal === opTotal;
       var xpEarned = iWon ? 100 : isDraw ? 50 : 25;
       xpEarned += myTotal * 8;
-      state.xp = (state.studentData?.xp || state.xp || 0) + xpEarned;
-      // Update MY stats: XP, battlesPlayed, battlesWon, battleXpEarned, duelWins
+      var isGrammarDuel = (duelState.mode === 'grammar') || (freshData.mode === 'grammar');
+      var xpField = isGrammarDuel ? 'grammarXp' : 'xp';
+      var historyType = isGrammarDuel ? 'grammar-duel' : 'duel';
+      if (!isGrammarDuel) state.xp = (state.studentData?.xp || state.xp || 0) + xpEarned;
+      // Update MY stats
       const duelUpdate = {
-        xp: firebase.firestore.FieldValue.increment(xpEarned),
+        [xpField]: firebase.firestore.FieldValue.increment(xpEarned),
         battlesPlayed: firebase.firestore.FieldValue.increment(1),
         battleXpEarned: firebase.firestore.FieldValue.increment(xpEarned)
       };
+      if (isGrammarDuel) {
+        duelUpdate.grammarBattlesPlayed = firebase.firestore.FieldValue.increment(1);
+      }
       if (iWon) {
         duelUpdate.duelWins = firebase.firestore.FieldValue.increment(1);
         duelUpdate.battlesWon = firebase.firestore.FieldValue.increment(1);
+        if (isGrammarDuel) duelUpdate.grammarBattlesWon = firebase.firestore.FieldValue.increment(1);
         if (state.studentData) state.studentData.duelWins = (state.studentData.duelWins || 0) + 1;
         const opXpField = myRole === 'p1' ? freshData.p2Xp : freshData.p1Xp;
-        if (opXpField && opXpField > (state.studentData?.xp || 0)) {
+        if (opXpField && opXpField > (state.studentData?.[xpField] || 0)) {
           duelUpdate.giantKills = firebase.firestore.FieldValue.increment(1);
           if (state.studentData) state.studentData.giantKills = (state.studentData.giantKills || 0) + 1;
         }
@@ -7997,6 +8037,7 @@ async function finishDuelTurn() {
       if (state.studentData) {
         state.studentData.battlesPlayed = (state.studentData.battlesPlayed || 0) + 1;
         if (iWon) state.studentData.battlesWon = (state.studentData.battlesWon || 0) + 1;
+        if (isGrammarDuel) state.studentData[xpField] = (state.studentData[xpField] || 0) + xpEarned;
       }
       await studentsRef.doc(state.studentId).update(duelUpdate);
       // Save battle history for ME
@@ -8006,28 +8047,30 @@ async function finishDuelTurn() {
       try {
         await studentsRef.doc(state.studentId).collection('battleHistory').add({
           opponent: opName, result: iWon ? 'win' : isDraw ? 'draw' : 'loss',
-          date: dateNow, type: 'duel', myScore: myTotal, theirScore: opTotal, xpEarned: xpEarned
+          date: dateNow, type: historyType, myScore: myTotal, theirScore: opTotal, xpEarned: xpEarned
         });
       } catch(histErr) { console.error('Save battle history error:', histErr); }
-      // Save battle history for OPPONENT + update their battlesPlayed
+      // Save battle history for OPPONENT + update their stats
       var opWon = opTotal > myTotal;
       var opDraw = opTotal === myTotal;
       var opXpEarned = opWon ? 100 : opDraw ? 50 : 25;
       opXpEarned += opTotal * 8;
       try {
         var opUpdate = {
-          xp: firebase.firestore.FieldValue.increment(opXpEarned),
+          [xpField]: firebase.firestore.FieldValue.increment(opXpEarned),
           battlesPlayed: firebase.firestore.FieldValue.increment(1),
           battleXpEarned: firebase.firestore.FieldValue.increment(opXpEarned)
         };
+        if (isGrammarDuel) opUpdate.grammarBattlesPlayed = firebase.firestore.FieldValue.increment(1);
         if (opWon) {
           opUpdate.duelWins = firebase.firestore.FieldValue.increment(1);
           opUpdate.battlesWon = firebase.firestore.FieldValue.increment(1);
+          if (isGrammarDuel) opUpdate.grammarBattlesWon = firebase.firestore.FieldValue.increment(1);
         }
         await studentsRef.doc(opSlug).update(opUpdate);
         await studentsRef.doc(opSlug).collection('battleHistory').add({
           opponent: state.studentName || 'Opponent', result: opWon ? 'win' : opDraw ? 'draw' : 'loss',
-          date: dateNow, type: 'duel', myScore: opTotal, theirScore: myTotal, xpEarned: opXpEarned
+          date: dateNow, type: historyType, myScore: opTotal, theirScore: myTotal, xpEarned: opXpEarned
         });
       } catch(opErr) { console.error('Save opponent history error:', opErr); }
     }
@@ -8057,6 +8100,32 @@ function generateDuelQuestions(unitKey, count) {
     }
     shuffle(options);
     return { german: word.g, english: word.w, definition: word.d, options: options, correctIdx: options.indexOf(correct) };
+  });
+}
+
+// --- Grammar Duel Question Generation ---
+function generateGrammarDuelQuestions(structureId, count) {
+  if (typeof grammarItems === 'undefined') return [];
+  var battleTypes = ['gap-fill', 'multiple-choice', 'context-picker'];
+  var candidates = grammarItems.filter(function(it) {
+    return it.sid === structureId && battleTypes.indexOf(it.t) >= 0 && it.ds && it.ds.length >= 3;
+  });
+  shuffle(candidates);
+  var picked = candidates.slice(0, Math.min(count, candidates.length));
+  return picked.map(function(item) {
+    var correct = item.c;
+    var options = [correct].concat(item.ds.slice(0, 3));
+    shuffle(options);
+    return {
+      prompt: item.p,
+      type: item.t,
+      correct: correct,
+      options: options,
+      correctIdx: options.indexOf(correct),
+      // Keep vocab-compatible fields for the scoreboard
+      german: item.p.substring(0, 60),
+      english: correct
+    };
   });
 }
 
@@ -8150,6 +8219,7 @@ async function loadBattleHistory(filter) {
 
     if (filter === 'live') items = items.filter(function(i) { return !i.type || i.type === 'live'; });
     if (filter === 'duel') items = items.filter(function(i) { return i.type === 'duel'; });
+    if (filter === 'grammar-duel') items = items.filter(function(i) { return i.type === 'grammar-duel'; });
 
     if (items.length === 0) {
       list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">No battles yet.</div>';
@@ -8160,7 +8230,7 @@ async function loadBattleHistory(filter) {
       var icon = b.result === 'win' ? '\u{1F3C6}' : b.result === 'draw' ? '\u{1F91D}' : '\u{1F4AA}';
       var color = b.result === 'win' ? 'var(--correct)' : b.result === 'loss' ? 'var(--wrong)' : 'var(--muted)';
       var date = b.date ? new Date(b.date).toLocaleDateString('en-GB', {day:'numeric',month:'short'}) : '';
-      var typeLabel = b.type === 'duel' ? 'Word Duel' : b.mode ? ({translation:'Translation',definition:'Definition',context:'Context'}[b.mode] || 'Battle') : 'Battle';
+      var typeLabel = b.type === 'grammar-duel' ? 'Grammar Duel' : b.type === 'duel' ? 'Word Duel' : b.mode ? ({translation:'Translation',definition:'Definition',context:'Context'}[b.mode] || 'Battle') : 'Battle';
       return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--card-border);">' +
         '<div><div style="font-weight:600;">' + icon + ' vs ' + escapeHtml(b.opponent || 'Unknown') + '</div>' +
         '<div style="font-size:0.75rem;color:var(--muted);">' + typeLabel + ' \u00B7 ' + date + '</div></div>' +
@@ -9608,7 +9678,7 @@ goHome = function() {
 <div id="duel-hub-screen" class="screen">
   <div class="progress-nav">
     <button class="btn btn-secondary" onclick="goHome()">← Back</button>
-    <h2 style="flex:1;text-align:center;margin:0;">Word Duel</h2>
+    <h2 id="duel-hub-title" style="flex:1;text-align:center;margin:0;">Word Duel</h2>
     <div style="width:60px;"></div>
   </div>
   <div class="card">
@@ -9628,7 +9698,7 @@ goHome = function() {
 <!-- DUEL UNIT PICKER SCREEN -->
 <div id="duel-pick-screen" class="screen">
   <div style="text-align:center;padding:1rem 0;">
-    <h2>Pick a Unit</h2>
+    <h2 id="duel-pick-title">Pick a Unit</h2>
     <p style="color:var(--muted);font-size:0.85rem;">Choose the topic for Round <span id="duel-pick-round">1</span></p>
   </div>
   <div class="source-grid" id="duel-unit-grid"></div>
