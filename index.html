@@ -25,7 +25,7 @@
   --card-solid: #ffffff;
   --text: #14532d;
   --text-secondary: #365a3e;
-  --muted: #6b8f76;
+  --muted: #4d7a5e;
   --accent: #16a34a;
   --accent-light: #22c55e;
   --accent-glow: rgba(22,163,74,0.15);
@@ -39,9 +39,9 @@
   --context-color: #0d9488;
   --def-color: #15803d;
   --trans-color: #0d9488;
-  --radius: 14px; --radius-lg: 20px;
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
-  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.1);
+  --radius: 16px; --radius-lg: 24px;
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-elevated: 0 6px 20px rgba(0,0,0,0.12);
 }
 [data-theme="dark"] {
   --bg: #0b1120;
@@ -52,7 +52,7 @@
   --card-solid: #162033;
   --text: #eef0f6;
   --text-secondary: #a8b4c8;
-  --muted: #6b7a94;
+  --muted: #8899b0;
   --accent: #22c55e;
   --accent-light: #4ade80;
   --accent-glow: rgba(34,197,94,0.25);
@@ -76,8 +76,14 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
-  min-height: 100vh;
+  min-height: 100dvh;
   transition: background 0.3s, color 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top) + 0.5rem) 0 calc(env(safe-area-inset-bottom) + 2.5rem);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
 }
 [data-theme="dark"] body {
   background-image:
@@ -85,13 +91,6 @@ body {
     radial-gradient(ellipse 80% 50% at 100% 100%, rgba(34,197,94,0.08), transparent 70%),
     radial-gradient(ellipse 50% 40% at 0% 80%, rgba(245,158,11,0.05), transparent);
   background-attachment: fixed;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: calc(env(safe-area-inset-top) + 0.5rem) 0 calc(env(safe-area-inset-bottom) + 2rem);
-  -webkit-font-smoothing: antialiased;
-  line-height: 1.5;
 }
 
 /* Header — DomiVocab branding */
@@ -195,17 +194,19 @@ h1 { display: none; }
   box-shadow: var(--shadow-card); position: relative; overflow: hidden;
 }
 .stat-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
   background: linear-gradient(90deg, var(--accent), var(--accent-light));
-  opacity: 0.6;
+  opacity: 0.7;
 }
 .stat-card:nth-child(1)::before { background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
 .stat-card:nth-child(2)::before { background: linear-gradient(90deg, var(--accent), var(--accent-light)); }
 .stat-card:nth-child(3)::before { background: linear-gradient(90deg, var(--accent-deep), var(--accent)); }
-.stat-value { font-size: 1.4rem; font-weight: 900; color: var(--accent-light); letter-spacing: -0.02em; }
+.stat-card:nth-child(4)::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.stat-value { font-size: 1.5rem; font-weight: 800; font-family: 'Fredoka', sans-serif; color: var(--accent); letter-spacing: -0.02em; }
 .stat-card:nth-child(2) .stat-value { color: var(--accent-light); }
-.stat-card:nth-child(3) .stat-value { color: var(--accent-light); }
-.stat-label { font-size: 0.58rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.2rem; font-weight: 600; }
+.stat-card:nth-child(3) .stat-value { color: var(--accent); }
+.stat-card:nth-child(4) .stat-value { color: #f59e0b; }
+.stat-label { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.25rem; font-weight: 700; }
 
 /* Source Selection */
 .source-section { margin-bottom: 0.8rem; }
@@ -557,6 +558,22 @@ h1 { display: none; }
 [data-theme="light"] .battle-modal-bg { background: white; color: var(--text); }
 [data-theme="light"] .setup-step { background: white; }
 
+/* ===== NAIVE TYPOGRAPHY & POLISH ===== */
+.profile-name, .nav-title, h2, .card h3, .grammar-topic-name,
+.login-card h2, .lb-name, .grammar-ref-card h3 {
+  font-family: 'Fredoka', sans-serif;
+}
+.nav-title { font-size: 1rem; font-weight: 700; }
+.grammar-check-btn { font-family: 'Fredoka', sans-serif; letter-spacing: 0.3px; }
+.grammar-practice-full-btn { font-family: 'Fredoka', sans-serif; }
+.progress-nav { display: flex; align-items: center; gap: 0.5rem; width: 100%; padding: 0.5rem 0; margin-bottom: 0.5rem; }
+.progress-nav .btn { flex: 0 0 auto; }
+.progress-nav .nav-title { flex: 1; text-align: center; }
+.card { border-width: 1.5px; }
+.grammar-prompt { font-size: 1.1rem; line-height: 1.7; }
+.grammar-option-btn { padding: 16px; }
+.grammar-exercise-area { padding: 1rem 0.5rem; }
+
 /* ===== NAIVE DESIGN DOODLE SYSTEM v2 ===== */
 
 /* --- Background: large non-repeating doodle field (light) --- */
@@ -863,7 +880,7 @@ body.playing .header-container { display: none; }
 .home-nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; width: 100%; margin-top: 0.5rem; }
 .home-nav-grid .btn { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.7rem; padding: 0.6rem 0.3rem; }
 .home-nav-grid .btn span { font-size: 0.6rem; opacity: 0.8; }
-.home-nav-footer { display: flex; justify-content: center; gap: 0.5rem; margin-top: 0.4rem; }
+.home-nav-footer { display: flex; justify-content: center; gap: 0.5rem; margin-top: 0.8rem; margin-bottom: 1.5rem; }
 .home-nav-footer .btn { font-size: 0.72rem; padding: 0.5rem 1.2rem; }
 .mode-row { display: flex; gap: 0.5rem; }
 .mode-row .btn { flex: 1; }
@@ -1922,6 +1939,13 @@ body.playing .header-container { display: none; }
     <button class="btn-battle" onclick="openClassQuizJoin()" style="background:linear-gradient(135deg,var(--accent-light),var(--accent));">🎓 Class Quiz</button>
   </div>
 
+  <div class="home-nav-grid">
+    <button class="btn btn-secondary btn-small" onclick="showProgressMap()">🗺️<span>Map</span></button>
+    <button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>Progress</span></button>
+    <button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>Leaderboard</span></button>
+    <button class="btn btn-secondary btn-small" onclick="showWordReference()">📖<span>Words</span></button>
+  </div>
+
   <div class="today-card" id="today-card" style="display:none;">
     <div class="today-section">
       <div class="today-header">
@@ -1956,12 +1980,6 @@ body.playing .header-container { display: none; }
     <div id="weekly-goal-text" style="font-size:0.75rem;color:var(--text-secondary);text-align:center;"></div>
   </div>
 
-  <div class="home-nav-grid">
-    <button class="btn btn-secondary btn-small" onclick="showProgressMap()">🗺️<span>Map</span></button>
-    <button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>Progress</span></button>
-    <button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>Leaderboard</span></button>
-    <button class="btn btn-secondary btn-small" onclick="showWordReference()">📖<span>Words</span></button>
-  </div>
   <div class="home-nav-footer">
     <button id="theme-toggle-btn" onclick="toggleTheme()" class="btn btn-secondary btn-small">☀️ Light</button>
     <button id="sfx-toggle-btn" onclick="toggleSfx()" class="btn btn-secondary btn-small">🔊 Sound: ON</button>
@@ -4311,6 +4329,11 @@ function getWeakWords() {
 
 // ===== PROGRESS SCREEN =====
 function showProgressScreen() {
+  // Grammar mode: show grammar progress instead
+  if (state.mode === 'grammar' && typeof grammarStructures !== 'undefined' && grammarStructures.length > 0) {
+    showGrammarProgressScreen();
+    return;
+  }
   const allSources = Object.keys(vocabData);
   let totalWords = 0, totalMastered = 0, totalPracticed = 0, totalWeak = 0;
 
@@ -4478,6 +4501,66 @@ function toggleBattleHistory() {
   toggle.innerHTML = (hidden ? '\u25B2' : '\u25BC') + ' Recent battles';
 }
 
+
+// ===== GRAMMAR PROGRESS SCREEN =====
+function showGrammarProgressScreen() {
+  const d = state.studentData || {};
+  const gp = d.grammarProgress || {};
+  const totalStructures = grammarStructures.length;
+  let mastered = 0, started = 0, totalCorrect = 0, totalAnswered = 0;
+
+  // Group by unit
+  const unitMap = {};
+  grammarStructures.forEach(s => {
+    if (!unitMap[s.u]) unitMap[s.u] = [];
+    const p = gp[s.id] || { total: 0, correct: 0, accuracy: 0 };
+    if (p.total >= 15 && p.accuracy >= 0.9) mastered++;
+    if (p.total > 0) started++;
+    totalCorrect += p.correct || 0;
+    totalAnswered += p.total || 0;
+    unitMap[s.u].push({ s, p });
+  });
+
+  const accuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+  const masteredPct = Math.round((mastered / totalStructures) * 100);
+  const startedPct = Math.round((started / totalStructures) * 100);
+
+  let html = '<div class="progress-nav"><button class="btn btn-secondary" onclick="goHome()">\u2190 Back</button><span class="nav-title">\uD83E\uDDE0 Grammar Progress</span></div>';
+
+  // Summary rings
+  html += '<div style="display:flex;justify-content:center;gap:2rem;padding:1.5rem 0;">';
+  html += '<div style="text-align:center;"><div style="font-size:2rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--accent);">' + masteredPct + '%</div><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Mastered</div></div>';
+  html += '<div style="text-align:center;"><div style="font-size:2rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--text);">' + accuracy + '%</div><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Accuracy</div></div>';
+  html += '<div style="text-align:center;"><div style="font-size:2rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--accent-light);">' + started + '/' + totalStructures + '</div><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Started</div></div>';
+  html += '</div>';
+
+  // Per-unit breakdown
+  const unitNums = Object.keys(unitMap).sort((a, b) => a - b);
+  unitNums.forEach(u => {
+    html += '<div style="margin-bottom:0.8rem;"><div style="font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;">Unit ' + u + '</div>';
+    unitMap[u].forEach(({ s, p }) => {
+      const acc = p.total > 0 ? Math.round(p.accuracy * 100) : 0;
+      let badge = '\u2B50';
+      if (p.total >= 15 && p.accuracy >= 0.9) badge = '\u2B50\u2B50\u2B50';
+      else if (p.total >= 5 && p.accuracy >= 0.7) badge = '\u2B50\u2B50';
+      else if (p.total > 0) badge = '\u2B50';
+      else badge = '\u2606';
+      html += '<div class="grammar-topic-card" style="cursor:default;margin-bottom:4px;">' +
+        '<div style="font-size:0.85rem;">' + badge + '</div>' +
+        '<div class="grammar-topic-info" style="flex:1;">' +
+          '<div class="grammar-topic-name" style="font-size:0.82rem;">' + s.n + '</div>' +
+          (p.total > 0 ? '<div style="font-size:0.7rem;color:var(--muted);">' + acc + '% \u00B7 ' + p.total + ' done</div>' : '<div style="font-size:0.7rem;color:var(--muted);">Not started</div>') +
+        '</div>' +
+        (p.total > 0 ? '<div style="width:48px;height:6px;background:var(--card-border);border-radius:3px;overflow:hidden;"><div style="width:' + acc + '%;height:100%;background:' + (acc >= 80 ? 'var(--correct)' : acc >= 50 ? 'var(--accent)' : 'var(--wrong)') + ';border-radius:3px;"></div></div>' : '') +
+      '</div>';
+    });
+    html += '</div>';
+  });
+
+  const ps = document.getElementById('progress-screen');
+  ps.innerHTML = html;
+  showScreen('progress-screen');
+}
 
 // ===== PROGRESSION MAP =====
 function showProgressMap() {
@@ -6067,6 +6150,7 @@ function goHome() {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
 }
 
 // Keyboard
@@ -8620,9 +8704,10 @@ function renderGrammarItem() {
     default: html += renderTypedAnswer(item, item.t); break;
   }
 
-  // Hint button
-  html += '<div style="text-align:center;margin-top:0.5rem;">' +
-    '<button class="grammar-hint-btn" id="grammar-hint-btn" onclick="showGrammarHint()">💡 Hint</button>' +
+  // Hint + Skip buttons
+  html += '<div style="display:flex;justify-content:center;gap:0.8rem;margin-top:0.5rem;">' +
+    '<button class="grammar-hint-btn" id="grammar-hint-btn" onclick="showGrammarHint()">\uD83D\uDCA1 Hint</button>' +
+    '<button class="grammar-hint-btn" id="grammar-skip-btn" onclick="skipGrammarItem()">Skip \u2192</button>' +
     '</div>';
   html += '<div id="grammar-hint-box" style="display:none;" class="grammar-hint-box"></div>';
   html += '<div id="grammar-feedback-area"></div>';
@@ -9042,6 +9127,20 @@ function nextGrammarItem() {
     sbSelected = [];
     renderGrammarItem();
   }
+}
+
+function skipGrammarItem() {
+  const item = grammarSession.items[grammarSession.index];
+  if (!item) return;
+  grammarSession.results.push({ itemId: item.id, structureId: item.sid, correct: false, answer: '(skipped)', xp: 0 });
+  grammarSession.combo = 0;
+  if (typeof SFX !== 'undefined') SFX.play('click');
+  // Hide skip + hint buttons
+  const skipBtn = document.getElementById('grammar-skip-btn');
+  if (skipBtn) skipBtn.style.display = 'none';
+  const hintBtn = document.getElementById('grammar-hint-btn');
+  if (hintBtn) hintBtn.style.display = 'none';
+  setTimeout(function() { nextGrammarItem(); }, 300);
 }
 
 function exitGrammarPractice() {
