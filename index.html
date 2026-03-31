@@ -5488,13 +5488,13 @@ async function endFlashcards() {
 
   if (studentsRef && state.studentId && total > 0) {
     try {
-      const newXp = (state.studentData?.xp || 0) + xpEarned;
-      const newFlashcards = (state.studentData?.totalFlashcards || 0) + total;
       await studentsRef.doc(state.studentId).update({
-        xp: newXp,
-        totalFlashcards: newFlashcards,
+        xp: firebase.firestore.FieldValue.increment(xpEarned),
+        totalFlashcards: firebase.firestore.FieldValue.increment(total),
         lastActive: firebase.firestore.FieldValue.serverTimestamp()
       });
+      const newXp = (state.studentData?.xp || 0) + xpEarned;
+      const newFlashcards = (state.studentData?.totalFlashcards || 0) + total;
       state.studentData.xp = newXp;
       state.studentData.totalFlashcards = newFlashcards;
       state.xp = newXp;
@@ -8276,6 +8276,52 @@ showHomeScreen = function() {
   }
 };
 
+// --- Override showProgressScreen to support grammar mode ---
+const _origShowProgressScreen = showProgressScreen;
+showProgressScreen = function() {
+  if (state.mode === 'grammar' && typeof grammarStructures !== 'undefined' && grammarStructures.length > 0) {
+    _showGrammarProgressScreen();
+    return;
+  }
+  _origShowProgressScreen();
+};
+
+function _showGrammarProgressScreen() {
+  const d = state.studentData || {};
+  const gp = d.grammarProgress || {};
+  const totalStructures = grammarStructures.length;
+  let mastered = 0, started = 0, totalCorrect = 0, totalAnswered = 0;
+  const unitMap = {};
+  grammarStructures.forEach(s => {
+    if (!unitMap[s.u]) unitMap[s.u] = [];
+    const p = gp[s.id] || { total: 0, correct: 0, accuracy: 0 };
+    if (p.total >= 15 && p.accuracy >= 0.9) mastered++;
+    if (p.total > 0) started++;
+    totalCorrect += p.correct || 0;
+    totalAnswered += p.total || 0;
+    unitMap[s.u].push({ s, p });
+  });
+  const accuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+  const masteredPct = Math.round((mastered / totalStructures) * 100);
+  let html = '<div class="progress-nav"><button class="btn btn-secondary" onclick="goHome()">\u2190 Back</button><span class="nav-title">\uD83E\uDDE0 Grammar Progress</span></div>';
+  html += '<div style="display:flex;justify-content:center;gap:2rem;padding:1.5rem 0;">';
+  html += '<div style="text-align:center;"><div style="font-size:2rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--accent);">' + masteredPct + '%</div><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Mastered</div></div>';
+  html += '<div style="text-align:center;"><div style="font-size:2rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--text);">' + accuracy + '%</div><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Accuracy</div></div>';
+  html += '<div style="text-align:center;"><div style="font-size:2rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--accent-light);">' + started + '/' + totalStructures + '</div><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Started</div></div>';
+  html += '</div>';
+  Object.keys(unitMap).sort((a,b)=>a-b).forEach(u => {
+    html += '<div style="margin-bottom:0.8rem;"><div style="font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;">Unit ' + u + '</div>';
+    unitMap[u].forEach(({s, p}) => {
+      const acc = p.total > 0 ? Math.round(p.accuracy * 100) : 0;
+      let badge = p.total >= 15 && p.accuracy >= 0.9 ? '\u2B50\u2B50\u2B50' : p.total >= 5 && p.accuracy >= 0.7 ? '\u2B50\u2B50' : p.total > 0 ? '\u2B50' : '\u2606';
+      html += '<div class="grammar-topic-card" style="cursor:default;margin-bottom:4px;"><div style="font-size:0.85rem;">' + badge + '</div><div class="grammar-topic-info" style="flex:1;"><div class="grammar-topic-name" style="font-size:0.82rem;">' + s.n + '</div>' + (p.total > 0 ? '<div style="font-size:0.7rem;color:var(--muted);">' + acc + '% \u00B7 ' + p.total + ' done</div>' : '<div style="font-size:0.7rem;color:var(--muted);">Not started</div>') + '</div>' + (p.total > 0 ? '<div style="width:48px;height:6px;background:var(--card-border);border-radius:3px;overflow:hidden;"><div style="width:' + acc + '%;height:100%;background:' + (acc >= 80 ? 'var(--correct)' : acc >= 50 ? 'var(--accent)' : 'var(--wrong)') + ';border-radius:3px;"></div></div>' : '') + '</div>';
+    });
+    html += '</div>';
+  });
+  document.getElementById('progress-screen').innerHTML = html;
+  showScreen('progress-screen');
+}
+
 function showGrammarHomeScreen() {
   const sectionLabel = SECTIONS.find(s => s.id === CLASS_ID)?.label || CLASS_ID;
   document.getElementById('welcome-name').textContent = state.studentName;
@@ -9300,23 +9346,24 @@ async function saveGrammarProgress() {
   });
 
   const updateObj = {
-    grammarXp: newGrammarXp,
-    grammarSessions: newGrammarSessions,
-    grammarAnswered: newGrammarAnswered,
-    grammarCorrect: newGrammarCorrect,
+    grammarXp: firebase.firestore.FieldValue.increment(xp),
+    grammarSessions: firebase.firestore.FieldValue.increment(1),
+    grammarAnswered: firebase.firestore.FieldValue.increment(total),
+    grammarCorrect: firebase.firestore.FieldValue.increment(correct),
     grammarStreak: newStreak,
     grammarLastSession: today,
     grammarProgress: gProgress,
     lastActive: firebase.firestore.FieldValue.serverTimestamp()
   };
 
-  // Update level name
+  // Update level name (computed from projected XP for local state)
   const lv = getLevel(newGrammarXp, 'grammar');
   updateObj.grammarLevelName = lv.name;
 
   try {
     await studentsRef.doc(state.studentId).update(updateObj);
-    state.studentData = { ...state.studentData, ...updateObj };
+    // Update local state with projected values (server has incremented)
+    state.studentData = { ...state.studentData, grammarXp: newGrammarXp, grammarSessions: newGrammarSessions, grammarAnswered: newGrammarAnswered, grammarCorrect: newGrammarCorrect, grammarStreak: newStreak, grammarLastSession: today, grammarProgress: gProgress, grammarLevelName: lv.name };
     // Contribute to weekly class goal
     if (typeof contributeToWeeklyGoal === 'function' && xp > 0) contributeToWeeklyGoal(xp);
     // Level-up detection
