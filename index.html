@@ -8345,6 +8345,33 @@ function _showGrammarProgressScreen() {
   if (lv.vibe) html += '<div style="font-size:0.7rem;color:var(--muted);font-style:italic;margin-top:6px;text-align:center;">\u201C' + lv.vibe + '\u201D</div>';
   html += '</div>';
 
+  // Level roadmap
+  var gramLvls = (typeof GRAMMAR_LEVELS !== 'undefined') ? GRAMMAR_LEVELS : [];
+  if (gramLvls.length > 0) {
+    var zoneIcons = { bronze: '\uD83E\uDD49', silver: '\uD83E\uDD48', gold: '\uD83E\uDD47', diamond: '\uD83D\uDC8E', prestige: '\u2B50' };
+    html += '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius-lg);padding:0.8rem;margin-bottom:0.8rem;box-shadow:var(--shadow-card);">';
+    html += '<div style="font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.5rem;">Level Progression</div>';
+    gramLvls.forEach(function(gl) {
+      var done = gxp >= gl.xp && gl.level < lv.level;
+      var isCurrent = gl.level === lv.level;
+      var locked = gl.level > lv.level;
+      var zc = (typeof ZONE_COLORS !== 'undefined' && ZONE_COLORS[gl.zone]) ? ZONE_COLORS[gl.zone] : { accent: 'var(--muted)', bg: 'var(--card-border)' };
+      var opacity = locked ? 'opacity:0.4;' : '';
+      var bg = isCurrent ? 'background:var(--accent-glow);border-radius:10px;padding:8px 6px;margin:2px -6px;' : '';
+      var nm = locked ? '?? ??' : gl.name;
+      var xpLbl = gl.xp === 0 ? 'Start' : gl.xp.toLocaleString() + ' XP';
+      html += '<div class="roadmap-item" style="' + opacity + bg + '">';
+      html += '<div class="roadmap-lvl" style="color:' + zc.accent + ';">' + gl.level + '</div>';
+      html += '<div class="roadmap-icon" style="background:' + zc.bg + '30;">' + (done ? '<span class="roadmap-check">\u2713</span>' : (zoneIcons[gl.zone] || '')) + '</div>';
+      html += '<div class="roadmap-info"><div class="roadmap-name"' + (isCurrent ? ' style="color:var(--accent);font-weight:800;"' : '') + '>' + nm + '</div>';
+      if (!locked && gl.vibe) html += '<div class="roadmap-vibe">' + gl.vibe + '</div>';
+      html += '</div>';
+      html += '<div class="roadmap-xp">' + (isCurrent ? '<strong style="color:var(--accent);">YOU</strong>' : xpLbl) + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
   // Summary stats
   html += '<div style="display:flex;justify-content:center;gap:2rem;padding:1rem 0;">';
   html += '<div style="text-align:center;"><div style="font-size:1.8rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--accent);">' + masteredPct + '%</div><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Mastered</div></div>';
