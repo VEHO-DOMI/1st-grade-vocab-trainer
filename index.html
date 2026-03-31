@@ -171,7 +171,7 @@ h1 { display: none; }
 .profile-rank-pill { font-size: 0.72rem; padding: 3px 10px; border-radius: 8px; font-weight: 600; white-space: nowrap; }
 .profile-badges-row { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
 .profile-badges-row .badge-icon { width: 28px; height: 28px; font-size: 16px; }
-.profile-logout-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+.profile-logout-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
 .profile-xp-bar { width: 100%; margin-top: 0.7rem; }
 .profile-xp-track { height: 8px; border-radius: 4px; background: var(--card-border); overflow: hidden; }
 .profile-xp-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; background: var(--accent); }
@@ -1857,6 +1857,7 @@ body.playing .header-container { display: none; }
         <div class="mode-select-stats" id="mode-grammar-stats">Lv 1 · 0 XP</div>
       </button>
     </div>
+    <div id="mode-leaderboards" style="margin-top:1rem;"></div>
   </div>
 </div>
 
@@ -3446,7 +3447,7 @@ function initTheme() {
 // ===== GAMIFICATION =====
 const XP_TABLE = { 'context': 5, 'context-hard': 8, 'definition': 6, 'definition-hard': 10, 'translation': 7, 'mc-context': 3, 'mc-definition': 4, 'mc-translation': 5 };
 const BADGE_DEFS = [
-  { id:'first-session', icon:'⭐', name:'First Steps', desc:'Complete your first session', check:(d)=>(d.totalSessions||0)>=1 },
+  { id:'first-session', icon:'\uD83C\uDF1F', name:'First Steps', desc:'Complete your first session', check:(d)=>(d.totalSessions||0)>=1 },
   { id:'ten-sessions', icon:'🔥', name:'On Fire', desc:'Complete 10 sessions', check:(d)=>(d.totalSessions||0)>=10 },
   { id:'fifty-sessions', icon:'🚀', name:'Unstoppable', desc:'Complete 50 sessions', check:(d)=>(d.totalSessions||0)>=50 },
   { id:'mastered-10', icon:'🧠', name:'Quick Learner', desc:'Master 10 words', check:(d,m)=>m>=10 },
@@ -3454,18 +3455,18 @@ const BADGE_DEFS = [
   { id:'mastered-100', icon:'🏆', name:'Vocabulary Champion', desc:'Master 100 words', check:(d,m)=>m>=100 },
   { id:'mastered-all', icon:'👑', name:'Master of All', desc:'Master every single word', check:(d,m)=>{ let t=0; for(const s of Object.values(vocabData)) t+=s.length; return m>=t; }},
   { id:'perfect-round', icon:'💯', name:'Flawless', desc:'Score 10/10 or higher in one round', check:(d,m,r)=>r&&r.length>=10&&r.every(x=>x.correct) },
-  { id:'streak-3', icon:'🔥', name:'3-Day Streak', desc:'Practice 3 days in a row', check:(d)=>(d.streak||0)>=3 },
+  { id:'streak-3', icon:'\uD83D\uDCC5', name:'3-Day Streak', desc:'Practice 3 days in a row', check:(d)=>(d.streak||0)>=3 },
   { id:'streak-7', icon:'⚡', name:'Weekly Warrior', desc:'Practice 7 days in a row', check:(d)=>(d.streak||0)>=7 },
   { id:'all-types', icon:'🎨', name:'Explorer', desc:'Try all 5 exercise types', check:(d)=>(d.exerciseTypesUsed||[]).length>=5 },
   { id:'daily-first', icon:'🌅', name:'Daily Challenger', desc:'Complete your first daily challenge', check:(d)=>Object.keys(d.dailyChallengeLog||{}).length>=1 },
   { id:'daily-perfect', icon:'✨', name:'Daily Genius', desc:'Score 100% on a daily challenge', check:(d)=>Object.values(d.dailyChallengeLog||{}).some(v=>v.pct===100) },
-  { id:'speed-demon', icon:'⚡', name:'Speed Demon', desc:'Get 15+ correct in a Speed Round', check:(d)=>(d.bestSpeedRound||0)>=15 },
+  { id:'speed-demon', icon:'\uD83D\uDCA8', name:'Speed Demon', desc:'Get 15+ correct in a Speed Round', check:(d)=>(d.bestSpeedRound||0)>=15 },
   { id:'sprinter', icon:'🏃', name:'Sprinter', desc:'Complete 10 sprints', check:(d)=>(d.totalSprints||0)>=10 },
   { id:'sharp-eye', icon:'👁️', name:'Sharp Eye', desc:'Get 20+ correct in Multiple Choice', check:(d)=>(d.bestMCStreak||0)>=20 },
   { id:'context-ace', icon:'🎯', name:'Context Ace', desc:'Score 90%+ on a context-hard session (min 10 words)', check:(d,m,r)=>r&&r.length>=10&&r.filter(x=>x.type==='context-hard').length>=10&&r.filter(x=>x.type==='context-hard'&&x.correct).length/r.filter(x=>x.type==='context-hard').length>=0.9 },
   { id:'definition-master', icon:'📖', name:'Definition Master', desc:'Score 90%+ on a definition-hard session (min 10 words)', check:(d,m,r)=>r&&r.length>=10&&r.filter(x=>x.type==='definition-hard').length>=10&&r.filter(x=>x.type==='definition-hard'&&x.correct).length/r.filter(x=>x.type==='definition-hard').length>=0.9 },
   { id:'giant-killer', icon:'🗡️', name:'Giant Killer', desc:'Win a battle against someone ranked higher', check:(d)=>(d.giantKills||0)>=1 },
-  { id:'variety-pack', icon:'🎨', name:'Variety Pack', desc:'Use all 5 exercise types in one day', check:(d)=>(d.dailyVarietyAchieved||0)>=1 },
+  { id:'variety-pack', icon:'\uD83C\uDFAA', name:'Variety Pack', desc:'Use all 5 exercise types in one day', check:(d)=>(d.dailyVarietyAchieved||0)>=1 },
   { id:'comeback-kid', icon:'🔄', name:'Comeback Kid', desc:'Score 100% on a retry-wrong session', check:(d)=>(d.perfectRetries||0)>=1 },
   { id:'review-warrior', icon:'🛡️', name:'Review Warrior', desc:'Complete 5 Smart Review sessions', check:(d)=>(d.smartReviewCount||0)>=5 },
   { id:'full-sweep', icon:'🧹', name:'Full Sweep', desc:'Practice every single unit at least once', check:(d)=>{ const used = new Set(d.unitsAttempted||[]); return used.size >= Object.keys(vocabData).length; }},
@@ -3481,9 +3482,9 @@ const GRAMMAR_BADGE_DEFS = [
   { id:'g-ten-sessions', icon:'🔥', name:'Grammar Grinder', desc:'Complete 10 grammar sessions', check:(d)=>(d.grammarSessions||0)>=10 },
   { id:'g-fifty-sessions', icon:'🚀', name:'Grammar Machine', desc:'Complete 50 grammar sessions', check:(d)=>(d.grammarSessions||0)>=50 },
   { id:'g-perfect-10', icon:'💯', name:'Perfect 10', desc:'Get 10/10 in a grammar session', check:(d,m,r)=>r&&r.length>=10&&r.every(x=>x.correct) },
-  { id:'g-streak-3', icon:'🔥', name:'3-Day Grammar Streak', desc:'Practice grammar 3 days in a row', check:(d)=>(d.grammarStreak||0)>=3 },
+  { id:'g-streak-3', icon:'\uD83D\uDCC5', name:'3-Day Grammar Streak', desc:'Practice grammar 3 days in a row', check:(d)=>(d.grammarStreak||0)>=3 },
   { id:'g-streak-7', icon:'⚡', name:'Grammar Week', desc:'Practice grammar 7 days in a row', check:(d)=>(d.grammarStreak||0)>=7 },
-  { id:'g-mastered-5', icon:'⭐', name:'Rule Learner', desc:'Master 5 grammar structures', check:(d,m)=>m>=5 },
+  { id:'g-mastered-5', icon:'\uD83C\uDF1F', name:'Rule Learner', desc:'Master 5 grammar structures', check:(d,m)=>m>=5 },
   { id:'g-mastered-15', icon:'📚', name:'Grammar Scholar', desc:'Master 15 grammar structures', check:(d,m)=>m>=15 },
   { id:'g-mastered-all', icon:'👑', name:'Grammar Crown', desc:'Master all 34 grammar structures', check:(d,m)=>m>=34 },
   { id:'g-accuracy-80', icon:'🎯', name:'Sharpshooter', desc:'Reach 80% overall grammar accuracy (min 50 answers)', check:(d)=>(d.grammarAnswered||0)>=50&&(d.grammarCorrect||0)/(d.grammarAnswered||1)>=0.8 },
@@ -8185,6 +8186,51 @@ function showModeSelectScreen() {
   const glv = getLevel(gxp, 'grammar');
   document.getElementById('mode-grammar-stats').textContent = 'Lv ' + glv.level + ' · ' + gxp.toLocaleString() + ' XP';
   showScreen('mode-select-screen');
+  // Load top 3 leaderboards for both modes
+  loadModeSelectLeaderboards();
+}
+
+async function loadModeSelectLeaderboards() {
+  const container = document.getElementById('mode-leaderboards');
+  if (!container || !db || !CLASS_ID) return;
+  container.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:0.75rem;padding:0.5rem;">Loading leaderboards...</div>';
+  try {
+    const snap = await db.collection('classes').doc(CLASS_ID).collection('students').get();
+    const students = [];
+    snap.forEach(doc => {
+      const d = doc.data();
+      students.push({ id: doc.id, name: d.name, vxp: d.xp || 0, gxp: d.grammarXp || 0, avatarId: d.avatarId || 1 });
+    });
+    const medals = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
+    const renderTop3 = (list, mode) => {
+      if (list.length === 0) return '<div style="color:var(--muted);font-size:0.72rem;text-align:center;">No students yet</div>';
+      return list.slice(0, 3).map((s, i) => {
+        const isMe = s.id === state.studentId;
+        const xp = mode === 'vocab' ? s.vxp : s.gxp;
+        return '<div style="display:flex;align-items:center;gap:6px;padding:4px 0;font-size:0.78rem;' + (isMe ? 'font-weight:700;color:var(--accent);' : '') + '">' +
+          '<span style="width:22px;text-align:center;">' + medals[i] + '</span>' +
+          '<img src="avatars/avatar (' + s.avatarId + ').png" style="width:20px;height:20px;border-radius:50%;" onerror="this.style.display=\'none\'">' +
+          '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (s.name || 'Student') + (isMe ? ' \u2190' : '') + '</span>' +
+          '<span style="font-weight:600;font-size:0.72rem;color:var(--muted);">' + xp.toLocaleString() + '</span>' +
+        '</div>';
+      }).join('');
+    };
+    const vocabSorted = [...students].sort((a, b) => b.vxp - a.vxp);
+    const grammarSorted = [...students].sort((a, b) => b.gxp - a.gxp);
+    container.innerHTML =
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
+        '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius);padding:0.6rem 0.8rem;">' +
+          '<div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;">\uD83D\uDCDA Vocab Top 3</div>' +
+          renderTop3(vocabSorted, 'vocab') +
+        '</div>' +
+        '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius);padding:0.6rem 0.8rem;">' +
+          '<div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;">\uD83E\uDDE0 Grammar Top 3</div>' +
+          renderTop3(grammarSorted, 'grammar') +
+        '</div>' +
+      '</div>';
+  } catch (e) {
+    container.innerHTML = '';
+  }
 }
 
 function selectAppMode(mode) {
@@ -8303,13 +8349,13 @@ function addModeSwitchPill() {
     const profileCard = document.getElementById('profile-card');
     if (profileCard) {
       const logoutRow = profileCard.querySelector('.profile-logout-row');
-      if (logoutRow) logoutRow.insertAdjacentElement('beforebegin', pill);
+      if (logoutRow) logoutRow.insertAdjacentElement('afterbegin', pill);
     }
   }
   const isGrammar = state.mode === 'grammar';
   pill.className = 'mode-pill';
   pill.textContent = isGrammar ? '\uD83E\uDDE0 Grammar Mode' : '\uD83D\uDCDA Vocab Mode';
-  pill.style.cssText = 'display:inline-flex;margin:0.3rem 0;';
+  pill.style.cssText = '';
   pill.onclick = function() { showModeSelectScreen(); };
 }
 
