@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v2.0 – 2026-03-29 · DomiVocab + DomiGrammar 1st Grade -->
+<!-- v2.0 – 2026-03-29 · DomiGo + DomiGrammar 1st Grade -->
 <html lang="en" data-theme="light">
 <head>
 <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme-mode') || 'light');</script>
@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#F0FFF4">
-<title>DomiTrainer – 1st Grade</title>
+<title>DomiGo – 1st Grade English</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -93,13 +93,13 @@ body {
   background-attachment: fixed;
 }
 
-/* Header — DomiVocab branding */
-.header-container { text-align: center; padding: 52px 32px 40px; position: relative; overflow: hidden; border-radius: 24px; }
-.header-glow { position: absolute; top: -30%; left: 50%; transform: translateX(-50%); width: 280px; height: 280px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, rgba(200,60,40,0.09), transparent 70%); }
-.header-title { font-family: 'Fredoka', sans-serif; font-size: 56px; font-weight: 700; margin: 0; line-height: 1; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent; display: inline-block; letter-spacing: -1px; position: relative; background-image: linear-gradient(140deg, #16A34A, #22C55E 40%, #15803D 80%); }
-.header-tagline { font-family: 'Quicksand', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 5px; text-transform: uppercase; margin: 10px 0 0; color: rgba(120,60,40,0.35); }
-.header-grade { font-family: 'Fredoka', sans-serif; font-size: 18px; font-weight: 600; margin: 16px 0 0; color: rgba(120,60,40,0.5); }
-.header-school { font-family: 'Quicksand', sans-serif; font-size: 10.5px; font-weight: 500; line-height: 1.6; margin: 14px 0 0; letter-spacing: 0.3px; color: rgba(120,60,40,0.28); }
+/* Header — DomiGo branding */
+.header-container { text-align: center; padding: 28px 24px 20px; position: relative; overflow: hidden; border-radius: 24px; }
+.header-glow { position: absolute; top: -30%; left: 50%; transform: translateX(-50%); width: 280px; height: 280px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, rgba(22,163,74,0.06), transparent 70%); }
+.header-title { font-family: 'Fredoka', sans-serif; font-size: 48px; font-weight: 700; margin: 0; line-height: 1; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent; display: inline-block; letter-spacing: -1px; position: relative; background-image: linear-gradient(140deg, #16A34A, #22C55E 40%, #15803D 80%); }
+.header-tagline { font-family: 'Quicksand', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; margin: 6px 0 0; color: var(--muted); opacity: 0.7; }
+.header-grade { font-family: 'Fredoka', sans-serif; font-size: 16px; font-weight: 600; margin: 8px 0 0; color: var(--accent); }
+.header-school { font-family: 'Quicksand', sans-serif; font-size: 9.5px; font-weight: 500; line-height: 1.5; margin: 4px 0 0; letter-spacing: 0.3px; color: var(--muted); opacity: 0.5; }
 h1 { display: none; }
 .subtitle { display: none; }
 .school-name { display: none; }
@@ -157,9 +157,9 @@ h1 { display: none; }
 
 /* Profile card */
 .profile-card {
-  width: 100%; background: var(--card); border: 1px solid var(--card-border);
-  border-radius: var(--radius-lg); padding: 1rem 1.2rem; margin-bottom: 0.6rem;
-  box-shadow: var(--shadow-card);
+  width: 100%; background: var(--card); border: 1.5px solid var(--card-border);
+  border-radius: var(--radius-lg); padding: 1rem 1.2rem; margin-bottom: 0.5rem;
+  box-shadow: var(--shadow-elevated);
 }
 .profile-top { display: flex; align-items: center; gap: 14px; }
 .profile-info { flex: 1; min-width: 0; }
@@ -173,7 +173,7 @@ h1 { display: none; }
 .profile-badges-row .badge-icon { width: 28px; height: 28px; font-size: 16px; }
 .profile-logout-row { display: flex; justify-content: flex-end; margin-top: 8px; }
 .profile-xp-bar { width: 100%; margin-top: 0.7rem; }
-.profile-xp-track { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.profile-xp-track { height: 8px; border-radius: 4px; background: var(--card-border); overflow: hidden; }
 .profile-xp-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; background: var(--accent); }
 .profile-xp-labels { display: flex; justify-content: space-between; font-size: 0.6rem; color: var(--muted); margin-top: 2px; }
 .logout-btn {
@@ -187,10 +187,10 @@ h1 { display: none; }
 .badge-row::-webkit-scrollbar { display: none; }
 
 /* Stats bar */
-.stats-bar { display: flex; gap: 0.5rem; width: 100%; margin-bottom: 0.8rem; }
+.stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; margin-bottom: 0.6rem; }
 .stat-card {
-  flex: 1; background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius);
-  padding: 0.75rem 0.5rem; text-align: center; backdrop-filter: blur(20px);
+  background: var(--card); border: 1.5px solid var(--card-border); border-radius: var(--radius);
+  padding: 0.7rem 0.4rem; text-align: center; backdrop-filter: blur(20px);
   box-shadow: var(--shadow-card); position: relative; overflow: hidden;
 }
 .stat-card::before {
@@ -875,11 +875,12 @@ body.playing .header-container { display: none; }
 .home-actions { width: 100%; display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.2rem; }
 .home-actions-row { display: flex; gap: 0.5rem; }
 .home-actions-row .btn { flex: 1; }
-.home-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; width: 100%; margin-bottom: 0.8rem; }
-.home-actions-grid .btn, .home-actions-grid .btn-battle { width: 100%; font-size: 0.82rem; padding: 0.7rem 0.5rem; }
-.home-nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; width: 100%; margin-top: 0.5rem; }
-.home-nav-grid .btn { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.7rem; padding: 0.6rem 0.3rem; }
-.home-nav-grid .btn span { font-size: 0.6rem; opacity: 0.8; }
+.home-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; margin-bottom: 0.6rem; }
+.home-actions-grid .btn, .home-actions-grid .btn-battle { width: 100%; font-size: 0.85rem; padding: 0.8rem 0.6rem; font-family: 'Fredoka', sans-serif; border-radius: var(--radius-lg); }
+.home-nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; margin-top: 0.6rem; }
+.home-nav-grid .btn { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.85rem; padding: 0.7rem 0.4rem; font-family: 'Fredoka', sans-serif; border-radius: var(--radius); background: var(--card); border: 1.5px solid var(--card-border); box-shadow: var(--shadow-card); color: var(--text); font-weight: 600; }
+.home-nav-grid .btn:hover { border-color: var(--accent); background: var(--accent-glow); color: var(--accent); }
+.home-nav-grid .btn span { font-size: 0.68rem; font-family: 'Inter', sans-serif; font-weight: 600; opacity: 0.7; }
 .home-nav-footer { display: flex; justify-content: center; gap: 0.5rem; margin-top: 0.8rem; margin-bottom: 1.5rem; }
 .home-nav-footer .btn { font-size: 0.72rem; padding: 0.5rem 1.2rem; }
 .mode-row { display: flex; gap: 0.5rem; }
@@ -1796,8 +1797,8 @@ body.playing .header-container { display: none; }
 
 <div class="header-container">
   <div class="header-glow"></div>
-  <h1 class="header-title" style="display:inline-block;">DomiVocab</h1>
-  <p class="header-tagline">Learn · Play · Win</p>
+  <h1 class="header-title" style="display:inline-block;">DomiGo</h1>
+  <p class="header-tagline">English · Vocabulary & Grammar</p>
   <p class="header-grade">1st Grade</p>
   <p class="header-school">VEHO – Gymnasium und wirtschaftskundliches<br>Realgymnasium der Dominikanerinnen</p>
 </div>
