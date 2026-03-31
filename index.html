@@ -4327,11 +4327,7 @@ function getWeakWords() {
 
 // ===== PROGRESS SCREEN =====
 function showProgressScreen() {
-  // Grammar mode: show grammar progress instead
-  if (state.mode === 'grammar' && typeof grammarStructures !== 'undefined' && grammarStructures.length > 0) {
-    showGrammarProgressScreen();
-    return;
-  }
+  // Grammar mode redirect is handled by the grammar engine override (see _origShowProgressScreen wrapper)
   const allSources = Object.keys(vocabData);
   let totalWords = 0, totalMastered = 0, totalPracticed = 0, totalWeak = 0;
 
@@ -8330,11 +8326,30 @@ function _showGrammarProgressScreen() {
   });
   const accuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
   const masteredPct = Math.round((mastered / totalStructures) * 100);
+  const gxp = d.grammarXp || 0;
+  const lv = getLevel(gxp, 'grammar');
+  const xpToNext = lv.next ? (lv.next.xp - gxp) : 0;
+  const progressPct = Math.round(lv.progress * 100);
+
   let html = '<div class="progress-nav"><button class="btn btn-secondary" onclick="goHome()">\u2190 Back</button><span class="nav-title">\uD83E\uDDE0 Grammar Progress</span></div>';
-  html += '<div style="display:flex;justify-content:center;gap:2rem;padding:1.5rem 0;">';
-  html += '<div style="text-align:center;"><div style="font-size:2rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--accent);">' + masteredPct + '%</div><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Mastered</div></div>';
-  html += '<div style="text-align:center;"><div style="font-size:2rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--text);">' + accuracy + '%</div><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Accuracy</div></div>';
-  html += '<div style="text-align:center;"><div style="font-size:2rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--accent-light);">' + started + '/' + totalStructures + '</div><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Started</div></div>';
+
+  // Level progression card
+  html += '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius-lg);padding:1rem 1.2rem;margin-bottom:0.8rem;box-shadow:var(--shadow-card);">';
+  html += '<div style="display:flex;align-items:center;gap:12px;">';
+  html += '<div style="font-size:2.2rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--accent);">' + lv.level + '</div>';
+  html += '<div style="flex:1;">';
+  html += '<div style="font-size:1rem;font-weight:700;font-family:Fredoka,sans-serif;color:var(--text);">' + lv.name + '</div>';
+  html += '<div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">' + gxp.toLocaleString() + ' XP' + (lv.next ? ' \u00B7 ' + xpToNext + ' XP to Lv ' + lv.next.level : ' \u00B7 MAX LEVEL') + '</div>';
+  html += '<div style="height:8px;background:var(--card-border);border-radius:4px;overflow:hidden;margin-top:6px;"><div style="width:' + progressPct + '%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-light));border-radius:4px;transition:width 0.6s;"></div></div>';
+  html += '</div></div>';
+  if (lv.vibe) html += '<div style="font-size:0.7rem;color:var(--muted);font-style:italic;margin-top:6px;text-align:center;">\u201C' + lv.vibe + '\u201D</div>';
+  html += '</div>';
+
+  // Summary stats
+  html += '<div style="display:flex;justify-content:center;gap:2rem;padding:1rem 0;">';
+  html += '<div style="text-align:center;"><div style="font-size:1.8rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--accent);">' + masteredPct + '%</div><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Mastered</div></div>';
+  html += '<div style="text-align:center;"><div style="font-size:1.8rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--text);">' + accuracy + '%</div><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Accuracy</div></div>';
+  html += '<div style="text-align:center;"><div style="font-size:1.8rem;font-weight:900;font-family:Fredoka,sans-serif;color:var(--accent-light);">' + started + '/' + totalStructures + '</div><div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;font-weight:700;">Started</div></div>';
   html += '</div>';
   Object.keys(unitMap).sort((a,b)=>a-b).forEach(u => {
     html += '<div style="margin-bottom:0.8rem;"><div style="font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;">Unit ' + u + '</div>';
