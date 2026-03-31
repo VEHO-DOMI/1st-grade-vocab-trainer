@@ -3497,6 +3497,8 @@ const GRAMMAR_BADGE_DEFS = [
   { id:'g-100-answers', icon:'💪', name:'Century', desc:'Answer 100 grammar questions', check:(d)=>(d.grammarAnswered||0)>=100 },
   { id:'g-500-answers', icon:'🏋️', name:'Grammar Athlete', desc:'Answer 500 grammar questions', check:(d)=>(d.grammarAnswered||0)>=500 },
   { id:'g-prestige-1', icon:'⭐', name:'Grammar Prestige I', desc:'Reach Grammar God (30,000 XP)', check:(d)=>(d.grammarXp||0)>=30000 },
+  { id:'g-daily-first', icon:'\uD83C\uDF05', name:'Daily Grammar Challenger', desc:'Complete your first grammar daily challenge', check:(d)=>Object.keys(d.grammarDailyChallengeLog||{}).length>=1 },
+  { id:'g-daily-perfect', icon:'\u2728', name:'Daily Grammar Genius', desc:'Score 100% on a grammar daily challenge', check:(d)=>Object.values(d.grammarDailyChallengeLog||{}).some(v=>v.pct===100) },
 ];
 
 function dailySeed(dateStr, classId) {
@@ -8483,9 +8485,8 @@ function showGrammarHomeScreen() {
   document.getElementById('stat-streak').textContent = d.grammarStreak || 0;
   updateRankDisplay();
   renderBadgeRow();
-  // Hide vocab-specific elements, show grammar ones
-  const todayCard = document.getElementById('today-card');
-  if (todayCard) todayCard.style.display = 'none';
+  // Show grammar daily card (Rule of the Day + Daily Grammar Challenge)
+  renderGrammarDailyCard();
   const weeklyCard = document.getElementById('weekly-goal-card');
   if (weeklyCard) weeklyCard.style.display = 'none';
   // Update practice button
@@ -9449,6 +9450,8 @@ function showGrammarResults() {
 
   // Save progress
   saveGrammarProgress();
+  // Save daily challenge result if applicable
+  if (grammarSession.isDailyChallenge) saveGrammarDailyChallengeResult();
 }
 
 // --- Grammar Progress Firebase ---
@@ -9555,6 +9558,90 @@ function getGrammarWeakStructures() {
 // --- Grammar Map (reuse progress map concept) ---
 function showGrammarMap() {
   renderGrammarUnits(); // same as unit selection for now
+}
+
+// --- Grammar Daily System (Rule of the Day + Daily Challenge) ---
+
+function getGrammarOfTheDay() {
+  if (!grammarStructures || grammarStructures.length === 0) return null;
+  var today = new Date();
+  var seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  return grammarStructures[seed % grammarStructures.length];
+}
+
+function getDailyGrammarItems() {
+  var battleTypes = ['gap-fill', 'multiple-choice', 'context-picker'];
+  var candidates = grammarItems.filter(function(i) { return battleTypes.indexOf(i.t) >= 0 && i.ds && i.ds.length >= 3; });
+  if (candidates.length === 0) return [];
+  var rng = seededRandom(dailySeed(getTodayStr(), CLASS_ID));
+  for (var i = candidates.length - 1; i > 0; i--) {
+    var j = Math.floor(rng() * (i + 1));
+    var tmp = candidates[i]; candidates[i] = candidates[j]; candidates[j] = tmp;
+  }
+  return candidates.slice(0, 10);
+}
+
+function startGrammarDailyChallenge() {
+  var items = getDailyGrammarItems();
+  if (items.length === 0) { alert('No grammar items available for daily challenge.'); return; }
+  grammarPracticeReturnTo = null;
+  grammarSession = {
+    items: items, index: 0, results: [], combo: 0,
+    xpEarned: 0, hintUsed: false,
+    structureId: '_daily_grammar',
+    isDailyChallenge: true
+  };
+  document.body.classList.add('playing');
+  renderGrammarItem();
+}
+
+async function saveGrammarDailyChallengeResult() {
+  if (!studentsRef || !state.studentId) return;
+  var today = getTodayStr();
+  var results = grammarSession.results;
+  var total = results.length;
+  var correct = results.filter(function(r) { return r.correct; }).length;
+  var pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+  try {
+    var bonusXP = 15;
+    if (pct === 100) bonusXP += 30;
+    var updateObj = { grammarXp: firebase.firestore.FieldValue.increment(bonusXP) };
+    updateObj['grammarDailyChallengeLog.' + today] = { score: correct, total: total, pct: pct };
+    await studentsRef.doc(state.studentId).update(updateObj);
+    if (!state.studentData.grammarDailyChallengeLog) state.studentData.grammarDailyChallengeLog = {};
+    state.studentData.grammarDailyChallengeLog[today] = { score: correct, total: total, pct: pct };
+    state.studentData.grammarXp = (state.studentData.grammarXp || 0) + bonusXP;
+    if (typeof contributeToWeeklyGoal === 'function') contributeToWeeklyGoal(bonusXP);
+  } catch(e) { console.error('Save grammar daily challenge error:', e); }
+}
+
+function renderGrammarDailyCard() {
+  var card = document.getElementById('today-card');
+  if (!card) return;
+  card.style.display = '';
+  var gotd = getGrammarOfTheDay();
+  var gotdHtml = '';
+  if (gotd) {
+    var ruleText = (gotd.rules && gotd.rules.length > 0) ? gotd.rules[0].t : gotd.desc;
+    gotdHtml = '<div class="today-section"><div class="today-header"><span class="today-label">\uD83D\uDCDD Rule of the Day</span><span class="today-source">Unit ' + gotd.u + '</span></div>' +
+      '<div class="today-wotd"><span class="today-word">' + gotd.n + '</span></div>' +
+      '<div style="font-size:0.78rem;color:var(--muted);font-style:italic;margin-top:2px;">' + gotd.nd + '</div>' +
+      '<div style="font-size:0.82rem;color:var(--text-secondary);margin-top:6px;line-height:1.5;">' + ruleText + '</div></div>';
+  }
+  var today = getTodayStr();
+  var log = (state.studentData && state.studentData.grammarDailyChallengeLog) ? state.studentData.grammarDailyChallengeLog : {};
+  var challengeHtml = '';
+  if (log[today]) {
+    challengeHtml = '<div class="daily-card-done">\u2705 Done today: ' + log[today].score + '/' + log[today].total + ' (' + log[today].pct + '%)</div>';
+  } else {
+    challengeHtml = '<button class="btn-daily" onclick="startGrammarDailyChallenge()">Start Challenge</button>';
+  }
+  var dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  card.innerHTML = gotdHtml +
+    '<div class="today-divider"></div>' +
+    '<div class="today-section"><div class="today-header"><span class="today-label">\u26A1 Daily Grammar Challenge</span><span class="today-date">' + dateStr + '</span></div>' +
+    '<div class="today-daily-desc">10 items \u00B7 same for everyone today</div>' +
+    challengeHtml + '</div>';
 }
 
 // --- Grammar Reference ---
