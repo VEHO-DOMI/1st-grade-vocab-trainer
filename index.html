@@ -9623,10 +9623,19 @@ function renderGrammarDailyCard() {
   var gotdHtml = '';
   if (gotd) {
     var ruleText = (gotd.rules && gotd.rules.length > 0) ? gotd.rules[0].t : gotd.desc;
+    var exampleHtml = '';
+    if (gotd.rules && gotd.rules[0] && gotd.rules[0].ex && gotd.rules[0].ex.length > 0) {
+      var ex = gotd.rules[0].ex[0];
+      exampleHtml = '<div style="margin-top:8px;padding:8px 12px;background:var(--accent-glow);border-radius:10px;border-left:3px solid var(--accent);">' +
+        '<div style="font-size:0.82rem;font-weight:600;color:var(--text);">' + ex.en + '</div>' +
+        (ex.de ? '<div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">' + ex.de + '</div>' : '') +
+      '</div>';
+    }
     gotdHtml = '<div class="today-section"><div class="today-header"><span class="today-label">\uD83D\uDCDD Rule of the Day</span><span class="today-source">Unit ' + gotd.u + '</span></div>' +
       '<div class="today-wotd"><span class="today-word">' + gotd.n + '</span></div>' +
       '<div style="font-size:0.78rem;color:var(--muted);font-style:italic;margin-top:2px;">' + gotd.nd + '</div>' +
-      '<div style="font-size:0.82rem;color:var(--text-secondary);margin-top:6px;line-height:1.5;">' + ruleText + '</div></div>';
+      '<div style="font-size:0.82rem;color:var(--text-secondary);margin-top:6px;line-height:1.5;">' + ruleText + '</div>' +
+      exampleHtml + '</div>';
   }
   var today = getTodayStr();
   var log = (state.studentData && state.studentData.grammarDailyChallengeLog) ? state.studentData.grammarDailyChallengeLog : {};
