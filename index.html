@@ -8314,12 +8314,12 @@ async function loadModeSelectLeaderboards() {
     const vocabSorted = [...students].sort((a, b) => b.vxp - a.vxp);
     const grammarSorted = [...students].sort((a, b) => b.gxp - a.gxp);
     container.innerHTML =
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
-        '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius);padding:0.6rem 0.8rem;">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;min-width:0;">' +
+        '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius);padding:0.6rem 0.8rem;overflow:hidden;min-width:0;">' +
           '<div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;">\uD83D\uDCDA Vocab Top 3</div>' +
           renderTop3(vocabSorted, 'vocab') +
         '</div>' +
-        '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius);padding:0.6rem 0.8rem;">' +
+        '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius);padding:0.6rem 0.8rem;overflow:hidden;min-width:0;">' +
           '<div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;">\uD83E\uDDE0 Grammar Top 3</div>' +
           renderTop3(grammarSorted, 'grammar') +
         '</div>' +
