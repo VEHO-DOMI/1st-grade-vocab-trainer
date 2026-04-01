@@ -8152,7 +8152,7 @@ function showModeSelectScreen() {
   document.getElementById('mode-welcome-name').textContent = state.studentName || 'there';
   const modeAv = document.getElementById('mode-avatar');
   if (modeAv && state.avatarId) {
-    modeAv.src = 'avatars/avatar (' + state.avatarId + ').png';
+    modeAv.src = avatarSrc(state.avatarId);
     modeAv.style.display = '';
   }
   // Vocab stats
