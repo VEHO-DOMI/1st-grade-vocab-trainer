@@ -8367,6 +8367,18 @@ showHomeScreen = function() {
       pill.textContent = '\uD83D\uDCDA Vocab Mode';
       pill.onclick = function() { showModeSelectScreen(); };
     }
+    // Restore today-card innerHTML (grammar mode replaces it with Rule of the Day)
+    const todayCard = document.getElementById('today-card');
+    if (todayCard) {
+      todayCard.style.display = 'none';
+      todayCard.innerHTML =
+        '<div class="today-section"><div class="today-header"><span class="today-label">\uD83D\uDCDD Word of the Day</span><span class="today-source" id="wotd-source"></span></div><div class="today-wotd"><span class="today-word" id="wotd-word"></span><span class="today-german" id="wotd-german"></span></div><div class="today-def" id="wotd-def"></div></div>' +
+        '<div class="today-divider"></div>' +
+        '<div class="today-section"><div class="today-header"><span class="today-label">\u26A1 Daily Challenge</span><span class="today-date" id="daily-date"></span></div><div class="today-daily-desc">10 words \u00B7 same for everyone today</div><div id="daily-action"></div></div>';
+    }
+    // Restore weekly goal card visibility (grammar mode hides it)
+    const weeklyCard = document.getElementById('weekly-goal-card');
+    if (weeklyCard) weeklyCard.style.display = '';
     _origShowHomeScreen();
     addModeSwitchPill();
   }
