@@ -9562,7 +9562,8 @@ function getGrammarWeakStructures() {
   grammarStructures.forEach(s => {
     const p = gProgress[s.id];
     if (!p || p.total === 0) return; // not started = not weak, just new
-    if (p.accuracy < 0.7) weak.push(s.id);
+    // Include structures below 90% accuracy OR with fewer than 10 attempts (not enough practice)
+    if (p.accuracy < 0.9 || p.total < 10) weak.push(s.id);
   });
   return weak;
 }
