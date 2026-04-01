@@ -10069,7 +10069,6 @@ function showCampaignMap() {
     var prevLid = 'L' + String(i).padStart(2,'0');
     var prevDone = i === 0 ? true : (cp.levels && cp.levels[prevLid] && cp.levels[prevLid].completed);
     var unlocked = (i === 0) || prevDone;
-    if (lv.locked) unlocked = false;
     var isCurrent = unlocked && !completed;
     var nodeClass = 'campaign-node';
     var infoClass = 'campaign-node-info';
