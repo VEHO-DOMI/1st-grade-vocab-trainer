@@ -9250,18 +9250,19 @@ function checkGrammarTyped() {
     }
   }
 
-  // 3. For transformation/gap-fill typed: accept full sentence when only blank was expected
-  if (!isCorrect && (item.t === 'transformation' || item.t === 'free-form')) {
-    // If correct answer is short (just the fill-in), check if student typed the full sentence containing it
-    if (item.c.split(' ').length <= 4) {
-      const promptClean = norm(item.p.replace(/___+/g, '').replace(/→.*$/g, ''));
-      const fullSentence = norm(answer);
-      // Check if the answer contains the correct fill-in
-      isCorrect = allAccepted.some(a => fullSentence.includes(norm(a)));
-    }
-    // Also: if correct is full sentence and student typed just the key part
-    if (!isCorrect && item.c.split(' ').length > 4) {
-      isCorrect = allAccepted.some(a => norm(a) === norm(answer));
+  // 3. Partial answer matching: accept key part when full sentence expected, or vice versa
+  if (!isCorrect && ['transformation', 'free-form', 'translation', 'question-formation', 'gap-fill'].includes(item.t)) {
+    const normAnswer = norm(answer);
+    const answerWords = normAnswer.split(' ').length;
+    if (answerWords >= 2) {
+      isCorrect = allAccepted.some(a => {
+        const normA = norm(a);
+        // Student typed the key part (substring of full correct answer) — must be >= 40% of correct
+        if (normA.includes(normAnswer) && normAnswer.length >= normA.length * 0.4) return true;
+        // Student typed full sentence when only key part was expected — must be >= 40% overlap
+        if (normAnswer.includes(normA) && normA.length >= normAnswer.length * 0.4) return true;
+        return false;
+      });
     }
   }
 
