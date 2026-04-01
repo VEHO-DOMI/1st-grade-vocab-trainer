@@ -10167,7 +10167,7 @@ function startCampaignLevel() {
   var levelIndex = campaignState.currentLevel;
   if (levelIndex === null || typeof campaignLevels === 'undefined') return;
   var lv = campaignLevels[levelIndex];
-  if (!lv || lv.locked) return;
+  if (!lv || !lv.tasks) return;
   campaignState.currentTaskIndex = 0;
   campaignState.currentItemIndex = 0;
   campaignState.levelXP = 0;
@@ -11347,7 +11347,7 @@ boss:{name:"The Zoo Keeper's Test",items:[
 ]},
 characterUnlock:"rex-word-hound",comicImage:"campaign/comic-L02.png",maxTotalXP:450,starThresholds:{one:225,two:338,three:405}
 },
-{levelId:"L03",levelName:"The Sea of Sentences",unitNumber:3,actNumber:1,locked:true,grammarFocus:["have got/has got","Possessive 's"],
+{levelId:"L03",levelName:"The Sea of Sentences",unitNumber:3,actNumber:1,grammarFocus:["have got/has got","Possessive 's"],
 storyIntro:["You sail on a ship made of paper. The sea is made of blue words.","A dark pirate ship appears. A girl with a toy sword waves at you.","'I am Dana!' she shouts. 'Captain Greybeard has got the next page!'","'We need to get it back. Are you ready?'"],
 storyOutro:["Captain Greybeard gives you the page. He smiles.","'Three pages!' says Dana. 'We are doing well!'","A bottle floats to the ship. Inside is a note.","'Help! The feelings are all wrong! Come to the islands!'"],
 tasks:[
@@ -11395,7 +11395,7 @@ boss:{name:"Captain Greybeard's Test",items:[
 ]},
 characterUnlock:"dana-dreamer",comicImage:"campaign/comic-L03.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
 },
-{levelId:"L04",levelName:"The Emotion Islands",unitNumber:4,actNumber:1,locked:true,grammarFocus:["To be negative/questions","Short answers","Adjectives"],
+{levelId:"L04",levelName:"The Emotion Islands",unitNumber:4,actNumber:1,grammarFocus:["To be negative/questions","Short answers","Adjectives"],
 storyIntro:["Five colourful islands float in the sky. Each one has a feeling.","But everything is wrong. Happy Island is sad. Angry Island is calm.","A tall guard stands at the gate. His face shows nothing.","'I am Richard,' he says. 'I cannot say how I feel. Can you help?'"],
 storyOutro:["The islands glow with the right colours again.","Richard smiles for the first time. 'I am... happy!' he says.","Music comes from under the ground. The Page of Emotion floats up.","'Four pages! And I can hear a band playing. Let us go!'"],
 tasks:[
@@ -11445,7 +11445,7 @@ boss:{name:"The Emotion Test",items:[
 ]},
 characterUnlock:"richard-guard",comicImage:"campaign/comic-L04.png",maxTotalXP:450,starThresholds:{one:225,two:338,three:405}
 },
-{levelId:"L05",levelName:"The Concert Caverns",unitNumber:5,actNumber:1,locked:true,grammarFocus:["Possessive adjectives","can/can't"],
+{levelId:"L05",levelName:"The Concert Caverns",unitNumber:5,actNumber:1,grammarFocus:["Possessive adjectives","can/can't"],
 storyIntro:["You walk into a cave full of crystals. They glow like stars.","Animals with instruments are arguing. 'This is MY drum!' 'No, it is MY drum!'","A small fox holds a golden saxophone. She looks worried.","'I am Melody,' she says. 'Nobody knows whose instrument is whose. Can you help?'"],
 storyOutro:["The concert is amazing. All the instruments are back.","The Page of Ability glows inside the big drum.","A magnifying glass falls from the ceiling with a note.","'Come find me if you can!' it says. There are mistakes in the note."],
 tasks:[
@@ -11492,7 +11492,7 @@ boss:{name:"The Music Master's Test",items:[
 ]},
 characterUnlock:"melody-musician",comicImage:"campaign/comic-L05.png",maxTotalXP:435,starThresholds:{one:218,two:326,three:392}
 },
-{levelId:"L06",levelName:"Mystery Manor",unitNumber:6,actNumber:1,locked:true,grammarFocus:["Present simple 3rd person","a lot of"],
+{levelId:"L06",levelName:"Mystery Manor",unitNumber:6,actNumber:1,grammarFocus:["Present simple 3rd person","a lot of"],
 storyIntro:["A big old house stands on a hill. It looks dark and mysterious.","Inside, a man in a long coat studies a note. A cat sits on his shoulder.","'I am Detective Riddle,' he says. 'And this is Inspector Paws.'","'Someone stole the Page of Action. Can you help us find it?'"],
 storyOutro:["The mystery is solved! Detective Riddle finds the page.","'A lot of clues led us here,' he says with a smile.","Inspector Paws finds a cookbook with a secret message inside.","'The next page is hidden where children eat!'"],
 tasks:[
@@ -11540,7 +11540,7 @@ boss:{name:"The Manor Mystery Test",items:[
 ]},
 characterUnlock:"inspector-paws",comicImage:"campaign/comic-L06.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
 },
-{levelId:"L07",levelName:"The World Kitchen",unitNumber:7,actNumber:1,locked:true,grammarFocus:["don't/doesn't","Articles a/an","Adverbs of frequency"],
+{levelId:"L07",levelName:"The World Kitchen",unitNumber:7,actNumber:1,grammarFocus:["don't/doesn't","Articles a/an","Adverbs of frequency"],
 storyIntro:["A huge kitchen stretches in all directions. It smells amazing.","Cooks from many countries are here. But they can only say YES.","'I like everything!' cries a cook. 'But that is not true!'","A girl with a chef hat waves. 'I am Tamar. Without the page, we cannot say NO!'"],
 storyOutro:["The kitchen is fixed! Cooks can say what they do not like.","'I don't like cold soup!' laughs Tamar. 'That feels good to say!'","The Page of Negation floats out of a big cooking pot.","'Five more pages to go! Something about clothes is next...'"],
 tasks:[
@@ -11588,7 +11588,7 @@ boss:{name:"The Kitchen Challenge",items:[
 ]},
 characterUnlock:"chef-tamar",comicImage:"campaign/comic-L07.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
 },
-{levelId:"L08",levelName:"The Fashion District",unitNumber:8,actNumber:1,locked:true,grammarFocus:["Do/Does questions","Short answers"],
+{levelId:"L08",levelName:"The Fashion District",unitNumber:8,actNumber:1,grammarFocus:["Do/Does questions","Short answers"],
 storyIntro:["A busy street full of clothes shops and fashion shows.","But nobody can ask questions. 'I want to ask if this looks nice!' says a girl.","'I am Sophia,' she says. 'I am a stylist. But I cannot ask anything!'","'The Page of Inquiry is missing. Please help us ask questions again!'"],
 storyOutro:["Questions fly everywhere! 'Do you like this?' 'Does it look good?'","Sophia smiles. 'Thank you! Now I can ask anything!'","A hamster runs up with a letter: 'Help! The animals need you!'","'The Creature Sanctuary is next. Let us go!'"],
 tasks:[
@@ -11636,7 +11636,7 @@ boss:{name:"The Fashion Test",items:[
 ]},
 characterUnlock:"sophia-stylist",comicImage:"campaign/comic-L08.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
 },
-{levelId:"L09",levelName:"The Creature Sanctuary",unitNumber:9,actNumber:1,locked:true,grammarFocus:["Object pronouns","Question words"],
+{levelId:"L09",levelName:"The Creature Sanctuary",unitNumber:9,actNumber:1,grammarFocus:["Object pronouns","Question words"],
 storyIntro:["A nature park with magical animals. Some are very unusual.","But the caretakers have a problem. 'I feed he every day,' says one.","An owl sits on a branch. She looks wise and kind.","'I am Aunty Olivia,' she hoots. 'Without the page, we say pronouns wrong!'"],
 storyOutro:["The animals are happy. Everyone says the right words now.","Aunty Olivia hoots happily. 'Listen to them! Perfect pronouns!'","A horse runs in with a shopping bag. 'The shops need help!'","'The Merchant Mile is next! How much does the adventure cost?'"],
 tasks:[
@@ -11684,7 +11684,7 @@ boss:{name:"The Creature Test",items:[
 ]},
 characterUnlock:"aunty-olivia",comicImage:"campaign/comic-L09.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
 },
-{levelId:"L10",levelName:"The Merchant's Mile",unitNumber:10,actNumber:1,locked:true,grammarFocus:["this/that/these/those","How much is/are","Numbers"],
+{levelId:"L10",levelName:"The Merchant's Mile",unitNumber:10,actNumber:1,grammarFocus:["this/that/these/those","How much is/are","Numbers"],
 storyIntro:["A long street with colourful shops. Everything looks wonderful.","But nobody can point at things. 'I want... that thing... no, this thing...'","A horse with a shopping bag looks confused.","'I am Jolly,' he says. 'I want to buy things, but I cannot say which ones!'"],
 storyOutro:["The shops are busy again! Everyone can point and ask prices.","Jolly buys his beans. 'These beans are perfect!' he says.","A broken pocket watch falls from a shelf. 'Time is in trouble!'","'The Clocktower is next. We must hurry!'"],
 tasks:[
@@ -11732,7 +11732,7 @@ boss:{name:"The Shopping Test",items:[
 ]},
 characterUnlock:"jolly-horse",comicImage:"campaign/comic-L10.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
 },
-{levelId:"L11",levelName:"The Clocktower of Now",unitNumber:11,actNumber:1,locked:true,grammarFocus:["Present continuous","Telling time"],
+{levelId:"L11",levelName:"The Clocktower of Now",unitNumber:11,actNumber:1,grammarFocus:["Present continuous","Telling time"],
 storyIntro:["A huge tower with a giant clock stands in the centre of Lexica.","But the clock is broken. People are frozen in the middle of actions.","A girl with a clock necklace looks worried.","'I am Suzy,' she says. 'Time is stuck! Nobody can say what is happening NOW!'"],
 storyOutro:["The clocks tick again! People can move and talk.","Suzy laughs. 'I am fixing time! And you are helping!'","From the top of the tower, you see a big old house.","'It is someone's birthday there. But something is wrong...'"],
 tasks:[
@@ -11780,7 +11780,7 @@ boss:{name:"The Time Test",items:[
 ]},
 characterUnlock:"suzy-timekeeper",comicImage:"campaign/comic-L11.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
 },
-{levelId:"L12",levelName:"The Haunted Mansion",unitNumber:12,actNumber:1,locked:true,grammarFocus:["was/were","Ordinal numbers","Prepositions of time"],
+{levelId:"L12",levelName:"The Haunted Mansion",unitNumber:12,actNumber:1,grammarFocus:["was/were","Ordinal numbers","Prepositions of time"],
 storyIntro:["A grand old mansion with candles in every window.","Inside, a birthday party was interrupted. The cake is gone.","A girl with a notebook looks at clues on the floor.","'I am Jessie,' she says. 'I am a detective. The cake was here, but now it is gone!'"],
 storyOutro:["The cake thief is caught! It was the cat — Inspector Paws!","Everyone laughs. The Page of the Past floats from the cake box.","'Twelve pages!' says Jessie. 'Only three more!'","'The mountains are next. But be careful — it is dangerous!'"],
 tasks:[
@@ -11828,7 +11828,7 @@ boss:{name:"The Mansion Mystery Test",items:[
 ]},
 characterUnlock:"jessie-detective",comicImage:"campaign/comic-L12.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
 },
-{levelId:"L13",levelName:"The Mountain of Danger",unitNumber:13,actNumber:1,locked:true,grammarFocus:["Past simple -ed","Linking words"],
+{levelId:"L13",levelName:"The Mountain of Danger",unitNumber:13,actNumber:1,grammarFocus:["Past simple -ed","Linking words"],
 storyIntro:["A tall mountain with dark clouds. It looks scary.","People are stuck on the mountain. They need help.","A man with a jetpack lands next to you.","'I am Captain Jetpack! The rescue team cannot describe what happened. We need your help!'"],
 storyOutro:["Everyone is safe! The mountain rescue is complete.","The Page of Actions Past glows in the cave.","A television screen turns on. You see The Scrambler talking.","'The Broadcast Tower is next! The Scrambler is spreading wrong words!'"],
 tasks:[
@@ -11876,7 +11876,7 @@ boss:{name:"The Mountain Rescue Test",items:[
 ]},
 characterUnlock:"captain-jetpack",comicImage:"campaign/comic-L13.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
 },
-{levelId:"L14",levelName:"The Broadcast Tower",unitNumber:14,actNumber:1,locked:true,grammarFocus:["Past simple irregular","didn't + base form"],
+{levelId:"L14",levelName:"The Broadcast Tower",unitNumber:14,actNumber:1,grammarFocus:["Past simple irregular","didn't + base form"],
 storyIntro:["A tall tower with screens everywhere. Wrong words flash on them.","'I GOED to school!' says one screen. 'She SEED a bird!' says another.","A girl with glasses and a red scarf holds a remote control.","'I am Annie,' she says. 'The Scrambler is sending wrong past tense everywhere!'"],
 storyOutro:["The screens show correct words again! The tower is fixed.","The Scrambler appears on screen. 'You thinks you is clever? I doesn't care!'","Annie laughs. 'Even his insults have grammar mistakes!'","'One page left! The Scrambler's Fortress! This is the final battle!'"],
 tasks:[
@@ -11924,7 +11924,7 @@ boss:{name:"The Broadcast Test",items:[
 ]},
 characterUnlock:"annie-archivist",comicImage:"campaign/comic-L14.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
 },
-{levelId:"L15",levelName:"The Scrambler's Fortress",unitNumber:15,actNumber:1,locked:true,grammarFocus:["going to future"],
+{levelId:"L15",levelName:"The Scrambler's Fortress",unitNumber:15,actNumber:1,grammarFocus:["going to future"],
 storyIntro:["The Scrambler's Fortress floats above Lexica. It is dark and scary.","All your companions stand with you. Penny, Rex, Dana, and all the others.","You have fourteen pages. One more is inside the fortress.","'We are going to do this!' says Penny. 'We are going to save Lexica!'"],
 storyOutro:["The machine stops. The fortress is quiet.","The Scrambler falls to his knees. 'I just wanted to be good at English...'","You hold out your hand. 'Everyone makes mistakes. That is how you learn.'","All fifteen pages glow. Lexica is saved! CONGRATULATIONS!"],
 tasks:[
