@@ -721,123 +721,281 @@ body::before {
   .screen { padding: 0 0.8rem; }
 }
 
-/* === CAMPAIGN MODE CSS === */
-.campaign-map { display:flex; flex-direction:column; align-items:center; padding:1rem 0 3rem; gap:0; overflow-y:auto; max-height:calc(100vh - 120px); }
-.campaign-path { display:flex; flex-direction:column; align-items:center; gap:0; width:100%; max-width:340px; position:relative; }
+/* === CAMPAIGN MODE CSS — MEGA RPG POLISH === */
+
+/* --- Global Campaign Animations --- */
+@keyframes campaignPulse { 0%,100%{box-shadow:0 0 0 4px var(--accent-glow),0 0 16px var(--accent-glow);} 50%{box-shadow:0 0 0 10px var(--accent-glow),0 0 28px var(--accent-glow);} }
+@keyframes slideInRight { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:none; } }
+@keyframes slideInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+@keyframes bounceIn { 0% { transform:scale(0.3); opacity:0; } 50% { transform:scale(1.05); } 70% { transform:scale(0.95); } 100% { transform:scale(1); opacity:1; } }
+@keyframes shimmer { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
+@keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } }
+@keyframes xpFlyUp { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(-40px); } }
+@keyframes correctBounce { 0% { transform:scale(1); } 30% { transform:scale(1.15); } 100% { transform:scale(1); } }
+@keyframes wrongShake { 0%,100% { transform:translateX(0); } 20%,60% { transform:translateX(-4px); } 40%,80% { transform:translateX(4px); } }
+@keyframes healthDeplete { from { width:100%; } to { width:0%; } }
+@keyframes starFillPop { 0%{transform:scale(0.3) rotate(-20deg);opacity:0;} 50%{transform:scale(1.4) rotate(10deg);} 70%{transform:scale(0.95);} 100%{transform:scale(1.15);opacity:1;} }
+@keyframes unlockGlow { 0%,100%{opacity:0.2;transform:scale(0.9);} 50%{opacity:0.5;transform:scale(1.15);} }
+@keyframes nodeShimmer { 0%,100%{box-shadow:0 0 8px rgba(234,179,8,0.3);} 50%{box-shadow:0 0 16px rgba(234,179,8,0.6);} }
+@keyframes floatBounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+@keyframes storyFadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+@keyframes blankPulse { 0%,100%{border-color:var(--accent);} 50%{border-color:var(--accent-glow);} }
+@keyframes sparkle { 0%{opacity:0;transform:scale(0) rotate(0deg);} 50%{opacity:1;transform:scale(1) rotate(180deg);} 100%{opacity:0;transform:scale(0) rotate(360deg);} }
+@keyframes confettiPiece { 0%{opacity:1;transform:translateY(0) rotate(0deg);} 100%{opacity:0;transform:translateY(-60px) rotate(360deg);} }
+@keyframes twinkle { 0%,100%{opacity:0.2;} 50%{opacity:0.8;} }
+@keyframes bossEdgePulse { 0%,100%{box-shadow:0 0 10px rgba(220,38,38,0.3), inset 0 0 10px rgba(220,38,38,0.1);} 50%{box-shadow:0 0 20px rgba(220,38,38,0.6), inset 0 0 20px rgba(220,38,38,0.2);} }
+@keyframes charReveal { from { filter:blur(8px) brightness(2); transform:scale(1.1); } to { filter:blur(0) brightness(1); transform:scale(1); } }
+@keyframes countUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes levelCompleteBanner { 0%{transform:scale(0.5);opacity:0;letter-spacing:0.3em;} 60%{transform:scale(1.05);opacity:1;} 100%{transform:scale(1);letter-spacing:0.08em;} }
+@keyframes rarityGlow { 0%,100%{box-shadow:var(--rarity-shadow-dim);} 50%{box-shadow:var(--rarity-shadow-bright);} }
+@keyframes mapStars { 0%,100%{opacity:0.15;} 50%{opacity:0.5;} }
+
+/* --- 1. CAMPAIGN MAP — Fantasy World Map --- */
+.campaign-map { display:flex; flex-direction:column; align-items:center; padding:0; gap:0; overflow-y:auto; max-height:calc(100vh - 120px); background:linear-gradient(180deg, #1e1b4b 0%, #0f172a 40%, #1a1033 100%); border-radius:var(--radius); position:relative; }
+.campaign-map::before { content:''; position:absolute; inset:0; background:radial-gradient(1px 1px at 20% 15%, rgba(255,255,255,0.5) 0%, transparent 100%), radial-gradient(1px 1px at 60% 25%, rgba(255,255,255,0.4) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 80% 45%, rgba(255,255,255,0.3) 0%, transparent 100%), radial-gradient(1px 1px at 10% 60%, rgba(255,255,255,0.4) 0%, transparent 100%), radial-gradient(1px 1px at 45% 80%, rgba(255,255,255,0.35) 0%, transparent 100%), radial-gradient(1.5px 1.5px at 90% 70%, rgba(255,255,255,0.25) 0%, transparent 100%), radial-gradient(1px 1px at 30% 90%, rgba(255,255,255,0.3) 0%, transparent 100%); pointer-events:none; z-index:0; animation:twinkle 4s ease-in-out infinite; }
+
+.campaign-map-header { text-align:center; padding:1.2rem 1rem 0.6rem; position:relative; z-index:1; width:100%; }
+.campaign-map-header .map-title { font-size:1.3rem; font-weight:900; letter-spacing:0.12em; text-transform:uppercase; background:linear-gradient(135deg, #fbbf24, #f59e0b, #d97706); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-shadow:none; margin:0; }
+.campaign-map-header .map-subtitle { font-size:0.72rem; color:rgba(255,255,255,0.5); margin-top:0.2rem; letter-spacing:0.05em; }
+.campaign-map-header .map-stats { display:flex; justify-content:center; gap:1rem; margin-top:0.4rem; font-size:0.7rem; color:rgba(255,255,255,0.6); }
+.campaign-map-header .map-stats span { display:flex; align-items:center; gap:0.25rem; }
+
+.campaign-path { display:flex; flex-direction:column; align-items:center; gap:0; width:100%; max-width:340px; position:relative; z-index:1; padding:0.5rem 0 3rem; }
+
+.campaign-act-divider { width:90%; max-width:300px; text-align:center; padding:0.8rem 0; margin:0.3rem 0; position:relative; }
+.campaign-act-divider::before, .campaign-act-divider::after { content:''; position:absolute; top:50%; height:1px; width:25%; background:linear-gradient(90deg, transparent, rgba(234,179,8,0.4), transparent); }
+.campaign-act-divider::before { left:0; }
+.campaign-act-divider::after { right:0; }
+.campaign-act-divider .act-name { font-size:0.7rem; font-weight:800; letter-spacing:0.15em; text-transform:uppercase; color:#fbbf24; text-shadow:0 0 10px rgba(251,191,36,0.3); }
+.campaign-act-divider .act-subtitle { font-size:0.6rem; color:rgba(255,255,255,0.35); margin-top:0.1rem; font-style:italic; }
+
 .campaign-node-row { display:flex; align-items:center; width:100%; justify-content:center; position:relative; }
 .campaign-node-row:nth-child(4n+1) { justify-content:flex-start; padding-left:2rem; }
 .campaign-node-row:nth-child(4n+3) { justify-content:flex-end; padding-right:2rem; }
-.campaign-node-connector { width:3px; height:28px; background:var(--card-border); margin:0 auto; border-radius:2px; }
-.campaign-node-connector.completed { background:var(--accent); }
-.campaign-node { width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.1rem; cursor:pointer; border:3px solid var(--card-border); background:var(--card); color:var(--text); position:relative; transition:transform 0.2s, box-shadow 0.2s; flex-shrink:0; }
-.campaign-node:active { transform:scale(0.93); }
-.campaign-node.locked { background:var(--bg); color:var(--muted); cursor:default; opacity:0.5; border-color:var(--card-border); }
-.campaign-node.locked::after { content:'\1F512'; position:absolute; font-size:0.7rem; bottom:-2px; right:-2px; }
-.campaign-node.current { border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-glow), 0 0 16px var(--accent-glow); animation:campaignPulse 2s ease-in-out infinite; }
-@keyframes campaignPulse { 0%,100%{box-shadow:0 0 0 4px var(--accent-glow),0 0 16px var(--accent-glow);} 50%{box-shadow:0 0 0 8px var(--accent-glow),0 0 24px var(--accent-glow);} }
-.campaign-node.completed { border-color:#22c55e; background:rgba(34,197,94,0.1); }
-.campaign-node-label { font-size:0.65rem; color:var(--muted); text-align:center; margin-top:2px; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.campaign-stars-below { display:flex; gap:2px; justify-content:center; margin-top:1px; font-size:0.6rem; }
-.campaign-stars-below .star-filled { color:#f59e0b; }
-.campaign-stars-below .star-empty { color:var(--card-border); }
-.campaign-node-info { display:flex; flex-direction:column; align-items:center; gap:1px; }
 
-.campaign-story-card { background:linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.02)); border:1.5px solid rgba(245,158,11,0.2); border-radius:var(--radius); padding:1.2rem 1rem; margin:0.8rem 0; }
-.campaign-story-text { font-size:0.92rem; line-height:1.8; color:var(--text); }
+.campaign-node-connector { width:3px; height:32px; margin:0 auto; border-radius:2px; position:relative; background:rgba(100,116,139,0.3); }
+.campaign-node-connector.completed { background:linear-gradient(180deg, #fbbf24, #f59e0b); box-shadow:0 0 6px rgba(245,158,11,0.3); }
+.campaign-node-connector::before { content:''; position:absolute; left:50%; top:20%; bottom:20%; width:1px; transform:translateX(-50%); background:repeating-linear-gradient(180deg, transparent, transparent 3px, rgba(251,191,36,0.15) 3px, rgba(251,191,36,0.15) 6px); }
+.campaign-node-connector.completed::before { background:repeating-linear-gradient(180deg, transparent, transparent 3px, rgba(251,191,36,0.5) 3px, rgba(251,191,36,0.5) 6px); }
+
+.campaign-node { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1.2rem; cursor:pointer; border:3px solid var(--card-border); background:linear-gradient(145deg, rgba(30,27,75,0.9), rgba(15,23,42,0.95)); color:rgba(255,255,255,0.9); position:relative; transition:transform 0.2s, box-shadow 0.2s; flex-shrink:0; box-shadow:0 4px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08); }
+.campaign-node:active { transform:scale(0.93); }
+
+.campaign-node.locked { background:linear-gradient(145deg, rgba(30,30,40,0.6), rgba(20,20,30,0.8)); color:rgba(255,255,255,0.2); cursor:default; opacity:0.55; border:3px dashed rgba(100,116,139,0.3); box-shadow:none; }
+.campaign-node.locked::after { content:'\1F512'; position:absolute; font-size:0.8rem; bottom:-4px; right:-4px; filter:grayscale(0.5); }
+
+.campaign-node.current { border:3px solid var(--accent); box-shadow:0 0 0 5px var(--accent-glow), 0 0 20px var(--accent-glow), 0 0 40px rgba(var(--accent-rgb, 99,102,241),0.15), inset 0 0 12px rgba(var(--accent-rgb, 99,102,241),0.15); animation:campaignPulse 2s ease-in-out infinite; background:linear-gradient(145deg, rgba(30,27,75,0.95), rgba(49,46,129,0.6)); }
+
+.campaign-node-arrow { position:absolute; top:-22px; left:50%; transform:translateX(-50%); font-size:0.9rem; animation:floatBounce 1s ease-in-out infinite; filter:drop-shadow(0 0 4px var(--accent)); z-index:2; }
+
+.campaign-node.completed { border-color:#22c55e; background:linear-gradient(145deg, rgba(34,197,94,0.15), rgba(22,163,74,0.08)); box-shadow:0 4px 12px rgba(0,0,0,0.2), 0 0 8px rgba(34,197,94,0.2); animation:nodeShimmer 3s ease-in-out infinite; }
+.campaign-node.completed::before { content:'\2713'; position:absolute; font-size:0.55rem; top:-2px; right:-2px; width:16px; height:16px; background:#22c55e; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; box-shadow:0 2px 4px rgba(0,0,0,0.3); }
+
+.campaign-node-label { font-size:0.65rem; color:rgba(255,255,255,0.45); text-align:center; margin-top:3px; max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.campaign-node-info.is-current .campaign-node-label { color:rgba(255,255,255,0.85); font-weight:700; text-shadow:0 0 8px var(--accent-glow); }
+.campaign-node-info.is-completed .campaign-node-label { color:rgba(255,255,255,0.6); font-weight:600; }
+
+.campaign-stars-below { display:flex; gap:3px; justify-content:center; margin-top:2px; font-size:0.75rem; }
+.campaign-stars-below .star-filled { color:#fbbf24; filter:drop-shadow(0 0 2px rgba(251,191,36,0.5)); }
+.campaign-stars-below .star-empty { color:rgba(100,116,139,0.4); }
+.campaign-node-info { display:flex; flex-direction:column; align-items:center; gap:1px; position:relative; }
+
+/* --- 2. STORY SCREENS — Immersive Narrative --- */
+.campaign-story-card { background:linear-gradient(135deg, rgba(34,197,94,0.06), rgba(16,185,129,0.03)); border:1px solid rgba(34,197,94,0.15); border-radius:var(--radius); padding:1.4rem 1.2rem; margin:0.8rem 0; position:relative; box-shadow:inset 0 0 30px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.08); }
+.campaign-story-card.act-2 { background:linear-gradient(135deg, rgba(59,130,246,0.06), rgba(37,99,235,0.03)); border-color:rgba(59,130,246,0.15); }
+.campaign-story-card.act-3 { background:linear-gradient(135deg, rgba(168,85,247,0.06), rgba(220,38,38,0.03)); border-color:rgba(168,85,247,0.15); }
+
+.campaign-story-location { display:flex; align-items:center; gap:0.4rem; font-size:0.72rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; color:var(--accent); padding:0.3rem 0.7rem; background:var(--accent-glow); border-radius:20px; margin-bottom:0.8rem; width:fit-content; }
+
+.campaign-story-text { font-size:0.92rem; line-height:1.85; color:var(--text); }
 .campaign-story-text p { margin:0 0 0.7rem; }
+.campaign-story-text .story-paragraph { opacity:0; animation:storyFadeIn 0.6s ease-out forwards; }
+.campaign-story-text .story-paragraph:nth-child(1) { animation-delay:0.1s; }
+.campaign-story-text .story-paragraph:nth-child(2) { animation-delay:0.6s; }
+.campaign-story-text .story-paragraph:nth-child(3) { animation-delay:1.1s; }
+.campaign-story-text .story-paragraph:nth-child(4) { animation-delay:1.6s; }
+.campaign-story-text .story-paragraph:nth-child(5) { animation-delay:2.1s; }
+
 .campaign-npc-dialogue { background:var(--card); border:1.5px solid var(--card-border); border-radius:var(--radius); padding:0.8rem 1rem; margin:0.6rem 0; position:relative; font-style:italic; font-size:0.9rem; color:var(--text-secondary); }
 .campaign-npc-dialogue::before { content:''; position:absolute; top:-8px; left:20px; width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent; border-bottom:8px solid var(--card-border); }
-.campaign-npc-portrait { width:48px; height:48px; border-radius:50%; border:2px solid var(--accent); margin-bottom:0.3rem; object-fit:cover; background:var(--card); }
+
+.campaign-npc-portrait { width:64px; height:64px; border-radius:50%; border:3px solid #fbbf24; object-fit:cover; background:var(--card); box-shadow:0 0 12px rgba(251,191,36,0.25), 0 4px 8px rgba(0,0,0,0.2); animation:slideInRight 0.4s ease-out; }
+.campaign-npc-name { font-weight:800; font-size:0.92rem; color:var(--accent); }
+.campaign-npc-title { font-size:0.68rem; color:var(--muted); font-style:italic; }
+
+.campaign-story-btn-glow { animation:pulse 2s ease-in-out infinite; box-shadow:0 0 12px var(--accent-glow); }
+
 .campaign-task-context { font-style:italic; color:var(--muted); font-size:0.82rem; margin-bottom:0.5rem; }
 
-.campaign-companion-bar { position:fixed; bottom:0; left:0; right:0; background:var(--card); border-top:1.5px solid var(--card-border); padding:0.4rem 0.8rem; display:flex; align-items:center; justify-content:center; gap:0.8rem; z-index:50; }
-.campaign-companion { width:40px; height:40px; border-radius:50%; border:2px solid var(--accent); cursor:pointer; position:relative; overflow:visible; transition:transform 0.15s; background:var(--card); }
-.campaign-companion:active { transform:scale(0.9); }
-.campaign-companion img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
-.campaign-companion .charge-badge { position:absolute; top:-4px; right:-4px; background:var(--accent); color:#fff; font-size:0.55rem; font-weight:800; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
-.campaign-companion.disabled { opacity:0.35; cursor:default; border-color:var(--muted); }
-.campaign-companion.boss-locked { opacity:0.4; cursor:default; }
-.campaign-companion.boss-locked::after { content:'\2716'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#ef4444; background:rgba(0,0,0,0.25); border-radius:50%; }
+/* --- 3. TASK SCREENS — Gamified Exercise UI --- */
+.campaign-task-progress { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.6rem; font-size:0.75rem; color:var(--muted); }
+.campaign-task-progress-bar { flex:1; height:10px; background:rgba(30,30,50,0.3); border-radius:5px; overflow:hidden; position:relative; box-shadow:inset 0 2px 4px rgba(0,0,0,0.15); }
+.campaign-task-progress-fill { height:100%; border-radius:5px; transition:width 0.4s ease-out; background:linear-gradient(90deg, #22c55e, #4ade80); position:relative; }
+.campaign-task-progress-fill::after { content:''; position:absolute; top:0; left:0; right:0; height:50%; background:linear-gradient(180deg, rgba(255,255,255,0.25), transparent); border-radius:5px 5px 0 0; }
+.campaign-task-progress-bar .segment-marker { position:absolute; top:0; bottom:0; width:2px; background:rgba(255,255,255,0.15); z-index:1; }
 
-.campaign-reading-card { background:var(--card); border:1.5px solid var(--card-border); border-radius:var(--radius); padding:1rem; margin:0.5rem 0; font-size:0.88rem; line-height:1.75; max-height:220px; overflow-y:auto; }
-.campaign-boss-banner { background:linear-gradient(135deg, #7c3aed, #dc2626); color:#fff; text-align:center; font-weight:800; font-size:1.1rem; padding:0.6rem 1rem; border-radius:var(--radius); margin-bottom:0.8rem; letter-spacing:0.05em; text-transform:uppercase; }
+.campaign-task-header-card { background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius); padding:0.6rem 0.8rem; margin-bottom:0.4rem; display:flex; align-items:center; gap:0.6rem; }
+.campaign-task-badge { width:28px; height:28px; border-radius:50%; background:var(--accent); color:#fff; font-size:0.7rem; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 
-.campaign-stars-display { display:flex; justify-content:center; gap:0.5rem; margin:1rem 0; }
-.campaign-star { font-size:2rem; color:var(--card-border); transition:color 0.4s, transform 0.4s; }
-.campaign-star.filled { color:#f59e0b; transform:scale(1.15); }
-@keyframes starFillPop { 0%{transform:scale(0.5);opacity:0;} 60%{transform:scale(1.3);} 100%{transform:scale(1.15);opacity:1;} }
-.campaign-star.fill-anim { animation:starFillPop 0.5s ease-out forwards; }
+.campaign-combo-counter { display:inline-flex; align-items:center; gap:0.3rem; background:linear-gradient(135deg, #f59e0b, #ef4444); color:#fff; font-size:0.75rem; font-weight:800; padding:0.2rem 0.6rem; border-radius:12px; animation:bounceIn 0.4s ease-out; box-shadow:0 2px 8px rgba(245,158,11,0.3); }
+.campaign-xp-fly { position:absolute; font-size:0.8rem; font-weight:800; color:#fbbf24; pointer-events:none; animation:xpFlyUp 1s ease-out forwards; text-shadow:0 1px 3px rgba(0,0,0,0.3); z-index:10; }
+
+.campaign-vocab-bank { display:flex; flex-wrap:wrap; gap:0.5rem; margin:0.5rem 0; justify-content:center; }
+.campaign-vocab-chip { padding:0.45rem 0.8rem; background:var(--card); border:1.5px solid var(--card-border); border-radius:var(--radius); font-size:0.84rem; cursor:pointer; transition:all 0.15s; box-shadow:0 3px 0 rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.06); position:relative; }
+.campaign-vocab-chip:hover { transform:translateY(-1px); box-shadow:0 4px 0 rgba(0,0,0,0.12), 0 4px 10px rgba(0,0,0,0.08); }
+.campaign-vocab-chip:active { transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,0.12); }
+.campaign-vocab-chip.selected { border-color:var(--accent); background:var(--accent-glow); box-shadow:0 3px 0 rgba(var(--accent-rgb, 99,102,241),0.2); }
+.campaign-vocab-chip.correct { border-color:#22c55e; background:rgba(34,197,94,0.12); animation:correctBounce 0.4s ease-out; }
+.campaign-vocab-chip.wrong { border-color:#ef4444; background:rgba(239,68,68,0.12); animation:wrongShake 0.4s ease-out; }
+
+.campaign-vocab-target { min-height:42px; border:2px dashed var(--card-border); border-radius:var(--radius); padding:0.5rem 0.7rem; margin:0.4rem 0; display:flex; align-items:center; font-size:0.9rem; color:var(--accent); font-weight:700; background:rgba(var(--accent-rgb, 99,102,241),0.03); }
+
+.campaign-mc-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin:0.6rem 0; }
+.campaign-mc-btn { padding:0.8rem 0.6rem; border:1.5px solid var(--card-border); border-radius:var(--radius); background:var(--card); color:var(--text); font-size:0.86rem; cursor:pointer; text-align:center; transition:all 0.15s; min-height:50px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 0 rgba(0,0,0,0.08); position:relative; overflow:hidden; }
+.campaign-mc-btn:hover { transform:translateY(-1px); box-shadow:0 4px 0 rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06); }
+.campaign-mc-btn:active { transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,0.08); }
+.campaign-mc-btn.correct { border-color:#22c55e; background:rgba(34,197,94,0.12); color:#22c55e; animation:correctBounce 0.4s ease-out; box-shadow:0 0 12px rgba(34,197,94,0.2); }
+.campaign-mc-btn.wrong { border-color:#ef4444; background:rgba(239,68,68,0.12); color:#ef4444; animation:wrongShake 0.4s ease-out; }
+
+.campaign-gap-sentence { font-size:0.95rem; line-height:1.7; margin:0.5rem 0; color:var(--text); }
+.campaign-gap-blank { display:inline-block; min-width:65px; border-bottom:2.5px solid var(--accent); padding:0 5px; font-weight:700; color:var(--accent); animation:blankPulse 2s ease-in-out infinite; }
+.campaign-transform-prompt { font-size:0.92rem; color:var(--text); margin:0.5rem 0; line-height:1.6; }
+
+.campaign-feedback { padding:0.7rem 0.9rem; border-radius:var(--radius); margin:0.5rem 0; font-size:0.85rem; font-weight:700; position:relative; overflow:hidden; }
+.campaign-feedback.correct { background:rgba(34,197,94,0.12); color:#22c55e; border:1px solid rgba(34,197,94,0.3); animation:slideInUp 0.3s ease-out; }
+.campaign-feedback.correct::before { content:''; position:absolute; top:-50%; left:-50%; right:-50%; bottom:-50%; background:radial-gradient(circle at center, rgba(34,197,94,0.1) 0%, transparent 60%); animation:sparkle 0.8s ease-out; pointer-events:none; }
+.campaign-feedback.wrong { background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.3); animation:wrongShake 0.4s ease-out; }
+.campaign-feedback.close { background:rgba(245,158,11,0.12); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); animation:slideInUp 0.3s ease-out; }
+
+/* Confetti particles for correct answers */
+.campaign-confetti-burst { position:absolute; top:50%; left:50%; pointer-events:none; z-index:5; }
+.campaign-confetti-burst .confetti-piece { position:absolute; width:6px; height:6px; border-radius:50%; animation:confettiPiece 0.8s ease-out forwards; }
+
+/* --- 4. READING COMPREHENSION — Book Feel --- */
+.campaign-reading-card { background:linear-gradient(135deg, #1a1520, #1e1b2e); border:2px solid rgba(139,92,246,0.15); border-radius:var(--radius); padding:1.2rem; margin:0.5rem 0; font-size:0.88rem; line-height:1.8; max-height:260px; overflow-y:auto; position:relative; box-shadow:inset 0 0 20px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.1); }
+.campaign-reading-card::before { content:''; position:absolute; inset:3px; border:1px solid rgba(139,92,246,0.08); border-radius:calc(var(--radius) - 2px); pointer-events:none; }
+.campaign-reading-card::-webkit-scrollbar { width:6px; }
+.campaign-reading-card::-webkit-scrollbar-track { background:rgba(0,0,0,0.1); border-radius:3px; }
+.campaign-reading-card::-webkit-scrollbar-thumb { background:rgba(139,92,246,0.3); border-radius:3px; }
+.campaign-passage-title { font-size:0.95rem; font-weight:800; text-align:center; color:var(--accent); margin-bottom:0.6rem; letter-spacing:0.03em; border-bottom:1px solid rgba(139,92,246,0.15); padding-bottom:0.4rem; }
+.campaign-reading-question { background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius); padding:0.7rem 0.8rem; margin:0.4rem 0; }
+.campaign-reading-q-badge { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:var(--accent); color:#fff; font-size:0.65rem; font-weight:800; margin-right:0.4rem; flex-shrink:0; }
+
+/* --- 5. BOSS CHALLENGE — Epic Battle Feel --- */
+.campaign-boss-banner { background:linear-gradient(135deg, #7c3aed, #dc2626, #9333ea); color:#fff; text-align:center; font-weight:900; font-size:1.2rem; padding:0.8rem 1.2rem; border-radius:var(--radius); margin-bottom:0.8rem; letter-spacing:0.08em; text-transform:uppercase; text-shadow:0 2px 8px rgba(0,0,0,0.4); position:relative; overflow:hidden; animation:bossEdgePulse 2s ease-in-out infinite; }
+.campaign-boss-banner::before { content:''; position:absolute; inset:0; background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%); background-size:200% 100%; animation:shimmer 3s linear infinite; }
+
+.boss-health-bar { width:100%; height:12px; background:rgba(30,30,50,0.5); border-radius:6px; overflow:hidden; margin-bottom:0.6rem; position:relative; box-shadow:inset 0 2px 4px rgba(0,0,0,0.3); }
+.boss-health-fill { height:100%; background:linear-gradient(90deg, #dc2626, #ef4444, #f87171); border-radius:6px; transition:width 0.5s ease-out; position:relative; }
+.boss-health-fill::after { content:''; position:absolute; top:0; left:0; right:0; height:50%; background:linear-gradient(180deg, rgba(255,255,255,0.2), transparent); border-radius:6px 6px 0 0; }
+.boss-health-label { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:0.55rem; font-weight:800; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,0.5); z-index:1; }
+
+.campaign-boss-item-bg { background:rgba(220,38,38,0.03); border:1px solid rgba(220,38,38,0.08); border-radius:var(--radius); padding:0.6rem; margin:0.3rem 0; }
+
+/* --- 6. RESULTS SCREEN — Celebration Explosion --- */
+.campaign-results-banner { font-size:1.1rem; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; text-align:center; margin:0 0 0.5rem; background:linear-gradient(135deg, #fbbf24, #f59e0b, #d97706); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:levelCompleteBanner 0.8s ease-out; }
+
+.campaign-stars-display { display:flex; justify-content:center; gap:0.8rem; margin:1rem 0; }
+.campaign-star { font-size:3rem; color:rgba(100,116,139,0.25); transition:color 0.4s, transform 0.4s; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+.campaign-star.filled { color:#fbbf24; transform:scale(1.15); filter:drop-shadow(0 0 8px rgba(251,191,36,0.4)); }
+.campaign-star.fill-anim { animation:starFillPop 0.6s ease-out forwards; }
 
 .campaign-unlock-card { background:var(--card); border:2px solid var(--accent); border-radius:var(--radius); padding:1.5rem 1rem; text-align:center; margin:1rem 0; position:relative; overflow:hidden; }
 .campaign-unlock-card::before { content:''; position:absolute; inset:-50%; background:radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); opacity:0.3; animation:unlockGlow 2s ease-in-out infinite; }
-@keyframes unlockGlow { 0%,100%{opacity:0.2;transform:scale(0.9);} 50%{opacity:0.4;transform:scale(1.1);} }
-.campaign-unlock-card .char-portrait { width:120px; height:120px; border-radius:50%; border:3px solid var(--accent); margin:0 auto 0.8rem; object-fit:cover; position:relative; z-index:1; background:var(--bg); }
-.campaign-stat-bars { display:flex; flex-direction:column; gap:0.4rem; margin:0.8rem 0; max-width:220px; margin-left:auto; margin-right:auto; }
-.campaign-stat-bar { display:flex; align-items:center; gap:0.4rem; font-size:0.7rem; }
-.campaign-stat-bar .stat-label { width:30px; font-weight:700; color:var(--muted); text-transform:uppercase; }
-.campaign-stat-bar .stat-track { flex:1; height:8px; background:var(--bg); border-radius:4px; overflow:hidden; }
-.campaign-stat-bar .stat-fill { height:100%; border-radius:4px; background:var(--accent); transition:width 0.6s ease-out; }
+.campaign-unlock-card::after { content:''; position:absolute; inset:0; background:repeating-conic-gradient(from 0deg, transparent 0deg, transparent 15deg, rgba(251,191,36,0.02) 15deg, rgba(251,191,36,0.02) 30deg); pointer-events:none; }
+.campaign-unlock-card .char-portrait { width:120px; height:120px; border-radius:50%; border:3px solid var(--accent); margin:0 auto 0.8rem; object-fit:cover; position:relative; z-index:1; background:var(--bg); animation:charReveal 0.8s ease-out; box-shadow:0 0 20px var(--accent-glow), 0 4px 12px rgba(0,0,0,0.2); }
 
-.character-library-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.6rem; padding:0.5rem 0; }
-.character-lib-item { display:flex; flex-direction:column; align-items:center; gap:0.3rem; padding:0.6rem 0.3rem; background:var(--card); border:1.5px solid var(--card-border); border-radius:var(--radius); cursor:pointer; transition:border-color 0.2s; }
-.character-lib-item:active { border-color:var(--accent); }
+.campaign-stat-bars { display:flex; flex-direction:column; gap:0.5rem; margin:0.8rem 0; max-width:220px; margin-left:auto; margin-right:auto; }
+.campaign-stat-bar { display:flex; align-items:center; gap:0.4rem; font-size:0.7rem; }
+.campaign-stat-bar .stat-label { width:30px; font-weight:800; color:var(--muted); text-transform:uppercase; font-size:0.65rem; }
+.campaign-stat-bar .stat-track { flex:1; height:10px; background:rgba(30,30,50,0.2); border-radius:5px; overflow:hidden; box-shadow:inset 0 1px 3px rgba(0,0,0,0.1); }
+.campaign-stat-bar .stat-fill { height:100%; border-radius:5px; background:linear-gradient(90deg, var(--accent), #fbbf24); transition:width 0.8s ease-out; position:relative; }
+.campaign-stat-bar .stat-fill::after { content:''; position:absolute; top:0; left:0; right:0; height:50%; background:linear-gradient(180deg, rgba(255,255,255,0.3), transparent); border-radius:5px 5px 0 0; }
+
+.campaign-xp-breakdown { display:flex; flex-direction:column; gap:0.35rem; margin:0.8rem 0; font-size:0.82rem; }
+.campaign-xp-row { display:flex; justify-content:space-between; padding:0.25rem 0.4rem; border-bottom:1px solid var(--card-border); border-radius:4px; opacity:0; animation:slideInRight 0.4s ease-out forwards; }
+.campaign-xp-row:nth-child(1) { animation-delay:0.1s; }
+.campaign-xp-row:nth-child(2) { animation-delay:0.3s; }
+.campaign-xp-row:nth-child(3) { animation-delay:0.5s; }
+.campaign-xp-row:nth-child(4) { animation-delay:0.7s; }
+.campaign-xp-row:nth-child(5) { animation-delay:0.9s; }
+.campaign-xp-row:nth-child(6) { animation-delay:1.1s; }
+.campaign-xp-row:nth-child(7) { animation-delay:1.3s; }
+.campaign-xp-row:last-child { border-bottom:none; font-weight:800; background:var(--accent-glow); color:var(--accent); animation-delay:1.5s; }
+
+/* --- 7. CHARACTER LIBRARY — RPG Collection Screen --- */
+.character-library-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.7rem; padding:0.5rem 0; }
+.character-lib-item { display:flex; flex-direction:column; align-items:center; gap:0.35rem; padding:0.7rem 0.4rem; background:var(--card); border:2px solid var(--card-border); border-radius:var(--radius); cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden; }
+.character-lib-item:active { transform:scale(0.96); }
+.character-lib-item.rarity-common { border-color:rgba(156,163,175,0.4); }
+.character-lib-item.rarity-rare { border-color:rgba(59,130,246,0.5); box-shadow:0 0 8px rgba(59,130,246,0.15); }
+.character-lib-item.rarity-epic { border-color:rgba(168,85,247,0.5); box-shadow:0 0 10px rgba(168,85,247,0.15); }
+.character-lib-item.rarity-legendary { border-color:rgba(251,191,36,0.6); --rarity-shadow-dim:0 0 8px rgba(251,191,36,0.2); --rarity-shadow-bright:0 0 16px rgba(251,191,36,0.4); animation:rarityGlow 2s ease-in-out infinite; }
+.character-lib-item .rarity-badge { position:absolute; top:4px; right:4px; font-size:0.5rem; font-weight:800; letter-spacing:0.05em; text-transform:uppercase; padding:0.1rem 0.3rem; border-radius:4px; }
+.character-lib-item.rarity-common .rarity-badge { background:rgba(156,163,175,0.15); color:#9ca3af; }
+.character-lib-item.rarity-rare .rarity-badge { background:rgba(59,130,246,0.15); color:#3b82f6; }
+.character-lib-item.rarity-epic .rarity-badge { background:rgba(168,85,247,0.15); color:#a855f7; }
+.character-lib-item.rarity-legendary .rarity-badge { background:rgba(251,191,36,0.15); color:#fbbf24; }
 .character-lib-item.locked { opacity:0.4; cursor:default; }
 .character-lib-item.locked img { filter:brightness(0) saturate(0); }
-.character-lib-item img { width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--card-border); }
-.character-lib-item .char-name { font-size:0.68rem; font-weight:600; text-align:center; color:var(--text); }
 .character-lib-item.locked .char-name { color:var(--muted); }
+.character-lib-item.locked::after { content:'?'; position:absolute; top:50%; left:50%; transform:translate(-50%,-60%); font-size:1.8rem; font-weight:900; color:rgba(255,255,255,0.15); pointer-events:none; }
+.character-lib-item img { width:52px; height:52px; border-radius:50%; object-fit:cover; border:2px solid var(--card-border); transition:transform 0.2s; }
+.character-lib-item:not(.locked):hover img { transform:scale(1.05); }
+.character-lib-item .char-name { font-size:0.7rem; font-weight:700; text-align:center; color:var(--text); }
 
+/* --- 8. COMPANION BAR --- */
+.campaign-companion-bar { position:fixed; bottom:0; left:0; right:0; background:linear-gradient(180deg, rgba(var(--card-rgb,30,30,46),0.95), var(--card)); border-top:1.5px solid var(--card-border); padding:0.4rem 0.8rem; display:flex; align-items:center; justify-content:center; gap:0.6rem; z-index:50; animation:slideInUp 0.3s ease-out; backdrop-filter:blur(8px); }
+.campaign-companion { width:42px; height:42px; border-radius:50%; border:2.5px solid var(--accent); cursor:pointer; position:relative; overflow:visible; transition:transform 0.15s; background:var(--card); box-shadow:0 2px 8px rgba(0,0,0,0.15); }
+.campaign-companion:active { transform:scale(0.88); }
+.campaign-companion img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
+.campaign-companion .charge-badge { position:absolute; top:-5px; right:-5px; background:linear-gradient(135deg, var(--accent), #fbbf24); color:#fff; font-size:0.55rem; font-weight:900; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 4px rgba(0,0,0,0.2); }
+.campaign-companion .charge-badge.last-charge { animation:pulse 1s ease-in-out infinite; background:linear-gradient(135deg, #ef4444, #f59e0b); }
+.campaign-companion.disabled { opacity:0.3; cursor:default; border-color:var(--muted); filter:grayscale(0.5); }
+.campaign-companion.boss-locked { opacity:0.35; cursor:default; }
+.campaign-companion.boss-locked::after { content:'\2716'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#ef4444; background:rgba(0,0,0,0.3); border-radius:50%; }
+.campaign-companion-flash { position:fixed; inset:0; z-index:100; pointer-events:none; opacity:0; transition:opacity 0.15s; border-radius:var(--radius); }
+.campaign-companion-flash.active { opacity:0.15; }
+
+/* --- Misc Campaign Elements --- */
 .comic-viewer { width:100%; border-radius:var(--radius); overflow:hidden; margin:0.5rem 0; }
 .comic-viewer img { width:100%; height:auto; display:block; border-radius:var(--radius); }
 
-.campaign-progress-badge { display:inline-flex; align-items:center; justify-content:center; background:var(--accent); color:#fff; font-size:0.55rem; font-weight:800; min-width:16px; height:16px; border-radius:8px; padding:0 4px; margin-left:4px; }
+.campaign-progress-badge { display:inline-flex; align-items:center; justify-content:center; background:linear-gradient(135deg, var(--accent), #fbbf24); color:#fff; font-size:0.55rem; font-weight:900; min-width:18px; height:18px; border-radius:9px; padding:0 5px; margin-left:4px; box-shadow:0 2px 4px rgba(0,0,0,0.15); }
 
-.campaign-xp-breakdown { display:flex; flex-direction:column; gap:0.3rem; margin:0.8rem 0; font-size:0.82rem; }
-.campaign-xp-row { display:flex; justify-content:space-between; padding:0.2rem 0; border-bottom:1px solid var(--card-border); }
-.campaign-xp-row:last-child { border-bottom:none; font-weight:700; }
+.campaign-tag { display:inline-block; background:var(--accent-glow); color:var(--accent); font-size:0.7rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:10px; margin:0.15rem 0.2rem 0.15rem 0; }
 
-.campaign-tag { display:inline-block; background:var(--accent-glow); color:var(--accent); font-size:0.7rem; font-weight:600; padding:0.15rem 0.5rem; border-radius:10px; margin:0.15rem 0.2rem 0.15rem 0; }
-
-.campaign-task-progress { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.6rem; font-size:0.75rem; color:var(--muted); }
-.campaign-task-progress-bar { flex:1; height:6px; background:var(--bg); border-radius:3px; overflow:hidden; }
-.campaign-task-progress-fill { height:100%; background:var(--accent); border-radius:3px; transition:width 0.3s; }
-
-.campaign-mc-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin:0.6rem 0; }
-.campaign-mc-btn { padding:0.7rem 0.5rem; border:1.5px solid var(--card-border); border-radius:var(--radius); background:var(--card); color:var(--text); font-size:0.85rem; cursor:pointer; text-align:center; transition:border-color 0.2s, background 0.2s; }
-.campaign-mc-btn:active { transform:scale(0.97); }
-.campaign-mc-btn.correct { border-color:#22c55e; background:rgba(34,197,94,0.12); color:#22c55e; }
-.campaign-mc-btn.wrong { border-color:#ef4444; background:rgba(239,68,68,0.12); color:#ef4444; }
-
-.campaign-gap-sentence { font-size:0.95rem; line-height:1.7; margin:0.5rem 0; color:var(--text); }
-.campaign-gap-blank { display:inline-block; min-width:60px; border-bottom:2px solid var(--accent); padding:0 4px; font-weight:700; color:var(--accent); }
-.campaign-transform-prompt { font-size:0.92rem; color:var(--text); margin:0.5rem 0; line-height:1.6; }
-
-.campaign-vocab-bank { display:flex; flex-wrap:wrap; gap:0.4rem; margin:0.5rem 0; justify-content:center; }
-.campaign-vocab-chip { padding:0.4rem 0.7rem; background:var(--card); border:1.5px solid var(--card-border); border-radius:var(--radius); font-size:0.82rem; cursor:pointer; transition:border-color 0.2s, background 0.2s; }
-.campaign-vocab-chip:active { transform:scale(0.95); }
-.campaign-vocab-chip.selected { border-color:var(--accent); background:var(--accent-glow); }
-.campaign-vocab-chip.correct { border-color:#22c55e; background:rgba(34,197,94,0.12); }
-.campaign-vocab-chip.wrong { border-color:#ef4444; background:rgba(239,68,68,0.12); }
-
-.campaign-vocab-target { min-height:38px; border:2px dashed var(--card-border); border-radius:var(--radius); padding:0.4rem 0.6rem; margin:0.4rem 0; display:flex; align-items:center; font-size:0.88rem; color:var(--accent); font-weight:600; }
-
-.campaign-feedback { padding:0.6rem 0.8rem; border-radius:var(--radius); margin:0.5rem 0; font-size:0.85rem; font-weight:600; }
-.campaign-feedback.correct { background:rgba(34,197,94,0.12); color:#22c55e; border:1px solid rgba(34,197,94,0.3); }
-.campaign-feedback.wrong { background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.3); }
-.campaign-feedback.close { background:rgba(245,158,11,0.12); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); }
-
-/* Light mode overrides for campaign */
-[data-theme="light"] .campaign-story-card { background:linear-gradient(135deg, rgba(245,158,11,0.06), rgba(245,158,11,0.01)); border-color:rgba(245,158,11,0.15); }
-[data-theme="light"] .campaign-node.locked { background:#f3f4f6; }
-[data-theme="light"] .campaign-reading-card { background:#fff; }
-[data-theme="light"] .campaign-boss-banner { background:linear-gradient(135deg, #8b5cf6, #ef4444); }
-[data-theme="light"] .campaign-companion-bar { background:#fff; border-color:#e5e7eb; }
+/* --- 10. LIGHT MODE OVERRIDES --- */
+[data-theme="light"] .campaign-map { background:linear-gradient(180deg, #dbeafe 0%, #e0e7ff 40%, #ede9fe 100%); }
+[data-theme="light"] .campaign-map::before { background:radial-gradient(2px 2px at 20% 15%, rgba(99,102,241,0.15) 0%, transparent 100%), radial-gradient(2px 2px at 60% 25%, rgba(139,92,246,0.12) 0%, transparent 100%), radial-gradient(2px 2px at 80% 45%, rgba(245,158,11,0.1) 0%, transparent 100%); animation:none; }
+[data-theme="light"] .campaign-map-header .map-title { background:linear-gradient(135deg, #7c3aed, #6366f1); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+[data-theme="light"] .campaign-map-header .map-subtitle { color:rgba(55,48,163,0.5); }
+[data-theme="light"] .campaign-map-header .map-stats span { color:rgba(55,48,163,0.6); }
+[data-theme="light"] .campaign-node { background:linear-gradient(145deg, #fff, #f1f5f9); color:var(--text); border-color:#cbd5e1; box-shadow:0 4px 12px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8); }
+[data-theme="light"] .campaign-node.locked { background:#f1f5f9; color:#94a3b8; border-color:#e2e8f0; }
+[data-theme="light"] .campaign-node.completed { background:linear-gradient(145deg, #f0fdf4, #dcfce7); }
+[data-theme="light"] .campaign-node-label { color:rgba(30,41,59,0.5); }
+[data-theme="light"] .campaign-node-info.is-current .campaign-node-label { color:var(--accent); }
+[data-theme="light"] .campaign-node-info.is-completed .campaign-node-label { color:rgba(30,41,59,0.7); }
+[data-theme="light"] .campaign-node-connector { background:rgba(203,213,225,0.5); }
+[data-theme="light"] .campaign-act-divider .act-name { color:#7c3aed; text-shadow:none; }
+[data-theme="light"] .campaign-act-divider::before, [data-theme="light"] .campaign-act-divider::after { background:linear-gradient(90deg, transparent, rgba(124,58,237,0.25), transparent); }
+[data-theme="light"] .campaign-story-card { background:linear-gradient(135deg, rgba(34,197,94,0.04), rgba(16,185,129,0.02)); border-color:rgba(34,197,94,0.12); }
+[data-theme="light"] .campaign-story-card.act-2 { background:linear-gradient(135deg, rgba(59,130,246,0.04), rgba(37,99,235,0.02)); border-color:rgba(59,130,246,0.1); }
+[data-theme="light"] .campaign-story-card.act-3 { background:linear-gradient(135deg, rgba(168,85,247,0.04), rgba(220,38,38,0.02)); border-color:rgba(168,85,247,0.1); }
+[data-theme="light"] .campaign-reading-card { background:linear-gradient(135deg, #fffbf0, #fef7e0); border-color:rgba(180,160,120,0.25); }
+[data-theme="light"] .campaign-reading-card::before { border-color:rgba(180,160,120,0.12); }
+[data-theme="light"] .campaign-boss-banner { background:linear-gradient(135deg, #8b5cf6, #ef4444, #a855f7); }
+[data-theme="light"] .campaign-companion-bar { background:rgba(255,255,255,0.95); border-color:#e5e7eb; }
 [data-theme="light"] .campaign-unlock-card { background:#fff; }
 [data-theme="light"] .character-lib-item { background:#fff; }
 [data-theme="light"] .campaign-mc-btn { background:#fff; }
 [data-theme="light"] .campaign-vocab-chip { background:#fff; }
-[data-theme="light"] .campaign-feedback.correct { background:rgba(34,197,94,0.08); }
-[data-theme="light"] .campaign-feedback.wrong { background:rgba(239,68,68,0.08); }
+[data-theme="light"] .campaign-feedback.correct { background:rgba(34,197,94,0.06); }
+[data-theme="light"] .campaign-feedback.wrong { background:rgba(239,68,68,0.06); }
+[data-theme="light"] .campaign-stars-below .star-empty { color:rgba(203,213,225,0.5); }
+[data-theme="light"] .boss-health-bar { background:rgba(0,0,0,0.06); }
+[data-theme="light"] .campaign-task-progress-bar { background:rgba(0,0,0,0.06); }
 
 .mode-select-card-campaign .mode-select-stats { color:#f59e0b; background:rgba(245,158,11,0.12); }
 .mode-select-card-campaign:hover, .mode-select-card-campaign:active { border-color:#f59e0b; box-shadow:var(--shadow-card); }
@@ -1902,10 +2060,10 @@ body.playing .header-container { display: none; }
 <!-- CAMPAIGN STORY SCREEN -->
 <div id="campaign-story-screen" class="screen">
   <div class="campaign-story-card" style="margin-top:1rem;">
-    <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.6rem;" id="campaign-story-npc"></div>
+    <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:0.8rem;" id="campaign-story-npc"></div>
     <div class="campaign-story-text" id="campaign-story-content"></div>
   </div>
-  <button class="btn" id="campaign-story-btn" style="margin-top:0.8rem;width:100%;">Continue</button>
+  <button class="btn campaign-story-btn-glow" id="campaign-story-btn" style="margin-top:0.8rem;width:100%;">Continue</button>
 </div>
 
 <!-- CAMPAIGN TASK SCREEN -->
@@ -1935,7 +2093,7 @@ body.playing .header-container { display: none; }
 <!-- CAMPAIGN RESULTS SCREEN -->
 <div id="campaign-results-screen" class="screen">
   <div class="login-card" style="max-width:400px;text-align:center;">
-    <h2 style="margin:0 0 0.3rem;">Level Complete!</h2>
+    <div id="campaign-results-banner" class="campaign-results-banner">&#127942; LEVEL COMPLETE &#127942;</div>
     <div class="campaign-stars-display" id="campaign-results-stars"></div>
     <div class="campaign-xp-breakdown" id="campaign-xp-breakdown"></div>
     <div id="campaign-unlock-area"></div>
@@ -9885,9 +10043,24 @@ function getCampaignProgress() {
 function showCampaignMap() {
   var cp = getCampaignProgress();
   var container = document.getElementById('campaign-path');
-  if (!container) return;
-  var html = '';
+  var mapContainer = document.getElementById('campaign-map-container');
+  if (!container || !mapContainer) return;
   var levels = (typeof campaignLevels !== 'undefined') ? campaignLevels : [];
+  // Calculate totals for header
+  var totalStars = 0, totalXP = 0, completedCount = 0;
+  for (var t = 0; t < levels.length; t++) {
+    var tLid = 'L' + String(t+1).padStart(2,'0');
+    var tLd = cp.levels ? cp.levels[tLid] : null;
+    if (tLd && tLd.completed) { completedCount++; totalStars += (tLd.stars || 0); totalXP += (tLd.bestXP || 0); }
+  }
+  // Build header
+  var headerHtml = '<div class="campaign-map-header">' +
+    '<div class="map-title">THE WORLD OF LEXICA</div>' +
+    '<div class="map-subtitle">' + completedCount + '/' + levels.length + ' Spell Pages Found</div>' +
+    '<div class="map-stats"><span>\u2B50 ' + totalStars + ' Stars</span><span>\u2728 ' + totalXP + ' XP</span></div>' +
+  '</div>';
+  // Build nodes
+  var nodesHtml = '';
   for (var i = 0; i < levels.length; i++) {
     var lv = levels[i];
     var lid = 'L' + String(i+1).padStart(2,'0');
@@ -9897,10 +10070,12 @@ function showCampaignMap() {
     var prevDone = i === 0 ? true : (cp.levels && cp.levels[prevLid] && cp.levels[prevLid].completed);
     var unlocked = (i === 0) || prevDone;
     if (lv.locked) unlocked = false;
+    var isCurrent = unlocked && !completed;
     var nodeClass = 'campaign-node';
-    if (completed) nodeClass += ' completed';
-    else if (unlocked) nodeClass += ' current';
-    else nodeClass += ' locked';
+    var infoClass = 'campaign-node-info';
+    if (completed) { nodeClass += ' completed'; infoClass += ' is-completed'; }
+    else if (unlocked) { nodeClass += ' current'; infoClass += ' is-current'; }
+    else { nodeClass += ' locked'; }
     var stars = ld ? (ld.stars || 0) : 0;
     var starsHtml = '';
     if (completed) {
@@ -9908,16 +10083,24 @@ function showCampaignMap() {
         starsHtml += '<span class="' + (s < stars ? 'star-filled' : 'star-empty') + '">' + (s < stars ? '\u2B50' : '\u2606') + '</span>';
       }
     }
-    if (i > 0) html += '<div class="campaign-node-connector' + (completed || (cp.levels && cp.levels[prevLid] && cp.levels[prevLid].completed) ? ' completed' : '') + '"></div>';
-    html += '<div class="campaign-node-row">' +
-      '<div class="campaign-node-info">' +
+    // Act dividers
+    if (i === 5) nodesHtml += '<div class="campaign-act-divider"><div class="act-name">\u2694\uFE0F ACT II \u2694\uFE0F</div><div class="act-subtitle">The Quest Continues</div></div>';
+    if (i === 10) nodesHtml += '<div class="campaign-act-divider"><div class="act-name">\u{1F525} ACT III \u{1F525}</div><div class="act-subtitle">The Reckoning</div></div>';
+    if (i > 0) nodesHtml += '<div class="campaign-node-connector' + (completed || (cp.levels && cp.levels[prevLid] && cp.levels[prevLid].completed) ? ' completed' : '') + '"></div>';
+    nodesHtml += '<div class="campaign-node-row">' +
+      '<div class="' + infoClass + '">' +
+        (isCurrent ? '<div class="campaign-node-arrow">\u2B07\uFE0F</div>' : '') +
         '<div class="' + nodeClass + '"' + (unlocked && !lv.locked ? ' onclick="showCampaignLevelInfo(' + i + ')"' : '') + '>' + (i+1) + '</div>' +
         '<div class="campaign-node-label">' + (lv.levelName || ('Level ' + (i+1))) + '</div>' +
         (starsHtml ? '<div class="campaign-stars-below">' + starsHtml + '</div>' : '') +
       '</div>' +
     '</div>';
   }
-  container.innerHTML = html;
+  // Inject header before path, nodes into path
+  var existingHeader = mapContainer.querySelector('.campaign-map-header');
+  if (existingHeader) existingHeader.remove();
+  container.innerHTML = nodesHtml;
+  container.insertAdjacentHTML('beforebegin', headerHtml);
   showScreen('campaign-map-screen');
 }
 
@@ -10001,6 +10184,7 @@ function startCampaignLevel() {
   // Init companion charges
   campaignState.companionCharges = {};
   campaignState.selectedCompanions.forEach(function(cid) { campaignState.companionCharges[cid] = 2; });
+  campaignCombo = 0;
   showCampaignStory('intro');
 }
 
@@ -10011,21 +10195,35 @@ function showCampaignStory(type) {
   var npcArea = document.getElementById('campaign-story-npc');
   var content = document.getElementById('campaign-story-content');
   var btn = document.getElementById('campaign-story-btn');
+  var storyCard = document.querySelector('#campaign-story-screen .campaign-story-card');
   if (!texts || texts.length === 0) {
     if (type === 'intro') { advanceCampaignTask(); return; }
     else { showCampaignResults(); return; }
   }
-  // NPC portrait
-  npcArea.innerHTML = '<img class="campaign-npc-portrait" src="campaign/npc-professor.png" alt="NPC" onerror="this.outerHTML=\'<div style=&quot;width:48px;height:48px;border-radius:50%;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;font-size:1.5rem;&quot;>&#129497;</div>\'">' +
-    '<div style="font-weight:700;font-size:0.88rem;">Professor Syntax</div>';
-  var html = '';
-  texts.forEach(function(p) { html += '<p>' + p + '</p>'; });
+  // Act-based card tinting
+  if (storyCard) {
+    storyCard.classList.remove('act-2', 'act-3');
+    var lvIdx = campaignState.currentLevel;
+    if (lvIdx >= 10) storyCard.classList.add('act-3');
+    else if (lvIdx >= 5) storyCard.classList.add('act-2');
+  }
+  // Location banner
+  var locationName = lv.location || (type === 'intro' ? 'Academy Gardens' : 'The Path Ahead');
+  var locationHtml = '<div class="campaign-story-location">\u{1F4CD} ' + locationName + '</div>';
+  // NPC portrait with enhanced styling
+  npcArea.innerHTML = '<img class="campaign-npc-portrait" src="campaign/npc-professor.png" alt="NPC" onerror="this.outerHTML=\'<div style=&quot;width:64px;height:64px;border-radius:50%;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;font-size:2rem;border:3px solid #fbbf24;box-shadow:0 0 12px rgba(251,191,36,0.25);&quot;>&#129497;</div>\'">' +
+    '<div><div class="campaign-npc-name">' + (lv.npcName || 'Professor Syntax') + '</div><div class="campaign-npc-title">' + (lv.npcTitle || 'Guardian of Grammar') + '</div></div>';
+  // Story paragraphs with staggered typewriter fade-in
+  var html = locationHtml;
+  texts.forEach(function(p, idx) { html += '<p class="story-paragraph" style="animation-delay:' + (0.1 + idx * 0.5) + 's;">' + p + '</p>'; });
   content.innerHTML = html;
   if (type === 'intro') {
-    btn.textContent = 'Begin Tasks';
+    btn.textContent = '\u2694\uFE0F Begin Tasks';
+    btn.className = 'btn campaign-story-btn-glow';
     btn.onclick = function() { advanceCampaignTask(); };
   } else {
-    btn.textContent = 'Continue';
+    btn.textContent = 'Continue \u27A1\uFE0F';
+    btn.className = 'btn campaign-story-btn-glow';
     btn.onclick = function() { showCampaignResults(); };
   }
   showScreen('campaign-story-screen');
@@ -10053,8 +10251,14 @@ function updateCampaignTaskProgress() {
   var lv = campaignLevels[campaignState.currentLevel];
   var total = (lv.tasks ? lv.tasks.length : 0) + (lv.reading ? 1 : 0) + (lv.boss ? 1 : 0);
   var current = campaignState.currentTaskIndex;
+  var pct = Math.round((current / total) * 100);
   document.getElementById('campaign-task-label').textContent = 'Task ' + Math.min(current+1, total) + '/' + total;
-  document.getElementById('campaign-task-progress-fill').style.width = Math.round((current / total) * 100) + '%';
+  var fill = document.getElementById('campaign-task-progress-fill');
+  fill.style.width = pct + '%';
+  // Gradient color based on progress: green -> gold -> red
+  if (pct > 75) fill.style.background = 'linear-gradient(90deg, #22c55e, #fbbf24)';
+  else if (pct > 40) fill.style.background = 'linear-gradient(90deg, #22c55e, #4ade80)';
+  else fill.style.background = 'linear-gradient(90deg, #4ade80, #86efac)';
   document.getElementById('campaign-task-xp').textContent = campaignState.levelXP + ' XP';
 }
 
@@ -10064,8 +10268,12 @@ function renderCampaignTask(taskIndex) {
   if (!task) return;
   updateCampaignTaskProgress();
   var header = document.getElementById('campaign-task-header');
-  header.innerHTML = '<div style="font-weight:700;font-size:0.95rem;">' + (task.name || 'Task') + '</div>' +
-    (task.context ? '<div class="campaign-task-context">' + task.context + '</div>' : '');
+  var taskNum = taskIndex + 1;
+  header.innerHTML = '<div class="campaign-task-header-card">' +
+    '<div class="campaign-task-badge">' + taskNum + '</div>' +
+    '<div><div style="font-weight:700;font-size:0.95rem;">' + (task.name || 'Task') + '</div>' +
+    (task.context ? '<div class="campaign-task-context" style="margin-bottom:0;">' + task.context + '</div>' : '') +
+    '</div></div>';
   showCompanionBar(false);
   showScreen('campaign-task-screen');
   if (task.type === 'vocab') renderCampaignVocabTask(task);
@@ -10089,9 +10297,10 @@ function showCompanionBar(isBoss) {
     var cls = 'campaign-companion';
     if (isBoss) cls += ' boss-locked';
     else if (charges <= 0) cls += ' disabled';
+    var badgeClass = 'charge-badge' + (charges === 1 && !isBoss ? ' last-charge' : '');
     html += '<div class="' + cls + '" onclick="' + (isBoss || charges <= 0 ? '' : 'useCompanionAbility(\'' + cid + '\')') + '">' +
       '<img src="' + (ch.image || '') + '" alt="' + ch.name + '" onerror="this.parentElement.innerHTML=\'&#129497;\'">' +
-      '<div class="charge-badge">' + charges + '</div>' +
+      '<div class="' + badgeClass + '">' + charges + '</div>' +
     '</div>';
   });
   bar.innerHTML = html;
@@ -10381,7 +10590,9 @@ function renderCampaignBoss(boss) {
   var header = document.getElementById('campaign-task-header');
   feedback.innerHTML = '';
   updateCampaignTaskProgress();
-  header.innerHTML = '<div class="campaign-boss-banner">' + (boss.name || 'BOSS CHALLENGE') + '</div>';
+  var totalItems = boss.items ? boss.items.length : 8;
+  header.innerHTML = '<div class="campaign-boss-banner">\u2694\uFE0F ' + (boss.name || 'BOSS CHALLENGE') + ' \u2694\uFE0F</div>' +
+    '<div class="boss-health-bar"><div class="boss-health-fill" id="boss-health-fill" style="width:100%;"></div><div class="boss-health-label" id="boss-health-label">' + totalItems + '/' + totalItems + '</div></div>';
   showCompanionBar(true);
   showScreen('campaign-task-screen');
   renderBossItem(boss);
@@ -10395,11 +10606,17 @@ function renderBossItem(boss) {
     advanceCampaignTask();
     return;
   }
+  // Update boss health bar
+  var remaining = items.length - bi;
+  var healthFill = document.getElementById('boss-health-fill');
+  var healthLabel = document.getElementById('boss-health-label');
+  if (healthFill) healthFill.style.width = Math.round((remaining / items.length) * 100) + '%';
+  if (healthLabel) healthLabel.textContent = remaining + '/' + items.length;
   var item = items[bi];
   var area = document.getElementById('campaign-exercise-area');
   var feedback = document.getElementById('campaign-feedback-area');
   feedback.innerHTML = '';
-  var html = '<div style="font-size:0.82rem;color:var(--muted);margin-bottom:0.3rem;">Item ' + (bi+1) + '/' + items.length + '</div>';
+  var html = '<div class="campaign-boss-item-bg"><div style="font-size:0.82rem;color:var(--muted);margin-bottom:0.3rem;">Item ' + (bi+1) + '/' + items.length + '</div>';
   if (item.type === 'mc' || item.type === 'gap-fill') {
     html += '<div style="font-size:0.9rem;margin-bottom:0.5rem;color:var(--text);">' + (item.prompt || item.sentence || '') + '</div>';
     var opts = shuffleArray(item.options ? item.options.slice() : [item.answer]);
@@ -10425,6 +10642,7 @@ function renderBossItem(boss) {
     });
     html += '</div>';
   }
+  html += '</div>'; // close campaign-boss-item-bg
   area.innerHTML = html;
   var bInput = document.getElementById('campaign-boss-input');
   if (bInput) bInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') submitBossTyped(); });
@@ -10469,10 +10687,26 @@ function submitBossTyped() {
 function showBossFeedback(result, correctAnswer, xp) {
   var feedback = document.getElementById('campaign-feedback-area');
   var cls = result.isCorrect ? 'correct' : (result.isClose ? 'close' : 'wrong');
-  var msg = result.isCorrect ? ('Correct! +' + xp + ' XP') : (result.isClose ? ('Almost! Answer: ' + correctAnswer) : ('Answer: ' + correctAnswer));
+  // Boss combo tracking
+  if (result.isCorrect) { campaignCombo++; } else { campaignCombo = 0; }
+  var comboHtml = '';
+  if (campaignCombo >= 2 && result.isCorrect) {
+    comboHtml = ' <span class="campaign-combo-counter">\u{1F525} ' + campaignCombo + 'x!</span>';
+  }
+  var msg = result.isCorrect ? ('\u2705 Correct! +' + xp + ' XP' + comboHtml) : (result.isClose ? ('\u{1F7E1} Almost! Answer: ' + correctAnswer) : ('\u274C Answer: ' + correctAnswer));
   feedback.innerHTML = '<div class="campaign-feedback ' + cls + '">' + msg + '</div>' +
     '<button class="btn" onclick="nextBossItem()" style="margin-top:0.5rem;width:100%;">Next</button>';
   document.getElementById('campaign-task-xp').textContent = campaignState.levelXP + ' XP';
+  // XP fly-up for boss
+  if (xp > 0) {
+    var flyUp = document.createElement('div');
+    flyUp.className = 'campaign-xp-fly';
+    flyUp.textContent = '+' + xp + ' XP';
+    flyUp.style.right = '1rem';
+    flyUp.style.top = '0.5rem';
+    var taskProgress = document.getElementById('campaign-task-progress');
+    if (taskProgress) { taskProgress.style.position = 'relative'; taskProgress.appendChild(flyUp); setTimeout(function() { flyUp.remove(); }, 1000); }
+  }
 }
 
 function nextBossItem() {
@@ -10523,14 +10757,41 @@ function levenshteinDist(a, b) {
   return matrix[b.length][a.length];
 }
 
+// --- COMBO TRACKER ---
+var campaignCombo = 0;
+
 // --- FEEDBACK & CONTINUE ---
 function showCampaignFeedback(result, correctAnswer, xp) {
   var feedback = document.getElementById('campaign-feedback-area');
   var cls = result.isCorrect ? 'correct' : (result.isClose ? 'close' : 'wrong');
-  var msg = result.isCorrect ? ('Correct! +' + xp + ' XP') : (result.isClose ? ('Close! The answer is: ' + correctAnswer) : ('The answer is: ' + correctAnswer));
+  // Track combo
+  if (result.isCorrect) {
+    campaignCombo++;
+  } else {
+    campaignCombo = 0;
+  }
+  var comboHtml = '';
+  if (campaignCombo >= 2 && result.isCorrect) {
+    comboHtml = ' <span class="campaign-combo-counter">\u{1F525} ' + campaignCombo + 'x Combo!</span>';
+  }
+  var msg = result.isCorrect ? ('\u2705 Correct! +' + xp + ' XP' + comboHtml) : (result.isClose ? ('\u{1F7E1} Close! The answer is: ' + correctAnswer) : ('\u274C The answer is: ' + correctAnswer));
   feedback.innerHTML = '<div class="campaign-feedback ' + cls + '">' + msg + '</div>' +
     '<button class="btn" onclick="nextCampaignItem()" style="margin-top:0.5rem;width:100%;">Next</button>';
   document.getElementById('campaign-task-xp').textContent = campaignState.levelXP + ' XP';
+  // XP fly-up animation
+  if (xp > 0) {
+    var flyUp = document.createElement('div');
+    flyUp.className = 'campaign-xp-fly';
+    flyUp.textContent = '+' + xp + ' XP';
+    flyUp.style.right = '1rem';
+    flyUp.style.top = '0.5rem';
+    var taskProgress = document.getElementById('campaign-task-progress');
+    if (taskProgress) {
+      taskProgress.style.position = 'relative';
+      taskProgress.appendChild(flyUp);
+      setTimeout(function() { flyUp.remove(); }, 1000);
+    }
+  }
 }
 
 function nextCampaignItem() {
@@ -10640,23 +10901,43 @@ function completeCampaignLevel() {
 function showCampaignResults() {
   var lv = campaignLevels[campaignState.currentLevel];
   var stars = campaignState.earnedStars || 0;
-  // Stars display with animation
+  // Level Complete banner - re-trigger animation
+  var banner = document.getElementById('campaign-results-banner');
+  if (banner) {
+    banner.style.animation = 'none';
+    banner.offsetHeight; // force reflow
+    banner.style.animation = '';
+  }
+  // Stars display with staggered animation (0.5s delay each)
   var starsHtml = '';
   for (var i = 0; i < 3; i++) {
-    if (i < stars) starsHtml += '<div class="campaign-star fill-anim" style="animation-delay:' + (i * 0.3) + 's;">&#11088;</div>';
+    if (i < stars) starsHtml += '<div class="campaign-star fill-anim" style="animation-delay:' + (0.3 + i * 0.5) + 's;">&#11088;</div>';
     else starsHtml += '<div class="campaign-star">&#9734;</div>';
   }
   document.getElementById('campaign-results-stars').innerHTML = starsHtml;
-  // XP breakdown
+  // XP breakdown with slide-in stagger
   var breakdown = '';
-  breakdown += '<div class="campaign-xp-row"><span>Vocab Tasks</span><span>+' + campaignState.vocabXP + ' XP</span></div>';
-  breakdown += '<div class="campaign-xp-row"><span>Grammar Tasks</span><span>+' + campaignState.grammarXP + ' XP</span></div>';
-  breakdown += '<div class="campaign-xp-row"><span>Reading</span><span>+' + campaignState.readingXP + ' XP</span></div>';
-  breakdown += '<div class="campaign-xp-row"><span>Boss Challenge</span><span>+' + campaignState.bossXP + ' XP</span></div>';
-  breakdown += '<div class="campaign-xp-row"><span>Level Complete</span><span>+50 XP</span></div>';
-  if (campaignState.bonusXP > 0) breakdown += '<div class="campaign-xp-row"><span>No-Assist Bonus</span><span>+' + campaignState.bonusXP + ' XP</span></div>';
-  breakdown += '<div class="campaign-xp-row"><span>Total</span><span>' + campaignState.levelXP + ' XP</span></div>';
+  breakdown += '<div class="campaign-xp-row"><span>\u{1F4DA} Vocab Tasks</span><span>+' + campaignState.vocabXP + ' XP</span></div>';
+  breakdown += '<div class="campaign-xp-row"><span>\u{1F4DD} Grammar Tasks</span><span>+' + campaignState.grammarXP + ' XP</span></div>';
+  breakdown += '<div class="campaign-xp-row"><span>\u{1F4D6} Reading</span><span>+' + campaignState.readingXP + ' XP</span></div>';
+  breakdown += '<div class="campaign-xp-row"><span>\u2694\uFE0F Boss Challenge</span><span>+' + campaignState.bossXP + ' XP</span></div>';
+  breakdown += '<div class="campaign-xp-row"><span>\u2705 Level Complete</span><span>+50 XP</span></div>';
+  if (campaignState.bonusXP > 0) breakdown += '<div class="campaign-xp-row"><span>\u{1F48E} No-Assist Bonus</span><span>+' + campaignState.bonusXP + ' XP</span></div>';
+  breakdown += '<div class="campaign-xp-row"><span>\u2728 Total</span><span id="campaign-total-xp-counter">' + campaignState.levelXP + ' XP</span></div>';
   document.getElementById('campaign-xp-breakdown').innerHTML = breakdown;
+  // Animate XP counter (count up from 0)
+  var totalEl = document.getElementById('campaign-total-xp-counter');
+  if (totalEl) {
+    var targetXP = campaignState.levelXP;
+    var currentXP = 0;
+    var counterDelay = setTimeout(function() {
+      var counterInterval = setInterval(function() {
+        currentXP += Math.max(1, Math.ceil(targetXP / 30));
+        if (currentXP >= targetXP) { currentXP = targetXP; clearInterval(counterInterval); }
+        totalEl.textContent = currentXP + ' XP';
+      }, 40);
+    }, 1600);
+  }
   // Character unlock
   var unlockArea = document.getElementById('campaign-unlock-area');
   unlockArea.innerHTML = '';
@@ -10741,9 +11022,13 @@ function showCharacterLibrary() {
   var html = '';
   chars.forEach(function(ch) {
     var isUnlocked = unlocked.indexOf(ch.id) !== -1;
-    html += '<div class="character-lib-item' + (isUnlocked ? '' : ' locked') + '" onclick="' + (isUnlocked ? 'showCharDetail(\'' + ch.id + '\')' : '') + '">' +
-      '<img src="' + (ch.image || '') + '" alt="' + ch.name + '" onerror="this.outerHTML=\'<div style=&quot;width:48px;height:48px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:1.3rem;&quot;>' + (isUnlocked ? '&#129497;' : '&#128274;') + '</div>\'">' +
-      '<div class="char-name">' + (isUnlocked ? ch.name : 'Level ' + ch.levelUnlock) + '</div>' +
+    var rarity = ch.rarity || 'common';
+    var rarityLabel = rarity.charAt(0).toUpperCase() + rarity.slice(1);
+    var rarityClass = 'rarity-' + rarity;
+    html += '<div class="character-lib-item ' + rarityClass + (isUnlocked ? '' : ' locked') + '" onclick="' + (isUnlocked ? 'showCharDetail(\'' + ch.id + '\')' : '') + '">' +
+      '<span class="rarity-badge">' + rarityLabel + '</span>' +
+      '<img src="' + (ch.image || '') + '" alt="' + ch.name + '" onerror="this.outerHTML=\'<div style=&quot;width:52px;height:52px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:1.4rem;&quot;>' + (isUnlocked ? '&#129497;' : '&#10067;') + '</div>\'">' +
+      '<div class="char-name">' + (isUnlocked ? ch.name : 'Level ' + (ch.levelUnlock || '?')) + '</div>' +
     '</div>';
   });
   grid.innerHTML = html || '<div style="color:var(--muted);text-align:center;padding:2rem;grid-column:1/-1;">Complete campaign levels to discover companions!</div>';
