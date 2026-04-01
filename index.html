@@ -17,15 +17,15 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
 :root, [data-theme="light"] {
-  --bg: #f0fdf4;
-  --bg2: #dcfce7;
+  --bg: #eefbf2;
+  --bg2: #d8f5e1;
   --card: #ffffff;
-  --card-border: rgba(22,163,74,0.15);
-  --card-hover: #f7fdf9;
+  --card-border: rgba(22,163,74,0.16);
+  --card-hover: #f4fcf6;
   --card-solid: #ffffff;
   --text: #14532d;
-  --text-secondary: #365a3e;
-  --muted: #4d7a5e;
+  --text-secondary: #2d4e36;
+  --muted: #5a8068;
   --accent: #16a34a;
   --accent-light: #22c55e;
   --accent-glow: rgba(22,163,74,0.15);
@@ -40,19 +40,19 @@
   --def-color: #15803d;
   --trans-color: #0d9488;
   --radius: 16px; --radius-lg: 24px;
-  --shadow-card: 0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.08);
-  --shadow-elevated: 0 6px 20px rgba(0,0,0,0.12);
+  --shadow-card: 0 2px 8px rgba(20,100,50,0.07), 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-elevated: 0 6px 20px rgba(20,100,50,0.12);
 }
 [data-theme="dark"] {
-  --bg: #0b1120;
-  --bg2: #111827;
-  --card: rgba(255,255,255,0.045);
-  --card-border: rgba(255,255,255,0.08);
-  --card-hover: rgba(255,255,255,0.07);
-  --card-solid: #162033;
-  --text: #eef0f6;
-  --text-secondary: #a8b4c8;
-  --muted: #8899b0;
+  --bg: #0a0f10;
+  --bg2: #101a14;
+  --card: rgba(140,255,180,0.06);
+  --card-border: rgba(100,220,140,0.14);
+  --card-hover: rgba(140,255,180,0.09);
+  --card-solid: #142218;
+  --text: #edf2ee;
+  --text-secondary: #b4ccba;
+  --muted: #7a9a82;
   --accent: #22c55e;
   --accent-light: #4ade80;
   --accent-glow: rgba(34,197,94,0.25);
@@ -66,8 +66,8 @@
   --context-color: #2dd4bf;
   --def-color: #4ade80;
   --trans-color: #2dd4bf;
-  --shadow-card: 0 2px 16px rgba(0,0,0,0.3), 0 0 0 1px rgba(34,197,94,0.06);
-  --shadow-elevated: 0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(34,197,94,0.1);
+  --shadow-card: 0 2px 16px rgba(0,0,0,0.35), 0 0 0 1px rgba(34,197,94,0.10);
+  --shadow-elevated: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(34,197,94,0.14);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html { overscroll-behavior: none; scroll-behavior: smooth; }
@@ -87,9 +87,9 @@ body {
 }
 [data-theme="dark"] body {
   background-image:
-    radial-gradient(ellipse 100% 60% at 50% -30%, rgba(22,163,74,0.18), transparent 70%),
-    radial-gradient(ellipse 80% 50% at 100% 100%, rgba(34,197,94,0.08), transparent 70%),
-    radial-gradient(ellipse 50% 40% at 0% 80%, rgba(245,158,11,0.05), transparent);
+    radial-gradient(ellipse 100% 60% at 50% -30%, rgba(20,140,60,0.18), transparent 70%),
+    radial-gradient(ellipse 80% 50% at 100% 100%, rgba(34,197,94,0.06), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 0% 80%, rgba(40,160,80,0.04), transparent);
   background-attachment: fixed;
 }
 
@@ -541,13 +541,16 @@ h1 { display: none; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ===== LIGHT MODE COMPONENT OVERRIDES ===== */
-[data-theme="light"] .header-tagline { color: rgba(0,0,0,0.32); }
+[data-theme="light"] .header-tagline { color: rgba(20,80,40,0.4); }
 [data-theme="light"] .header-grade { color: var(--accent); }
-[data-theme="light"] .header-school { color: rgba(0,0,0,0.28); }
+[data-theme="light"] .header-school { color: rgba(20,80,40,0.32); }
 [data-theme="light"] .btn-secondary { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); color: var(--text-secondary); }
 [data-theme="light"] .btn-secondary:hover { background: rgba(0,0,0,0.07); color: var(--text); border-color: rgba(0,0,0,0.15); }
-[data-theme="light"] .today-card { background: rgba(22,163,74,0.05); border-color: rgba(22,163,74,0.12); }
-[data-theme="light"] #weekly-goal-card { background: var(--accent-glow); border-color: var(--card-border); }
+[data-theme="light"] .today-card { background: rgba(22,163,74,0.06); border-color: rgba(22,163,74,0.15); }
+[data-theme="light"] #weekly-goal-card { background: rgba(22,163,74,0.06); border: 1.5px solid rgba(22,163,74,0.15); }
+[data-theme="light"] .stat-value { color: var(--accent) !important; }
+[data-theme="light"] .profile-xp-track { background: rgba(22,163,74,0.14); }
+[data-theme="light"] .profile-name .class-tag { background: rgba(22,163,74,0.08); color: var(--accent); }
 [data-theme="light"] .badge-icon { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); }
 [data-theme="light"] .avatar { background: rgba(0,0,0,0.06); }
 [data-theme="light"] .source-btn { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); }
@@ -1956,11 +1959,11 @@ body.playing .header-container { display: none; }
   </div>
 
   <div id="weekly-goal-card" style="display:none;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-      <span style="font-weight:800;font-size:0.85rem;color:var(--accent);">🎯 Weekly Class Goal</span>
-      <span id="weekly-goal-label" style="font-size:0.68rem;color:var(--muted);"></span>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:12px;">
+      <span style="font-weight:800;font-size:0.85rem;color:var(--accent);white-space:nowrap;">🎯 Weekly Class Goal</span>
+      <span id="weekly-goal-label" style="font-size:0.68rem;color:var(--muted);white-space:nowrap;"></span>
     </div>
-    <div style="height:10px;background:rgba(255,255,255,0.08);border-radius:5px;overflow:hidden;margin-bottom:4px;">
+    <div style="height:10px;background:var(--card-border);border-radius:5px;overflow:hidden;margin-bottom:4px;">
       <div id="weekly-goal-fill" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-light));border-radius:5px;transition:width 0.6s ease;width:0%;"></div>
     </div>
     <div id="weekly-goal-text" style="font-size:0.75rem;color:var(--text-secondary);text-align:center;"></div>
