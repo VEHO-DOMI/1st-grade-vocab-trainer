@@ -11249,749 +11249,750 @@ grammarItems = [{"id":"m1-u1-plurals-gf-001","sid":"m1-u1-plurals","u":1,"t":"ga
 
 // === CAMPAIGN DATA BLOCK ===
 campaignLevels = [
-{levelId:"L01",levelName:"The Portal in the Classroom",unitNumber:1,actNumber:1,locked:false,grammarFocus:["Plurals","Imperatives","Numbers"],
-storyIntro:["The numbers on the board start to move. They spin and glow.","A golden door opens in the wall. You step through it.","A tall man smiles at you. He has a big book in his hands.","'Welcome to Syntaxia!' he says. 'I am Professor Syntax. I need your help.'"],
-storyOutro:["You hold the Page of Naming. It glows in your hand.","'Well done!' says Professor Syntax. 'The first page is safe.'","A new path lights up on the map. You can see animals in the distance.","'The Whispering Menagerie is next. Be ready!'"],
+{levelId:'L01',levelName:'The Portal in the Classroom',unitNumber:1,actNumber:1,locked:false,grammarFocus:['Plurals','Imperatives','Numbers'],
+storyIntro:['Welcome to the Magical Academy! I am Penny the Pencil.','You are a new student today. This is the classroom.','Oh no! The Spell Pages are lost! These five pages have our magic words.','Without them, the Academy cannot teach. Will you help me find them?'],
+storyOutro:['Brilliant! The Page of Naming is back!','The first page glows bright in your hand.','Professor Syntax nods. One down, four to go.','A new path lights up. The zoo is next!'],
 tasks:[
-{name:"Classroom Objects",type:"vocab",context:"Match the school objects to their pictures.",xpEach:5,items:[
-{prompt:"A flat surface on the wall. The teacher writes on it.",answer:"board",options:["board","desk","clock","pencil"]},
-{prompt:"You write with this. It is long and thin.",answer:"pencil",options:["pencil","eraser","bell","book"]},
-{prompt:"You use this to remove mistakes.",answer:"eraser",options:["eraser","board","projector","pencil"]},
-{prompt:"You read these. They have many pages.",answer:"books",options:["books","desks","clocks","bells"]},
-{prompt:"You sit at this. It is in front of you.",answer:"desk",options:["desk","board","clock","projector"]},
-{prompt:"It shows the time on the wall.",answer:"clock",options:["clock","bell","board","eraser"]},
-{prompt:"It rings at the end of the lesson.",answer:"bell",options:["bell","clock","projector","desk"]},
-{prompt:"It shows pictures on the wall. It uses light.",answer:"projector",options:["projector","board","book","clock"]}
+{name:'School Objects',type:'vocab',context:'Match the school objects to their descriptions.',xpEach:5,items:[
+{prompt:'A flat surface on the wall. The teacher writes on it.',answer:'board',options:['board','desk','clock','pencil']},
+{prompt:'A device with a screen. You can type and read on it.',answer:'tablet',options:['tablet','projector','eraser','ruler']},
+{prompt:'You can see through it. It lets light into the room.',answer:'window',options:['window','board','door','clock']},
+{prompt:'You carry your books and pencils in this.',answer:'school bag',options:['school bag','pencil case','desk','shelf']},
+{prompt:'Two sharp blades. You use them to cut paper.',answer:'scissors',options:['scissors','ruler','eraser','pencil']},
+{prompt:'A straight tool for measuring and drawing lines.',answer:'ruler',options:['ruler','pencil','scissors','board']},
+{prompt:'You use this to remove pencil mistakes.',answer:'eraser',options:['eraser','ruler','scissors','board']},
+{prompt:'It shows pictures on the wall using light.',answer:'projector',options:['projector','tablet','window','board']}
 ]},
-{name:"Plural Power",type:"gap-fill",context:"Make the plural forms.",xpEach:10,items:[
-{sentence:"I have three ___ in my bag. (apple)",answer:"apples",options:["apples","apple","applees","appleies"]},
-{sentence:"There are two ___ on the table. (box)",answer:"boxes",options:["boxes","boxs","boxies","box"]},
-{sentence:"We need four ___ for the soup. (spoon)",answer:"spoons",options:["spoons","spoones","spoonies","spoon"]},
-{sentence:"She picks ___ in the garden. (berry)",answer:"berries",options:["berries","berrys","berryes","berry"]},
-{sentence:"Cut it into small ___. (piece)",answer:"pieces",options:["pieces","piecees","pieceies","piece"]},
-{sentence:"The dentist checks my ___. (tooth)",answer:"teeth",options:["teeth","tooths","toothes","tooth"]}
+{name:'Plural Power',type:'gap-fill',context:'Make the plural forms.',xpEach:10,items:[
+{sentence:'I have three ___ in my bag. (pencil)',answer:'pencils',options:['pencils','penciles','pencilies','pencil']},
+{sentence:'The ___ are funny. (monkey)',answer:'monkeys',options:['monkeys','monkies','monkeyes','monkey']},
+{sentence:'The ___ are playing in the park. (child)',answer:'children',options:['children','childs','childes','childrens']},
+{sentence:'My ___ hurt after running. (foot)',answer:'feet',options:['feet','foots','footes','feets']},
+{sentence:'Cut it into small ___. (piece)',answer:'pieces',options:['pieces','piecees','pieceies','piece']},
+{sentence:'The dentist checks my ___. (tooth)',answer:'teeth',options:['teeth','tooths','toothes','tooth']}
 ]},
-{name:"Give Commands!",type:"transform",context:"Write the imperative form.",xpEach:10,items:[
-{prompt:"Tell someone to close the window.",base:"(close / window)",answer:"Close the window.",alts:["Close the window","Close the window!"]},
-{prompt:"Tell the class to be quiet.",base:"(be / quiet)",answer:"Be quiet.",alts:["Be quiet","Be quiet!"]},
-{prompt:"Tell a friend to listen.",base:"(listen)",answer:"Listen.",alts:["Listen","Listen!"]},
-{prompt:"Ask someone to help you.",base:"(help / me)",answer:"Help me.",alts:["Help me","Help me!","Help me, please.","Help me, please"]},
-{prompt:"Tell a student to sit down.",base:"(sit down)",answer:"Sit down.",alts:["Sit down","Sit down!","Sit down, please.","Sit down, please"]}
+{name:'Give Commands!',type:'transform',context:'Write the imperative form.',xpEach:10,items:[
+{prompt:'Tell someone to open the door.',base:'(open / door)',answer:'Open the door.',alts:['Open the door','Open the door!']},
+{prompt:'Tell a friend not to talk.',base:'(not / talk)',answer:"Don't talk.",alts:["Don't talk","Don't talk!","Do not talk.","Do not talk"]},
+{prompt:'Tell the class to look at the board.',base:'(look / board)',answer:'Look at the board.',alts:['Look at the board','Look at the board!']},
+{prompt:'Tell someone not to run.',base:'(not / run)',answer:"Don't run.",alts:["Don't run","Don't run!","Do not run.","Do not run"]},
+{prompt:'Tell a student to sit down.',base:'(sit down)',answer:'Sit down.',alts:['Sit down','Sit down!','Sit down, please.','Sit down, please']},
+{prompt:'Tell someone to close the window.',base:'(close / window)',answer:'Close the window.',alts:['Close the window','Close the window!']}
 ]}
 ],
-reading:{title:"Professor Syntax's Welcome Letter",passage:"Dear new student, welcome to Syntaxia! My name is Professor Syntax. I am a teacher here. There are many rooms in this school. You can find books, maps, and games. The rules are simple: be kind, listen, and try your best. Every day we learn new words. I am happy you are here. Let us start!",questions:[
-{question:"Who writes the letter?",type:"mc",answer:"Professor Syntax",options:["Professor Syntax","The Page Keeper","A student","Rex"]},
-{question:"Syntaxia is a shop.",type:"tf",answer:"False",alts:["false"]},
-{question:"What can you find in the school? (name one thing)",type:"short",answer:"books",alts:["maps","games","books, maps, and games"]},
-{question:"The rules say: be kind, listen, and ___.",type:"mc",answer:"try your best",options:["try your best","run fast","be loud","go home"]},
-{question:"The professor is happy.",type:"tf",answer:"True",alts:["true"]}
+reading:{title:"Professor Syntax's Welcome Letter",passage:'Dear new student, welcome to the Academy! My name is Professor Syntax. I am a teacher here. There are many rooms in this school. You can find books, maps, and games. We have fifteen units to learn. The rules are simple: be kind, listen, and try your best. Every day we learn new words. I am happy you are here. Let us start our adventure!',questions:[
+{question:'Who writes the letter?',type:'mc',answer:'Professor Syntax',options:['Professor Syntax','Penny the Pencil','A student','Rex']},
+{question:'What can you find in the school?',type:'mc',answer:'Books, maps, and games',options:['Books, maps, and games','Only books','Only games','Nothing']},
+{question:'How many units are there to learn?',type:'mc',answer:'Fifteen',options:['Fifteen','Five','Ten','Twenty']},
+{question:'The rules say: be kind, listen, and ___.',type:'mc',answer:'try your best',options:['try your best','run fast','be loud','go home']},
+{question:'The professor is happy the student is here.',type:'mc',answer:'True',options:['True','False','The letter does not say','Maybe']}
 ]},
-boss:{name:"The Page Keeper",items:[
-{type:"mc",prompt:"What is the plural of 'child'?",answer:"children",options:["children","childs","childes","childrens"]},
-{type:"mc",prompt:"What is the plural of 'box'?",answer:"boxes",options:["boxes","boxs","boxies","box"]},
-{type:"mc",prompt:"Choose the correct imperative: ___ the door, please.",answer:"Open",options:["Open","Opens","Opening","Opened"]},
-{type:"mc",prompt:"What is the plural of 'baby'?",answer:"babies",options:["babies","babys","babyes","babiess"]},
-{type:"transform",prompt:"Tell someone to stand up.",base:"(stand up)",answer:"Stand up.",alts:["Stand up","Stand up!"]},
-{type:"mc",prompt:"There are twenty ___. (pen)",answer:"pens",options:["pens","penes","penies","pen"]},
-{type:"mc",prompt:"Choose the imperative: ___ to me!",answer:"Listen",options:["Listen","Listens","Listening","Listened"]},
-{type:"mc",prompt:"What is the plural of 'foot'?",answer:"feet",options:["feet","foots","footes","feets"]}
+boss:{name:'The Page Keeper',items:[
+{type:'mc',prompt:"What is the plural of 'child'?",answer:'children',options:['children','childs','childes','childrens']},
+{type:'mc',prompt:"What is the plural of 'foot'?",answer:'feet',options:['feet','foots','footes','feets']},
+{type:'mc',prompt:'Choose the correct imperative: ___ the door, please.',answer:'Open',options:['Open','Opens','Opening','Opened']},
+{type:'mc',prompt:"What is the plural of 'tooth'?",answer:'teeth',options:['teeth','tooths','toothes','teeths']},
+{type:'transform',prompt:'Tell someone to stand up.',base:'(stand up)',answer:'Stand up.',alts:['Stand up','Stand up!']},
+{type:'mc',prompt:"Don't ___ in the classroom!",answer:'run',options:['run','runs','running','ran']},
+{type:'mc',prompt:"What is the short form of 'do not'?",answer:"don't",options:["don't","dont","do'nt","doesn't"]},
+{type:'mc',prompt:"What is the plural of 'piece'?",answer:'pieces',options:['pieces','piecees','pieceies','piece']}
 ]},
-characterUnlock:"penny-pencil",comicImage:"campaign/comic-L01.png",maxTotalXP:450,starThresholds:{one:225,two:338,three:405}
+characterUnlock:'penny-pencil',comicImage:'campaign/comic-L01.png',maxTotalXP:330,starThresholds:{one:60,two:85,three:120}
 },
-{levelId:"L02",levelName:"The Whispering Menagerie",unitNumber:2,actNumber:1,locked:false,grammarFocus:["To be","Prepositions","There is/are"],
-storyIntro:["You walk through a big gate. There are animal sounds everywhere.","The animals are in the wrong places! A penguin is on a tree.","A big dog runs to you. He has a red scarf.","'Woof! I am Rex. I can help you find the right places!'"],
-storyOutro:["All the animals are in the right places now. The zoo is happy.","You find the Page of Being in a bird cage. It shines blue.","Rex barks and wags his tail. 'Great job, friend!'","There is a bottle on the ground. Inside is a message from a pirate."],
+{levelId:'L02',levelName:'The Whispering Menagerie',unitNumber:2,actNumber:1,locked:false,grammarFocus:['To be','Prepositions','There is/are'],
+storyIntro:['Welcome to the Whispering Menagerie! I am Rex the Word-Hound.','The animals are everywhere! But something is wrong here.','The giraffe is under the bridge. The penguins are in the tree!','You must use the spell of being. Say where each animal is!'],
+storyOutro:['You did it! The zoo is fixed!','The Page of Being has returned!','All the animals are home now. Rex is your best friend.','Two pages down. Three to go!'],
 tasks:[
-{name:"Animal Descriptions",type:"vocab",context:"Match each animal to its description.",xpEach:5,items:[
-{prompt:"It is very tall. It has a long neck.",answer:"giraffe",options:["giraffe","penguin","lion","frog"]},
-{prompt:"It is black and white. It lives in cold places.",answer:"penguin",options:["penguin","parrot","monkey","giraffe"]},
-{prompt:"It is big and strong. It is the king of animals.",answer:"lion",options:["lion","frog","giraffe","penguin"]},
-{prompt:"It is green and red. It can talk!",answer:"parrot",options:["parrot","frog","monkey","lion"]},
-{prompt:"It climbs trees. It likes bananas.",answer:"monkey",options:["monkey","parrot","penguin","giraffe"]},
-{prompt:"It is small and green. It jumps a lot.",answer:"frog",options:["frog","lion","parrot","monkey"]}
+{name:'Animal Descriptions',type:'vocab',context:'Match each animal to its description.',xpEach:5,items:[
+{prompt:'It is very tall. It has a long neck.',answer:'giraffe',options:['giraffe','penguin','lion','frog']},
+{prompt:'It is colourful and can talk!',answer:'parrot',options:['parrot','frog','monkey','lion']},
+{prompt:'They climb trees and like bananas.',answer:'monkeys',options:['monkeys','parrots','penguins','giraffes']},
+{prompt:'They are black and white. They live in cold places.',answer:'penguins',options:['penguins','parrots','monkeys','frogs']},
+{prompt:'It is big and strong. It is the king of animals.',answer:'lion',options:['lion','frog','giraffe','penguin']},
+{prompt:'It is small and green. It jumps a lot.',answer:'frog',options:['frog','lion','parrot','monkey']}
 ]},
-{name:"To Be or Not To Be",type:"gap-fill",context:"Choose the correct form of 'to be'.",xpEach:10,items:[
-{sentence:"I ___ a student at this school.",answer:"am",options:["am","is","are","be"]},
-{sentence:"She ___ from Austria.",answer:"is",options:["is","am","are","be"]},
-{sentence:"We ___ in the classroom now.",answer:"are",options:["are","is","am","be"]},
-{sentence:"The dog ___ very friendly.",answer:"is",options:["is","am","are","be"]},
-{sentence:"They ___ my best friends.",answer:"are",options:["are","is","am","be"]},
-{sentence:"You ___ very clever!",answer:"are",options:["are","is","am","be"]},
-{sentence:"It ___ a beautiful day today.",answer:"is",options:["is","am","are","be"]}
+{name:'To Be or Not To Be',type:'gap-fill',context:"Choose the correct form of 'to be'.",xpEach:10,items:[
+{sentence:'The giraffe ___ very tall.',answer:'is',options:['is','are','am']},
+{sentence:'The penguins ___ in the tree!',answer:'are',options:['is','are','am']},
+{sentence:'I ___ a new student at the zoo.',answer:'am',options:['is','are','am']},
+{sentence:'The lion ___ behind the rock.',answer:'is',options:['is','are','am']},
+{sentence:'The monkeys ___ on the climbing frame.',answer:'are',options:['is','are','am']},
+{sentence:'Rex ___ a friendly dog.',answer:'is',options:['is','are','am']},
+{sentence:'You ___ very good with animals!',answer:'are',options:['is','are','am']}
 ]},
-{name:"Where Is It?",type:"mc",context:"Choose the correct preposition or phrase.",xpEach:10,items:[
-{prompt:"The cat is ___ the box. (inside the box)",answer:"in",options:["in","on","under","next to"]},
-{prompt:"The book is ___ the table.",answer:"on",options:["on","in","behind","under"]},
-{prompt:"The dog is ___ the sofa. (not visible, below it)",answer:"under",options:["under","on","in","next to"]},
-{prompt:"The teacher is ___ the board. (at the back, not visible from front)",answer:"behind",options:["behind","in","on","under"]},
-{prompt:"The lamp is ___ the bed.",answer:"next to",options:["next to","in","under","behind"]},
-{prompt:"There ___ three cats in the garden.",answer:"are",options:["are","is","am","be"]}
+{name:'Where Is It?',type:'mc',context:'Choose the correct preposition or phrase.',xpEach:10,items:[
+{prompt:'The cat is ___ the box. (inside)',answer:'in',options:['in','on','under','next to']},
+{prompt:'The book is ___ the table. (on top)',answer:'on',options:['on','in','behind','under']},
+{prompt:'The dog is ___ the sofa. (below)',answer:'under',options:['under','on','in','next to']},
+{prompt:'There ___ a giraffe behind the tree.',answer:'is',options:['is','are','am','be']},
+{prompt:'There ___ three penguins next to the pool.',answer:'are',options:['are','is','am','be']},
+{prompt:'The frog is ___ the pond. (inside the water)',answer:'in',options:['in','on','under','behind']}
 ]}
 ],
-reading:{title:"Rex's Zoo Guide",passage:"Welcome to the Syntaxia Zoo! There are many animals here. The lions are in a big space with rocks. The penguins are next to the pool. There is a tall giraffe behind the tree. The monkeys are on the climbing frame. The parrots are in a colourful cage. And the frogs? They are under the big leaves near the pond. Come and see them all!",questions:[
-{question:"Where are the lions?",type:"mc",answer:"In a big space with rocks",options:["In a big space with rocks","Next to the pool","Behind the tree","Under the leaves"]},
-{question:"The penguins are next to the pool.",type:"tf",answer:"True",alts:["true"]},
-{question:"Where is the giraffe?",type:"short",answer:"behind the tree",alts:["Behind the tree","behind a tree"]},
-{question:"The monkeys are under the leaves.",type:"tf",answer:"False",alts:["false"]},
-{question:"Where are the frogs?",type:"mc",answer:"Under the big leaves",options:["Under the big leaves","On the climbing frame","In the cage","Next to the pool"]}
+reading:{title:"Rex's Zoo Guide",passage:'Welcome to the Whispering Menagerie! There are many animals here. The lions are in a big space with rocks. The penguins are next to the pool. There is a tall giraffe behind the tree. The monkeys are on the climbing frame. The parrots are in a colourful cage. And the frogs? They are under the big leaves near the pond. Come and see them all!',questions:[
+{question:'Where are the lions?',type:'mc',answer:'In a big space with rocks',options:['In a big space with rocks','Next to the pool','Behind the tree','Under the leaves']},
+{question:'The penguins are next to the pool.',type:'tf',answer:'True',alts:['true']},
+{question:'Where is the giraffe?',type:'short',answer:'behind the tree',alts:['Behind the tree','behind a tree']},
+{question:'The monkeys are under the leaves.',type:'tf',answer:'False',alts:['false']},
+{question:'Where are the frogs?',type:'mc',answer:'Under the big leaves',options:['Under the big leaves','On the climbing frame','In the cage','Next to the pool']}
 ]},
 boss:{name:"The Zoo Keeper's Test",items:[
-{type:"mc",prompt:"The cat ___ on the chair.",answer:"is",options:["is","am","are","be"]},
-{type:"mc",prompt:"There ___ two dogs in the park.",answer:"are",options:["are","is","am","be"]},
-{type:"mc",prompt:"The ball is ___ the table. (below it)",answer:"under",options:["under","on","in","behind"]},
-{type:"mc",prompt:"I ___ ten years old.",answer:"am",options:["am","is","are","be"]},
-{type:"mc",prompt:"There ___ a book on the desk.",answer:"is",options:["is","are","am","be"]},
-{type:"mc",prompt:"The cat is ___ the door. (you cannot see the cat from the front)",answer:"behind",options:["behind","on","in","next to"]},
-{type:"mc",prompt:"We ___ happy today!",answer:"are",options:["are","is","am","be"]},
-{type:"mc",prompt:"The pen is ___ the pencil case.",answer:"in",options:["in","on","under","behind"]}
+{type:'mc',prompt:'The cat ___ on the chair.',answer:'is',options:['is','am','are','be']},
+{type:'mc',prompt:'There ___ two dogs in the park.',answer:'are',options:['are','is','am','be']},
+{type:'mc',prompt:'The ball is ___ the table. (below)',answer:'under',options:['under','on','in','behind']},
+{type:'mc',prompt:'I ___ ten years old.',answer:'am',options:['am','is','are','be']},
+{type:'mc',prompt:'There ___ a book on the desk.',answer:'is',options:['is','are','am','be']},
+{type:'mc',prompt:'The frog is ___ the pond.',answer:'in',options:['in','on','under','behind']},
+{type:'mc',prompt:'We ___ happy today!',answer:'are',options:['are','is','am','be']},
+{type:'mc',prompt:'The pen is ___ the pencil case.',answer:'in',options:['in','on','under','behind']}
 ]},
-characterUnlock:"rex-word-hound",comicImage:"campaign/comic-L02.png",maxTotalXP:450,starThresholds:{one:225,two:338,three:405}
+characterUnlock:'rex-word-hound',comicImage:'campaign/comic-L02.png',maxTotalXP:330,starThresholds:{one:75,two:110,three:155}
 },
-{levelId:"L03",levelName:"The Sea of Sentences",unitNumber:3,actNumber:1,grammarFocus:["have got/has got","Possessive 's"],
-storyIntro:["You sail on a ship made of paper. The sea is made of blue words.","A dark pirate ship appears. A girl with a toy sword waves at you.","'I am Dana!' she shouts. 'Captain Greybeard has got the next page!'","'We need to get it back. Are you ready?'"],
-storyOutro:["Captain Greybeard gives you the page. He smiles.","'Three pages!' says Dana. 'We are doing well!'","A bottle floats to the ship. Inside is a note.","'Help! The feelings are all wrong! Come to the islands!'"],
+{levelId:'L03',levelName:'The Sea of Sentences',unitNumber:3,actNumber:1,grammarFocus:['have got/has got',"Possessive 's"],
+storyIntro:['Ahoy! Welcome to my ship! I am Dana the Dreamer.','This is the book-ship Pages. We sail the Sea of Sentences.','Captain Greybeard has got the next page! Our treasure is lost!','You must help us find it. Can you use the spell of possession?'],
+storyOutro:['You did it! The treasure is found!','The Page of Possession is safe!','Dana and her crew are so happy. Three pages now!','A bottle floats to the ship. The feelings are all wrong on the islands!'],
 tasks:[
-{name:"Pirate Words",type:"vocab",context:"Match each pirate word to its description.",xpEach:5,items:[
-{prompt:"Long hair on the face. Pirates often have a big one.",answer:"beard",options:["beard","fingers","leg","ears"]},
-{prompt:"You have ten of these on your hands.",answer:"fingers",options:["fingers","ears","arms","leg"]},
-{prompt:"You stand on these. You have two.",answer:"leg",options:["leg","beard","arms","eyes"]},
-{prompt:"You see with these. You have two.",answer:"eyes",options:["eyes","ears","fingers","beard"]},
-{prompt:"You hear with these. They are on the side of your head.",answer:"ears",options:["ears","eyes","arms","leg"]},
-{prompt:"You have two. They are long. You use them to hold things.",answer:"arms",options:["arms","fingers","beard","ears"]}
+{name:'Pirate Words',type:'vocab',context:'Match each pirate word to its description.',xpEach:5,items:[
+{prompt:'A wooden leg that a pirate walks on.',answer:'peg leg',options:['peg leg','hook','eye patch','sword']},
+{prompt:'A metal hand. Pirates sometimes have one.',answer:'hook',options:['hook','peg leg','bandana','beard']},
+{prompt:'You wear this over one eye.',answer:'eye patch',options:['eye patch','bandana','hook','sword']},
+{prompt:'Long hair on the face. Pirates often have a big one.',answer:'beard',options:['beard','bandana','peg leg','hook']},
+{prompt:'A cloth you tie around your head.',answer:'bandana',options:['bandana','eye patch','beard','sword']},
+{prompt:'A long, sharp weapon. Pirates fight with this.',answer:'sword',options:['sword','hook','peg leg','bandana']}
 ]},
-{name:"Have Got / Has Got",type:"gap-fill",context:"Choose the correct form.",xpEach:10,items:[
-{sentence:"Captain Greybeard ___ a long beard.",answer:"has got",options:["has got","have got","has","have"]},
-{sentence:"The pirates ___ a big ship.",answer:"have got",options:["have got","has got","has","have"]},
-{sentence:"I ___ a toy sword.",answer:"have got",options:["have got","has got","has","have"]},
-{sentence:"She ___ long hair.",answer:"has got",options:["has got","have got","has","have"]},
-{sentence:"We ___ two maps.",answer:"have got",options:["have got","has got","has","have"]},
-{sentence:"The parrot ___ red feathers.",answer:"has got",options:["has got","have got","has","have"]}
+{name:'Have Got / Has Got',type:'gap-fill',context:'Choose the correct form.',xpEach:10,items:[
+{sentence:'Dana ___ a toy sword.',answer:'has got',options:['has got','have got','got']},
+{sentence:'The pirates ___ a big ship.',answer:'have got',options:['has got','have got','got']},
+{sentence:'I ___ an eye patch.',answer:'have got',options:['has got','have got','got']},
+{sentence:'The ship ___ forty cannons.',answer:'has got',options:['has got','have got','got']},
+{sentence:'You ___ a treasure map!',answer:'have got',options:['has got','have got','got']},
+{sentence:'The parrot ___ red feathers.',answer:'has got',options:['has got','have got','got']}
 ]},
-{name:"Questions and Negatives",type:"transform",context:"Change the sentence as shown.",xpEach:10,items:[
-{prompt:"Make a question: He has got a map.",base:"He has got a map.",answer:"Has he got a map?",alts:["Has he got a map"]},
-{prompt:"Make negative: She has got a parrot.",base:"She has got a parrot.",answer:"She hasn't got a parrot.",alts:["She hasn't got a parrot","She has not got a parrot.","She has not got a parrot"]},
-{prompt:"Make a question: They have got swords.",base:"They have got swords.",answer:"Have they got swords?",alts:["Have they got swords"]},
-{prompt:"Make negative: I have got a hat.",base:"I have got a hat.",answer:"I haven't got a hat.",alts:["I haven't got a hat","I have not got a hat.","I have not got a hat"]},
-{prompt:"Make a question: He has got boots.",base:"He has got boots.",answer:"Has he got boots?",alts:["Has he got boots"]},
-{prompt:"Make negative: We have got treasure.",base:"We have got treasure.",answer:"We haven't got treasure.",alts:["We haven't got treasure","We have not got treasure.","We have not got treasure"]}
+{name:'Questions and Negatives',type:'transform',context:'Change the sentence as shown.',xpEach:10,items:[
+{prompt:'Make a question: Dana has got a parrot.',base:'Dana has got a parrot.',answer:'Has Dana got a parrot?',alts:['Has Dana got a parrot']},
+{prompt:'Make a question: I have got a sword.',base:'I have got a sword.',answer:'Have I got a sword?',alts:['Have I got a sword']},
+{prompt:"Make negative: The ship has got magic.",base:'The ship has got magic.',answer:"The ship hasn't got magic.",alts:["The ship hasn't got magic","The ship has not got magic.","The ship has not got magic"]},
+{prompt:"Make negative: We have got treasure.",base:'We have got treasure.',answer:"We haven't got treasure.",alts:["We haven't got treasure","We have not got treasure.","We have not got treasure"]},
+{prompt:'Short answer: Have you got a map? (YES)',base:'Have you got a map? (YES)',answer:'Yes, I have.',alts:['Yes, I have','Yes I have']},
+{prompt:'Short answer: Has it got sails? (YES)',base:'Has it got sails? (YES)',answer:'Yes, it has.',alts:['Yes, it has','Yes it has']}
 ]}
 ],
-reading:{title:"Dana's Pirate Journal",passage:"Today I am on Captain Greybeard's ship. It is very big! It has got forty cannons. The captain has got a long, black beard and small, dark eyes. He hasn't got a wooden leg — that is just a story! His parrot is green and red. It has got a loud voice. I haven't got a cabin, but I have got a hammock. I have got my toy sword too. I am happy here!",questions:[
-{question:"How many cannons has the ship got?",type:"mc",answer:"40",options:["40","14","4","400"]},
-{question:"Captain Greybeard has got a wooden leg.",type:"tf",answer:"False",alts:["false"]},
-{question:"What colour is the parrot?",type:"short",answer:"green and red",alts:["Green and red","green & red"]},
-{question:"Dana has got a cabin.",type:"tf",answer:"False",alts:["false"]},
-{question:"Is Dana happy on the ship?",type:"mc",answer:"Yes",options:["Yes","No","Maybe","She doesn't say"]}
+reading:{title:"Dana's Pirate Journal",passage:"Today I am on Captain Greybeard's ship. It is very big! It has got forty cannons. Chirp the parrot is green and red. He has got a loud voice. The captain has got a long, black beard and small, dark eyes. He hasn't got a wooden leg. I haven't got a cabin, but I have got a hammock. We have got a treasure map too. I am happy here!",questions:[
+{question:'How many cannons has the ship got?',type:'mc',answer:'Forty',options:['Forty','Fourteen','Four','Four hundred']},
+{question:'What is the parrot called?',type:'mc',answer:'Chirp',options:['Chirp','Polly','Rex','Penny']},
+{question:'What colour is the parrot?',type:'short',answer:'green and red',alts:['Green and red','green & red']},
+{question:'Captain Greybeard has got a wooden leg.',type:'tf',answer:'False',alts:['false']},
+{question:'Dana has got a cabin on the ship.',type:'tf',answer:'False',alts:['false']}
 ]},
 boss:{name:"Captain Greybeard's Test",items:[
-{type:"mc",prompt:"The captain ___ a big ship.",answer:"has got",options:["has got","have got","has","have"]},
-{type:"mc",prompt:"___ she got a parrot?",answer:"Has",options:["Has","Have","Is","Does"]},
-{type:"transform",prompt:"Make negative: He has got a map.",base:"He has got a map.",answer:"He hasn't got a map.",alts:["He hasn't got a map","He has not got a map.","He has not got a map"]},
-{type:"mc",prompt:"The pirates ___ swords.",answer:"have got",options:["have got","has got","has","got"]},
-{type:"mc",prompt:"That is the captain___ ship. (possessive)",answer:"'s",options:["'s","s","s'","es"]},
-{type:"mc",prompt:"What is the plural of 'man'?",answer:"men",options:["men","mans","mens","manes"]},
-{type:"mc",prompt:"___ they got treasure?",answer:"Have",options:["Have","Has","Are","Do"]},
-{type:"mc",prompt:"That is Dana___ sword.",answer:"'s",options:["'s","s","s'","is"]}
+{type:'mc',prompt:"That is the captain___ ship. (possessive)",answer:"'s",options:["'s","s","s'","es"]},
+{type:'mc',prompt:'The pirates ___ swords.',answer:'have got',options:['have got','has got','has','got']},
+{type:'mc',prompt:'___ she got a parrot?',answer:'Has',options:['Has','Have','Is','Does']},
+{type:'mc',prompt:"That is Dana___ sword.",answer:"'s",options:["'s","s","s'","is"]},
+{type:'mc',prompt:'The children___ toys are in the box. (possessive)',answer:"'s",options:["'s","s","s'","es"]},
+{type:'mc',prompt:"What is the plural of 'man'?",answer:'men',options:['men','mans','mens','manes']},
+{type:'mc',prompt:'___ they got treasure?',answer:'Have',options:['Have','Has','Are','Do']},
+{type:'transform',prompt:'Make negative: He has got a map.',base:'He has got a map.',answer:"He hasn't got a map.",alts:["He hasn't got a map","He has not got a map.","He has not got a map"]}
 ]},
-characterUnlock:"dana-dreamer",comicImage:"campaign/comic-L03.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
+characterUnlock:'dana-dreamer',comicImage:'campaign/comic-L03.png',maxTotalXP:320,starThresholds:{one:75,two:110,three:155}
 },
-{levelId:"L04",levelName:"The Emotion Islands",unitNumber:4,actNumber:1,grammarFocus:["To be negative/questions","Short answers","Adjectives"],
-storyIntro:["Five colourful islands float in the sky. Each one has a feeling.","But everything is wrong. Happy Island is sad. Angry Island is calm.","A tall guard stands at the gate. His face shows nothing.","'I am Richard,' he says. 'I cannot say how I feel. Can you help?'"],
-storyOutro:["The islands glow with the right colours again.","Richard smiles for the first time. 'I am... happy!' he says.","Music comes from under the ground. The Page of Emotion floats up.","'Four pages! And I can hear a band playing. Let us go!'"],
+{levelId:'L04',levelName:'The Emotion Islands',unitNumber:4,actNumber:1,grammarFocus:['To be negative','To be questions','Short answers'],
+storyIntro:['Welcome to the Emotion Islands! I am Richard the Guard.','I keep the islands safe. But the emotions are mixed up!','The happy people are on the sad island! The scared people are on the happy island!','The Page of Emotions can fix this. Can you help?'],
+storyOutro:['The islands glow with the right colours again!','Richard smiles for the first time. \'I am... happy!\' he says.','The Page of Emotions floats up. Four pages shine together.','Music comes from underground. One more page waits in the caverns!'],
 tasks:[
-{name:"Emotion Match",type:"vocab",context:"Match each emotion to the situation.",xpEach:5,items:[
-{prompt:"You get a new bike for your birthday!",answer:"excited",options:["excited","tired","sad","bored"]},
-{prompt:"It is midnight and you want to sleep.",answer:"tired",options:["tired","angry","scared","proud"]},
-{prompt:"Your best friend moves to another city.",answer:"sad",options:["sad","excited","hungry","bored"]},
-{prompt:"You hear a strange noise in the dark.",answer:"scared",options:["scared","proud","angry","tired"]},
-{prompt:"There is nothing to do. The lesson is not interesting.",answer:"bored",options:["bored","hungry","excited","sad"]},
-{prompt:"You get an A on a difficult test!",answer:"proud",options:["proud","scared","tired","angry"]},
-{prompt:"Someone takes your favourite pen and breaks it.",answer:"angry",options:["angry","sad","bored","excited"]},
-{prompt:"You haven't eaten all day. Your stomach makes noises.",answer:"hungry",options:["hungry","tired","angry","scared"]}
+{name:'Emotion Match',type:'vocab',context:'Match each emotion to the situation.',xpEach:5,items:[
+{prompt:'You get a new bike for your birthday!',answer:'excited',options:['excited','tired','sad','bored']},
+{prompt:'It is midnight and you want to sleep.',answer:'tired',options:['tired','angry','scared','proud']},
+{prompt:'Your best friend moves to another city.',answer:'sad',options:['sad','excited','hungry','bored']},
+{prompt:'You hear a strange noise in the dark.',answer:'scared',options:['scared','proud','angry','tired']},
+{prompt:'There is nothing to do. The lesson is not interesting.',answer:'bored',options:['bored','hungry','excited','sad']},
+{prompt:'You get an A on a difficult test!',answer:'proud',options:['proud','scared','tired','angry']},
+{prompt:'Someone takes your favourite pen and breaks it.',answer:'angry',options:['angry','sad','bored','excited']},
+{prompt:'You smile all day because everything is great.',answer:'happy',options:['happy','tired','angry','scared']}
 ]},
-{name:"To Be Negative",type:"gap-fill",context:"Choose the correct negative form of 'to be'.",xpEach:10,items:[
-{sentence:"The people on Happy Island ___ happy.",answer:"aren't",options:["aren't","isn't","am not","is not"]},
-{sentence:"She ___ tired.",answer:"isn't",options:["isn't","aren't","am not","is not"]},
-{sentence:"I ___ scared.",answer:"am not",options:["am not","isn't","aren't","is not"]},
-{sentence:"They ___ angry.",answer:"aren't",options:["aren't","isn't","am not","is not"]},
-{sentence:"He ___ bored.",answer:"isn't",options:["isn't","aren't","am not","is not"]},
-{sentence:"We ___ sad.",answer:"aren't",options:["aren't","isn't","am not","is not"]}
+{name:'To Be Negative',type:'gap-fill',context:"Choose the correct negative form of 'to be'.",xpEach:10,items:[
+{sentence:'I ___ scared of the dark.',answer:'am not',options:['am not',"isn't","aren't",'is not']},
+{sentence:'She ___ tired today.',answer:"isn't",options:["isn't","aren't",'am not','is not']},
+{sentence:'The people on Happy Island ___ happy.',answer:"aren't",options:["aren't","isn't",'am not','is not']},
+{sentence:'They ___ angry any more.',answer:"aren't",options:["aren't","isn't",'am not','is not']},
+{sentence:'He ___ bored at school.',answer:"isn't",options:["isn't","aren't",'am not','is not']},
+{sentence:'We ___ sad about the game.',answer:"aren't",options:["aren't","isn't",'am not','is not']}
 ]},
-{name:"Questions and Short Answers",type:"transform",context:"Write the question or short answer.",xpEach:10,items:[
-{prompt:"Make a question: she / happy",base:"she / happy",answer:"Is she happy?",alts:["Is she happy"]},
-{prompt:"Short answer: Are they excited? (YES)",base:"Are they excited? (YES)",answer:"Yes, they are.",alts:["Yes, they are","Yes they are"]},
-{prompt:"Make a question: he / scared",base:"he / scared",answer:"Is he scared?",alts:["Is he scared"]},
-{prompt:"Short answer: Are you angry? (NO)",base:"Are you angry? (NO)",answer:"No, I'm not.",alts:["No, I'm not","No, I am not.","No, I am not"]},
-{prompt:"Make a question: the children / tired",base:"the children / tired",answer:"Are the children tired?",alts:["Are the children tired"]},
-{prompt:"Short answer: Is she sad? (NO)",base:"Is she sad? (NO)",answer:"No, she isn't.",alts:["No, she isn't","No, she is not.","No, she is not"]}
+{name:'Questions and Short Answers',type:'transform',context:'Write the question or short answer.',xpEach:10,items:[
+{prompt:'Make a question: you / happy',base:'you / happy',answer:'Are you happy?',alts:['Are you happy']},
+{prompt:'Make a question: she / excited',base:'she / excited',answer:'Is she excited?',alts:['Is she excited']},
+{prompt:'Short answer: Are they scared? (YES)',base:'Are they scared? (YES)',answer:'Yes, they are.',alts:['Yes, they are','Yes they are']},
+{prompt:'Short answer: Is he angry? (NO)',base:'Is he angry? (NO)',answer:"No, he isn't.",alts:["No, he isn't","No, he is not.","No, he is not"]},
+{prompt:'Make a question: the children / tired',base:'the children / tired',answer:'Are the children tired?',alts:['Are the children tired']},
+{prompt:'Short answer: Are you bored? (NO)',base:'Are you bored? (NO)',answer:"No, I'm not.",alts:["No, I'm not","No, I am not.","No, I am not"]}
 ]}
 ],
-reading:{title:"A Day on the Emotion Islands",passage:"Today we visit three islands. First, we go to Happy Island. But the people are not happy — they are sad! Next, we go to Angry Island. The people are not angry. They are calm and friendly. This is very strange! Finally, we go to Scared Island. The people are not scared at all. They are brave and loud. Everything is wrong! I am confused, but I am not giving up. We are going to fix this!",questions:[
-{question:"Are the people on Happy Island happy?",type:"mc",answer:"No, they are sad",options:["No, they are sad","Yes, they are","No, they are angry","Yes, they are happy"]},
-{question:"The people on Angry Island are angry.",type:"tf",answer:"False",alts:["false"]},
-{question:"How do the people on Scared Island feel?",type:"short",answer:"brave and loud",alts:["Brave and loud","brave","loud"]},
-{question:"The narrator is confused.",type:"tf",answer:"True",alts:["true"]},
-{question:"Is the narrator giving up?",type:"mc",answer:"No",options:["No","Yes","Maybe","The text doesn't say"]}
+reading:{title:'A Day on the Emotion Islands',passage:'Today we visit four islands. First, we go to Yellow Island. The people here are always happy. Next, we go to Blue Island. The people are sad and quiet. Then we visit Red Island. The people are angry and loud. Finally, we go to Purple Island. The people are scared of everything! Richard says the colours help us understand feelings. He is right. Every feeling is important.',questions:[
+{question:'What colour is the happy island?',type:'mc',answer:'Yellow',options:['Yellow','Blue','Red','Purple']},
+{question:'The people on Blue Island are angry.',type:'tf',answer:'False',alts:['false']},
+{question:'How do the people on Red Island feel?',type:'short',answer:'angry and loud',alts:['Angry and loud','angry','Angry']},
+{question:'The people on Purple Island are scared.',type:'tf',answer:'True',alts:['true']},
+{question:'Richard says every feeling is important.',type:'mc',answer:'True',options:['True','False','He does not say','Maybe']}
 ]},
-boss:{name:"The Emotion Test",items:[
-{type:"mc",prompt:"She ___ happy today.",answer:"isn't",options:["isn't","aren't","am not","don't"]},
-{type:"mc",prompt:"___ you tired? — Yes, I ___.",answer:"Are / am",options:["Are / am","Is / am","Are / is","Is / are"]},
-{type:"mc",prompt:"The children ___ bored.",answer:"aren't",options:["aren't","isn't","am not","don't"]},
-{type:"mc",prompt:"Is he scared? — No, he ___.",answer:"isn't",options:["isn't","aren't","am not","doesn't"]},
-{type:"mc",prompt:"I ___ angry. I am happy!",answer:"am not",options:["am not","isn't","aren't","don't"]},
-{type:"mc",prompt:"___ she sad? — Yes, she ___.",answer:"Is / is",options:["Is / is","Are / are","Is / are","Are / is"]},
-{type:"mc",prompt:"We ___ hungry. We ate a big lunch.",answer:"aren't",options:["aren't","isn't","am not","doesn't"]},
-{type:"mc",prompt:"They ___ excited about the party.",answer:"are",options:["are","is","am","be"]}
+boss:{name:'The Emotion Test',items:[
+{type:'mc',prompt:'She ___ happy today. (negative)',answer:"isn't",options:["isn't","aren't",'am not',"don't"]},
+{type:'mc',prompt:'___ you tired? — Yes, I ___.',answer:'Are / am',options:['Are / am','Is / am','Are / is','Is / are']},
+{type:'mc',prompt:'The children ___ bored. (negative)',answer:"aren't",options:["aren't","isn't",'am not',"don't"]},
+{type:'mc',prompt:'Is he scared? — No, he ___.',answer:"isn't",options:["isn't","aren't",'am not',"doesn't"]},
+{type:'mc',prompt:'You look happy! — Are you excited?',answer:'excited',options:['excited','sad','angry','bored']},
+{type:'mc',prompt:'___ she sad? — Yes, she ___.',answer:'Is / is',options:['Is / is','Are / are','Is / are','Are / is']},
+{type:'mc',prompt:'I ___ angry. I am calm!',answer:'am not',options:['am not',"isn't","aren't","don't"]},
+{type:'mc',prompt:'They ___ tired after the long walk.',answer:'are',options:['are','is','am','be']}
 ]},
-characterUnlock:"richard-guard",comicImage:"campaign/comic-L04.png",maxTotalXP:450,starThresholds:{one:225,two:338,three:405}
+characterUnlock:'richard-guard',comicImage:'campaign/comic-L04.png',maxTotalXP:330,starThresholds:{one:75,two:110,three:155}
 },
-{levelId:"L05",levelName:"The Concert Caverns",unitNumber:5,actNumber:1,grammarFocus:["Possessive adjectives","can/can't"],
-storyIntro:["You walk into a cave full of crystals. They glow like stars.","Animals with instruments are arguing. 'This is MY drum!' 'No, it is MY drum!'","A small fox holds a golden saxophone. She looks worried.","'I am Melody,' she says. 'Nobody knows whose instrument is whose. Can you help?'"],
-storyOutro:["The concert is amazing. All the instruments are back.","The Page of Ability glows inside the big drum.","A magnifying glass falls from the ceiling with a note.","'Come find me if you can!' it says. There are mistakes in the note."],
+{levelId:'L05',levelName:'The Concert Caverns',unitNumber:5,actNumber:1,grammarFocus:['Possessive adjectives',"can/can't"],
+storyIntro:['Welcome to the Concert Caverns! I am Melody the Musician.','This is my orchestra. We play beautiful music here.','But the instruments are all mixed up! Nobody knows whose is whose.','You must use possessive words — my, your, his, her, our, their!'],
+storyOutro:["YOU DID IT! YOU WON! The Page of Ability is here!","All five Spell Pages are together! Look at this beautiful light!","The Academy is SAVED! You are the HERO OF LEXICA!","A magnifying glass falls with a note: 'Come find me if you can!'"],
 tasks:[
-{name:"Instrument Match",type:"vocab",context:"Match each instrument to its description.",xpEach:5,items:[
-{prompt:"A golden wind instrument. Melody plays this.",answer:"saxophone",options:["saxophone","drums","keyboard","trumpet"]},
-{prompt:"You hit these with sticks. They are loud!",answer:"drums",options:["drums","guitar","saxophone","keyboard"]},
-{prompt:"It has black and white keys. You press them.",answer:"keyboard",options:["keyboard","guitar","trumpet","drums"]},
-{prompt:"It has six strings. You use your fingers.",answer:"guitar",options:["guitar","keyboard","saxophone","drums"]},
-{prompt:"A brass instrument. You blow into it.",answer:"trumpet",options:["trumpet","saxophone","guitar","keyboard"]}
+{name:'Instrument Match',type:'vocab',context:'Match each instrument to its description.',xpEach:5,items:[
+{prompt:'A string instrument with a bow. You hold it under your chin.',answer:'violin',options:['violin','trumpet','flute','drum']},
+{prompt:'A brass instrument. You blow into it. It is loud!',answer:'trumpet',options:['trumpet','violin','piano','flute']},
+{prompt:'A silver tube. You blow across a hole at the top.',answer:'flute',options:['flute','trumpet','violin','drum']},
+{prompt:'You hit it with sticks. It is very loud!',answer:'drum',options:['drum','piano','flute','violin']},
+{prompt:'It has black and white keys. You press them.',answer:'piano',options:['piano','drum','trumpet','violin']}
 ]},
-{name:"Possessive Adjectives",type:"gap-fill",context:"Choose the correct possessive adjective.",xpEach:10,items:[
-{sentence:"Melody loves ___ saxophone.",answer:"her",options:["my","your","his","her","its","our","their"]},
-{sentence:"The bear cleans ___ drums.",answer:"his",options:["my","your","his","her","its","our","their"]},
-{sentence:"I practise ___ guitar every day.",answer:"my",options:["my","your","his","her","its","our","their"]},
-{sentence:"We love ___ band.",answer:"our",options:["my","your","his","her","its","our","their"]},
-{sentence:"They play ___ instruments well.",answer:"their",options:["my","your","his","her","its","our","their"]},
-{sentence:"The cat plays ___ piano.",answer:"its",options:["my","your","his","her","its","our","their"]}
+{name:'Possessive Adjectives',type:'gap-fill',context:'Choose the correct possessive adjective.',xpEach:10,items:[
+{sentence:'I love ___ violin. I play it every day.',answer:'my',options:['my','your','his','her','its','our','their']},
+{sentence:'The boy cleans ___ trumpet after every concert.',answer:'his',options:['my','your','his','her','its','our','their']},
+{sentence:'The girls play ___ flutes beautifully.',answer:'their',options:['my','your','his','her','its','our','their']},
+{sentence:'Melody loves ___ orchestra.',answer:'my',options:['my','your','his','her','its','our','their']},
+{sentence:'We practise ___ music together.',answer:'our',options:['my','your','his','her','its','our','their']},
+{sentence:'The children love ___ instruments.',answer:'their',options:['my','your','his','her','its','our','their']}
 ]},
-{name:"Can and Can't",type:"gap-fill",context:"Choose can or can't.",xpEach:10,items:[
-{sentence:"Melody ___ play the saxophone very well.",answer:"can",options:["can","can't","Can","Can't"]},
-{sentence:"The bear ___ sing. His voice is bad!",answer:"can't",options:["can","can't","Can","Can't"]},
-{sentence:"I ___ play the drums. Listen!",answer:"can",options:["can","can't","Can","Can't"]},
-{sentence:"___ you play an instrument?",answer:"Can",options:["can","can't","Can","Can't"]},
-{sentence:"She ___ dance. She has a broken leg.",answer:"can't",options:["can","can't","Can","Can't"]},
-{sentence:"We ___ all play together!",answer:"can",options:["can","can't","Can","Can't"]}
+{name:"Can and Can't",type:'gap-fill',context:"Choose can or can't.",xpEach:10,items:[
+{sentence:'Melody ___ play the violin very well.',answer:'can',options:['can',"can't",'Can',"Can't"]},
+{sentence:"The bear ___ sing. His voice is terrible!",answer:"can't",options:['can',"can't",'Can',"Can't"]},
+{sentence:'I ___ play the drums. Listen!',answer:'can',options:['can',"can't",'Can',"Can't"]},
+{sentence:'___ you play an instrument?',answer:'Can',options:['can',"can't",'Can',"Can't"]},
+{sentence:"She ___ dance. She has a broken leg.",answer:"can't",options:['can',"can't",'Can',"Can't"]},
+{sentence:'We ___ all play together!',answer:'can',options:['can',"can't",'Can',"Can't"]}
 ]}
 ],
-reading:{title:"The Concert Poster",passage:"Come to the Grammar Rockers concert! Melody can play three instruments: the saxophone, the guitar, and the piano. She is amazing! Bear can play the drums, but he can't sing — his voice is terrible! Rabbit can play the keyboard and she can dance too. Parrot can sing very well, but he can't play the piano. His wings are too small! Come and see our band!",questions:[
-{question:"How many instruments can Melody play?",type:"mc",answer:"Three",options:["Three","Two","One","Four"]},
-{question:"Bear can sing well.",type:"tf",answer:"False",alts:["false"]},
-{question:"What can Rabbit do besides play keyboard?",type:"short",answer:"dance",alts:["Dance","she can dance","She can dance"]},
-{question:"Parrot can play the piano.",type:"tf",answer:"False",alts:["false"]},
-{question:"Why can't Parrot play the piano?",type:"mc",answer:"His wings are too small",options:["His wings are too small","He doesn't like it","He can't read music","He is too loud"]}
+reading:{title:'The Concert Poster',passage:'Come to the Grammar Rockers concert! Melody can play three instruments: the violin, the flute, and the piano. She is amazing! Bear can play the drums, but he cannot sing. His voice is terrible! Rabbit can play the keyboard and she can dance too. Parrot can sing very well, but he cannot play the piano. His wings are too small! Come and see our band!',questions:[
+{question:'How many instruments can Melody play?',type:'mc',answer:'Three',options:['Three','Two','One','Four']},
+{question:'Bear can sing well.',type:'tf',answer:'False',alts:['false']},
+{question:'What can Rabbit do besides play keyboard?',type:'short',answer:'dance',alts:['Dance','she can dance','She can dance']},
+{question:'Parrot can play the piano.',type:'tf',answer:'False',alts:['false']},
+{question:"Why can't Parrot play the piano?",type:'mc',answer:'His wings are too small',options:['His wings are too small',"He doesn't like it","He can't read music",'He is too loud']}
 ]},
 boss:{name:"The Music Master's Test",items:[
-{type:"mc",prompt:"Melody loves ___ saxophone.",answer:"her",options:["her","his","my","your"]},
-{type:"mc",prompt:"I ___ play the guitar. Listen!",answer:"can",options:["can","can't","cans","am"]},
-{type:"mc",prompt:"The bear cleans ___ drums every day.",answer:"his",options:["his","her","my","its"]},
-{type:"mc",prompt:"She ___ swim. She never learned.",answer:"can't",options:["can't","can","cans","doesn't"]},
-{type:"transform",prompt:"Fix the mistake: She cans play the piano.",base:"She cans play the piano.",answer:"She can play the piano.",alts:["She can play the piano"]},
-{type:"mc",prompt:"We love ___ band!",answer:"our",options:["our","their","my","your"]},
-{type:"mc",prompt:"___ they play music? — Yes, they ___.",answer:"Can / can",options:["Can / can","Can / can't","Do / can","Are / can"]},
-{type:"mc",prompt:"The cat plays ___ piano quietly.",answer:"its",options:["its","it's","his","her"]}
+{type:'mc',prompt:'Melody loves ___ violin.',answer:'her',options:['her','his','my','your']},
+{type:'mc',prompt:'I ___ play the guitar. Listen!',answer:'can',options:['can',"can't",'cans','am']},
+{type:'mc',prompt:'The boy cleans ___ trumpet every day.',answer:'his',options:['his','her','my','its']},
+{type:'mc',prompt:'She ___ swim. She never learned.',answer:"can't",options:["can't",'can','cans',"doesn't"]},
+{type:'transform',prompt:'Fix the mistake: She cans play the piano.',base:'She cans play the piano.',answer:'She can play the piano.',alts:['She can play the piano']},
+{type:'mc',prompt:'We love ___ band!',answer:'our',options:['our','their','my','your']},
+{type:'mc',prompt:'___ they play music? — Yes, they ___.',answer:'Can / can',options:['Can / can',"Can / can't",'Do / can','Are / can']},
+{type:'mc',prompt:'The cat plays ___ piano quietly.',answer:'its',options:['its',"it's",'his','her']}
 ]},
-characterUnlock:"melody-musician",comicImage:"campaign/comic-L05.png",maxTotalXP:435,starThresholds:{one:218,two:326,three:392}
+characterUnlock:'melody-musician',comicImage:'campaign/comic-L05.png',maxTotalXP:315,starThresholds:{one:75,two:110,three:155}
 },
-{levelId:"L06",levelName:"Mystery Manor",unitNumber:6,actNumber:1,grammarFocus:["Present simple 3rd person","a lot of"],
-storyIntro:["A big old house stands on a hill. It looks dark and mysterious.","Inside, a man in a long coat studies a note. A cat sits on his shoulder.","'I am Detective Riddle,' he says. 'And this is Inspector Paws.'","'Someone stole the Page of Action. Can you help us find it?'"],
-storyOutro:["The mystery is solved! Detective Riddle finds the page.","'A lot of clues led us here,' he says with a smile.","Inspector Paws finds a cookbook with a secret message inside.","'The next page is hidden where children eat!'"],
+{levelId:'L06',levelName:'Mystery Manor',unitNumber:6,actNumber:2,grammarFocus:['Present simple 3rd person','a lot of'],
+storyIntro:['You walk through dark gates. A big old house is here.','Inside, a man in a long coat studies a note. A cat sits on his shoulder.',"'I am Detective Riddle. And this is Inspector Paws.'","'Someone stole the Page of Action. Can you help us find it?'"],
+storyOutro:['The mystery is solved! Detective Riddle finds the page.','\'A lot of clues led us here,\' he says with a smile.','Inspector Paws finds a cookbook with a secret message.','\'The next page is hidden where children eat!\''],
 tasks:[
-{name:"Detective Words",type:"vocab",context:"Match each word to its meaning.",xpEach:5,items:[
-{prompt:"Something that helps you solve a mystery.",answer:"clue",options:["clue","suspect","witness","fingerprint"]},
-{prompt:"A small glass you look through to see things bigger.",answer:"magnifying glass",options:["magnifying glass","evidence","clue","fingerprint"]},
-{prompt:"A mark your finger leaves when you touch something.",answer:"fingerprint",options:["fingerprint","clue","evidence","magnifying glass"]},
-{prompt:"A person the police think did something wrong.",answer:"suspect",options:["suspect","witness","clue","evidence"]},
-{prompt:"A person who saw what happened.",answer:"witness",options:["witness","suspect","fingerprint","magnifying glass"]},
-{prompt:"Things that prove something is true.",answer:"evidence",options:["evidence","clue","suspect","witness"]}
+{name:'Detective Words',type:'vocab',context:'Match each word to its meaning.',xpEach:5,items:[
+{prompt:'Something that helps you solve a mystery.',answer:'clue',options:['clue','suspect','mystery','footprint']},
+{prompt:'A person the police think did something wrong.',answer:'suspect',options:['suspect','witness','clue','evidence']},
+{prompt:'Something strange that nobody can explain.',answer:'mystery',options:['mystery','clue','suspect','footprint']},
+{prompt:'A mark your shoe or foot leaves on the ground.',answer:'footprint',options:['footprint','clue','evidence','mystery']},
+{prompt:'Things that prove something is true.',answer:'evidence',options:['evidence','clue','suspect','witness']},
+{prompt:'A person who saw what happened.',answer:'witness',options:['witness','suspect','footprint','evidence']}
 ]},
-{name:"Third Person Spelling",type:"gap-fill",context:"Type the correct 3rd person form.",xpEach:10,items:[
-{sentence:"Detective Riddle ___ in a big house. (live)",answer:"lives",options:["lives","livees","livs","live"]},
-{sentence:"He ___ to his office every morning. (go)",answer:"goes",options:["goes","gos","goies","go"]},
-{sentence:"His cat ___ the birds. (watch)",answer:"watches",options:["watches","watchs","watch","watchies"]},
-{sentence:"Inspector Paws ___ a magnifying glass. (carry)",answer:"carries",options:["carries","carrys","carryes","carry"]},
-{sentence:"The detective ___ many books. (read)",answer:"reads",options:["reads","reades","readies","read"]},
-{sentence:"He ___ his hands after work. (wash)",answer:"washes",options:["washes","washs","washies","wash"]}
+{name:'Third Person Spelling',type:'transform',context:'Type the correct 3rd person present form.',xpEach:10,items:[
+{prompt:'Detective Riddle ___ up at six every day. (wake)',base:'wake',answer:'wakes',alts:['wakes']},
+{prompt:'He ___ tea and ___ the newspaper. (drink, read)',base:'drink, read',answer:'drinks, reads',alts:['drinks, reads','drinks,reads']},
+{prompt:'Inspector Paws ___ a magnifying glass everywhere. (carry)',base:'carry',answer:'carries',alts:['carries']},
+{prompt:'The detective ___ the birds every morning. (watch)',base:'watch',answer:'watches',alts:['watches']},
+{prompt:'He ___ notes in his big book. (write)',base:'write',answer:'writes',alts:['writes']},
+{prompt:"He ___ solve every case. (not/solve — use doesn't)",base:'not/solve',answer:"doesn't solve",alts:["doesn't solve","does not solve"]}
 ]},
-{name:"Error Correction",type:"transform",context:"Find and fix the grammar mistake.",xpEach:10,items:[
-{prompt:"Fix: She walk to school every day.",base:"She walk to school every day.",answer:"She walks to school every day.",alts:["She walks to school every day"]},
-{prompt:"Fix: He go to the shop.",base:"He go to the shop.",answer:"He goes to the shop.",alts:["He goes to the shop"]},
-{prompt:"Fix: The cat catchs mice.",base:"The cat catchs mice.",answer:"The cat catches mice.",alts:["The cat catches mice"]},
-{prompt:"Fix: Anna crys a lot.",base:"Anna crys a lot.",answer:"Anna cries a lot.",alts:["Anna cries a lot"]},
-{prompt:"Fix: My brother playes football.",base:"My brother playes football.",answer:"My brother plays football.",alts:["My brother plays football"]},
-{prompt:"Fix: The dog run fast.",base:"The dog run fast.",answer:"The dog runs fast.",alts:["The dog runs fast"]}
+{name:'Error Correction',type:'transform',context:'Find and fix the grammar mistake.',xpEach:10,items:[
+{prompt:'Fix: She observe the clues carefully.',base:'She observe the clues carefully.',answer:'She observes the clues carefully.',alts:['She observes the clues carefully']},
+{prompt:'Fix: He go to the office every morning.',base:'He go to the office every morning.',answer:'He goes to the office every morning.',alts:['He goes to the office every morning']},
+{prompt:'Fix: Inspector Paws carrys a magnifying glass.',base:'Inspector Paws carrys a magnifying glass.',answer:'Inspector Paws carries a magnifying glass.',alts:['Inspector Paws carries a magnifying glass']},
+{prompt:'Fix: The detective watchs old films.',base:'The detective watchs old films.',answer:'The detective watches old films.',alts:['The detective watches old films']},
+{prompt:'Fix: She solve the mystery quickly.',base:'She solve the mystery quickly.',answer:'She solves the mystery quickly.',alts:['She solves the mystery quickly']},
+{prompt:'Fix: He washs his hands after work.',base:'He washs his hands after work.',answer:'He washes his hands after work.',alts:['He washes his hands after work']}
 ]}
 ],
-reading:{title:"Detective Riddle's Case File",passage:"Detective Riddle lives in Mystery Manor. He gets up at six o'clock every morning. He drinks tea and reads the newspaper. Then he goes to his office. Inspector Paws watches him from the shelf. The detective studies a lot of clues every day. He writes notes in his big book. He has a lot of cases to solve. At night, he watches old detective films. He loves his work!",questions:[
-{question:"What time does Detective Riddle get up?",type:"mc",answer:"Six o'clock",options:["Six o'clock","Seven o'clock","Eight o'clock","Five o'clock"]},
-{question:"Detective Riddle drinks coffee in the morning.",type:"tf",answer:"False",alts:["false"]},
-{question:"Where does Inspector Paws watch from?",type:"short",answer:"the shelf",alts:["The shelf","shelf","a shelf"]},
-{question:"The detective has a lot of cases.",type:"tf",answer:"True",alts:["true"]},
-{question:"What does he watch at night?",type:"mc",answer:"Old detective films",options:["Old detective films","Football","The news","Cartoons"]}
+reading:{title:"Detective Riddle's Case File",passage:"Case 47: The Missing Hat. Mrs Green says her hat is gone. She always puts it on the table by the door. She goes to work at eight o'clock. She comes home at five. The hat was there in the morning. Mr Brown lives next door. He walks past her house every day. He carries an umbrella, not a hat. The wind blows a lot in this street. I think the wind carries the hat away!",questions:[
+{question:'What is missing?',type:'mc',answer:'A hat',options:['A hat','An umbrella','A coat','A bag']},
+{question:'Mrs Green puts her hat on the shelf.',type:'tf',answer:'False',alts:['false']},
+{question:'What time does Mrs Green go to work?',type:'short',answer:'eight o\'clock',alts:['Eight o\'clock','8 o\'clock','at eight','at 8']},
+{question:'Mr Brown carries an umbrella.',type:'tf',answer:'True',alts:['true']},
+{question:'What does the detective think happened?',type:'mc',answer:'The wind carried the hat away',options:['The wind carried the hat away','Mr Brown took it','A dog took it','Mrs Green lost it']}
 ]},
-boss:{name:"The Manor Mystery Test",items:[
-{type:"mc",prompt:"She ___ to school every day.",answer:"goes",options:["goes","go","gos","goies"]},
-{type:"mc",prompt:"He ___ TV in the evening.",answer:"watches",options:["watches","watchs","watch","watchies"]},
-{type:"transform",prompt:"Fix: The baby crys at night.",base:"The baby crys at night.",answer:"The baby cries at night.",alts:["The baby cries at night"]},
-{type:"mc",prompt:"My sister ___ breakfast at 7.",answer:"eats",options:["eats","eat","eates","eaties"]},
-{type:"mc",prompt:"There are a ___ of books here.",answer:"lot",options:["lot","lots","many","much"]},
-{type:"transform",prompt:"Fix: He studys hard.",base:"He studys hard.",answer:"He studies hard.",alts:["He studies hard"]},
-{type:"mc",prompt:"The cat ___ mice every night.",answer:"catches",options:["catches","catchs","catch","catchies"]},
-{type:"mc",prompt:"She has ___ of friends.",answer:"a lot",options:["a lot","a lots","lot","lots"]}
+boss:{name:'The Manor Mystery Test',items:[
+{type:'mc',prompt:'She ___ mysteries every day. (solve)',answer:'solves',options:['solves','solve','solvs','solvies']},
+{type:'mc',prompt:'He ___ TV in the evening. (watch)',answer:'watches',options:['watches','watchs','watch','watchies']},
+{type:'mc',prompt:'The cat ___ mice at night. (find)',answer:'finds',options:['finds','find','finded','findies']},
+{type:'mc',prompt:'Inspector Paws ___ a magnifying glass. (carry)',answer:'carries',options:['carries','carrys','carry','carryes']},
+{type:'mc',prompt:"He ___ coffee. He drinks tea. (not/like — use doesn't)",answer:"doesn't like",options:["doesn't like","don't like","doesn't likes","not likes"]},
+{type:'mc',prompt:'She ___ the newspaper every morning. (read)',answer:'reads',options:['reads','reades','read','readies']},
+{type:'mc',prompt:'He ___ to school by bus. (go)',answer:'goes',options:['goes','gos','go','goies']},
+{type:'mc',prompt:'He ___ his hands after dinner. (wash)',answer:'washes',options:['washes','washs','wash','washies']}
 ]},
-characterUnlock:"inspector-paws",comicImage:"campaign/comic-L06.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
+characterUnlock:'inspector-paws',comicImage:'campaign/comic-L06.png',maxTotalXP:320,starThresholds:{one:75,two:110,three:155}
 },
-{levelId:"L07",levelName:"The World Kitchen",unitNumber:7,actNumber:1,grammarFocus:["don't/doesn't","Articles a/an","Adverbs of frequency"],
-storyIntro:["A huge kitchen stretches in all directions. It smells amazing.","Cooks from many countries are here. But they can only say YES.","'I like everything!' cries a cook. 'But that is not true!'","A girl with a chef hat waves. 'I am Tamar. Without the page, we cannot say NO!'"],
-storyOutro:["The kitchen is fixed! Cooks can say what they do not like.","'I don't like cold soup!' laughs Tamar. 'That feels good to say!'","The Page of Negation floats out of a big cooking pot.","'Five more pages to go! Something about clothes is next...'"],
+{levelId:'L07',levelName:'The World Kitchen',unitNumber:7,actNumber:2,grammarFocus:["don't/doesn't",'Adverbs of frequency','Articles a/an'],
+storyIntro:['A huge kitchen stretches in all directions. It smells amazing.','Cooks from many countries are here. But they can only say YES.','\'I like everything!\' cries a cook. \'But that is not true!\'','\'I am Tamar. Without the page, we cannot say NO!\''],
+storyOutro:['The kitchen is fixed! Cooks can say what they do not like.','\'I don\'t like cold soup!\' laughs Tamar.','The Page of Negation floats out of a cooking pot.','Something about clothes is next...'],
 tasks:[
-{name:"Food Words",type:"vocab",context:"Match each food to its description.",xpEach:5,items:[
-{prompt:"Long, thin food from Asia. You eat them with chopsticks.",answer:"noodles",options:["noodles","rice","bread","cheese"]},
-{prompt:"Small white grains. Very popular in Asia.",answer:"rice",options:["rice","noodles","vegetables","fruit"]},
-{prompt:"Made from milk. It can be yellow or white.",answer:"cheese",options:["cheese","bread","fruit","rice"]},
-{prompt:"Made from flour. You can make sandwiches with it.",answer:"bread",options:["bread","cheese","noodles","rice"]},
-{prompt:"Carrots, tomatoes, and peas are examples of this.",answer:"vegetables",options:["vegetables","fruit","noodles","bread"]},
-{prompt:"Apples, bananas, and oranges are examples of this.",answer:"fruit",options:["fruit","vegetables","cheese","rice"]}
+{name:'Food Words',type:'vocab',context:'Match each food to its description.',xpEach:5,items:[
+{prompt:'Long, thin food from Asia. You eat them with chopsticks.',answer:'noodles',options:['noodles','rice','vegetables','soup']},
+{prompt:'A cheese-filled bread from Georgia.',answer:'khachapuri',options:['khachapuri','noodles','braai','rice']},
+{prompt:'A South African barbecue.',answer:'braai',options:['braai','khachapuri','spice','soup']},
+{prompt:'Small white grains. Very popular in Asia.',answer:'rice',options:['rice','noodles','spice','vegetables']},
+{prompt:'Carrots, tomatoes, and peas are examples of this.',answer:'vegetables',options:['vegetables','rice','noodles','soup']},
+{prompt:'Pepper, chilli, and curry powder are examples of this.',answer:'spice',options:['spice','vegetables','soup','rice']},
+{prompt:'A hot liquid food. You eat it with a spoon.',answer:'soup',options:['soup','spice','noodles','rice']}
 ]},
-{name:"Don't and Doesn't",type:"gap-fill",context:"Choose the correct negative form.",xpEach:10,items:[
-{sentence:"I ___ like fish.",answer:"don't",options:["don't","doesn't","do not","does not"]},
-{sentence:"She ___ eat meat.",answer:"doesn't",options:["doesn't","don't","do not","does not"]},
-{sentence:"We ___ cook with chillies.",answer:"don't",options:["don't","doesn't","do not","does not"]},
-{sentence:"He ___ drink coffee.",answer:"doesn't",options:["doesn't","don't","do not","does not"]},
-{sentence:"They ___ eat pork.",answer:"don't",options:["don't","doesn't","do not","does not"]},
-{sentence:"Tamar ___ like cold food.",answer:"doesn't",options:["doesn't","don't","do not","does not"]}
+{name:"Don't and Doesn't",type:'gap-fill',context:'Choose the correct negative form.',xpEach:10,items:[
+{sentence:"I ___ like fish.",answer:"don't",options:["don't","doesn't",'do not','does not']},
+{sentence:'She ___ eat meat.',answer:"doesn't",options:["doesn't","don't",'do not','does not']},
+{sentence:'We ___ cook with chillies.',answer:"don't",options:["don't","doesn't",'do not','does not']},
+{sentence:'He ___ drink coffee.',answer:"doesn't",options:["doesn't","don't",'do not','does not']},
+{sentence:'They ___ eat pork.',answer:"don't",options:["don't","doesn't",'do not','does not']},
+{sentence:'Tamar ___ like cold food.',answer:"doesn't",options:["doesn't","don't",'do not','does not']}
 ]},
-{name:"Word Order with Adverbs",type:"transform",context:"Put the words in the correct order.",xpEach:10,items:[
-{prompt:"always / she / eats / breakfast",base:"always / she / eats / breakfast",answer:"She always eats breakfast.",alts:["She always eats breakfast"]},
-{prompt:"never / I / drink / coffee",base:"never / I / drink / coffee",answer:"I never drink coffee.",alts:["I never drink coffee"]},
-{prompt:"usually / he / is / tired",base:"usually / he / is / tired",answer:"He is usually tired.",alts:["He is usually tired"]},
-{prompt:"sometimes / we / go / to a restaurant",base:"sometimes / we / go / to a restaurant",answer:"We sometimes go to a restaurant.",alts:["We sometimes go to a restaurant","Sometimes we go to a restaurant.","Sometimes we go to a restaurant"]},
-{prompt:"often / they / play / football",base:"often / they / play / football",answer:"They often play football.",alts:["They often play football"]},
-{prompt:"always / she / is / happy",base:"always / she / is / happy",answer:"She is always happy.",alts:["She is always happy"]}
+{name:'Word Order with Adverbs',type:'transform',context:'Put the words in the correct order.',xpEach:10,items:[
+{prompt:'always / she / eats / breakfast',base:'always / she / eats / breakfast',answer:'She always eats breakfast.',alts:['She always eats breakfast']},
+{prompt:'never / I / drink / coffee',base:'never / I / drink / coffee',answer:'I never drink coffee.',alts:['I never drink coffee']},
+{prompt:'usually / he / is / tired',base:'usually / he / is / tired',answer:'He is usually tired.',alts:['He is usually tired']},
+{prompt:'sometimes / we / go / to a restaurant',base:'sometimes / we / go / to a restaurant',answer:'We sometimes go to a restaurant.',alts:['We sometimes go to a restaurant','Sometimes we go to a restaurant.','Sometimes we go to a restaurant']},
+{prompt:'often / they / play / football',base:'often / they / play / football',answer:'They often play football.',alts:['They often play football']},
+{prompt:'always / she / is / happy',base:'always / she / is / happy',answer:'She is always happy.',alts:['She is always happy']}
 ]}
 ],
-reading:{title:"Chef Tamar's Recipe Card",passage:"I am Chef Tamar. I always cook with fresh vegetables. I usually make soup for lunch. I don't use a lot of salt. I never cook with chillies — they are too hot! I sometimes make a cake, but I don't eat a lot of sugar. My favourite food is rice with vegetables. I don't like cold food. I always eat hot meals. Cooking is my favourite thing!",questions:[
-{question:"What does Tamar always cook with?",type:"mc",answer:"Fresh vegetables",options:["Fresh vegetables","Salt","Chillies","Sugar"]},
-{question:"Tamar uses a lot of salt.",type:"tf",answer:"False",alts:["false"]},
-{question:"Why doesn't Tamar cook with chillies?",type:"short",answer:"they are too hot",alts:["They are too hot","too hot","Too hot"]},
-{question:"Tamar sometimes makes a cake.",type:"tf",answer:"True",alts:["true"]},
-{question:"Does Tamar like cold food?",type:"mc",answer:"No",options:["No","Yes","Sometimes","The text doesn't say"]}
+reading:{title:"Chef Tamar's Recipe Card",passage:"My name is Tamar. I am from Georgia. I always cook with fresh vegetables. I usually make Vietnamese noodles for lunch. I don't use a lot of salt. I never cook with chillies — they are too hot! I sometimes make a cake, but I don't eat a lot of sugar. My favourite food is rice with spice. I don't like cold food. I always eat hot meals!",questions:[
+{question:'Where is Tamar from?',type:'mc',answer:'Georgia',options:['Georgia','Vietnam','Austria','Japan']},
+{question:'Tamar uses a lot of salt.',type:'tf',answer:'False',alts:['false']},
+{question:'What does Tamar usually make for lunch?',type:'short',answer:'Vietnamese noodles',alts:['vietnamese noodles','noodles','Noodles']},
+{question:'Tamar sometimes makes a cake.',type:'tf',answer:'True',alts:['true']},
+{question:'Does Tamar like cold food?',type:'mc',answer:'No',options:['No','Yes','Sometimes','The text does not say']}
 ]},
-boss:{name:"The Kitchen Challenge",items:[
-{type:"mc",prompt:"She ___ like onions.",answer:"doesn't",options:["doesn't","don't","not","isn't"]},
-{type:"mc",prompt:"I ___ eat fish. I am allergic.",answer:"don't",options:["don't","doesn't","not","am not"]},
-{type:"mc",prompt:"He is ___ late for dinner.",answer:"never",options:["never","always","ever","doesn't"]},
-{type:"mc",prompt:"We ___ cook with butter.",answer:"don't",options:["don't","doesn't","not","aren't"]},
-{type:"mc",prompt:"I want ___ apple.",answer:"an",options:["an","a","the","some"]},
-{type:"mc",prompt:"She ___ drinks coffee in the morning.",answer:"always",options:["always","don't","doesn't","never not"]},
-{type:"mc",prompt:"He ___ eat chocolate. He hates it.",answer:"doesn't",options:["doesn't","don't","not","isn't"]},
-{type:"mc",prompt:"She is ___ a banana for lunch.",answer:"eating",options:["eating","eat","eats","ate"]}
+boss:{name:'The Kitchen Challenge',items:[
+{type:'mc',prompt:'She ___ like onions.',answer:"doesn't",options:["doesn't","don't",'not',"isn't"]},
+{type:'mc',prompt:'I ___ eat fish. I am allergic.',answer:"don't",options:["don't","doesn't",'not','am not']},
+{type:'mc',prompt:'He is ___ late for dinner.',answer:'never',options:['never','always','ever',"doesn't"]},
+{type:'mc',prompt:'We ___ cook with butter.',answer:"don't",options:["don't","doesn't",'not',"aren't"]},
+{type:'mc',prompt:'I want ___ apple.',answer:'an',options:['an','a','the','some']},
+{type:'mc',prompt:'She ___ drinks coffee in the morning.',answer:'always',options:['always',"don't","doesn't",'never not']},
+{type:'mc',prompt:'He ___ eat chocolate. He hates it.',answer:"doesn't",options:["doesn't","don't",'not',"isn't"]},
+{type:'mc',prompt:'This is ___ egg sandwich.',answer:'an',options:['an','a','the','some']}
 ]},
-characterUnlock:"chef-tamar",comicImage:"campaign/comic-L07.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
+characterUnlock:'chef-tamar',comicImage:'campaign/comic-L07.png',maxTotalXP:325,starThresholds:{one:75,two:110,three:155}
 },
-{levelId:"L08",levelName:"The Fashion District",unitNumber:8,actNumber:1,grammarFocus:["Do/Does questions","Short answers"],
-storyIntro:["A busy street full of clothes shops and fashion shows.","But nobody can ask questions. 'I want to ask if this looks nice!' says a girl.","'I am Sophia,' she says. 'I am a stylist. But I cannot ask anything!'","'The Page of Inquiry is missing. Please help us ask questions again!'"],
-storyOutro:["Questions fly everywhere! 'Do you like this?' 'Does it look good?'","Sophia smiles. 'Thank you! Now I can ask anything!'","A hamster runs up with a letter: 'Help! The animals need you!'","'The Creature Sanctuary is next. Let us go!'"],
+{levelId:'L08',levelName:'The Fashion District',unitNumber:8,actNumber:2,grammarFocus:['Do/Does questions','Short answers'],
+storyIntro:['A busy street full of clothes shops and fashion shows.','But nobody can ask questions! \'I want to ask if this looks nice!\'','\'I am Sophia the Stylist. I cannot ask anything!\'','\'The Page of Inquiry is missing. Please help us ask questions again!\''],
+storyOutro:['Questions fly everywhere! \'Do you like this?\'','Sophia smiles. \'Thank you! Now I can ask anything!\'','A hamster runs up with a letter from the Creature Sanctuary.','\'The animals need you! Let us go!\''],
 tasks:[
-{name:"Clothes Match",type:"vocab",context:"Match each item of clothing to its description.",xpEach:5,items:[
-{prompt:"A top with a hood. Very comfortable.",answer:"hoodie",options:["hoodie","jeans","cape","mask"]},
-{prompt:"Comfortable shoes for sport or walking.",answer:"trainers",options:["trainers","boots","hoodie","jeans"]},
-{prompt:"Blue trousers made of strong material.",answer:"jeans",options:["jeans","trainers","hoodie","cape"]},
-{prompt:"A long piece of cloth that hangs from your shoulders. Superheroes wear this.",answer:"cape",options:["cape","mask","boots","hoodie"]},
-{prompt:"You wear these on your feet. They are tall and strong.",answer:"boots",options:["boots","trainers","jeans","cape"]},
-{prompt:"You wear this on your face. Nobody can see who you are.",answer:"mask",options:["mask","cape","hoodie","boots"]}
+{name:'Clothes and Costumes',type:'vocab',context:'Match each item to its description.',xpEach:5,items:[
+{prompt:'A long cloth that hangs from your shoulders. Superheroes wear this.',answer:'cape',options:['cape','mask','boots','belt']},
+{prompt:'A special set of clothes for a character or hero.',answer:'costume',options:['costume','cape','gloves','symbol']},
+{prompt:'You wear this on your face. Nobody can see who you are.',answer:'mask',options:['mask','cape','belt','boots']},
+{prompt:'You wear these on your feet. They are tall and strong.',answer:'boots',options:['boots','gloves','mask','belt']},
+{prompt:'You wear these on your hands to keep them warm.',answer:'gloves',options:['gloves','boots','cape','mask']},
+{prompt:'You wear this around your waist to hold your trousers.',answer:'belt',options:['belt','cape','gloves','symbol']},
+{prompt:'A picture or letter that represents a superhero.',answer:'symbol',options:['symbol','mask','costume','cape']}
 ]},
-{name:"Do/Does Questions",type:"transform",context:"Write the question.",xpEach:10,items:[
-{prompt:"she / like / the red dress",base:"she / like / the red dress",answer:"Does she like the red dress?",alts:["Does she like the red dress"]},
-{prompt:"you / wear / a uniform",base:"you / wear / a uniform",answer:"Do you wear a uniform?",alts:["Do you wear a uniform"]},
-{prompt:"he / buy / clothes online",base:"he / buy / clothes online",answer:"Does he buy clothes online?",alts:["Does he buy clothes online"]},
-{prompt:"they / sell / trainers",base:"they / sell / trainers",answer:"Do they sell trainers?",alts:["Do they sell trainers"]},
-{prompt:"your sister / like / hoodies",base:"your sister / like / hoodies",answer:"Does your sister like hoodies?",alts:["Does your sister like hoodies"]},
-{prompt:"the shop / open / on Sundays",base:"the shop / open / on Sundays",answer:"Does the shop open on Sundays?",alts:["Does the shop open on Sundays"]}
+{name:'Do/Does Questions',type:'transform',context:'Write the question.',xpEach:10,items:[
+{prompt:'she / like / the red dress',base:'she / like / the red dress',answer:'Does she like the red dress?',alts:['Does she like the red dress']},
+{prompt:'he / wear / a cape',base:'he / wear / a cape',answer:'Does he wear a cape?',alts:['Does he wear a cape']},
+{prompt:'they / have / superhero boots',base:'they / have / superhero boots',answer:'Do they have superhero boots?',alts:['Do they have superhero boots']},
+{prompt:'you / like / this costume',base:'you / like / this costume',answer:'Do you like this costume?',alts:['Do you like this costume']},
+{prompt:'she / wear / a mask',base:'she / wear / a mask',answer:'Does she wear a mask?',alts:['Does she wear a mask']},
+{prompt:'they / have / a big symbol',base:'they / have / a big symbol',answer:'Do they have a big symbol?',alts:['Do they have a big symbol']}
 ]},
-{name:"Short Answers",type:"gap-fill",context:"Complete the short answer.",xpEach:10,items:[
-{sentence:"Does she wear a cape? — Yes, ___.",answer:"she does",options:["she does","she doesn't","they do","he does"]},
-{sentence:"Do they like the mask? — No, ___.",answer:"they don't",options:["they don't","they do","she doesn't","he doesn't"]},
-{sentence:"Does he buy trainers? — No, ___.",answer:"he doesn't",options:["he doesn't","he does","they don't","she doesn't"]},
-{sentence:"Do you like this hoodie? — Yes, ___.",answer:"I do",options:["I do","I don't","he does","she does"]},
-{sentence:"Does he wear boots? — Yes, ___.",answer:"he does",options:["he does","he doesn't","they do","she does"]},
-{sentence:"Do the students wear uniforms? — No, ___.",answer:"they don't",options:["they don't","they do","he doesn't","she doesn't"]}
+{name:'Short Answers',type:'gap-fill',context:'Complete the short answer.',xpEach:10,items:[
+{sentence:'Does she wear a cape? — Yes, ___.',answer:'she does',options:['she does',"she doesn't",'they do','he does']},
+{sentence:'Does he like the costume? — No, ___.',answer:"he doesn't",options:["he doesn't",'he does',"they don't","she doesn't"]},
+{sentence:'Do they have boots? — Yes, ___.',answer:'they do',options:['they do',"they don't",'she does','he does']},
+{sentence:'Do you like this mask? — Yes, ___.',answer:'I do',options:['I do',"I don't",'he does','she does']},
+{sentence:'Does the costume have a symbol? — Yes, ___.',answer:'it does',options:['it does',"it doesn't",'they do','she does']},
+{sentence:'Do they wear gloves? — No, ___.',answer:"they don't",options:["they don't",'they do',"he doesn't","she doesn't"]}
 ]}
 ],
-reading:{title:"The Superhero Fashion Show",passage:"Welcome to the Superhero Fashion Show! Captain Strong wears a blue cape and red boots. Does he like his costume? Yes, he does! Sky Girl wears a purple mask and silver trainers. She doesn't wear a cape. Do the heroes like fashion? Yes, they do! But Invisible Boy has a problem — nobody can see his clothes! Does he wear anything? Yes, he does. But nobody knows what!",questions:[
-{question:"What does Captain Strong wear?",type:"mc",answer:"A blue cape and red boots",options:["A blue cape and red boots","A red cape and blue boots","A purple mask","Silver trainers"]},
-{question:"Sky Girl wears a cape.",type:"tf",answer:"False",alts:["false"]},
-{question:"Do the heroes like fashion?",type:"short",answer:"Yes, they do",alts:["yes","Yes they do","Yes, they do."]},
-{question:"Invisible Boy's clothes can be seen.",type:"tf",answer:"False",alts:["false"]},
-{question:"Does Captain Strong like his costume?",type:"mc",answer:"Yes, he does",options:["Yes, he does","No, he doesn't","Maybe","The text doesn't say"]}
+reading:{title:'The Superhero Fashion Show',passage:'Welcome to the Superhero Fashion Show! Captain Strong wears a blue cape and red boots. Does he like his costume? Yes, he does! Sky Girl wears a purple mask and silver gloves. She does not wear a cape. Do the heroes like fashion? Yes, they do! But Invisible Boy has a problem. Nobody can see his clothes! Does he wear a costume? Yes, he does. But nobody knows what it looks like!',questions:[
+{question:'What does Captain Strong wear?',type:'mc',answer:'A blue cape and red boots',options:['A blue cape and red boots','A purple mask','Silver gloves','A red cape']},
+{question:'Sky Girl wears a cape.',type:'tf',answer:'False',alts:['false']},
+{question:'Do the heroes like fashion?',type:'short',answer:'Yes, they do',alts:['yes','Yes they do','Yes, they do.']},
+{question:"Invisible Boy's clothes can be seen.",type:'tf',answer:'False',alts:['false']},
+{question:'Does Captain Strong like his costume?',type:'mc',answer:'Yes, he does',options:['Yes, he does',"No, he doesn't",'Maybe','The text does not say']}
 ]},
-boss:{name:"The Fashion Test",items:[
-{type:"mc",prompt:"___ she like the red dress?",answer:"Does",options:["Does","Do","Is","Are"]},
-{type:"mc",prompt:"Do they sell boots? — Yes, ___.",answer:"they do",options:["they do","they does","she does","he do"]},
-{type:"mc",prompt:"___ you wear a uniform?",answer:"Do",options:["Do","Does","Is","Are"]},
-{type:"mc",prompt:"Does he buy jeans? — No, ___.",answer:"he doesn't",options:["he doesn't","he don't","he does","he isn't"]},
-{type:"mc",prompt:"___ your sister like hoodies?",answer:"Does",options:["Does","Do","Is","Are"]},
-{type:"mc",prompt:"Do we need a cape? — Yes, ___.",answer:"we do",options:["we do","we does","we are","we don't"]},
-{type:"mc",prompt:"___ the children play outside?",answer:"Do",options:["Do","Does","Is","Are"]},
-{type:"mc",prompt:"Does the shop open on Sundays? — No, ___.",answer:"it doesn't",options:["it doesn't","it don't","they don't","she doesn't"]}
+boss:{name:'The Fashion Test',items:[
+{type:'mc',prompt:'___ she like the red dress?',answer:'Does',options:['Does','Do','Is','Are']},
+{type:'mc',prompt:'Do they sell boots? — Yes, ___.',answer:'they do',options:['they do','they does','she does','he do']},
+{type:'mc',prompt:'___ you wear a uniform?',answer:'Do',options:['Do','Does','Is','Are']},
+{type:'mc',prompt:'Does he buy costumes? — No, ___.',answer:"he doesn't",options:["he doesn't","he don't",'he does',"he isn't"]},
+{type:'mc',prompt:'___ your sister like capes?',answer:'Does',options:['Does','Do','Is','Are']},
+{type:'mc',prompt:'Do we need a mask? — Yes, ___.',answer:'we do',options:['we do','we does','we are',"we don't"]},
+{type:'mc',prompt:'___ the children play outside?',answer:'Do',options:['Do','Does','Is','Are']},
+{type:'mc',prompt:'Does the shop open on Sundays? — No, ___.',answer:"it doesn't",options:["it doesn't","it don't","they don't","she doesn't"]}
 ]},
-characterUnlock:"sophia-stylist",comicImage:"campaign/comic-L08.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
+characterUnlock:'sophia-stylist',comicImage:'campaign/comic-L08.png',maxTotalXP:325,starThresholds:{one:75,two:110,three:155}
 },
-{levelId:"L09",levelName:"The Creature Sanctuary",unitNumber:9,actNumber:1,grammarFocus:["Object pronouns","Question words"],
-storyIntro:["A nature park with magical animals. Some are very unusual.","But the caretakers have a problem. 'I feed he every day,' says one.","An owl sits on a branch. She looks wise and kind.","'I am Aunty Olivia,' she hoots. 'Without the page, we say pronouns wrong!'"],
-storyOutro:["The animals are happy. Everyone says the right words now.","Aunty Olivia hoots happily. 'Listen to them! Perfect pronouns!'","A horse runs in with a shopping bag. 'The shops need help!'","'The Merchant Mile is next! How much does the adventure cost?'"],
+{levelId:'L09',levelName:'The Creature Sanctuary',unitNumber:9,actNumber:2,grammarFocus:['Object pronouns','Question words'],
+storyIntro:['A nature park with magical animals. Some are very unusual.','But the caretakers say things wrong: \'I feed he every day!\'','An owl sits on a branch. She looks wise and kind.','\'I am Aunty Olivia. Without the page, we say pronouns wrong!\''],
+storyOutro:['The animals are happy. Everyone says the right words now.','Aunty Olivia hoots happily. \'Listen to them! Perfect pronouns!\'','A horse runs in with a shopping bag. \'The shops need help!\'','\'The Merchant Mile is next! How much does adventure cost?\''],
 tasks:[
-{name:"Pet Match",type:"vocab",context:"Match each pet to its description.",xpEach:5,items:[
-{prompt:"A small furry animal. It runs in a wheel.",answer:"hamster",options:["hamster","turtle","goldfish","snake"]},
-{prompt:"A colourful bird. It can learn to talk.",answer:"parrot",options:["parrot","hamster","rabbit","goldfish"]},
-{prompt:"It has a hard shell. It moves very slowly.",answer:"turtle",options:["turtle","snake","hamster","parrot"]},
-{prompt:"Soft and fluffy. It hops and eats carrots.",answer:"rabbit",options:["rabbit","hamster","parrot","snake"]},
-{prompt:"A small orange fish. It lives in a bowl.",answer:"goldfish",options:["goldfish","turtle","snake","rabbit"]},
-{prompt:"Long and thin. It has no legs.",answer:"snake",options:["snake","turtle","goldfish","hamster"]}
+{name:'Magical Creatures',type:'vocab',context:'Match each creature to its description.',xpEach:5,items:[
+{prompt:'A horse with wings. It can fly through the sky.',answer:'flying horse',options:['flying horse','spelling bat','crystal serpent','phoenix bird']},
+{prompt:'A bat that can spell words in the air.',answer:'spelling bat',options:['spelling bat','flying horse','shadow fox','star turtle']},
+{prompt:'A snake made of crystal. It shines in the light.',answer:'crystal serpent',options:['crystal serpent','phoenix bird','cloud deer','star turtle']},
+{prompt:'A bird of fire. It is born again from its ashes.',answer:'phoenix bird',options:['phoenix bird','crystal serpent','flying horse','spelling bat']},
+{prompt:'A deer that walks on clouds.',answer:'cloud deer',options:['cloud deer','star turtle','shadow fox','flying horse']},
+{prompt:'A turtle with stars on its shell.',answer:'star turtle',options:['star turtle','cloud deer','crystal serpent','shadow fox']},
+{prompt:'A fox that hides in shadows and is hard to see.',answer:'shadow fox',options:['shadow fox','star turtle','spelling bat','cloud deer']}
 ]},
-{name:"Object Pronouns",type:"gap-fill",context:"Choose the correct object pronoun.",xpEach:10,items:[
-{sentence:"I love my hamster. I feed ___ every day.",answer:"him",options:["me","him","her","it","us","them"]},
-{sentence:"The owl is wise. Listen to ___.",answer:"her",options:["me","him","her","it","us","them"]},
-{sentence:"The dogs are hungry. Please feed ___.",answer:"them",options:["me","him","her","it","us","them"]},
-{sentence:"Can you help ___? I cannot find my cat.",answer:"me",options:["me","him","her","it","us","them"]},
-{sentence:"We love animals. Animals love ___.",answer:"us",options:["me","him","her","it","us","them"]},
-{sentence:"The fish is beautiful. I watch ___ every morning.",answer:"it",options:["me","him","her","it","us","them"]}
+{name:'Object Pronouns',type:'gap-fill',context:'Choose the correct object pronoun.',xpEach:10,items:[
+{sentence:'The crystal serpent is beautiful. I watch ___ every morning.',answer:'it',options:['me','him','her','it','us','them']},
+{sentence:'Can you help ___? I cannot find my shadow fox.',answer:'me',options:['me','him','her','it','us','them']},
+{sentence:'Aunty Olivia is wise. Listen to ___.',answer:'her',options:['me','him','her','it','us','them']},
+{sentence:'We love animals. Animals love ___.',answer:'us',options:['me','him','her','it','us','them']},
+{sentence:'The phoenix is lost. Can you find ___?',answer:'him',options:['me','him','her','it','us','them']},
+{sentence:'The cloud deer are hungry. Please feed ___.',answer:'them',options:['me','him','her','it','us','them']}
 ]},
-{name:"Question Words",type:"gap-fill",context:"Choose the correct question word.",xpEach:10,items:[
-{sentence:"___ is your favourite pet?",answer:"What",options:["What","Where","Who","Why","How often"]},
-{sentence:"___ do you live?",answer:"Where",options:["What","Where","Who","Why","How often"]},
-{sentence:"___ do you feed your cat?",answer:"How often",options:["What","Where","Who","Why","How often"]},
-{sentence:"___ is the vet?",answer:"Who",options:["What","Where","Who","Why","How often"]},
-{sentence:"___ do you like hamsters?",answer:"Why",options:["What","Where","Who","Why","How often"]},
-{sentence:"___ does the parrot live?",answer:"Where",options:["What","Where","Who","Why","How often"]}
+{name:'Question Words',type:'gap-fill',context:'Choose the correct question word.',xpEach:10,items:[
+{sentence:'___ feeds the animals every day?',answer:'Who',options:['What','Where','Who','Why','How often']},
+{sentence:'___ do the star turtles live?',answer:'Where',options:['What','Where','Who','Why','How often']},
+{sentence:'___ do you feed the phoenix?',answer:'How often',options:['What','Where','Who','Why','How often']},
+{sentence:'___ is the shadow fox hiding?',answer:'Why',options:['What','Where','Who','Why','How often']},
+{sentence:'___ is your favourite creature?',answer:'What',options:['What','Where','Who','Why','How often']},
+{sentence:'___ does the crystal serpent eat?',answer:'What',options:['What','Where','Who','Why','How often']}
 ]}
 ],
-reading:{title:"A Letter to Aunty Olivia",passage:"Dear Aunty Olivia, thank you for looking after us! My hamster is great. I feed him every morning. My sister has a parrot. She talks to it every day and it talks back to her! Our mum doesn't like the snake. She says: 'Keep it away from me!' But we love all our pets. We take them to the vet every year. The vet is very kind to us. See you soon!",questions:[
-{question:"Who does the writer feed every morning?",type:"mc",answer:"The hamster",options:["The hamster","The parrot","The snake","The goldfish"]},
-{question:"The sister's parrot can talk.",type:"tf",answer:"True",alts:["true"]},
-{question:"What does their mum think about the snake?",type:"short",answer:"she doesn't like it",alts:["She doesn't like it","She doesn't like the snake","she is scared"]},
-{question:"They take their pets to the vet every month.",type:"tf",answer:"False",alts:["false"]},
-{question:"Is the vet kind?",type:"mc",answer:"Yes",options:["Yes","No","Sometimes","The letter doesn't say"]}
+reading:{title:'A Letter to Aunty Olivia',passage:'Dear Aunty Olivia, thank you for looking after us! The flying horse is missing. We saw him yesterday near the cloud lake. Can you help us find him? The crystal serpent is hungry. Please feed her soon. The shadow fox is hiding again. Nobody can see him! We love all the creatures here. They make us happy. Please write back to us soon!',questions:[
+{question:'What animal is missing?',type:'mc',answer:'The flying horse',options:['The flying horse','The shadow fox','The crystal serpent','The star turtle']},
+{question:'The crystal serpent is hungry.',type:'tf',answer:'True',alts:['true']},
+{question:'Where was the flying horse seen?',type:'short',answer:'near the cloud lake',alts:['Near the cloud lake','the cloud lake','cloud lake']},
+{question:'The shadow fox is easy to see.',type:'tf',answer:'False',alts:['false']},
+{question:'Do they love the creatures?',type:'mc',answer:'Yes',options:['Yes','No','Maybe','The letter does not say']}
 ]},
-boss:{name:"The Creature Test",items:[
-{type:"mc",prompt:"I love my dog. I walk ___ every day.",answer:"him",options:["him","he","his","me"]},
-{type:"mc",prompt:"___ is your favourite animal?",answer:"What",options:["What","Where","Who","Why"]},
-{type:"mc",prompt:"The cats are hungry. Feed ___.",answer:"them",options:["them","they","their","us"]},
-{type:"mc",prompt:"___ do you keep your hamster?",answer:"Where",options:["Where","What","Who","Why"]},
-{type:"mc",prompt:"Listen to ___! She is singing.",answer:"her",options:["her","she","him","them"]},
-{type:"mc",prompt:"___ do you like rabbits?",answer:"Why",options:["Why","What","Where","Who"]},
-{type:"mc",prompt:"Can you help ___? We are lost.",answer:"us",options:["us","we","our","them"]},
-{type:"mc",prompt:"___ feeds the animals?",answer:"Who",options:["Who","What","Where","Why"]}
+boss:{name:'The Creature Test',items:[
+{type:'mc',prompt:'I love my shadow fox. I walk ___ every day.',answer:'him',options:['him','he','his','me']},
+{type:'mc',prompt:'___ is your favourite creature?',answer:'What',options:['What','Where','Who','Why']},
+{type:'mc',prompt:'The cloud deer are hungry. Feed ___.',answer:'them',options:['them','they','their','us']},
+{type:'mc',prompt:'___ do you keep the star turtle?',answer:'Where',options:['Where','What','Who','Why']},
+{type:'mc',prompt:'Listen to ___! She is hooting.',answer:'her',options:['her','she','him','them']},
+{type:'mc',prompt:'___ do you like the phoenix?',answer:'Why',options:['Why','What','Where','Who']},
+{type:'mc',prompt:'Can you help ___? We are lost.',answer:'us',options:['us','we','our','them']},
+{type:'mc',prompt:'___ feeds the animals?',answer:'Who',options:['Who','What','Where','Why']}
 ]},
-characterUnlock:"aunty-olivia",comicImage:"campaign/comic-L09.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
+characterUnlock:'aunty-olivia',comicImage:'campaign/comic-L09.png',maxTotalXP:325,starThresholds:{one:75,two:110,three:155}
 },
-{levelId:"L10",levelName:"The Merchant's Mile",unitNumber:10,actNumber:1,grammarFocus:["this/that/these/those","How much is/are","Numbers"],
-storyIntro:["A long street with colourful shops. Everything looks wonderful.","But nobody can point at things. 'I want... that thing... no, this thing...'","A horse with a shopping bag looks confused.","'I am Jolly,' he says. 'I want to buy things, but I cannot say which ones!'"],
-storyOutro:["The shops are busy again! Everyone can point and ask prices.","Jolly buys his beans. 'These beans are perfect!' he says.","A broken pocket watch falls from a shelf. 'Time is in trouble!'","'The Clocktower is next. We must hurry!'"],
+{levelId:'L10',levelName:"The Merchant's Mile",unitNumber:10,actNumber:2,grammarFocus:['this/that/these/those','How much is/are','Numbers to 1000'],
+storyIntro:['A long street with colourful shops. Everything looks wonderful.','But nobody can point at things. \'I want... that thing... no, this thing...\'','A horse with a shopping bag looks confused.','\'I am Jolly. I want to buy things, but I cannot say which ones!\''],
+storyOutro:['The shops are busy again! Everyone can point and ask prices.','Jolly buys his beans. \'These beans are perfect!\' he says.','A broken pocket watch falls from a shelf. \'Time is in trouble!\'','\'The Clocktower is next. We must hurry!\''],
 tasks:[
-{name:"Shop Items",type:"vocab",context:"Match each item to its description.",xpEach:5,items:[
-{prompt:"You wear this on top. It often has a picture on it.",answer:"T-shirt",options:["T-shirt","jeans","hat","bag"]},
-{prompt:"Shoes for running and sport.",answer:"trainers",options:["trainers","boots","socks","hat"]},
-{prompt:"Blue trousers made of strong cloth.",answer:"jeans",options:["jeans","T-shirt","socks","bag"]},
-{prompt:"You wear this on your head.",answer:"hat",options:["hat","T-shirt","trainers","socks"]},
-{prompt:"You carry your things in this.",answer:"bag",options:["bag","hat","jeans","trainers"]},
-{prompt:"You wear these on your feet, inside your shoes.",answer:"socks",options:["socks","trainers","boots","hat"]}
+{name:'Shop Items',type:'vocab',context:'Match each item to its description.',xpEach:5,items:[
+{prompt:'You wear this on top. It often has a picture on it.',answer:'T-shirt',options:['T-shirt','hat','bag','money']},
+{prompt:'You wear this on your head.',answer:'hat',options:['hat','T-shirt','bag','shop']},
+{prompt:'The amount of money something costs.',answer:'price',options:['price','money','sale','shop']},
+{prompt:'Coins and notes. You use this to buy things.',answer:'money',options:['money','price','sale','bag']},
+{prompt:'A place where you buy things.',answer:'shop',options:['shop','sale','price','money']},
+{prompt:'When prices are lower than usual.',answer:'sale',options:['sale','price','shop','money']},
+{prompt:'You carry your shopping in this.',answer:'bag',options:['bag','hat','T-shirt','shop']}
 ]},
-{name:"This, That, These, Those",type:"mc",context:"Choose the correct demonstrative.",xpEach:10,items:[
-{prompt:"I like ___ T-shirt. (near, singular)",answer:"this",options:["this","that","these","those"]},
-{prompt:"Look at ___ shoes over there! (far, plural)",answer:"those",options:["this","that","these","those"]},
-{prompt:"___ socks are nice. (near, plural)",answer:"These",options:["This","That","These","Those"]},
-{prompt:"How much is ___ hat over there? (far, singular)",answer:"that",options:["this","that","these","those"]},
-{prompt:"How much are ___ trainers on the top shelf? (far, plural)",answer:"those",options:["this","that","these","those"]},
-{prompt:"___ book is great! (near, singular)",answer:"This",options:["This","That","These","Those"]}
+{name:'This, That, These, Those',type:'mc',context:'Choose the correct demonstrative.',xpEach:10,items:[
+{prompt:'I like ___ T-shirt here in my hands. (near, singular)',answer:'this',options:['this','that','these','those']},
+{prompt:'Look at ___ shoes over there on the shelf! (far, plural)',answer:'those',options:['this','that','these','those']},
+{prompt:'___ socks here are nice. (near, plural)',answer:'These',options:['This','That','These','Those']},
+{prompt:'How much is ___ hat over there? (far, singular)',answer:'that',options:['this','that','these','those']},
+{prompt:'How much are ___ trainers on the top shelf? (far, plural)',answer:'those',options:['this','that','these','those']},
+{prompt:'___ book in my hand is great! (near, singular)',answer:'This',options:['This','That','These','Those']}
 ]},
-{name:"How Much and Numbers",type:"gap-fill",context:"Complete the sentence.",xpEach:10,items:[
-{sentence:"How much ___ the T-shirt?",answer:"is",options:["is","are","do","does"]},
-{sentence:"How much ___ the trainers?",answer:"are",options:["are","is","do","does"]},
-{sentence:"Write the number: 350",answer:"three hundred and fifty",options:["three hundred and fifty","three hundred fifty","three hundreds and fifty","tree hundred and fifty"]},
-{sentence:"How much ___ these jeans?",answer:"are",options:["are","is","do","does"]},
-{sentence:"Write the number: 999",answer:"nine hundred and ninety-nine",options:["nine hundred and ninety-nine","nine hundred ninety nine","nine hundreds and ninety-nine","nine hundred and ninty-nine"]},
-{sentence:"Write the number: 40",answer:"forty",options:["forty","fourty","fourthty","forthy"]}
+{name:'How Much and Numbers',type:'gap-fill',context:'Complete the sentence.',xpEach:10,items:[
+{sentence:'How much ___ the T-shirt? It is 350 crowns.',answer:'is',options:['is','are','do','does']},
+{sentence:'How much ___ the trainers? They are 75 crowns.',answer:'are',options:['are','is','do','does']},
+{sentence:'Write the number: 999',answer:'nine hundred and ninety-nine',options:['nine hundred and ninety-nine','nine hundred ninety nine','nine hundreds and ninety-nine','nine hundred and ninty-nine']},
+{sentence:'How much ___ these jeans? They are 40 euros.',answer:'are',options:['are','is','do','does']},
+{sentence:'Write the number: 120',answer:'one hundred and twenty',options:['one hundred and twenty','one hundred twenty','one hundreds and twenty','a hundred and twenty']},
+{sentence:'The boots ___ not cheap. They ___ 200 euros.',answer:'are, are',options:['are, are','is, is','are, is','is, are']}
 ]}
 ],
 reading:{title:"Mr. Bartleby's Shop",passage:"Mr. Bartleby has a small shop on the Merchant's Mile. He sells a lot of things. This T-shirt near the door is fifteen pounds. Those boots on the top shelf are ninety-nine pounds. 'How much are these jeans?' asks a boy. 'Those jeans are forty-five pounds,' says Mr. Bartleby. 'And that hat over there is twenty pounds.' The shop is busy every day!",questions:[
-{question:"How much is the T-shirt?",type:"mc",answer:"Fifteen pounds",options:["Fifteen pounds","Forty-five pounds","Ninety-nine pounds","Twenty pounds"]},
-{question:"The boots are cheap.",type:"tf",answer:"False",alts:["false"]},
-{question:"How much are the jeans?",type:"short",answer:"forty-five pounds",alts:["Forty-five pounds","45 pounds","45"]},
-{question:"The hat costs twenty pounds.",type:"tf",answer:"True",alts:["true"]},
-{question:"Is the shop busy?",type:"mc",answer:"Yes, every day",options:["Yes, every day","No","Only on Mondays","Sometimes"]}
+{question:'How much is the T-shirt?',type:'mc',answer:'Fifteen pounds',options:['Fifteen pounds','Forty-five pounds','Ninety-nine pounds','Twenty pounds']},
+{question:'The boots are cheap.',type:'tf',answer:'False',alts:['false']},
+{question:'How much are the jeans?',type:'short',answer:'forty-five pounds',alts:['Forty-five pounds','45 pounds','45']},
+{question:'The hat costs twenty pounds.',type:'tf',answer:'True',alts:['true']},
+{question:'Is the shop busy?',type:'mc',answer:'Yes, every day',options:['Yes, every day','No','Only on Mondays','Sometimes']}
 ]},
-boss:{name:"The Shopping Test",items:[
-{type:"mc",prompt:"How much ___ this T-shirt?",answer:"is",options:["is","are","do","does"]},
-{type:"mc",prompt:"I like ___ shoes over there.",answer:"those",options:["those","this","these","that"]},
-{type:"mc",prompt:"How much ___ these trainers?",answer:"are",options:["are","is","do","does"]},
-{type:"mc",prompt:"___ hat is nice. (near)",answer:"This",options:["This","That","These","Those"]},
-{type:"mc",prompt:"Write: 250",answer:"two hundred and fifty",options:["two hundred and fifty","two hundreds and fifty","two hundred fifty","too hundred and fifty"]},
-{type:"mc",prompt:"___ socks over there are cool. (far, plural)",answer:"Those",options:["Those","These","This","That"]},
-{type:"mc",prompt:"How much is ___? (near, singular)",answer:"this",options:["this","these","those","that"]},
-{type:"mc",prompt:"Write: 80",answer:"eighty",options:["eighty","eigthy","eighthy","eitghty"]}
+boss:{name:'The Shopping Test',items:[
+{type:'mc',prompt:'How much ___ this T-shirt?',answer:'is',options:['is','are','do','does']},
+{type:'mc',prompt:'I like ___ shoes over there. (far, plural)',answer:'those',options:['those','this','these','that']},
+{type:'mc',prompt:'How much ___ these trainers?',answer:'are',options:['are','is','do','does']},
+{type:'mc',prompt:'___ hat here is nice. (near, singular)',answer:'This',options:['This','That','These','Those']},
+{type:'mc',prompt:'Write: 350',answer:'three hundred and fifty',options:['three hundred and fifty','three hundred fifty','three hundreds and fifty','tree hundred and fifty']},
+{type:'mc',prompt:'___ socks over there are cool. (far, plural)',answer:'Those',options:['Those','These','This','That']},
+{type:'mc',prompt:'How much ___ that bag over there?',answer:'is',options:['is','are','do','does']},
+{type:'mc',prompt:'Write: 75',answer:'seventy-five',options:['seventy-five','seventy five','seventyfive','sevnty-five']}
 ]},
-characterUnlock:"jolly-horse",comicImage:"campaign/comic-L10.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
+characterUnlock:'jolly-horse',comicImage:'campaign/comic-L10.png',maxTotalXP:325,starThresholds:{one:75,two:110,three:155}
 },
-{levelId:"L11",levelName:"The Clocktower of Now",unitNumber:11,actNumber:1,grammarFocus:["Present continuous","Telling time"],
-storyIntro:["A huge tower with a giant clock stands in the centre of Lexica.","But the clock is broken. People are frozen in the middle of actions.","A girl with a clock necklace looks worried.","'I am Suzy,' she says. 'Time is stuck! Nobody can say what is happening NOW!'"],
-storyOutro:["The clocks tick again! People can move and talk.","Suzy laughs. 'I am fixing time! And you are helping!'","From the top of the tower, you see a big old house.","'It is someone's birthday there. But something is wrong...'"],
+{levelId:'L11',levelName:'The Clocktower of Now',unitNumber:11,actNumber:3,grammarFocus:['Present continuous','Telling time'],
+storyIntro:['A huge tower with a giant clock stands in the centre of Lexica.','But the clock is broken. People are frozen in the middle of actions.','A girl with a clock necklace looks worried.','\'I am Suzy. Time is stuck! Nobody can say what is happening NOW!\''],
+storyOutro:['The clocks tick again! People can move and talk.','Suzy laughs. \'I am fixing time! And you are helping!\'','From the top, you see a big old house.','\'Someone\'s birthday party is going wrong down there...\''],
 tasks:[
-{name:"Action Words",type:"vocab",context:"Match each action to its description.",xpEach:5,items:[
-{prompt:"A bird does this in the sky. It has wings.",answer:"flying",options:["flying","running","swimming","sleeping"]},
-{prompt:"Moving your legs fast. Athletes do this.",answer:"running",options:["running","flying","cooking","reading"]},
-{prompt:"Moving through water. Fish do this.",answer:"swimming",options:["swimming","flying","running","sleeping"]},
-{prompt:"Looking at words in a book.",answer:"reading",options:["reading","cooking","swimming","flying"]},
-{prompt:"Making food in the kitchen.",answer:"cooking",options:["cooking","reading","running","sleeping"]},
-{prompt:"Closing your eyes and resting at night.",answer:"sleeping",options:["sleeping","reading","cooking","swimming"]}
+{name:'Action Words',type:'vocab',context:'Match the action to its description.',xpEach:5,items:[
+{prompt:'A bird does this in the sky.',answer:'is flying',options:['is flying','is swinging','is flowing','are moving']},
+{prompt:'A monkey does this on a rope in the trees.',answer:'is swinging',options:['is swinging','is flying','is writing','are moving']},
+{prompt:'Water does this in a river.',answer:'is flowing',options:['is flowing','is flying','is swinging','is writing']},
+{prompt:'The clock hands do this around the face.',answer:'are moving',options:['are moving','is flowing','is flying','is writing']},
+{prompt:'A student does this with a pencil and paper.',answer:'is writing',options:['is writing','is flowing','is swinging','is flying']}
 ]},
-{name:"Present Continuous",type:"gap-fill",context:"Type the correct present continuous form.",xpEach:10,items:[
-{sentence:"Look! The bird ___. (fly)",answer:"is flying",options:["is flying","are flying","am flying","flying"]},
-{sentence:"The children ___. (play)",answer:"are playing",options:["are playing","is playing","am playing","playing"]},
-{sentence:"I ___ the tower right now. (climb)",answer:"am climbing",options:["am climbing","is climbing","are climbing","climbing"]},
-{sentence:"Suzy ___ the big clock. (fix)",answer:"is fixing",options:["is fixing","are fixing","am fixing","fixing"]},
-{sentence:"The cats ___ on the wall. (sit)",answer:"are sitting",options:["are sitting","is sitting","am sitting","sitting"]},
-{sentence:"He ___ a bicycle. (ride)",answer:"is riding",options:["is riding","are riding","am riding","riding"]}
+{name:'Present Continuous',type:'transform',context:'Write the correct present continuous form.',xpEach:10,items:[
+{prompt:'Look! The bird ___. (fly)',base:'fly',answer:'is flying',alts:['is flying']},
+{prompt:'The children ___ on the bench. (sit)',base:'sit',answer:'are sitting',alts:['are sitting']},
+{prompt:'The clock hands ___. (move)',base:'move',answer:'are moving',alts:['are moving']},
+{prompt:'Suzy ___ the big clock. (fix)',base:'fix',answer:'is fixing',alts:['is fixing']},
+{prompt:'I ___ a bicycle right now. (ride)',base:'ride',answer:'am riding',alts:['am riding']},
+{prompt:'The students ___ to the teacher. (listen)',base:'listen',answer:'are listening',alts:['are listening']}
 ]},
-{name:"Telling the Time",type:"mc",context:"Choose the correct time.",xpEach:10,items:[
-{prompt:"The clock shows 3:00. It's ___.",answer:"three o'clock",options:["three o'clock","half past three","quarter past three","quarter to three"]},
-{prompt:"The clock shows 7:15. It's ___.",answer:"quarter past seven",options:["quarter past seven","quarter to seven","half past seven","seven o'clock"]},
-{prompt:"The clock shows 9:30. It's ___.",answer:"half past nine",options:["half past nine","quarter past nine","nine o'clock","quarter to nine"]},
-{prompt:"The clock shows 2:45. It's ___.",answer:"quarter to three",options:["quarter to three","quarter past two","half past two","two o'clock"]},
-{prompt:"The clock shows 6:30. It's ___.",answer:"half past six",options:["half past six","quarter past six","six o'clock","quarter to six"]},
-{prompt:"The clock shows 11:15. It's ___.",answer:"quarter past eleven",options:["quarter past eleven","quarter to eleven","half past eleven","eleven o'clock"]}
+{name:'Telling the Time',type:'mc',context:'Choose the correct time.',xpEach:10,items:[
+{prompt:'The clock shows 8:00.',answer:"eight o'clock",options:["eight o'clock",'half past eight','quarter past eight','quarter to eight']},
+{prompt:'The clock shows 3:30.',answer:'half past three',options:['half past three',"three o'clock",'quarter past three','quarter to three']},
+{prompt:'The clock shows 2:15.',answer:'quarter past two',options:['quarter past two','quarter to two','half past two',"two o'clock"]},
+{prompt:'The clock shows 5:45.',answer:'quarter to six',options:['quarter to six','quarter past five','half past five',"five o'clock"]},
+{prompt:'The clock shows 7:00.',answer:"seven o'clock",options:["seven o'clock",'half past seven','quarter past seven','quarter to seven']},
+{prompt:'The clock shows 9:30. (Careful! In German halb zehn = 9:30)',answer:'half past nine',options:['half past nine','half past ten',"nine o'clock",'quarter to ten']}
 ]}
 ],
-reading:{title:"Suzy's Busy Day",passage:"It is a busy day for Suzy. Right now, she is fixing the big clock. The birds are flying around the tower. Two children are playing near the fountain. A man is reading a book on a bench. In the kitchen, someone is cooking lunch. Suzy is not sleeping today — she is working hard! The clock is ticking again. It is quarter past twelve. Time for lunch!",questions:[
-{question:"What is Suzy doing right now?",type:"mc",answer:"Fixing the big clock",options:["Fixing the big clock","Reading a book","Cooking lunch","Sleeping"]},
-{question:"The birds are swimming around the tower.",type:"tf",answer:"False",alts:["false"]},
-{question:"What is the man doing?",type:"short",answer:"reading a book",alts:["Reading a book","reading","He is reading a book"]},
-{question:"Suzy is sleeping today.",type:"tf",answer:"False",alts:["false"]},
-{question:"What time is it at the end?",type:"mc",answer:"Quarter past twelve",options:["Quarter past twelve","Half past twelve","Twelve o'clock","Quarter to twelve"]}
+reading:{title:"Suzy's Journal Entry",passage:'Dear journal, the world is frozen! Right now, a bird is flying around the tower but it is not moving forward. The clock hands are stuck. Two children are sitting on a bench. They are not talking or playing. A woman is writing a letter but her pen is not moving. The water in the fountain is not flowing. I am trying to fix the clock. I hope it works!',questions:[
+{question:'What is the bird doing?',type:'mc',answer:'Flying around the tower',options:['Flying around the tower','Sitting on a bench','Writing a letter','Swimming in the fountain']},
+{question:'The clock hands are moving.',type:'tf',answer:'False',alts:['false']},
+{question:'What are the two children doing?',type:'short',answer:'sitting on a bench',alts:['Sitting on a bench','sitting','They are sitting on a bench']},
+{question:'The water in the fountain is flowing.',type:'tf',answer:'False',alts:['false']},
+{question:'What is Suzy trying to do?',type:'mc',answer:'Fix the clock',options:['Fix the clock','Write a letter','Fly','Sit on a bench']}
 ]},
-boss:{name:"The Time Test",items:[
-{type:"mc",prompt:"Look! She ___ right now. (run)",answer:"is running",options:["is running","are running","runs","run"]},
-{type:"mc",prompt:"The clock shows 4:30. It's ___.",answer:"half past four",options:["half past four","quarter past four","four o'clock","quarter to four"]},
-{type:"mc",prompt:"We ___ a film at the moment. (watch)",answer:"are watching",options:["are watching","is watching","am watching","watches"]},
-{type:"mc",prompt:"The clock shows 8:15. It's ___.",answer:"quarter past eight",options:["quarter past eight","quarter to eight","half past eight","eight o'clock"]},
-{type:"mc",prompt:"I ___ my homework now. (do)",answer:"am doing",options:["am doing","is doing","are doing","does"]},
-{type:"mc",prompt:"They ___ football in the park. (play)",answer:"are playing",options:["are playing","is playing","plays","am playing"]},
-{type:"mc",prompt:"The clock shows 5:45. It's ___.",answer:"quarter to six",options:["quarter to six","quarter past five","half past five","five o'clock"]},
-{type:"mc",prompt:"He ___ a letter right now. (write)",answer:"is writing",options:["is writing","are writing","writes","am writing"]}
+boss:{name:'The Time Test',items:[
+{type:'mc',prompt:'Look! She ___ right now. (run)',answer:'is running',options:['is running','are running','runs','run']},
+{type:'mc',prompt:'The clock shows 8:00.',answer:"eight o'clock",options:["eight o'clock",'half past eight','quarter past eight','quarter to eight']},
+{type:'mc',prompt:'We ___ a film at the moment. (watch)',answer:'are watching',options:['are watching','is watching','am watching','watches']},
+{type:'mc',prompt:'The clock shows 3:30.',answer:'half past three',options:['half past three',"three o'clock",'quarter past three','quarter to four']},
+{type:'mc',prompt:'I ___ my homework now. (do)',answer:'am doing',options:['am doing','is doing','are doing','does']},
+{type:'mc',prompt:'They ___ football in the park. (play)',answer:'are playing',options:['are playing','is playing','plays','am playing']},
+{type:'mc',prompt:'The clock shows 5:45.',answer:'quarter to six',options:['quarter to six','quarter past five','half past five',"five o'clock"]},
+{type:'mc',prompt:'He ___ a letter right now. (write)',answer:'is writing',options:['is writing','are writing','writes','am writing']}
 ]},
-characterUnlock:"suzy-timekeeper",comicImage:"campaign/comic-L11.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
+characterUnlock:'suzy-timekeeper',comicImage:'campaign/comic-L11.png',maxTotalXP:315,starThresholds:{one:75,two:110,three:155}
 },
-{levelId:"L12",levelName:"The Haunted Mansion",unitNumber:12,actNumber:1,grammarFocus:["was/were","Ordinal numbers","Prepositions of time"],
-storyIntro:["A grand old mansion with candles in every window.","Inside, a birthday party was interrupted. The cake is gone.","A girl with a notebook looks at clues on the floor.","'I am Jessie,' she says. 'I am a detective. The cake was here, but now it is gone!'"],
-storyOutro:["The cake thief is caught! It was the cat — Inspector Paws!","Everyone laughs. The Page of the Past floats from the cake box.","'Twelve pages!' says Jessie. 'Only three more!'","'The mountains are next. But be careful — it is dangerous!'"],
+{levelId:'L12',levelName:'The Haunted Mansion',unitNumber:12,actNumber:3,grammarFocus:['was/were','Ordinal numbers','Prepositions of time'],
+storyIntro:['A grand old mansion with candles in every window.','Inside, a birthday party was interrupted. The cake is gone.','A girl with a notebook looks at clues on the floor.','\'I am Jessie. The cake was here, but now it is gone!\''],
+storyOutro:['The cake thief is caught! It was the cat — Inspector Paws!','Everyone laughs. The Page of the Past floats from the cake box.','\'Twelve pages!\' says Jessie. \'Only three more!\'','\'The mountains are next. But be careful — it is dangerous!\''],
 tasks:[
-{name:"Room Match",type:"vocab",context:"Match each room to its description.",xpEach:5,items:[
-{prompt:"You cook food here.",answer:"kitchen",options:["kitchen","garden","library","bedroom"]},
-{prompt:"An outdoor area with plants and flowers.",answer:"garden",options:["garden","hall","dining room","kitchen"]},
-{prompt:"A room full of books.",answer:"library",options:["library","bedroom","kitchen","hall"]},
-{prompt:"You eat meals in this room with your family.",answer:"dining room",options:["dining room","kitchen","garden","library"]},
-{prompt:"You sleep here at night.",answer:"bedroom",options:["bedroom","hall","dining room","library"]},
-{prompt:"The big room when you first enter a house.",answer:"hall",options:["hall","garden","kitchen","bedroom"]}
+{name:'Was/Were Match',type:'vocab',context:'Match each sentence to the correct picture.',xpEach:5,items:[
+{prompt:'The girl was sitting by the fire, reading a book.',answer:'She was reading',options:['She was reading','They were playing chess','He was making cake','The guests were dancing']},
+{prompt:'Two friends were at the table with a chess board.',answer:'They were playing chess',options:['They were playing chess','She was reading','He was making cake','I was playing piano']},
+{prompt:'The man had flour on his hands and was mixing ingredients.',answer:'He was making cake',options:['He was making cake','She was reading','The guests were dancing','I was playing piano']},
+{prompt:'People in the hall were moving to music.',answer:'The guests were dancing',options:['The guests were dancing','They were playing chess','He was making cake','She was reading']},
+{prompt:'Someone was sitting at a piano, playing a tune.',answer:'I was playing piano',options:['I was playing piano','The guests were dancing','She was reading','They were playing chess']}
 ]},
-{name:"Was and Were",type:"gap-fill",context:"Choose the correct form of was/were.",xpEach:10,items:[
-{sentence:"Jessie ___ in the kitchen at 9 o'clock.",answer:"was",options:["was","were","wasn't","weren't","Was","Were"]},
-{sentence:"The children ___ in the garden yesterday.",answer:"were",options:["was","were","wasn't","weren't","Was","Were"]},
-{sentence:"I ___ at home last night.",answer:"was",options:["was","were","wasn't","weren't","Was","Were"]},
-{sentence:"Mum and Dad ___ in the library.",answer:"were",options:["was","were","wasn't","weren't","Was","Were"]},
-{sentence:"___ you at the party?",answer:"Were",options:["was","were","wasn't","weren't","Was","Were"]},
-{sentence:"He ___ in the dining room. (negative)",answer:"wasn't",options:["was","were","wasn't","weren't","Was","Were"]}
+{name:'Was and Were',type:'gap-fill',context:'Choose the correct form.',xpEach:10,items:[
+{sentence:'Jessie ___ in the kitchen at nine.',answer:'was',options:['was','were',"wasn't","weren't",'Was','Were']},
+{sentence:'The cake ___ on the table this morning.',answer:'was',options:['was','were',"wasn't","weren't",'Was','Were']},
+{sentence:'The children ___ in the garden all afternoon.',answer:'were',options:['was','were',"wasn't","weren't",'Was','Were']},
+{sentence:'Mum and Dad ___ in the library.',answer:'were',options:['was','were',"wasn't","weren't",'Was','Were']},
+{sentence:'The guests ___ dancing in the hall.',answer:'were',options:['was','were',"wasn't","weren't",'Was','Were']},
+{sentence:'Inspector Paws ___ in the kitchen. Nobody saw him!',answer:'was',options:['was','were',"wasn't","weren't",'Was','Were']}
 ]},
-{name:"Prepositions of Time",type:"gap-fill",context:"Choose on, in, or at.",xpEach:10,items:[
-{sentence:"The party was ___ Saturday.",answer:"on",options:["on","in","at"]},
-{sentence:"Her birthday is ___ March.",answer:"in",options:["on","in","at"]},
-{sentence:"The cake was stolen ___ 9 o'clock.",answer:"at",options:["on","in","at"]},
-{sentence:"School starts ___ Monday.",answer:"on",options:["on","in","at"]},
-{sentence:"We go skiing ___ winter.",answer:"in",options:["on","in","at"]},
-{sentence:"The film starts ___ half past seven.",answer:"at",options:["on","in","at"]}
+{name:'Prepositions of Time',type:'gap-fill',context:'Choose on, in, or at.',xpEach:10,items:[
+{sentence:'The party was ___ Saturday.',answer:'on',options:['on','in','at']},
+{sentence:'The cake was stolen ___ half past four.',answer:'at',options:['on','in','at']},
+{sentence:'Her birthday is ___ March.',answer:'in',options:['on','in','at']},
+{sentence:'School starts ___ Monday.',answer:'on',options:['on','in','at']},
+{sentence:'We go skiing ___ winter.',answer:'in',options:['on','in','at']},
+{sentence:'The film starts ___ seven o\'clock.',answer:'at',options:['on','in','at']}
 ]}
 ],
-reading:{title:"The Mystery of the Missing Cake",passage:"Yesterday was Jessie's birthday. The party was on Saturday. The cake was in the kitchen at four o'clock. At half past four, it was gone! Jessie was in the garden with her friends. Mum was in the dining room. Dad was in the hall. Nobody was in the kitchen! But wait — there were paw prints on the floor. It was Inspector Paws! The naughty cat ate the cake!",questions:[
-{question:"When was the party?",type:"mc",answer:"On Saturday",options:["On Saturday","On Sunday","On Friday","On Monday"]},
-{question:"The cake was in the garden.",type:"tf",answer:"False",alts:["false"]},
-{question:"Where was Jessie at half past four?",type:"short",answer:"in the garden",alts:["In the garden","the garden","Garden"]},
-{question:"Dad was in the kitchen.",type:"tf",answer:"False",alts:["false"]},
-{question:"Who ate the cake?",type:"mc",answer:"Inspector Paws",options:["Inspector Paws","Jessie","Dad","Mum"]}
+reading:{title:'The Guest Book',passage:"It was Jessie's birthday on Saturday. The party was at four o'clock. At quarter past four, the guests were in the hall. They were dancing and laughing. At half past four, the cake was gone! Jessie was in the garden at that time. Dad was in the library. Mum was in the dining room. Nobody was in the kitchen! But there were paw prints on the floor. It was Inspector Paws!",questions:[
+{question:'When was the party?',type:'mc',answer:'On Saturday at four',options:['On Saturday at four','On Sunday','On Friday','On Monday']},
+{question:'The guests were dancing at quarter past four.',type:'tf',answer:'True',alts:['true']},
+{question:'Where was Jessie when the cake disappeared?',type:'short',answer:'in the garden',alts:['In the garden','the garden','Garden']},
+{question:'Dad was in the kitchen.',type:'tf',answer:'False',alts:['false']},
+{question:'Who took the cake?',type:'mc',answer:'Inspector Paws',options:['Inspector Paws','Jessie','Dad','Mum']}
 ]},
-boss:{name:"The Mansion Mystery Test",items:[
-{type:"mc",prompt:"She ___ at the party last night.",answer:"was",options:["was","were","is","are"]},
-{type:"mc",prompt:"The children ___ in the garden.",answer:"were",options:["were","was","are","is"]},
-{type:"mc",prompt:"The party was ___ Saturday.",answer:"on",options:["on","in","at","to"]},
-{type:"mc",prompt:"___ you at home yesterday?",answer:"Were",options:["Were","Was","Are","Is"]},
-{type:"mc",prompt:"It happened ___ March.",answer:"in",options:["in","on","at","to"]},
-{type:"mc",prompt:"The film started ___ 8 o'clock.",answer:"at",options:["at","on","in","to"]},
-{type:"mc",prompt:"They ___ at school yesterday.",answer:"weren't",options:["weren't","wasn't","aren't","isn't"]},
-{type:"mc",prompt:"Her birthday is on the ___. (3)",answer:"third",options:["third","three","thirst","thrid"]}
+boss:{name:'The Mansion Mystery Test',items:[
+{type:'mc',prompt:'She ___ at the party last night.',answer:'was',options:['was','were','is','are']},
+{type:'mc',prompt:'The children ___ in the garden.',answer:'were',options:['were','was','are','is']},
+{type:'mc',prompt:'The party was ___ Saturday.',answer:'on',options:['on','in','at','to']},
+{type:'mc',prompt:'___ you at home yesterday?',answer:'Were',options:['Were','Was','Are','Is']},
+{type:'mc',prompt:'Her birthday is on the ___. (1)',answer:'first',options:['first','one','oneth','fist']},
+{type:'mc',prompt:'The cake was stolen ___ half past four.',answer:'at',options:['at','on','in','to']},
+{type:'mc',prompt:'Today is the ___ of March. (2)',answer:'second',options:['second','two','twoth','secnd']},
+{type:'mc',prompt:'They ___ at school yesterday. (negative)',answer:"weren't",options:["weren't","wasn't","aren't","isn't"]}
 ]},
-characterUnlock:"jessie-detective",comicImage:"campaign/comic-L12.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
+characterUnlock:'jessie-detective',comicImage:'campaign/comic-L12.png',maxTotalXP:310,starThresholds:{one:75,two:110,three:155}
 },
-{levelId:"L13",levelName:"The Mountain of Danger",unitNumber:13,actNumber:1,grammarFocus:["Past simple -ed","Linking words"],
-storyIntro:["A tall mountain with dark clouds. It looks scary.","People are stuck on the mountain. They need help.","A man with a jetpack lands next to you.","'I am Captain Jetpack! The rescue team cannot describe what happened. We need your help!'"],
-storyOutro:["Everyone is safe! The mountain rescue is complete.","The Page of Actions Past glows in the cave.","A television screen turns on. You see The Scrambler talking.","'The Broadcast Tower is next! The Scrambler is spreading wrong words!'"],
+{levelId:'L13',levelName:'The Mountain of Danger',unitNumber:13,actNumber:3,grammarFocus:['Past simple -ed','Linking words'],
+storyIntro:['A tall mountain with dark clouds. It looks scary.','People are stuck on the mountain. They need help.','A man with a jetpack lands next to you.','\'I am Captain Jetpack! We need your help with rescue reports!\''],
+storyOutro:['Everyone is safe! The mountain rescue is complete.','The Page of Actions Past glows in the cave.','A television screen turns on. You see The Scrambler talking.','\'The Broadcast Tower is next! He is spreading wrong words!\''],
 tasks:[
-{name:"Emergency Words",type:"vocab",context:"Match each word to its meaning.",xpEach:5,items:[
-{prompt:"A vehicle that takes sick people to hospital.",answer:"ambulance",options:["ambulance","helicopter","storm","rescue"]},
-{prompt:"It flies in the sky. It has spinning blades on top.",answer:"helicopter",options:["helicopter","ambulance","accident","danger"]},
-{prompt:"Very bad weather with wind and rain.",answer:"storm",options:["storm","rescue","ambulance","danger"]},
-{prompt:"Saving someone from a dangerous situation.",answer:"rescue",options:["rescue","accident","storm","ambulance"]},
-{prompt:"Something bad that happens suddenly. A car crash is one.",answer:"accident",options:["accident","danger","rescue","storm"]},
-{prompt:"A situation where someone could get hurt.",answer:"danger",options:["danger","accident","ambulance","helicopter"]}
+{name:'Rescue Words',type:'vocab',context:'Match the past tense to its meaning.',xpEach:5,items:[
+{prompt:'She moved her foot and fell on the wet rocks.',answer:'slipped',options:['slipped','climbed','walked','helped']},
+{prompt:'He went up the mountain using his hands and feet.',answer:'climbed',options:['climbed','slipped','arrived','carried']},
+{prompt:'They moved along the path on foot.',answer:'walked',options:['walked','slipped','climbed','stopped']},
+{prompt:'The rescue team gave them what they needed.',answer:'helped',options:['helped','arrived','carried','walked']},
+{prompt:'The helicopter came to the mountain.',answer:'arrived',options:['arrived','helped','slipped','stopped']}
 ]},
-{name:"Past Simple -ed",type:"gap-fill",context:"Type the correct past tense form.",xpEach:10,items:[
-{sentence:"The girl ___ on the wet rocks. (slip)",answer:"slipped",options:["slipped","sliped","slips","slip"]},
-{sentence:"We ___ up the mountain for three hours. (walk)",answer:"walked",options:["walked","walkt","walks","walk"]},
-{sentence:"She ___ for help. (shout)",answer:"shouted",options:["shouted","shoutted","shouts","shout"]},
-{sentence:"The rescue team ___ at 3 o'clock. (arrive)",answer:"arrived",options:["arrived","arriveed","arrives","arrive"]},
-{sentence:"They ___ her down the mountain. (carry)",answer:"carried",options:["carried","carryed","carries","carry"]},
-{sentence:"We ___ to rest near the cave. (stop)",answer:"stopped",options:["stopped","stoped","stops","stop"]}
+{name:'Past Simple -ed',type:'transform',context:'Type the correct past tense form.',xpEach:10,items:[
+{prompt:'She ___ on the wet rocks. (slip)',base:'slip',answer:'slipped',alts:['slipped']},
+{prompt:'We ___ up the mountain for three hours. (climb)',base:'climb',answer:'climbed',alts:['climbed']},
+{prompt:'They ___ for a long time. (walk)',base:'walk',answer:'walked',alts:['walked']},
+{prompt:'He ___ her arm and pulled her up. (grab)',base:'grab',answer:'grabbed',alts:['grabbed']},
+{prompt:'They ___ her down the mountain. (carry)',base:'carry',answer:'carried',alts:['carried']},
+{prompt:'We ___ to rest near the cave. (stop)',base:'stop',answer:'stopped',alts:['stopped']}
 ]},
-{name:"Linking Words",type:"gap-fill",context:"Choose and, but, or because.",xpEach:10,items:[
-{sentence:"She slipped ___ fell down.",answer:"and",options:["and","but","because"]},
-{sentence:"He shouted ___ nobody heard him.",answer:"but",options:["and","but","because"]},
-{sentence:"She was scared ___ it was dark.",answer:"because",options:["and","but","because"]},
-{sentence:"The helicopter arrived ___ landed.",answer:"and",options:["and","but","because"]},
-{sentence:"They wanted to help ___ the storm was strong.",answer:"but",options:["and","but","because"]},
-{sentence:"We called for help ___ we were lost.",answer:"because",options:["and","but","because"]}
+{name:'Linking Words',type:'gap-fill',context:'Choose and, but, or because.',xpEach:10,items:[
+{sentence:'She slipped ___ it was raining.',answer:'because',options:['and','but','because']},
+{sentence:'He shouted ___ waved for help.',answer:'and',options:['and','but','because']},
+{sentence:'They wanted to continue ___ the storm was too strong.',answer:'but',options:['and','but','because']},
+{sentence:'The helicopter arrived ___ landed safely.',answer:'and',options:['and','but','because']},
+{sentence:'She was scared ___ it was very dark.',answer:'because',options:['and','but','because']},
+{sentence:'We called for help ___ nobody heard us.',answer:'but',options:['and','but','because']}
 ]}
 ],
-reading:{title:"The Mountain Rescue Report",passage:"Yesterday was a dangerous day on the mountain. A group of hikers walked up the mountain in the morning. At two o'clock, the weather changed. A big storm arrived. The hikers stopped near a cave because it was raining. One girl slipped and hurt her leg. They shouted for help. The rescue team arrived at three o'clock and carried her down. Everyone was safe!",questions:[
-{question:"When did the hikers walk up the mountain?",type:"mc",answer:"In the morning",options:["In the morning","In the afternoon","At night","At two o'clock"]},
-{question:"A storm arrived at two o'clock.",type:"tf",answer:"True",alts:["true"]},
-{question:"Why did the hikers stop near a cave?",type:"short",answer:"because it was raining",alts:["Because it was raining","it was raining","It was raining","because of the rain"]},
-{question:"The girl hurt her arm.",type:"tf",answer:"False",alts:["false"]},
-{question:"When did the rescue team arrive?",type:"mc",answer:"At three o'clock",options:["At three o'clock","At two o'clock","At four o'clock","In the morning"]}
+reading:{title:"Captain's Log",passage:'Day 1: We walked up the mountain. It was sunny and warm. Day 2: The weather changed. It rained a lot and the rocks were wet. A girl slipped and hurt her leg. Day 3: We waited because the storm was too strong. We were scared but we helped each other. Day 4: The rescue team arrived and carried the girl down. Everyone was safe!',questions:[
+{question:'What was the weather like on Day 1?',type:'mc',answer:'Sunny and warm',options:['Sunny and warm','Rainy and cold','Windy','Snowy']},
+{question:'A girl slipped on Day 2.',type:'tf',answer:'True',alts:['true']},
+{question:'Why did they wait on Day 3?',type:'short',answer:'because the storm was too strong',alts:['Because the storm was too strong','the storm was too strong','The storm was too strong','because of the storm']},
+{question:'They were not scared at all.',type:'tf',answer:'False',alts:['false']},
+{question:'When did the rescue team arrive?',type:'mc',answer:'Day 4',options:['Day 4','Day 3','Day 2','Day 1']}
 ]},
-boss:{name:"The Mountain Rescue Test",items:[
-{type:"mc",prompt:"She ___ on the rocks yesterday. (slip)",answer:"slipped",options:["slipped","sliped","slips","slip"]},
-{type:"mc",prompt:"He shouted ___ nobody heard him.",answer:"but",options:["but","and","because","so"]},
-{type:"mc",prompt:"We ___ for three hours. (walk)",answer:"walked",options:["walked","walkt","walking","walk"]},
-{type:"mc",prompt:"She was tired ___ she walked a lot.",answer:"because",options:["because","but","and","so"]},
-{type:"mc",prompt:"The team ___ at the mountain. (arrive)",answer:"arrived",options:["arrived","arriveed","arrives","arrive"]},
-{type:"mc",prompt:"They ___ near the cave. (stop)",answer:"stopped",options:["stopped","stoped","stops","stop"]},
-{type:"mc",prompt:"He fell ___ hurt his arm.",answer:"and",options:["and","but","because","so"]},
-{type:"mc",prompt:"We ___ her down carefully. (carry)",answer:"carried",options:["carried","carryed","carries","carry"]}
+boss:{name:'The Mountain Rescue Test',items:[
+{type:'mc',prompt:'She ___ on the rocks yesterday. (slip)',answer:'slipped',options:['slipped','sliped','slips','slip']},
+{type:'mc',prompt:'He shouted ___ nobody heard him.',answer:'but',options:['but','and','because','so']},
+{type:'mc',prompt:'We ___ for three hours. (walk)',answer:'walked',options:['walked','walkt','walking','walk']},
+{type:'mc',prompt:'She was tired ___ she climbed all day.',answer:'because',options:['because','but','and','so']},
+{type:'mc',prompt:'The team ___ at the mountain. (arrive)',answer:'arrived',options:['arrived','arriveed','arrives','arrive']},
+{type:'mc',prompt:'We ___ near the cave. (stop)',answer:'stopped',options:['stopped','stoped','stops','stop']},
+{type:'mc',prompt:'He fell ___ hurt his arm.',answer:'and',options:['and','but','because','so']},
+{type:'mc',prompt:'They ___ her down carefully. (carry)',answer:'carried',options:['carried','carryed','carries','carry']}
 ]},
-characterUnlock:"captain-jetpack",comicImage:"campaign/comic-L13.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
+characterUnlock:'captain-jetpack',comicImage:'campaign/comic-L13.png',maxTotalXP:310,starThresholds:{one:75,two:110,three:155}
 },
-{levelId:"L14",levelName:"The Broadcast Tower",unitNumber:14,actNumber:1,grammarFocus:["Past simple irregular","didn't + base form"],
-storyIntro:["A tall tower with screens everywhere. Wrong words flash on them.","'I GOED to school!' says one screen. 'She SEED a bird!' says another.","A girl with glasses and a red scarf holds a remote control.","'I am Annie,' she says. 'The Scrambler is sending wrong past tense everywhere!'"],
-storyOutro:["The screens show correct words again! The tower is fixed.","The Scrambler appears on screen. 'You thinks you is clever? I doesn't care!'","Annie laughs. 'Even his insults have grammar mistakes!'","'One page left! The Scrambler's Fortress! This is the final battle!'"],
+{levelId:'L14',levelName:'The Broadcast Tower',unitNumber:14,actNumber:3,grammarFocus:['Irregular verbs',"didn't + base form"],
+storyIntro:['A tall tower with screens everywhere. Wrong words flash on them.','\'I GOED to school!\' says one screen. \'She SEED a bird!\'','A girl with glasses and a red scarf holds a remote control.','\'I am Annie. The Scrambler is sending wrong past tense everywhere!\''],
+storyOutro:['The screens show correct words again! The tower is fixed.','The Scrambler appears: \'You thinks you is clever? I doesn\'t care!\'','Annie laughs. \'Even his insults have grammar mistakes!\'','\'One page left! The Scrambler\'s Fortress! The final battle!\''],
 tasks:[
-{name:"Entertainment Words",type:"vocab",context:"Match each word to its meaning.",xpEach:5,items:[
-{prompt:"A story you watch at the cinema.",answer:"film",options:["film","concert","programme","remote"]},
-{prompt:"A live music show.",answer:"concert",options:["concert","film","screen","actor"]},
-{prompt:"A show on television.",answer:"programme",options:["programme","film","concert","remote"]},
-{prompt:"A person who plays a character in a film.",answer:"actor",options:["actor","programme","concert","screen"]},
-{prompt:"The glass part of a TV or phone. You look at it.",answer:"screen",options:["screen","remote","film","actor"]},
-{prompt:"You press buttons on this to change the TV channel.",answer:"remote",options:["remote","screen","actor","programme"]}
+{name:'Error Warm-up',type:'vocab',context:'Choose the correct past form.',xpEach:5,items:[
+{prompt:'go → ___',answer:'went',options:['went','goed','goned','goes']},
+{prompt:'see → ___',answer:'saw',options:['saw','seed','sawed','sees']},
+{prompt:'think → ___',answer:'thought',options:['thought','thinked','thinkt','thinks']},
+{prompt:'catch → ___',answer:'caught',options:['caught','catched','catchd','catches']},
+{prompt:'write → ___',answer:'wrote',options:['wrote','writed','wroted','writes']}
 ]},
-{name:"Irregular Verb Correction",type:"transform",context:"Fix the wrong past tense.",xpEach:10,items:[
-{prompt:"Fix: Yesterday I goed to school.",base:"Yesterday I goed to school.",answer:"Yesterday I went to school.",alts:["Yesterday I went to school"]},
-{prompt:"Fix: She seed a strange light.",base:"She seed a strange light.",answer:"She saw a strange light.",alts:["She saw a strange light"]},
-{prompt:"Fix: He thinked about it.",base:"He thinked about it.",answer:"He thought about it.",alts:["He thought about it"]},
-{prompt:"Fix: They catched the ball.",base:"They catched the ball.",answer:"They caught the ball.",alts:["They caught the ball"]},
-{prompt:"Fix: I writed a letter.",base:"I writed a letter.",answer:"I wrote a letter.",alts:["I wrote a letter"]},
-{prompt:"Fix: She runned very fast.",base:"She runned very fast.",answer:"She ran very fast.",alts:["She ran very fast"]}
+{name:'Irregular Verb Correction',type:'transform',context:'Fix the wrong past tense.',xpEach:10,items:[
+{prompt:'Fix: Yesterday I goed to school.',base:'Yesterday I goed to school.',answer:'Yesterday I went to school.',alts:['Yesterday I went to school']},
+{prompt:'Fix: She seed a strange light.',base:'She seed a strange light.',answer:'She saw a strange light.',alts:['She saw a strange light']},
+{prompt:'Fix: He thinked about it all night.',base:'He thinked about it all night.',answer:'He thought about it all night.',alts:['He thought about it all night']},
+{prompt:'Fix: I writed a letter to Annie.',base:'I writed a letter to Annie.',answer:'I wrote a letter to Annie.',alts:['I wrote a letter to Annie']},
+{prompt:'Fix: She runned very fast.',base:'She runned very fast.',answer:'She ran very fast.',alts:['She ran very fast']},
+{prompt:'Fix: The TV showed the wrong words.',base:'The TV showed the wrong words.',answer:'The TV showed the wrong words.',alts:['The TV showed the wrong words']}
 ]},
-{name:"Didn't + Base Form",type:"transform",context:"Make the sentence negative.",xpEach:10,items:[
-{prompt:"Make negative: I went to school.",base:"I went to school.",answer:"I didn't go to school.",alts:["I didn't go to school","I did not go to school.","I did not go to school"]},
-{prompt:"Make negative: She saw the film.",base:"She saw the film.",answer:"She didn't see the film.",alts:["She didn't see the film","She did not see the film.","She did not see the film"]},
-{prompt:"Make negative: They ate pizza.",base:"They ate pizza.",answer:"They didn't eat pizza.",alts:["They didn't eat pizza","They did not eat pizza.","They did not eat pizza"]},
-{prompt:"Make negative: He took the bus.",base:"He took the bus.",answer:"He didn't take the bus.",alts:["He didn't take the bus","He did not take the bus.","He did not take the bus"]},
-{prompt:"Make negative: We made a cake.",base:"We made a cake.",answer:"We didn't make a cake.",alts:["We didn't make a cake","We did not make a cake.","We did not make a cake"]},
-{prompt:"Make negative: She said hello.",base:"She said hello.",answer:"She didn't say hello.",alts:["She didn't say hello","She did not say hello.","She did not say hello"]}
+{name:"Didn't + Base Form",type:'transform',context:'Make the sentence negative with didn\'t.',xpEach:10,items:[
+{prompt:'Make negative: I went to school.',base:'I went to school.',answer:"I didn't go to school.",alts:["I didn't go to school","I did not go to school.","I did not go to school"]},
+{prompt:'Make negative: She saw the film.',base:'She saw the film.',answer:"She didn't see the film.",alts:["She didn't see the film","She did not see the film.","She did not see the film"]},
+{prompt:'Make negative: He thought it was easy.',base:'He thought it was easy.',answer:"He didn't think it was easy.",alts:["He didn't think it was easy","He did not think it was easy.","He did not think it was easy"]},
+{prompt:'Make negative: I wrote a letter.',base:'I wrote a letter.',answer:"I didn't write a letter.",alts:["I didn't write a letter","I did not write a letter.","I did not write a letter"]},
+{prompt:'Make negative: She ran home.',base:'She ran home.',answer:"She didn't run home.",alts:["She didn't run home","She did not run home.","She did not run home"]},
+{prompt:'Make negative: They caught the ball.',base:'They caught the ball.',answer:"They didn't catch the ball.",alts:["They didn't catch the ball","They did not catch the ball.","They did not catch the ball"]}
 ]}
 ],
-reading:{title:"Annie's Film Review",passage:"Last night I watched a great film. It was about a detective who went to a small town. He saw strange things. He thought the people were hiding something. He ran through the forest and found a secret house. He wrote everything in his notebook. He didn't tell anyone at first. But then he caught the thief! I didn't think the ending was good — it was too quick. But I liked the film!",questions:[
-{question:"What was the film about?",type:"mc",answer:"A detective",options:["A detective","A teacher","A pirate","A chef"]},
-{question:"The detective went to a big city.",type:"tf",answer:"False",alts:["false"]},
-{question:"What did the detective find in the forest?",type:"short",answer:"a secret house",alts:["A secret house","secret house","He found a secret house"]},
-{question:"Annie liked the ending.",type:"tf",answer:"False",alts:["false"]},
-{question:"Did Annie like the film overall?",type:"mc",answer:"Yes",options:["Yes","No","She didn't say","Maybe"]}
+reading:{title:"Annie's Archive Notes",passage:"The Scrambler changed words on every screen today. Screen 1 said 'I goed to school' but the correct form is 'went'. Screen 2 said 'She seed a bird' but it should be 'saw'. Screen 3 said 'He thinked about it' but the answer is 'thought'. Annie didn't give up. She fixed every screen. She didn't stop until every word was correct. The tower is clean again!",questions:[
+{question:'What did the Scrambler do?',type:'mc',answer:'Changed words on every screen',options:['Changed words on every screen','Broke the tower','Stole a page','Ran away']},
+{question:'Screen 2 showed the correct past form.',type:'tf',answer:'False',alts:['false']},
+{question:'What is the correct past form of think?',type:'short',answer:'thought',alts:['Thought']},
+{question:'Annie gave up.',type:'tf',answer:'False',alts:['false']},
+{question:'Did Annie fix the screens?',type:'mc',answer:'Yes',options:['Yes','No','Only some','The text does not say']}
 ]},
-boss:{name:"The Broadcast Test",items:[
-{type:"transform",prompt:"Fix: He goed to the park.",base:"He goed to the park.",answer:"He went to the park.",alts:["He went to the park"]},
-{type:"mc",prompt:"She ___ the answer. (not know)",answer:"didn't know",options:["didn't know","didn't knew","don't know","doesn't know"]},
-{type:"transform",prompt:"Fix: They eated all the food.",base:"They eated all the food.",answer:"They ate all the food.",alts:["They ate all the food"]},
-{type:"mc",prompt:"I ___ see the film. (negative)",answer:"didn't",options:["didn't","don't","doesn't","wasn't"]},
-{type:"transform",prompt:"Fix: She taked the bus.",base:"She taked the bus.",answer:"She took the bus.",alts:["She took the bus"]},
-{type:"mc",prompt:"We ___ go to school yesterday.",answer:"didn't",options:["didn't","don't","doesn't","weren't"]},
-{type:"transform",prompt:"Fix: He maked a cake.",base:"He maked a cake.",answer:"He made a cake.",alts:["He made a cake"]},
-{type:"mc",prompt:"They didn't ___ pizza for dinner.",answer:"eat",options:["eat","ate","eaten","eating"]}
+boss:{name:'The Broadcast Test',items:[
+{type:'transform',prompt:'Fix: He goed to the park.',base:'He goed to the park.',answer:'He went to the park.',alts:['He went to the park']},
+{type:'mc',prompt:"She ___ the answer. (not know — use didn't)",answer:"didn't know",options:["didn't know","didn't knew","don't know","doesn't know"]},
+{type:'transform',prompt:'Fix: They eated all the food.',base:'They eated all the food.',answer:'They ate all the food.',alts:['They ate all the food']},
+{type:'mc',prompt:"I ___ the film. (not see — use didn't)",answer:"didn't see",options:["didn't see","didn't saw","don't see","doesn't see"]},
+{type:'transform',prompt:'Fix: She taked the bus.',base:'She taked the bus.',answer:'She took the bus.',alts:['She took the bus']},
+{type:'mc',prompt:"We ___ go to school yesterday. (negative)",answer:"didn't",options:["didn't","don't","doesn't","weren't"]},
+{type:'transform',prompt:'Fix: He maked a cake.',base:'He maked a cake.',answer:'He made a cake.',alts:['He made a cake']},
+{type:'mc',prompt:"They didn't ___ pizza for dinner. (base form)",answer:'eat',options:['eat','ate','eaten','eating']}
 ]},
-characterUnlock:"annie-archivist",comicImage:"campaign/comic-L14.png",maxTotalXP:440,starThresholds:{one:220,two:330,three:396}
+characterUnlock:'annie-archivist',comicImage:'campaign/comic-L14.png',maxTotalXP:310,starThresholds:{one:75,two:110,three:155}
 },
-{levelId:"L15",levelName:"The Scrambler's Fortress",unitNumber:15,actNumber:1,grammarFocus:["going to future"],
-storyIntro:["The Scrambler's Fortress floats above Lexica. It is dark and scary.","All your companions stand with you. Penny, Rex, Dana, and all the others.","You have fourteen pages. One more is inside the fortress.","'We are going to do this!' says Penny. 'We are going to save Lexica!'"],
-storyOutro:["The machine stops. The fortress is quiet.","The Scrambler falls to his knees. 'I just wanted to be good at English...'","You hold out your hand. 'Everyone makes mistakes. That is how you learn.'","All fifteen pages glow. Lexica is saved! CONGRATULATIONS!"],
+{levelId:'L15',levelName:"The Scrambler's Fortress",unitNumber:15,actNumber:3,grammarFocus:['going to future','ALL grammar review'],
+storyIntro:["The Scrambler's Fortress floats above Lexica. It is dark and scary.",'All your companions stand with you. Penny, Rex, Dana, and all the others.','Inside, Alex waits. He is sad and angry. The Grammar Eraser is running.','\'We are going to do this!\' says Penny. \'We are going to save Lexica!\''],
+storyOutro:['The machine stops. The fortress is quiet.','Alex falls to his knees. \'I just wanted to be good at English...\'','You hold out your hand. \'Everyone makes mistakes. That is how you learn.\'','All fifteen pages glow. Lexica is saved! CONGRATULATIONS!'],
 tasks:[
-{name:"Holiday Words",type:"vocab",context:"Match each word to its meaning.",xpEach:5,items:[
-{prompt:"A place with sand and sea. You swim here on holiday.",answer:"beach",options:["beach","airport","hotel","passport"]},
-{prompt:"A bag you put your clothes in when you travel.",answer:"suitcase",options:["suitcase","sunscreen","passport","beach"]},
-{prompt:"A small book with your photo. You need it to travel abroad.",answer:"passport",options:["passport","suitcase","hotel","airport"]},
-{prompt:"A cream you put on your skin in the sun.",answer:"sunscreen",options:["sunscreen","passport","suitcase","beach"]},
-{prompt:"A building where you sleep on holiday.",answer:"hotel",options:["hotel","airport","beach","suitcase"]},
-{prompt:"A place where aeroplanes take off and land.",answer:"airport",options:["airport","hotel","beach","passport"]}
+{name:'Holiday Words',type:'vocab',context:'Match each word to its meaning.',xpEach:5,items:[
+{prompt:'A place with sand and sea.',answer:'beach',options:['beach','airport','hotel','passport']},
+{prompt:'A bag you put your clothes in when you travel.',answer:'suitcase',options:['suitcase','sunscreen','passport','beach']},
+{prompt:'A small book with your photo for travelling abroad.',answer:'passport',options:['passport','suitcase','hotel','airport']},
+{prompt:'A cream you put on your skin in the sun.',answer:'sunscreen',options:['sunscreen','passport','suitcase','beach']},
+{prompt:'A building where you sleep on holiday.',answer:'hotel',options:['hotel','airport','beach','suitcase']},
+{prompt:'A place where aeroplanes take off and land.',answer:'airport',options:['airport','hotel','beach','passport']}
 ]},
-{name:"Going To",type:"gap-fill",context:"Type the correct 'going to' form.",xpEach:10,items:[
-{sentence:"We ___ fight The Scrambler.",answer:"are going to",options:["are going to","is going to","am going to","going to"]},
-{sentence:"I ___ use all my skills.",answer:"am going to",options:["am going to","is going to","are going to","going to"]},
-{sentence:"She ___ help us.",answer:"is going to",options:["is going to","are going to","am going to","going to"]},
-{sentence:"They ___ give up.",answer:"aren't going to",options:["aren't going to","isn't going to","am not going to","don't going to"]},
-{sentence:"___ you ___ come with us?",answer:"Are...going to",options:["Are...going to","Is...going to","Am...going to","Do...going to"]},
-{sentence:"The Scrambler ___ win.",answer:"isn't going to",options:["isn't going to","aren't going to","am not going to","don't going to"]}
+{name:'Going To',type:'transform',context:'Write the correct going to form.',xpEach:10,items:[
+{prompt:'We ___ fight The Scrambler. (going to)',base:'We / fight',answer:'are going to fight',alts:['are going to fight']},
+{prompt:'I ___ use all my skills. (going to)',base:'I / use',answer:'am going to use',alts:['am going to use']},
+{prompt:'She ___ help us. (going to)',base:'She / help',answer:'is going to help',alts:['is going to help']},
+{prompt:"We ___ give up! (negative going to)",base:'We / not give up',answer:"aren't going to give up",alts:["aren't going to give up","are not going to give up"]},
+{prompt:'___ you ___ come with us? (question going to)',base:'you / come',answer:'Are...going to come',alts:['Are you going to come','Are you going to come?']},
+{prompt:"The Scrambler ___ win. (negative going to)",base:'The Scrambler / not win',answer:"isn't going to win",alts:["isn't going to win","is not going to win"]}
 ]},
-{name:"Going To Questions and Answers",type:"transform",context:"Write the question or sentence.",xpEach:10,items:[
-{prompt:"What / you / going to / do / this summer?",base:"What / you / going to / do / this summer?",answer:"What are you going to do this summer?",alts:["What are you going to do this summer"]},
-{prompt:"Are they going to have a party? (YES)",base:"Are they going to have a party? (YES)",answer:"Yes, they are.",alts:["Yes, they are","Yes they are"]},
-{prompt:"she / going to / visit / her grandma?",base:"she / going to / visit / her grandma?",answer:"Is she going to visit her grandma?",alts:["Is she going to visit her grandma"]},
-{prompt:"Is he going to fly? (NO)",base:"Is he going to fly? (NO)",answer:"No, he isn't.",alts:["No, he isn't","No, he is not.","No, he is not"]},
-{prompt:"We / going to / play football",base:"We / going to / play football",answer:"We are going to play football.",alts:["We are going to play football","We're going to play football.","We're going to play football"]},
-{prompt:"I / not going to / stay at home",base:"I / not going to / stay at home",answer:"I'm not going to stay at home.",alts:["I'm not going to stay at home","I am not going to stay at home.","I am not going to stay at home"]}
+{name:'Going To Questions and Answers',type:'transform',context:'Write the question or sentence.',xpEach:10,items:[
+{prompt:'What / you / going to / do / this summer?',base:'What / you / going to / do / this summer?',answer:'What are you going to do this summer?',alts:['What are you going to do this summer']},
+{prompt:'Are they going to have a party? (YES)',base:'Are they going to have a party? (YES)',answer:'Yes, they are.',alts:['Yes, they are','Yes they are']},
+{prompt:'she / going to / visit / her grandma? (question)',base:'she / going to / visit / her grandma?',answer:'Is she going to visit her grandma?',alts:['Is she going to visit her grandma']},
+{prompt:'Is he going to fly? (NO)',base:'Is he going to fly? (NO)',answer:"No, he isn't.",alts:["No, he isn't","No, he is not.","No, he is not"]},
+{prompt:'We / going to / play football (statement)',base:'We / going to / play football',answer:'We are going to play football.',alts:['We are going to play football',"We're going to play football.","We're going to play football"]},
+{prompt:'I / not going to / stay at home',base:'I / not going to / stay at home',answer:"I'm not going to stay at home.",alts:["I'm not going to stay at home","I am not going to stay at home.","I am not going to stay at home"]}
 ]}
 ],
-reading:{title:"Our Plans for Summer",passage:"Summer is coming! We are all going to do exciting things. Penny is going to visit a spelling museum. Rex is going to run on the beach every day. Dana is going to sail on a real ship. Melody is going to play at a big concert. I am going to travel with my family. We are going to go to the airport on Saturday. We are not going to stay at home this year! It is going to be the best summer ever!",questions:[
-{question:"What is Penny going to visit?",type:"mc",answer:"A spelling museum",options:["A spelling museum","A zoo","A beach","A concert"]},
-{question:"Rex is going to swim every day.",type:"tf",answer:"False",alts:["false"]},
-{question:"What is Dana going to do?",type:"short",answer:"sail on a real ship",alts:["Sail on a real ship","She is going to sail on a real ship","sail"]},
-{question:"They are going to stay at home.",type:"tf",answer:"False",alts:["false"]},
-{question:"When are they going to go to the airport?",type:"mc",answer:"On Saturday",options:["On Saturday","On Sunday","On Monday","On Friday"]}
+reading:{title:'Our Plans for Summer',passage:'Summer is coming! We are all going to do exciting things. Penny is going to visit a spelling museum. Rex is going to run on the beach every day. Dana is going to sail on a real pirate ship. Melody is going to play at a big concert. Captain Jetpack is going to fly over the mountains. I am going to travel with my family. We are not going to stay at home this summer. It is going to be the best summer ever!',questions:[
+{question:'What is Penny going to visit?',type:'mc',answer:'A spelling museum',options:['A spelling museum','A zoo','A beach','A concert']},
+{question:'Rex is going to swim every day.',type:'tf',answer:'False',alts:['false']},
+{question:'What is Dana going to do?',type:'short',answer:'sail on a real pirate ship',alts:['Sail on a real pirate ship','She is going to sail','sail on a ship','sail']},
+{question:'They are going to stay at home.',type:'tf',answer:'False',alts:['false']},
+{question:'What is Captain Jetpack going to do?',type:'mc',answer:'Fly over the mountains',options:['Fly over the mountains','Visit a museum','Play at a concert','Travel with family']}
 ]},
-boss:{name:"The Final Battle",items:[
-{type:"mc",prompt:"five ___ (child)",answer:"children",options:["children","childs","childes","childrens"]},
-{type:"mc",prompt:"We ___ ready.",answer:"are",options:["are","is","am","be"]},
-{type:"mc",prompt:"The Scrambler ___ got all the pages.",answer:"has",options:["has","have","had","is"]},
-{type:"transform",prompt:"Make a question: I can win!",base:"I can win!",answer:"Can I win?",alts:["Can I win"]},
-{type:"mc",prompt:"He always ___ mistakes. (make)",answer:"makes",options:["makes","make","maked","making"]},
-{type:"mc",prompt:"She ___ like grammar.",answer:"doesn't",options:["doesn't","don't","not","isn't"]},
-{type:"mc",prompt:"Look! He ___ away! (run)",answer:"is running",options:["is running","are running","runs","running"]},
-{type:"mc",prompt:"They ___ scared yesterday.",answer:"were",options:["were","was","are","is"]},
-{type:"mc",prompt:"I saw the page. Yesterday: I ___ the page.",answer:"saw",options:["saw","see","seed","seen"]},
-{type:"mc",prompt:"We ___ going to save Lexica!",answer:"are",options:["are","is","am","be"]}
+boss:{name:'The Final Battle — Mega Boss',items:[
+{type:'mc',prompt:"five ___ (cat — plural)",answer:'cats',options:['cats','cates','caties','cat']},
+{type:'mc',prompt:'I ___ a student. We ___ ready. (be)',answer:'am, are',options:['am, are','is, are','am, is','are, am']},
+{type:'mc',prompt:'Dana ___ a parrot. (have got)',answer:'has got',options:['has got','have got','has','got']},
+{type:'mc',prompt:'Melody ___ play the violin. (ability)',answer:'can',options:['can',"can't",'cans','is']},
+{type:'mc',prompt:'He always ___ to school. He ___ home. (present simple + negative)',answer:"goes, doesn't stay",options:["goes, doesn't stay","go, don't stay","goes, don't stay","go, doesn't stay"]},
+{type:'mc',prompt:'Look! She ___ her costume right now. (present continuous)',answer:'is changing',options:['is changing','are changing','changes','changing']},
+{type:'mc',prompt:'The party ___ on Saturday. The guests ___ happy. (past — was/were)',answer:'was, were',options:['was, were','were, was','was, was','were, were']},
+{type:'mc',prompt:'He ___ the mountain and ___ for two hours. The weather ___ cold. (past -ed)',answer:'climbed, walked, was',options:['climbed, walked, was','climb, walk, was','climbed, walked, were','climbbed, walkked, was']},
+{type:'mc',prompt:'Yesterday I ___ to the shop. I ___ at home. I ___ it was boring. She ___ the same. (irregular past)',answer:"went, didn't stay, thought, said",options:["went, didn't stay, thought, said","goed, didn't stayed, thinked, sayed","went, didn't stayed, thought, said","go, didn't stay, think, say"]},
+{type:'mc',prompt:'We ___ going to save Lexica! They ___ going to help! She ___ going to fight! I ___ going to give up! We ___ going to win!',answer:"are, are, is, am not, are",options:["are, are, is, am not, are","is, is, is, am not, is","are, are, are, am not, are","are, are, is, don't, are"]}
 ]},
-characterUnlock:"alex-redeemed",comicImage:"campaign/comic-L15.png",maxTotalXP:530,starThresholds:{one:265,two:398,three:477}
+characterUnlock:'alex-redeemed',comicImage:'campaign/comic-L15.png',maxTotalXP:530,starThresholds:{one:265,two:398,three:477}
 }
 ];
 
 campaignCharacters = [
-{id:"penny-pencil",name:"Penny the Pencil",title:"The Spelling Expert",levelUnlock:1,rarity:"common",image:"campaign/penny.png",backstory:"Penny was once a regular pencil, but the magic of Syntaxia gave her life. She loves correct spelling and neat handwriting.",ability:{name:"Spell Check",description:"Shows you the correct answer with a glow. Use wisely!",type:"reveal-answer"},stats:{str:2,int:9,chr:7,spd:4,lck:5}},
-{id:"rex-word-hound",name:"Rex the Word-Hound",title:"The Location Expert",levelUnlock:2,rarity:"common",image:"campaign/rex.png",backstory:"Rex can sniff out the right word from a mile away. He loves prepositions and always knows where things belong.",ability:{name:"Word Sniff",description:"Sniffs out the correct preposition or place word with a golden glow.",type:"reveal-preposition"},stats:{str:6,int:5,chr:9,spd:7,lck:6}},
-{id:"dana-dreamer",name:"Dana the Dreamer",title:"The Pirate Captain",levelUnlock:3,rarity:"common",image:"campaign/char-dana.png",backstory:"Dana dreams of sailing the seas and finding treasure. She is brave, loud, and always ready for adventure.",ability:{name:"Pirate's Claim",description:"Removes one wrong answer.",type:"eliminate-wrong"},stats:{str:4,int:6,chr:8,spd:5,lck:8}},
-{id:"richard-guard",name:"Richard the Guard",title:"The Emotion Expert",levelUnlock:4,rarity:"common",image:"campaign/char-richard.png",backstory:"Richard guarded the Emotion Islands for years without feeling anything. Now he helps others understand their feelings.",ability:{name:"Emotional Read",description:"Shows the feeling of a sentence.",type:"reveal-context"},stats:{str:8,int:5,chr:3,spd:3,lck:4}},
-{id:"melody-musician",name:"Melody the Musician",title:"The Music Master",levelUnlock:5,rarity:"common",image:"campaign/char-melody.png",backstory:"Melody is a fox with a golden saxophone and a love for music. She knows who can do what — and whose instrument is whose.",ability:{name:"Perfect Pitch",description:"Shows who can do what.",type:"reveal-ability"},stats:{str:3,int:7,chr:9,spd:6,lck:7}},
-{id:"inspector-paws",name:"Inspector Paws",title:"The Error Finder",levelUnlock:6,rarity:"rare",image:"campaign/char-paws.png",backstory:"Inspector Paws is a clever cat who sits on Detective Riddle's shoulder. He can spot a grammar mistake from across the room.",ability:{name:"Error Spotlight",description:"Shows where the grammar mistake is.",type:"reveal-error"},stats:{str:5,int:6,chr:6,spd:7,lck:6}},
-{id:"chef-tamar",name:"Chef Tamar",title:"The Negation Expert",levelUnlock:7,rarity:"rare",image:"campaign/char-tamar.png",backstory:"Chef Tamar loves cooking with fresh ingredients. She learned that saying NO is just as important as saying YES.",ability:{name:"Flavor Guide",description:"Shows the correct negative form.",type:"reveal-negative"},stats:{str:3,int:8,chr:5,spd:5,lck:6}},
-{id:"sophia-stylist",name:"Sophia the Stylist",title:"The Question Expert",levelUnlock:8,rarity:"rare",image:"campaign/char-sophia.png",backstory:"Sophia is a fashion stylist who asks the right questions. Without questions, she cannot help anyone find the perfect outfit.",ability:{name:"Fashion Sense",description:"Shows if a question is correct.",type:"reveal-question"},stats:{str:2,int:5,chr:9,spd:6,lck:7}},
-{id:"aunty-olivia",name:"Aunty Olivia",title:"The Question Master",levelUnlock:9,rarity:"rare",image:"campaign/char-olivia.png",backstory:"Aunty Olivia is a wise owl who looks after all the animals in the sanctuary. She always knows the right question to ask.",ability:{name:"Question Master",description:"Shows the correct question word.",type:"reveal-question-word"},stats:{str:2,int:10,chr:7,spd:2,lck:6}},
-{id:"jolly-horse",name:"Jolly the Horse",title:"The Shopping Expert",levelUnlock:10,rarity:"rare",image:"campaign/char-jolly.png",backstory:"Jolly loves shopping but always gets confused about which things he wants. Now he can point at exactly the right items.",ability:{name:"Price Check",description:"Shows the correct this/that/these/those.",type:"reveal-demonstrative"},stats:{str:6,int:4,chr:7,spd:5,lck:5}},
-{id:"suzy-timekeeper",name:"Suzy the Timekeeper",title:"The Time Expert",levelUnlock:11,rarity:"epic",image:"campaign/char-suzy.png",backstory:"Suzy wears a clock necklace and keeps time flowing in Lexica. She knows what is happening right now — always.",ability:{name:"Time Freeze",description:"Shows what is happening right now.",type:"reveal-action"},stats:{str:2,int:8,chr:6,spd:7,lck:6}},
-{id:"jessie-detective",name:"Jessie the Detective",title:"The Past Expert",levelUnlock:12,rarity:"epic",image:"campaign/char-jessie.png",backstory:"Jessie loves solving mysteries and looking into the past. She always knows what happened and when.",ability:{name:"Flashback",description:"Shows the correct past tense form.",type:"reveal-past"},stats:{str:5,int:9,chr:6,spd:6,lck:5}},
-{id:"captain-jetpack",name:"Captain Jetpack",title:"The Rescue Hero",levelUnlock:13,rarity:"epic",image:"campaign/char-jetpack.png",backstory:"Captain Jetpack flies to the rescue whenever someone is in danger. He knows every -ed ending by heart.",ability:{name:"Jetpack Speed",description:"Shows the correct -ed past form.",type:"reveal-past-ed"},stats:{str:9,int:6,chr:7,spd:9,lck:5}},
-{id:"annie-archivist",name:"Annie the Archivist",title:"The Memory Keeper",levelUnlock:14,rarity:"epic",image:"campaign/char-annie.png",backstory:"Annie keeps records of everything that ever happened. She remembers every irregular verb — even the tricky ones.",ability:{name:"Rewind",description:"Shows the correct irregular past form.",type:"reveal-irregular"},stats:{str:3,int:9,chr:6,spd:5,lck:8}},
-{id:"alex-redeemed",name:"Alex the Redeemed",title:"The Grammar Hero",levelUnlock:15,rarity:"legendary",image:"campaign/char-alex.png",backstory:"Once known as The Scrambler, Alex learned that making mistakes is how you learn. Now he uses his powers for good.",ability:{name:"Grammar Mastery",description:"Shows the full correct answer.",type:"reveal-all"},stats:{str:6,int:9,chr:8,spd:6,lck:8}}
+{id:'penny-pencil',name:'Penny the Pencil',title:'The Spelling Expert',levelUnlock:1,rarity:'common',image:'campaign/penny.png',ability:{name:'Spell Check',description:'Shows the correct answer with a glow.',type:'reveal-answer'},stats:{str:2,int:7,chr:8,spd:5,lck:6}},
+{id:'rex-word-hound',name:'Rex the Word-Hound',title:'The Location Expert',levelUnlock:2,rarity:'common',image:'campaign/rex.png',ability:{name:'Word Sniff',description:'Sniffs out the correct preposition.',type:'reveal-preposition'},stats:{str:6,int:8,chr:7,spd:8,lck:7}},
+{id:'dana-dreamer',name:'Dana the Dreamer',title:'The Pirate Captain',levelUnlock:3,rarity:'common',image:'campaign/char-dana.png',ability:{name:"Pirate's Claim",description:'Removes one wrong answer.',type:'eliminate-wrong'},stats:{str:7,int:6,chr:9,spd:8,lck:8}},
+{id:'richard-guard',name:'Richard the Guard',title:'The Emotion Expert',levelUnlock:4,rarity:'common',image:'campaign/char-richard.png',ability:{name:'Emotional Read',description:'Shows the feeling of a sentence.',type:'reveal-context'},stats:{str:8,int:6,chr:5,spd:4,lck:6}},
+{id:'melody-musician',name:'Melody the Musician',title:'The Music Master',levelUnlock:5,rarity:'common',image:'campaign/char-melody.png',ability:{name:'Perfect Pitch',description:'Shows who can do what.',type:'reveal-ability'},stats:{str:5,int:7,chr:8,spd:6,lck:9}},
+{id:'inspector-paws',name:'Inspector Paws',title:'The Error Finder',levelUnlock:6,rarity:'rare',image:'campaign/char-paws.png',ability:{name:'Third Eye',description:'Highlights the -s rule for 3rd person.',type:'reveal-error'},stats:{str:5,int:6,chr:6,spd:7,lck:6}},
+{id:'chef-tamar',name:'Chef Tamar',title:'The Negation Expert',levelUnlock:7,rarity:'rare',image:'campaign/char-tamar.png',ability:{name:'Negative Taste',description:'Shows the correct negative form.',type:'reveal-negative'},stats:{str:3,int:8,chr:5,spd:5,lck:6}},
+{id:'sophia-stylist',name:'Sophia the Stylist',title:'The Question Expert',levelUnlock:8,rarity:'rare',image:'campaign/char-sophia.png',ability:{name:'Question Flip',description:'Shows correct Do/Does form.',type:'reveal-question'},stats:{str:2,int:5,chr:9,spd:6,lck:7}},
+{id:'aunty-olivia',name:'Aunty Olivia the Owl',title:'The Question Master',levelUnlock:9,rarity:'rare',image:'campaign/char-olivia.png',ability:{name:'Wise Question',description:'Shows the correct question word.',type:'reveal-question-word'},stats:{str:2,int:10,chr:7,spd:2,lck:6}},
+{id:'jolly-horse',name:'Jolly the Horse',title:'The Shopping Expert',levelUnlock:10,rarity:'rare',image:'campaign/char-jolly.png',ability:{name:'Price Check',description:'Shows correct this/that/these/those.',type:'reveal-demonstrative'},stats:{str:6,int:4,chr:7,spd:5,lck:5}},
+{id:'suzy-timekeeper',name:'Suzy the Timekeeper',title:'The Time Expert',levelUnlock:11,rarity:'epic',image:'campaign/char-suzy.png',ability:{name:'Freeze Frame',description:'Shows the -ing form happening right now.',type:'reveal-action'},stats:{str:2,int:8,chr:6,spd:7,lck:6}},
+{id:'jessie-detective',name:'Jessie the Junior Detective',title:'The Past Expert',levelUnlock:12,rarity:'epic',image:'campaign/char-jessie.png',ability:{name:'Flashback',description:'Shows the correct was/were form.',type:'reveal-past'},stats:{str:5,int:9,chr:6,spd:6,lck:5}},
+{id:'captain-jetpack',name:'Captain Jetpack',title:'The Rescue Hero',levelUnlock:13,rarity:'epic',image:'campaign/char-jetpack.png',ability:{name:'Past Patrol',description:'Shows the correct -ed past form.',type:'reveal-past-ed'},stats:{str:9,int:6,chr:7,spd:9,lck:5}},
+{id:'annie-archivist',name:'Annie the Archivist',title:'The Memory Keeper',levelUnlock:14,rarity:'epic',image:'campaign/char-annie.png',ability:{name:'Rewind',description:'Shows the correct irregular past form.',type:'reveal-irregular'},stats:{str:3,int:9,chr:6,spd:5,lck:8}},
+{id:'alex-redeemed',name:'Alex the Redeemed',title:'The Grammar Hero',levelUnlock:15,rarity:'legendary',image:'campaign/char-alex.png',ability:{name:'Second Chance',description:'Shows the full correct answer.',type:'reveal-all'},stats:{str:6,int:9,chr:8,spd:6,lck:8}}
 ];
 
 grammarDataLoaded = true;
