@@ -730,6 +730,25 @@ body::before {
 /* Hide header during gameplay */
 body.playing .header-container { display: none; }
 
+/* Section/class selection */
+.section-select-wrap { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1.5rem; }
+.section-select-wrap h2 { font-size: 1.1rem; font-weight: 700; color: var(--text-secondary); }
+.section-btns { display: flex; gap: 0.6rem; }
+.section-btn {
+  padding: 1rem 1.8rem; border-radius: var(--radius-lg); font-size: 1.2rem; font-weight: 800;
+  background: var(--card); border: 2px solid var(--card-border); color: var(--text);
+  cursor: pointer; transition: all 0.2s; font-family: inherit;
+}
+.section-btn:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-elevated); }
+.section-btn.selected { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 4px 20px var(--accent-glow); }
+.section-pin-row { display: flex; gap: 0.5rem; align-items: center; }
+.section-pin-row input { width: 140px; padding: 0.6rem; border-radius: var(--radius); border: 1.5px solid var(--card-border); background: var(--card); color: var(--text); font-family: inherit; font-size: 0.9rem; text-align: center; -webkit-text-security: disc; }
+.section-pin-row input:focus { outline: none; border-color: var(--accent); }
+.section-error { color: var(--wrong); font-size: 0.82rem; }
+.section-tag { display: inline-block; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; margin-left: 0.3rem; }
+.cq-teacher-link { color: var(--muted); font-size: 0.8rem; cursor: pointer; margin-top: 0.5rem; transition: color 0.15s; }
+.cq-teacher-link:hover { color: var(--accent); }
+
 /* --- Button playful hover --- */
 @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-1.5deg)} 75%{transform:rotate(1.5deg)} }
 .btn-primary:hover, .btn-success:hover { animation: wiggle 0.4s ease; }
@@ -9864,6 +9883,7 @@ function showCampaignMap() {
     '<div class="map-title">The Book That Knows Your Name</div>' +
     '<div class="map-subtitle">' + completedCount + '/' + levels.length + ' Chapters Restored</div>' +
     '<div class="map-stats"><span>&#11088; ' + totalStars + ' Stars</span><span>&#10024; ' + totalXP + ' XP</span></div>' +
+    '<div style="margin-top:0.3rem;"><button style="background:none;border:none;color:var(--muted);font-size:0.7rem;cursor:pointer;font-family:inherit;text-decoration:underline;" onclick="campaignState.prologueWatched=false;localStorage.removeItem(\'campaign-prologue-watched\');showPrologue();">&#128214; Watch Intro Again</button></div>' +
   '</div>';
   // Nodes
   var nodesHtml = '';
