@@ -10707,11 +10707,21 @@ function completeCampaignLevel() {
     else if (pct >= 0.5) stars = 1;
   }
   campaignState.earnedStars = stars;
-  // Show completion story then results
+  // Show completion story → comic panels (if any) → results
   if (lv.completion && lv.completion.length > 0) {
-    showCampaignStorySequence(lv.completion, function() { showCampaignResults(); }, 'completion');
+    showCampaignStorySequence(lv.completion, function() {
+      if (lv.comicPanels && lv.comicPanels.length > 0) {
+        showComicPanelsThenResults();
+      } else {
+        showCampaignResults();
+      }
+    }, 'completion');
   } else {
-    showCampaignResults();
+    if (lv.comicPanels && lv.comicPanels.length > 0) {
+      showComicPanelsThenResults();
+    } else {
+      showCampaignResults();
+    }
   }
 }
 
@@ -10774,8 +10784,9 @@ function showCampaignResults() {
     }
   }
   if (comicWrap) {
+    // Comics now auto-show before results — but offer replay
     if (lv.comicPanels && lv.comicPanels.length > 0) {
-      comicWrap.innerHTML = '<button class="btn" onclick="showComicPanels()" style="width:100%;margin:0.8rem 0;background:var(--card);color:var(--accent);border:1px solid var(--card-border);font-weight:600;">View Comic</button>';
+      comicWrap.innerHTML = '<button style="background:none;border:none;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:inherit;text-decoration:underline;margin-top:0.4rem;" onclick="showComicPanels()">Rewatch comic</button>';
     } else {
       comicWrap.innerHTML = '';
     }
@@ -10828,6 +10839,16 @@ function nextComicPanel() {
 function closeComicPanels() {
   var overlay = document.getElementById('campaign-comic-overlay');
   if (overlay) overlay.style.display = 'none';
+  // If triggered as part of auto-flow, proceed to results
+  if (campaignState._comicAutoFlow) {
+    campaignState._comicAutoFlow = false;
+    showCampaignResults();
+  }
+}
+
+function showComicPanelsThenResults() {
+  campaignState._comicAutoFlow = true;
+  showComicPanels();
 }
 
 function showNextLevelOrMap() {
