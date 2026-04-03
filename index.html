@@ -9903,7 +9903,7 @@ var campaignCombo = 0;
 
 // --- PROLOGUE ---
 var prologueScenes = [
-  {speaker:'book', text:'Hello! Welcome to your first year of English!', emotion:'excited', image:'campaign/img/prologue-01.jpg', duration:6000},
+  {speaker:'book', text:'Hello, {NAME}! Welcome to your first year of English!', emotion:'excited', image:'campaign/img/prologue-01.jpg', duration:6000},
   {speaker:'book', text:'I am your English book. But I am not like other books. I can talk to you! I know your name. I know your class. And I have a whole year of stories inside me.', image:'campaign/img/prologue-02.jpg', duration:14000},
   {speaker:'book', text:'Inside my pages, there are 15 chapters full of adventures. Animals, pirates, detectives, musicians, even time travel! And every chapter teaches you something new in English.', emotion:'excited', image:'campaign/img/prologue-03.jpg', duration:14000},
   {speaker:'book', text:'Are you ready? Let me show you my first chapter. It is about your classroom. Let me open to page one and\u2014', image:'campaign/img/prologue-04.jpg', duration:10000},
@@ -9911,8 +9911,8 @@ var prologueScenes = [
   {speaker:'book', text:'My pages. They are... fading. Words are disappearing. Someone is erasing my stories!', emotion:'scared', image:'campaign/img/prologue-06.jpg', duration:10000},
   {speaker:'book', text:'I can feel it. The animals are losing their names. The pirates are losing their treasure. The music is going silent. Without grammar, my world falls apart.', emotion:'sad', image:'campaign/img/prologue-07.jpg', duration:14000},
   {speaker:'syntax', text:'I am Professor Syntax. I watch over the grammar in this book. Someone called The Fader is erasing the rules. Without rules, the stories die. You must help us.', image:'campaign/img/prologue-08.jpg', duration:16000},
-  {speaker:'book', text:'Will you help me? Every chapter you fix brings my stories back to life. Tap the right words. Choose the right answers. Read and learn. Together, we can save everything.', image:'campaign/img/prologue-09.jpg', duration:14000},
-  {speaker:'book', text:'Good. Then let us begin. Your adventure starts now!', emotion:'excited', image:'campaign/img/prologue-10.jpg', duration:6000}
+  {speaker:'book', text:'Will you help me, {NAME}? Every chapter you fix brings my stories back to life. Tap the right words. Choose the right answers. Read and learn. Together, we can save everything.', image:'campaign/img/prologue-09.jpg', duration:14000},
+  {speaker:'book', text:'Good. Then let us begin, {NAME}. Your adventure starts now!', emotion:'excited', image:'campaign/img/prologue-10.jpg', duration:6000}
 ];
 
 function checkPrologueWatched() {
@@ -9954,7 +9954,7 @@ function renderPrologueScene() {
   container.innerHTML = navHtml +
     '<div class="prologue-scene">' +
       '<div class="prologue-speaker">' + speakerAvatar + ' ' + speakerName + '</div>' +
-      '<div class="prologue-text campaign-book-text' + emotionClass + '">' + escapeHtml(scene.text) + '</div>' +
+      '<div class="prologue-text campaign-book-text' + emotionClass + '">' + escapeHtml(scene.text.replace(/\{NAME\}/g, state.studentName || 'friend')) + '</div>' +
       imgHtml +
       dotsHtml +
       '<button class="btn campaign-story-btn" onclick="advancePrologueScene()" style="margin-top:1rem;">Continue</button>' +
@@ -10058,7 +10058,7 @@ function showCampaignMap() {
   // Header
   var headerHtml = '<div class="campaign-map-header">' +
     '<div class="map-title">The Book That Knows Your Name</div>' +
-    '<div class="map-subtitle">' + completedCount + '/' + levels.length + ' Chapters Restored</div>' +
+    '<div class="map-subtitle">' + (state.studentName || 'friend') + '\'s Journey &mdash; ' + completedCount + '/' + levels.length + ' Chapters Restored</div>' +
     '<div class="map-stats"><span>&#11088; ' + totalStars + ' Stars</span><span>&#10024; ' + totalXP + ' XP</span></div>' +
     '<div style="margin-top:0.3rem;"><button style="background:none;border:none;color:var(--muted);font-size:0.7rem;cursor:pointer;font-family:inherit;text-decoration:underline;" onclick="campaignState.prologueWatched=false;localStorage.removeItem(\'campaign-prologue-watched\');showPrologue();">&#128214; Watch Intro Again</button></div>' +
   '</div>';
@@ -10147,7 +10147,7 @@ function renderStoryBeat() {
   }
   var beat = queue[idx];
   var speaker = beat.speaker || 'book';
-  var text = beat.text || '';
+  var text = (beat.text || '').replace(/\{NAME\}/g, state.studentName || 'friend');
   var emotion = beat.emotion || '';
   var speakerArea = document.getElementById('campaign-story-speaker');
   var content = document.getElementById('campaign-story-content');
@@ -11004,7 +11004,7 @@ campaignLevels = [
   readingImage:'campaign/img/ch01-reading-flip.jpg',
   comicPanels:['campaign/img/ch01-comic-01.jpg','campaign/img/ch01-comic-02.jpg'],
   storyA:[
-    {speaker:"book", text:"You open the cover. Light spills out. A classroom appears — but something is terribly wrong."},
+    {speaker:"book", text:"Welcome, {NAME}. You open the cover. Light spills out. A classroom appears — but something is terribly wrong."},
     {speaker:"book", text:"The desks are turning grey. The pencils are losing their shapes. Every object is fading because its NAME has been stolen."},
     {speaker:"book", text:"Without words, nothing can exist here. Quick — name every object before the whole classroom disappears forever!"}
   ],
@@ -11013,7 +11013,7 @@ campaignLevels = [
     {speaker:"book", text:"Someone else is in these pages. Someone is erasing things on purpose."}
   ],
   completion:[
-    {speaker:"book", text:"The classroom is bright again! Every object has its name back.", emotion:"excited"},
+    {speaker:"book", text:"Well done, {NAME}! The classroom is bright again! Every object has its name back.", emotion:"excited"},
     {speaker:"book", text:"But I can feel it... somewhere deeper in the book, someone is still erasing words."}
   ],
   tasks:[
@@ -11127,7 +11127,7 @@ campaignLevels = [
   ],
   storyB:[
     {speaker:"mia", text:"Hello? Can you hear me?"},
-    {speaker:"mia", text:"My name is Mia. I have been trapped in this book for 347 days."},
+    {speaker:"mia", text:"My name is Mia. I have been trapped in this book for 347 days. Are you {NAME}? The Book told me about you."},
     {speaker:"mia", text:"There is someone else here. I call him The Fader. He erases things. Words, pictures, whole chapters."},
     {speaker:"book", text:"Mia! You can hear us?", emotion:"excited"},
     {speaker:"mia", text:"I can. And I need your help. Keep fixing the words. I will try to find out who The Fader is."}
@@ -11243,7 +11243,7 @@ campaignLevels = [
   ],
   completion:[
     {speaker:"book", text:"The band played beautifully. Every instrument found its owner!", emotion:"excited"},
-    {speaker:"book", text:"End of Act I. The story is just beginning."},
+    {speaker:"book", text:"{NAME}, we are NOT stopping. End of Act I. The story is just beginning."},
     {speaker:"mia", text:"I found something important. The Fader left a trail. We follow it in the next chapter."}
   ],
   tasks:[
@@ -11418,7 +11418,7 @@ campaignLevels = [
     {speaker:"book", text:"Did you see that? A shadow just moved between the pages.", emotion:"scared"},
     {speaker:"syntax", text:"Ah, there you are. I have been watching."},
     {speaker:"syntax", text:"I am Professor Syntax. I guard the grammar of this book."},
-    {speaker:"syntax", text:"The shadow you saw — his name is Griffin. He was a student once. He got lost in the book."},
+    {speaker:"syntax", text:"The shadow you saw — his name is Griffin. He was a student once. He got lost in the book. {NAME}, you must understand him."},
     {speaker:"mia", text:"Griffin... so that is The Fader's real name."}
   ],
   completion:[
@@ -11502,9 +11502,9 @@ campaignLevels = [
         {prompt:"___ is your tortoise's name? — Speedy.", answer:"What", options:["What","Who","Where","How"], hint:"Asking about a thing/name.", hintDe:"Was/Wie"}
       ]},
     {name:"Griffin's Letters", type:"reading", context:"Three crumpled letters lie between the pages — written by Griffin himself. This is the first time we hear his voice directly. Read carefully. Understanding his words is the key to understanding who he really is.", xpEach:10,
-      passage:"<h4>Letter 1 — Early Days</h4><p>To anyone who can read this: My name is Griffin. I am 14. I am from Austria. I was good at maths and science, but English was always hard for me. I tried and tried. Then the Book pulled me in. I do not understand why.</p><p>Please help me. I am scared. I do not know where I am. The pages are very big and very quiet. If you can read this, please answer. Please. I am asking nicely. Please.</p><h4>Letter 2 — Months Later</h4><p>Nobody answered my first letter. Nobody. I waited and waited. The pages keep turning but nobody stops for me. I am invisible here, just like I was invisible in English class.</p><p>You know what? I do not care any more. I found an eraser between the pages. A big one. If nobody reads my words, why should any words exist? I am going to erase everything. Every verb. Every noun. If there are no rules, then nobody can fail. Not even me.</p><h4>Letter 3 — Recent</h4><p>I am tired. I erased so many words. Hundreds. Maybe thousands. But the Book keeps growing back. And I keep feeling... empty.</p><p>Last night I sat in the garden chapter and looked at the stars. They were beautiful. I did not erase them. I could not.</p><p>Maybe erasing is wrong. Maybe I am wrong. But if I stop erasing... then what am I? Just a boy who is bad at English, lost in a book nobody reads. I do not know what is worse.</p>",
+      passage:"<h4>Letter 1 — Early Days</h4><p>To anyone who can read this: My name is Griffin. I am 14. I was good at maths and science, but English was always hard for me. I tried and tried. Then the Book pulled me in. I do not understand why.</p><p>Please help me. I am scared. I do not know where I am. The pages are very big and very quiet. If you can read this, please answer. Please. I am asking nicely. Please.</p><h4>Letter 2 — Months Later</h4><p>Nobody answered my first letter. Nobody. I waited and waited. The pages keep turning but nobody stops for me. I am invisible here, just like I was invisible in English class.</p><p>You know what? I do not care any more. I found an eraser between the pages. A big one. If nobody reads my words, why should any words exist? I am going to erase everything. Every verb. Every noun. If there are no rules, then nobody can fail. Not even me.</p><h4>Letter 3 — Recent</h4><p>I am tired. I erased so many words. Hundreds. Maybe thousands. But the Book keeps growing back. And I keep feeling... empty.</p><p>Last night I sat in the garden chapter and looked at the stars. They were beautiful. I did not erase them. I could not.</p><p>Maybe erasing is wrong. Maybe I am wrong. But if I stop erasing... then what am I? Just a boy who is bad at English, lost in a book nobody reads. I do not know what is worse.</p>",
       questions:[
-        {question:"Where is Griffin from?", answer:"Austria", options:["Austria","England","Germany","America"]},
+        {question:"How old is Griffin?", answer:"14", options:["14","12","16","10"]},
         {question:"What was Griffin good at before?", answer:"Maths and science", options:["Maths and science","English and music","Sports and art","Reading and writing"]},
         {question:"Why did Griffin start erasing?", answer:"He believed if there are no rules, nobody can fail", options:["He believed if there are no rules, nobody can fail","Because it was fun","Because someone told him to","Because he was bored"]},
         {question:"What did Griffin NOT erase in the garden chapter?", answer:"The stars", options:["The stars","The trees","The flowers","The grass"]},
@@ -11767,7 +11767,7 @@ campaignLevels = [
     {speaker:"mia", text:"One day a girl looked at my paper and laughed. I wanted to disappear. I wanted every maths book in the world to burn."},
     {speaker:"emre", text:"...that is exactly how I felt."},
     {speaker:"mia", text:"But I did not burn the books. Someone helped me. My older sister sat with me every evening and explained things slowly, with patience. She never said 'try harder.' She said 'let me show you another way.'"},
-    {speaker:"book", text:"Griffin... I owe you an apology.", emotion:"sad"},
+    {speaker:"book", text:"We heard you, Griffin. {NAME} read every letter. And now I owe you an apology.", emotion:"sad"},
     {speaker:"emre", text:"What? Why?"},
     {speaker:"book", text:"I am a book. I have hundreds of pages, thousands of words. But I never noticed that one of my readers was hurting. I should have seen it sooner. I am sorry."},
     {speaker:"emre", text:"...nobody ever said sorry to me before. Not about English. Everyone just said 'try harder.'"},
@@ -11892,14 +11892,14 @@ campaignLevels = [
     {speaker:"syntax", text:"I am very proud of all of you. Now go. The real world is waiting."},
     {speaker:"book", text:"— A MESSAGE FOR YOU —"},
     {speaker:"book", text:"Yes, you. The one reading this. The one who opened me on the first day and did not give up."},
-    {speaker:"book", text:"You did not just press buttons and choose answers. You saved fifteen chapters. You helped a girl named Mia. You reached a boy named Griffin. You listened when nobody else did."},
+    {speaker:"book", text:"You did not just press buttons and choose answers. You saved fifteen chapters. You helped a girl named Mia. You reached a boy named Griffin. You listened when nobody else did. Thank you, {NAME}. You are not just a student. You are the person who saved my stories. I will always know your name."},
     {speaker:"book", text:"I know that English is hard sometimes. I know that grammar can feel like a wall. I know there are days when you want to close the book and never open it again."},
     {speaker:"book", text:"But you did not close me. You kept going. Page after page. Chapter after chapter. Even when it was difficult. Even when you made mistakes. You stayed."},
     {speaker:"book", text:"Every word you learned makes me stronger. Every mistake you made taught me something new. Every minute you spent with me matters. You matter."},
     {speaker:"book", text:"Thank you for not giving up on Griffin. Thank you for not giving up on English. Thank you for not giving up on yourself."},
     {speaker:"book", text:"I will always know your name.", emotion:"excited"},
     {speaker:"book", text:"— A FINAL WHISPER —"},
-    {speaker:"book", text:"Open me again tomorrow. There is always more to learn. And I will always be here, waiting for you. Always."}
+    {speaker:"book", text:"Open me again tomorrow, {NAME}. There is always more to learn. And I will always be here, waiting for you. Always."}
   ],
   tasks:[
     {name:"Going To (Statements)", type:"mc", context:"The blank future page is waiting to be written! Each character has a plan — but they need the right form of 'going to' to make it real. Choose am/is/are going to and watch each dream appear on the page!", xpEach:10,
