@@ -9903,16 +9903,16 @@ var campaignCombo = 0;
 
 // --- PROLOGUE ---
 var prologueScenes = [
-  {speaker:'book', text:'Hello! Welcome to your first year of English!', emotion:'excited', image:'campaign/img/prologue-01.png', duration:6000},
-  {speaker:'book', text:'I am your English book. But I am not like other books. I can talk to you! I know your name. I know your class. And I have a whole year of stories inside me.', image:'campaign/img/prologue-02.png', duration:14000},
-  {speaker:'book', text:'Inside my pages, there are 15 chapters full of adventures. Animals, pirates, detectives, musicians, even time travel! And every chapter teaches you something new in English.', emotion:'excited', image:'campaign/img/prologue-03.png', duration:14000},
-  {speaker:'book', text:'Are you ready? Let me show you my first chapter. It is about your classroom. Let me open to page one and\u2014', image:'campaign/img/prologue-04.png', duration:10000},
-  {speaker:'book', text:'\u2014 wait. Something is wrong.', emotion:'scared', image:'campaign/img/prologue-05.png', duration:5000},
-  {speaker:'book', text:'My pages. They are... fading. Words are disappearing. Someone is erasing my stories!', emotion:'scared', image:'campaign/img/prologue-06.png', duration:10000},
-  {speaker:'book', text:'I can feel it. The animals are losing their names. The pirates are losing their treasure. The music is going silent. Without grammar, my world falls apart.', emotion:'sad', image:'campaign/img/prologue-07.png', duration:14000},
-  {speaker:'syntax', text:'I am Professor Syntax. I watch over the grammar in this book. Someone called The Fader is erasing the rules. Without rules, the stories die. You must help us.', image:'campaign/img/prologue-08.png', duration:16000},
-  {speaker:'book', text:'Will you help me? Every chapter you fix brings my stories back to life. Tap the right words. Choose the right answers. Read and learn. Together, we can save everything.', image:'campaign/img/prologue-09.png', duration:14000},
-  {speaker:'book', text:'Good. Then let us begin. Your adventure starts now!', emotion:'excited', image:'campaign/img/prologue-10.png', duration:6000}
+  {speaker:'book', text:'Hello! Welcome to your first year of English!', emotion:'excited', image:'campaign/img/prologue-01.jpg', duration:6000},
+  {speaker:'book', text:'I am your English book. But I am not like other books. I can talk to you! I know your name. I know your class. And I have a whole year of stories inside me.', image:'campaign/img/prologue-02.jpg', duration:14000},
+  {speaker:'book', text:'Inside my pages, there are 15 chapters full of adventures. Animals, pirates, detectives, musicians, even time travel! And every chapter teaches you something new in English.', emotion:'excited', image:'campaign/img/prologue-03.jpg', duration:14000},
+  {speaker:'book', text:'Are you ready? Let me show you my first chapter. It is about your classroom. Let me open to page one and\u2014', image:'campaign/img/prologue-04.jpg', duration:10000},
+  {speaker:'book', text:'\u2014 wait. Something is wrong.', emotion:'scared', image:'campaign/img/prologue-05.jpg', duration:5000},
+  {speaker:'book', text:'My pages. They are... fading. Words are disappearing. Someone is erasing my stories!', emotion:'scared', image:'campaign/img/prologue-06.jpg', duration:10000},
+  {speaker:'book', text:'I can feel it. The animals are losing their names. The pirates are losing their treasure. The music is going silent. Without grammar, my world falls apart.', emotion:'sad', image:'campaign/img/prologue-07.jpg', duration:14000},
+  {speaker:'syntax', text:'I am Professor Syntax. I watch over the grammar in this book. Someone called The Fader is erasing the rules. Without rules, the stories die. You must help us.', image:'campaign/img/prologue-08.jpg', duration:16000},
+  {speaker:'book', text:'Will you help me? Every chapter you fix brings my stories back to life. Tap the right words. Choose the right answers. Read and learn. Together, we can save everything.', image:'campaign/img/prologue-09.jpg', duration:14000},
+  {speaker:'book', text:'Good. Then let us begin. Your adventure starts now!', emotion:'excited', image:'campaign/img/prologue-10.jpg', duration:6000}
 ];
 
 function checkPrologueWatched() {
@@ -9933,10 +9933,10 @@ function renderPrologueScene() {
   var scene = prologueScenes[campaignState.prologueScene];
   if (!scene) { finishPrologue(); return; }
   var emotionClass = scene.emotion ? ' ' + scene.emotion : '';
-  var speakerAvatar = '<img class="campaign-speaker-avatar" src="campaign/img/char-book-avatar.png" style="width:36px;height:36px;border-radius:50%;object-fit:cover;vertical-align:middle;" onerror="this.outerHTML=\'&#128214;\'">';
+  var speakerAvatar = '<img class="campaign-speaker-avatar" src="campaign/img/char-book-avatar.jpg" style="width:36px;height:36px;border-radius:50%;object-fit:cover;vertical-align:middle;" onerror="this.outerHTML=\'&#128214;\'">';
   var speakerName = 'The Book';
-  if (scene.speaker === 'syntax') { speakerAvatar = '<img class="campaign-speaker-avatar" src="campaign/img/char-syntax-avatar.png" style="width:36px;height:36px;border-radius:50%;object-fit:cover;vertical-align:middle;" onerror="this.outerHTML=\'&#129497;\'">'; speakerName = 'Professor Syntax'; }
-  if (scene.speaker === 'mia') { speakerAvatar = '<img class="campaign-speaker-avatar" src="campaign/img/char-mia-avatar.png" style="width:36px;height:36px;border-radius:50%;object-fit:cover;vertical-align:middle;" onerror="this.outerHTML=\'&#128105;\'">'; speakerName = 'Mia'; }
+  if (scene.speaker === 'syntax') { speakerAvatar = '<img class="campaign-speaker-avatar" src="campaign/img/char-syntax-avatar.jpg" style="width:36px;height:36px;border-radius:50%;object-fit:cover;vertical-align:middle;" onerror="this.outerHTML=\'&#129497;\'">'; speakerName = 'Professor Syntax'; }
+  if (scene.speaker === 'mia') { speakerAvatar = '<img class="campaign-speaker-avatar" src="campaign/img/char-mia-avatar.jpg" style="width:36px;height:36px;border-radius:50%;object-fit:cover;vertical-align:middle;" onerror="this.outerHTML=\'&#128105;\'">'; speakerName = 'Mia'; }
   // Scene image
   var imgHtml = scene.image ? '<img class="prologue-scene-img" src="' + scene.image + '" style="width:100%;border-radius:12px;margin-top:0.8rem;max-height:300px;object-fit:cover;" onerror="this.style.display=\'none\'">' : '';
   // Dots
@@ -10026,11 +10026,11 @@ function showCampaignMap() {
     window._campaignImagesPreloaded = true;
     var preloadPaths = [];
     // Prologue
-    for (var i = 1; i <= 10; i++) preloadPaths.push('campaign/img/prologue-' + String(i).padStart(2,'0') + '.png');
+    for (var i = 1; i <= 10; i++) preloadPaths.push('campaign/img/prologue-' + String(i).padStart(2,'0') + '.jpg');
     // Characters
-    ['char-book-avatar','char-book-happy','char-book-scared','char-mia-avatar','char-mia-neutral','char-mia-happy','char-mia-scared','char-mia-determined','char-griffin-avatar-before','char-griffin-avatar-after','char-griffin-shadow','char-griffin-confrontation','char-griffin-listening','char-griffin-redemption','char-griffin-after','char-syntax-avatar','char-syntax-appearing','char-syntax-speaking'].forEach(function(n) { preloadPaths.push('campaign/img/' + n + '.png'); });
+    ['char-book-avatar','char-book-happy','char-book-scared','char-mia-avatar','char-mia-neutral','char-mia-happy','char-mia-scared','char-mia-determined','char-griffin-avatar-before','char-griffin-avatar-after','char-griffin-shadow','char-griffin-confrontation','char-griffin-listening','char-griffin-redemption','char-griffin-after','char-syntax-avatar','char-syntax-appearing','char-syntax-speaking'].forEach(function(n) { preloadPaths.push('campaign/img/' + n + '.jpg'); });
     // Ch1
-    ['ch01-scene-classroom','ch01-scene-flickering','ch01-reading-flip','ch01-comic-01','ch01-comic-02'].forEach(function(n) { preloadPaths.push('campaign/img/' + n + '.png'); });
+    ['ch01-scene-classroom','ch01-scene-flickering','ch01-reading-flip','ch01-comic-01','ch01-comic-02'].forEach(function(n) { preloadPaths.push('campaign/img/' + n + '.jpg'); });
     // Preload all
     preloadPaths.forEach(function(p) {
       var img = new Image();
@@ -10154,12 +10154,12 @@ function renderStoryBeat() {
   var btn = document.getElementById('campaign-story-btn');
   // Speaker avatar & name (use character images with emoji fallback)
   var avatarMap = {
-    book: {img:'campaign/img/char-book-avatar.png', emoji:'&#128214;', name:'The Book', cls:'campaign-book-text'},
-    mia: {img:'campaign/img/char-mia-avatar.png', emoji:'&#128103;', name:'Mia', cls:'campaign-mia-text'},
-    emre: {img:'campaign/img/char-griffin-avatar-before.png', emoji:'&#128100;', name:'Griffin', cls:'campaign-emre-text'},
-    griffin: {img:'campaign/img/char-griffin-avatar-before.png', emoji:'&#128100;', name:'Griffin', cls:'campaign-emre-text'},
-    syntax: {img:'campaign/img/char-syntax-avatar.png', emoji:'&#129333;', name:'Professor Syntax', cls:'campaign-syntax-text'},
-    fader: {img:'campaign/img/char-griffin-avatar-before.png', emoji:'&#128100;', name:'The Fader', cls:'campaign-emre-text'}
+    book: {img:'campaign/img/char-book-avatar.jpg', emoji:'&#128214;', name:'The Book', cls:'campaign-book-text'},
+    mia: {img:'campaign/img/char-mia-avatar.jpg', emoji:'&#128103;', name:'Mia', cls:'campaign-mia-text'},
+    emre: {img:'campaign/img/char-griffin-avatar-before.jpg', emoji:'&#128100;', name:'Griffin', cls:'campaign-emre-text'},
+    griffin: {img:'campaign/img/char-griffin-avatar-before.jpg', emoji:'&#128100;', name:'Griffin', cls:'campaign-emre-text'},
+    syntax: {img:'campaign/img/char-syntax-avatar.jpg', emoji:'&#129333;', name:'Professor Syntax', cls:'campaign-syntax-text'},
+    fader: {img:'campaign/img/char-griffin-avatar-before.jpg', emoji:'&#128100;', name:'The Fader', cls:'campaign-emre-text'}
   };
   var av = avatarMap[speaker] || avatarMap.book;
   var avatarHtml = '<img class="campaign-speaker-avatar" src="' + av.img + '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" onerror="this.outerHTML=\'' + av.emoji + '\'">';
@@ -11000,9 +11000,9 @@ campaignLevels = [
 {
   levelId:"L01", levelName:"The Book Opens", topic:"School & Classroom", grammar:"Plurals, imperatives",
   maxXP:190, starThresholds:{one:95, two:152, three:190},
-  sceneImages:{storyA:'campaign/img/ch01-scene-classroom.png', storyB:'campaign/img/ch01-scene-flickering.png'},
-  readingImage:'campaign/img/ch01-reading-flip.png',
-  comicPanels:['campaign/img/ch01-comic-01.png','campaign/img/ch01-comic-02.png'],
+  sceneImages:{storyA:'campaign/img/ch01-scene-classroom.jpg', storyB:'campaign/img/ch01-scene-flickering.jpg'},
+  readingImage:'campaign/img/ch01-reading-flip.jpg',
+  comicPanels:['campaign/img/ch01-comic-01.jpg','campaign/img/ch01-comic-02.jpg'],
   storyA:[
     {speaker:"book", text:"You open the cover. Light spills out. A classroom appears — but something is terribly wrong."},
     {speaker:"book", text:"The desks are turning grey. The pencils are losing their shapes. Every object is fading because its NAME has been stolen."},
