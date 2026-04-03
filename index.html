@@ -1513,6 +1513,119 @@ body.playing .header-container { display: none; }
   margin: 0.1rem;
 }
 [data-theme="dark"] .campaign-tag { background: #4e3a20; color: #D7CCC8; }
+
+/* --- Campaign Polish Animations --- */
+
+/* Story text entrance */
+.campaign-story-card { animation: storyCardIn 0.5s ease-out; }
+@keyframes storyCardIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+
+/* Story paragraphs stagger in */
+.campaign-story-card .story-paragraph { opacity:0; animation: paragraphFadeIn 0.6s ease forwards; }
+.campaign-story-card .story-paragraph:nth-child(1) { animation-delay: 0.2s; }
+.campaign-story-card .story-paragraph:nth-child(2) { animation-delay: 0.8s; }
+.campaign-story-card .story-paragraph:nth-child(3) { animation-delay: 1.4s; }
+.campaign-story-card .story-paragraph:nth-child(4) { animation-delay: 2.0s; }
+@keyframes paragraphFadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+/* Speaker avatar entrance */
+.campaign-speaker-avatar { animation: avatarBounceIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes avatarBounceIn { from { opacity:0; transform:scale(0.5); } to { opacity:1; transform:scale(1); } }
+
+/* Scene images fade in smoothly */
+.campaign-scene-img { opacity:0; animation: sceneFadeIn 0.8s ease 0.3s forwards; }
+@keyframes sceneFadeIn { from { opacity:0; transform:scale(0.97); } to { opacity:1; transform:scale(1); } }
+.campaign-scene-img:hover { transform: scale(1.01); transition: transform 0.3s ease; }
+
+/* Prologue scene transitions */
+.prologue-scene { animation: prologueFadeIn 0.6s ease; }
+@keyframes prologueFadeIn { from { opacity:0; } to { opacity:1; } }
+.prologue-scene-img { opacity:0; animation: prologueImgIn 0.7s ease 0.4s forwards; }
+@keyframes prologueImgIn { from { opacity:0; transform:translateY(12px) scale(0.98); } to { opacity:1; transform:none; } }
+.prologue-dot.active { animation: dotPulse 1.5s ease infinite; }
+@keyframes dotPulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.3); } }
+
+/* Task card entrance */
+.campaign-task-card, #campaign-exercise-area { animation: taskSlideIn 0.4s ease-out; }
+@keyframes taskSlideIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:none; } }
+
+/* MC buttons stagger entrance */
+.campaign-mc-btn { opacity:0; animation: mcBtnIn 0.3s ease forwards; }
+.campaign-mc-btn:nth-child(1) { animation-delay: 0.05s; }
+.campaign-mc-btn:nth-child(2) { animation-delay: 0.1s; }
+.campaign-mc-btn:nth-child(3) { animation-delay: 0.15s; }
+.campaign-mc-btn:nth-child(4) { animation-delay: 0.2s; }
+@keyframes mcBtnIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+/* Vocab chips stagger */
+.campaign-vocab-chip { opacity:0; animation: chipIn 0.25s ease forwards; }
+.campaign-vocab-chip:nth-child(1) { animation-delay: 0.05s; }
+.campaign-vocab-chip:nth-child(2) { animation-delay: 0.1s; }
+.campaign-vocab-chip:nth-child(3) { animation-delay: 0.15s; }
+.campaign-vocab-chip:nth-child(4) { animation-delay: 0.2s; }
+.campaign-vocab-chip:nth-child(5) { animation-delay: 0.25s; }
+.campaign-vocab-chip:nth-child(6) { animation-delay: 0.3s; }
+.campaign-vocab-chip:nth-child(7) { animation-delay: 0.35s; }
+.campaign-vocab-chip:nth-child(8) { animation-delay: 0.4s; }
+@keyframes chipIn { from { opacity:0; transform:scale(0.8); } to { opacity:1; transform:scale(1); } }
+
+/* Correct answer celebration */
+.campaign-mc-btn.correct { animation: correctPop 0.4s ease; }
+@keyframes correctPop { 0% { transform:scale(1); } 30% { transform:scale(1.08); } 100% { transform:scale(1); } }
+
+/* Feedback slide in */
+.campaign-feedback { animation: feedbackSlideIn 0.3s ease-out; }
+@keyframes feedbackSlideIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+/* Map nodes stagger entrance */
+.campaign-node-row { opacity:0; animation: nodeRowIn 0.3s ease forwards; }
+@keyframes nodeRowIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+/* Current node glow pulse */
+.campaign-node.current { animation: currentNodePulse 2s ease infinite; }
+@keyframes currentNodePulse { 0%,100% { box-shadow: 0 0 8px rgba(121,85,72,0.3); } 50% { box-shadow: 0 0 20px rgba(121,85,72,0.5), 0 0 40px rgba(121,85,72,0.1); } }
+
+/* Completed node shimmer */
+.campaign-node.completed { position:relative; overflow:hidden; }
+.campaign-node.completed::after { content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:linear-gradient(45deg, transparent 40%, rgba(255,215,0,0.15) 50%, transparent 60%); animation: completedNodeShimmer 3s ease infinite; }
+@keyframes completedNodeShimmer { 0% { transform:translateX(-100%) rotate(45deg); } 100% { transform:translateX(100%) rotate(45deg); } }
+
+/* Reading passage entrance */
+.campaign-reading-card { animation: readingFadeIn 0.5s ease; }
+@keyframes readingFadeIn { from { opacity:0; } to { opacity:1; } }
+.reading-illustration { animation: illustrationReveal 0.5s ease; overflow:hidden; }
+@keyframes illustrationReveal { from { opacity:0; max-height:0; } to { opacity:1; max-height:400px; } }
+
+/* Stars pop in sequence */
+.campaign-star.fill-anim { opacity:0; animation: starPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.campaign-star.fill-anim:nth-child(1) { animation-delay: 0.2s; }
+.campaign-star.fill-anim:nth-child(2) { animation-delay: 0.6s; }
+.campaign-star.fill-anim:nth-child(3) { animation-delay: 1.0s; }
+@keyframes starPopIn { from { opacity:0; transform:scale(0) rotate(-30deg); } to { opacity:1; transform:scale(1) rotate(0); } }
+
+/* XP counter glow */
+.campaign-xp-total { animation: xpGlow 1s ease; }
+@keyframes xpGlow { 0% { text-shadow:none; } 50% { text-shadow: 0 0 20px rgba(245,158,11,0.5); } 100% { text-shadow:none; } }
+
+/* Comic panel entrance */
+.campaign-comic-overlay { animation: comicOverlayIn 0.3s ease; }
+@keyframes comicOverlayIn { from { opacity:0; } to { opacity:1; } }
+.comic-panel-img { animation: comicPanelIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes comicPanelIn { from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); } }
+
+/* Campaign screen transitions */
+#campaign-map-screen.active,
+#campaign-story-screen.active,
+#campaign-task-screen.active,
+#campaign-reading-screen.active,
+#campaign-results-screen.active,
+#campaign-prologue-screen.active { animation: campaignScreenIn 0.4s ease-out; }
+@keyframes campaignScreenIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+/* Continue/Next button pulse */
+.campaign-story-btn, .campaign-next-btn { animation: btnPulse 2s ease infinite 1s; }
+@keyframes btnPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(121,85,72,0.3); } 50% { box-shadow: 0 0 0 6px transparent; } }
+
 /* ===== CLASS QUIZ ===== */
 .cq-teacher-link { display:block; text-align:center; margin-top:16px; font-size:13px; color:var(--muted); cursor:pointer; text-decoration:underline; }
 .cq-room-code { font-family:'Fredoka',sans-serif; font-size:52px; font-weight:700; letter-spacing:10px; color:var(--accent2); text-align:center; margin:16px 0; text-shadow:0 0 20px rgba(99,102,241,0.3); }
@@ -1842,7 +1955,7 @@ body.playing .header-container { display: none; }
     <div class="campaign-xp-breakdown" id="campaign-xp-breakdown"></div>
     <div id="campaign-completion-message" style="font-size:0.85rem;color:var(--text-secondary);margin:0.5rem 0;font-style:italic;"></div>
     <div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:1rem;">
-      <button class="btn" id="campaign-next-btn" onclick="showNextLevelOrMap()">Next Level</button>
+      <button class="btn campaign-next-btn" id="campaign-next-btn" onclick="showNextLevelOrMap()">Next Level</button>
       <button class="btn btn-secondary" onclick="showCampaignMap()">Back to Map</button>
     </div>
   </div>
@@ -9808,12 +9921,12 @@ function renderPrologueScene() {
   var scene = prologueScenes[campaignState.prologueScene];
   if (!scene) { finishPrologue(); return; }
   var emotionClass = scene.emotion ? ' ' + scene.emotion : '';
-  var speakerAvatar = '<img src="campaign/img/char-book-avatar.png" style="width:36px;height:36px;border-radius:50%;object-fit:cover;vertical-align:middle;" onerror="this.outerHTML=\'&#128214;\'">';
+  var speakerAvatar = '<img class="campaign-speaker-avatar" src="campaign/img/char-book-avatar.png" style="width:36px;height:36px;border-radius:50%;object-fit:cover;vertical-align:middle;" onerror="this.outerHTML=\'&#128214;\'">';
   var speakerName = 'The Book';
-  if (scene.speaker === 'syntax') { speakerAvatar = '<img src="campaign/img/char-syntax-avatar.png" style="width:36px;height:36px;border-radius:50%;object-fit:cover;vertical-align:middle;" onerror="this.outerHTML=\'&#129497;\'">'; speakerName = 'Professor Syntax'; }
-  if (scene.speaker === 'mia') { speakerAvatar = '<img src="campaign/img/char-mia-avatar.png" style="width:36px;height:36px;border-radius:50%;object-fit:cover;vertical-align:middle;" onerror="this.outerHTML=\'&#128105;\'">'; speakerName = 'Mia'; }
+  if (scene.speaker === 'syntax') { speakerAvatar = '<img class="campaign-speaker-avatar" src="campaign/img/char-syntax-avatar.png" style="width:36px;height:36px;border-radius:50%;object-fit:cover;vertical-align:middle;" onerror="this.outerHTML=\'&#129497;\'">'; speakerName = 'Professor Syntax'; }
+  if (scene.speaker === 'mia') { speakerAvatar = '<img class="campaign-speaker-avatar" src="campaign/img/char-mia-avatar.png" style="width:36px;height:36px;border-radius:50%;object-fit:cover;vertical-align:middle;" onerror="this.outerHTML=\'&#128105;\'">'; speakerName = 'Mia'; }
   // Scene image
-  var imgHtml = scene.image ? '<img src="' + scene.image + '" style="width:100%;border-radius:12px;margin-top:0.8rem;max-height:300px;object-fit:cover;" onerror="this.style.display=\'none\'">' : '';
+  var imgHtml = scene.image ? '<img class="prologue-scene-img" src="' + scene.image + '" style="width:100%;border-radius:12px;margin-top:0.8rem;max-height:300px;object-fit:cover;" onerror="this.style.display=\'none\'">' : '';
   // Dots
   var dotsHtml = '<div class="prologue-dots">';
   for (var d = 0; d < prologueScenes.length; d++) {
@@ -9863,6 +9976,22 @@ function getCampaignProgress() {
 
 // --- MAP ---
 function showCampaignMap() {
+  // Preload campaign images once
+  if (!window._campaignImagesPreloaded) {
+    window._campaignImagesPreloaded = true;
+    var preloadPaths = [];
+    // Prologue
+    for (var i = 1; i <= 10; i++) preloadPaths.push('campaign/img/prologue-' + String(i).padStart(2,'0') + '.png');
+    // Characters
+    ['char-book-avatar','char-book-happy','char-book-scared','char-mia-avatar','char-mia-neutral','char-mia-happy','char-mia-scared','char-mia-determined','char-griffin-avatar-before','char-griffin-avatar-after','char-griffin-shadow','char-griffin-confrontation','char-griffin-listening','char-griffin-redemption','char-griffin-after','char-syntax-avatar','char-syntax-appearing','char-syntax-speaking'].forEach(function(n) { preloadPaths.push('campaign/img/' + n + '.png'); });
+    // Ch1
+    ['ch01-scene-classroom','ch01-scene-flickering','ch01-reading-flip','ch01-comic-01','ch01-comic-02'].forEach(function(n) { preloadPaths.push('campaign/img/' + n + '.png'); });
+    // Preload all
+    preloadPaths.forEach(function(p) {
+      var img = new Image();
+      img.src = p;
+    });
+  }
   checkPrologueWatched();
   // Check if prologue needs to be shown first
   if (!campaignState.prologueWatched) {
@@ -9914,7 +10043,7 @@ function showCampaignMap() {
     if (i === 5) nodesHtml += '<div class="campaign-act-divider"><div class="act-name">&#128214; ACT II</div><div class="act-subtitle">The Investigation</div></div>';
     if (i === 10) nodesHtml += '<div class="campaign-act-divider"><div class="act-name">&#128214; ACT III</div><div class="act-subtitle">The Truth</div></div>';
     if (i > 0) nodesHtml += '<div class="campaign-node-connector' + (completed || (cp.levels && cp.levels[prevLid] && cp.levels[prevLid].completed) ? ' completed' : '') + '"></div>';
-    nodesHtml += '<div class="campaign-node-row">' +
+    nodesHtml += '<div class="campaign-node-row" style="animation-delay:' + (i * 0.05) + 's">' +
       '<div class="campaign-node-info">' +
         (isCurrent ? '<div class="campaign-node-arrow">&#11015;&#65039;</div>' : '') +
         '<div class="' + nodeClass + '"' + (unlocked ? ' onclick="startCampaignLevel(' + i + ')"' : '') + '>' + (i+1) + '</div>' +
@@ -9988,7 +10117,7 @@ function renderStoryBeat() {
     fader: {img:'campaign/img/char-griffin-avatar-before.png', emoji:'&#128100;', name:'The Fader', cls:'campaign-emre-text'}
   };
   var av = avatarMap[speaker] || avatarMap.book;
-  var avatarHtml = '<img src="' + av.img + '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" onerror="this.outerHTML=\'' + av.emoji + '\'">';
+  var avatarHtml = '<img class="campaign-speaker-avatar" src="' + av.img + '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" onerror="this.outerHTML=\'' + av.emoji + '\'">';
   var speakerName = av.name;
   var textClass = av.cls;
   speakerArea.innerHTML = '<div class="campaign-char-avatar">' + avatarHtml + '</div>' +
@@ -9997,8 +10126,11 @@ function renderStoryBeat() {
   // Scene image from level data
   var lv = campaignLevels[campaignState.currentLevel];
   var sceneImgSrc = (lv && lv.sceneImages && campaignState.storyPhase) ? lv.sceneImages[campaignState.storyPhase] : '';
-  var sceneImgHtml = sceneImgSrc ? '<img src="' + sceneImgSrc + '" style="width:100%;border-radius:12px;margin-top:0.8rem;max-height:260px;object-fit:cover;" onerror="this.style.display=\'none\'">' : '';
-  content.innerHTML = '<div class="' + textClass + emotionClass + '" style="animation-delay:0.1s;">' + text + '</div>' + sceneImgHtml;
+  var sceneImgHtml = sceneImgSrc ? '<img class="campaign-scene-img" src="' + sceneImgSrc + '" style="width:100%;border-radius:12px;margin-top:0.8rem;max-height:260px;object-fit:cover;" onerror="this.style.display=\'none\'">' : '';
+  // Wrap text paragraphs in story-paragraph divs for stagger animation
+  var storyParagraphs = text.split(/\n+/).filter(function(p) { return p.trim(); });
+  var wrappedText = storyParagraphs.length > 1 ? storyParagraphs.map(function(p) { return '<div class="story-paragraph">' + p + '</div>'; }).join('') : '<div class="story-paragraph">' + text + '</div>';
+  content.innerHTML = '<div class="' + textClass + emotionClass + '">' + wrappedText + '</div>' + sceneImgHtml;
   btn.textContent = (idx < queue.length - 1) ? 'Continue' : (campaignState.storyCallback === showCampaignResults ? 'See Results' : 'Begin');
   btn.onclick = function() { advanceStoryBeat(); };
   showScreen('campaign-story-screen');
@@ -10548,7 +10680,7 @@ function showCampaignResults() {
   if (campaignState.vocabXP > 0) breakdown += '<div class="campaign-xp-row"><span>&#128218; Vocab Tasks</span><span>+' + campaignState.vocabXP + ' XP</span></div>';
   if (campaignState.grammarXP > 0) breakdown += '<div class="campaign-xp-row"><span>&#128221; Grammar Tasks</span><span>+' + campaignState.grammarXP + ' XP</span></div>';
   if (campaignState.readingXP > 0) breakdown += '<div class="campaign-xp-row"><span>&#128214; Reading</span><span>+' + campaignState.readingXP + ' XP</span></div>';
-  breakdown += '<div class="campaign-xp-row"><span>&#10024; Total</span><span id="campaign-total-xp-counter">' + campaignState.levelXP + ' XP</span></div>';
+  breakdown += '<div class="campaign-xp-row"><span>&#10024; Total</span><span id="campaign-total-xp-counter" class="campaign-xp-total">' + campaignState.levelXP + ' XP</span></div>';
   document.getElementById('campaign-xp-breakdown').innerHTML = breakdown;
   // Animate XP counter
   var totalEl = document.getElementById('campaign-total-xp-counter');
@@ -10614,6 +10746,7 @@ function renderComicPanel() {
   if (!overlay) {
     overlay = document.createElement('div');
     overlay.id = 'campaign-comic-overlay';
+    overlay.className = 'campaign-comic-overlay';
     overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;';
     document.body.appendChild(overlay);
   }
@@ -10621,7 +10754,7 @@ function renderComicPanel() {
   overlay.innerHTML =
     '<div style="text-align:center;max-width:500px;width:100%;">' +
       '<div style="color:#fff;font-size:0.75rem;margin-bottom:0.5rem;opacity:0.7;">' + (idx + 1) + ' / ' + panels.length + '</div>' +
-      '<img src="' + panels[idx] + '" style="width:100%;border-radius:14px;max-height:70vh;object-fit:contain;" onerror="this.alt=\'Image not found\'">' +
+      '<img class="comic-panel-img" src="' + panels[idx] + '" style="width:100%;border-radius:14px;max-height:70vh;object-fit:contain;" onerror="this.alt=\'Image not found\'">' +
       '<div style="display:flex;gap:0.6rem;margin-top:0.8rem;justify-content:center;">' +
         (isLast ?
           '<button class="btn" onclick="closeComicPanels()" style="padding:0.5rem 1.5rem;">Close</button>' :
