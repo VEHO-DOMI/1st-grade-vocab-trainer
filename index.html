@@ -1076,32 +1076,43 @@ body.playing .header-container { display: none; }
 }
 .campaign-story-speaker {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.6rem;
+  gap: 0.3rem;
+  margin-bottom: 0.8rem;
 }
 .campaign-char-avatar {
-  width: 42px;
-  height: 42px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
-  border: 2px solid #D7CCC8;
+  font-size: 2rem;
+  border: 3px solid #A1887F;
   background: #FFF8E1;
   flex-shrink: 0;
+  box-shadow: 0 2px 12px rgba(121,85,72,0.2);
+  overflow: hidden;
+}
+.campaign-char-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 [data-theme="dark"] .campaign-char-avatar {
-  background: #4e3a20;
-  border-color: #5D4037;
+  background: #3e2a18;
+  border-color: #8D6E63;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
 }
 .campaign-speaker-name {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #5D4037;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #4E342E;
+  font-family: 'Fredoka', sans-serif;
 }
-[data-theme="dark"] .campaign-speaker-name { color: #D7CCC8; }
+[data-theme="dark"] .campaign-speaker-name { color: #EFEBE9; }
 .campaign-book-text {
   font-family: 'Patrick Hand', 'Fredoka', cursive, sans-serif;
   color: #3E2723;
@@ -10152,17 +10163,27 @@ function renderStoryBeat() {
   var speakerArea = document.getElementById('campaign-story-speaker');
   var content = document.getElementById('campaign-story-content');
   var btn = document.getElementById('campaign-story-btn');
-  // Speaker avatar & name (use character images with emoji fallback)
+  // Speaker avatar & name — use full character portraits for story screens
+  var griffinRedeemed = campaignState.currentLevel !== null && campaignState.currentLevel >= 14;
+  var griffinImg = griffinRedeemed ? 'campaign/img/char-griffin-after.jpg' : 'campaign/img/char-griffin-shadow.jpg';
+  var griffinAvatar = griffinRedeemed ? 'campaign/img/char-griffin-avatar-after.jpg' : 'campaign/img/char-griffin-avatar-before.jpg';
   var avatarMap = {
-    book: {img:'campaign/img/char-book-avatar.jpg', emoji:'&#128214;', name:'The Book', cls:'campaign-book-text'},
-    mia: {img:'campaign/img/char-mia-avatar.jpg', emoji:'&#128103;', name:'Mia', cls:'campaign-mia-text'},
-    emre: {img:'campaign/img/char-griffin-avatar-before.jpg', emoji:'&#128100;', name:'Griffin', cls:'campaign-emre-text'},
-    griffin: {img:'campaign/img/char-griffin-avatar-before.jpg', emoji:'&#128100;', name:'Griffin', cls:'campaign-emre-text'},
-    syntax: {img:'campaign/img/char-syntax-avatar.jpg', emoji:'&#129333;', name:'Professor Syntax', cls:'campaign-syntax-text'},
-    fader: {img:'campaign/img/char-griffin-avatar-before.jpg', emoji:'&#128100;', name:'The Fader', cls:'campaign-emre-text'}
+    book: {img:'campaign/img/char-book-happy.jpg', emoji:'&#128214;', name:'The Book', cls:'campaign-book-text'},
+    mia: {img:'campaign/img/char-mia-neutral.jpg', emoji:'&#128103;', name:'Mia', cls:'campaign-mia-text'},
+    emre: {img:griffinImg, emoji:'&#128100;', name:'Griffin', cls:'campaign-emre-text'},
+    griffin: {img:griffinImg, emoji:'&#128100;', name:'Griffin', cls:'campaign-emre-text'},
+    syntax: {img:'campaign/img/char-syntax-appearing.jpg', emoji:'&#129333;', name:'Professor Syntax', cls:'campaign-syntax-text'},
+    fader: {img:'campaign/img/char-griffin-shadow.jpg', emoji:'&#128100;', name:'The Fader', cls:'campaign-emre-text'}
   };
+  // Use emotion-specific images when available
+  if (speaker === 'book' && emotion === 'scared') avatarMap.book.img = 'campaign/img/char-book-scared.jpg';
+  if (speaker === 'mia' && emotion === 'happy') avatarMap.mia.img = 'campaign/img/char-mia-happy.jpg';
+  if (speaker === 'mia' && emotion === 'scared') avatarMap.mia.img = 'campaign/img/char-mia-scared.jpg';
+  if (speaker === 'mia' && emotion === 'determined') avatarMap.mia.img = 'campaign/img/char-mia-determined.jpg';
+  if (speaker === 'griffin' && emotion === 'listening') avatarMap.griffin.img = 'campaign/img/char-griffin-listening.jpg';
+  if (speaker === 'griffin' && emotion === 'redemption') avatarMap.griffin.img = 'campaign/img/char-griffin-redemption.jpg';
   var av = avatarMap[speaker] || avatarMap.book;
-  var avatarHtml = '<img class="campaign-speaker-avatar" src="' + av.img + '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" onerror="this.outerHTML=\'' + av.emoji + '\'">';
+  var avatarHtml = '<img class="campaign-speaker-avatar" src="' + av.img + '" onerror="this.outerHTML=\'' + av.emoji + '\'">';
   var speakerName = av.name;
   var textClass = av.cls;
   // Update chapter label
