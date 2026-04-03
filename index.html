@@ -10276,7 +10276,7 @@ function renderReadingQuestion(task) {
   }
   var q = questions[qi];
   var html = '<div style="font-weight:700;font-size:0.88rem;margin-bottom:0.4rem;">Q' + (qi+1) + ': ' + escapeHtml(q.question || q.prompt || '') + '</div>';
-  var opts = q.options || [];
+  var opts = shuffleArray((q.options || []).slice());
   html += '<div class="campaign-mc-grid">';
   opts.forEach(function(opt) {
     html += '<button class="campaign-mc-btn" onclick="submitReadingAnswer(this, \'' + escapeHtml(opt).replace(/'/g, "\\'") + '\')">' + escapeHtml(opt) + '</button>';
