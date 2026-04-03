@@ -11072,12 +11072,14 @@ campaignLevels = [
   storyB:[
     {speaker:"mia", text:"I found something. The Fader left a note. But it is full of grammar errors."},
     {speaker:"mia", text:"The note says: 'I doesn't want nobody to fix the book. I wants it empty.'"},
-    {speaker:"book", text:"The feeling behind those words is real, even when the grammar is wrong.", emotion:"sad"},
-    {speaker:"book", text:"He is hurting. Can you fix his grammar? Maybe understanding his words will help us understand him."}
+    {speaker:"book", text:"Wait. Look at his handwriting. It is small and shaky. Like a child who is afraid of making mistakes.", emotion:"sad"},
+    {speaker:"mia", text:"And look at this — he crossed out the same word five times before writing it. He TRIED to get it right. He just... could not."},
+    {speaker:"book", text:"He is not stupid. He is struggling. Can you fix his grammar? Maybe understanding his words will help us understand him."}
   ],
   completion:[
     {speaker:"book", text:"The negatives are back! Characters can finally say what they don't like."},
-    {speaker:"mia", text:"That note... The Fader is not just angry. He is lonely."}
+    {speaker:"mia", text:"That note... The Fader is not just angry. He is someone who tried very hard and still failed. I know that feeling."},
+    {speaker:"book", text:"His grammar is broken, but his feelings are clear. He wants to disappear because he feels invisible.", emotion:"sad"}
   ],
   tasks:[
     {name:"Food Words", type:"image-matching", context:"The kitchen labels have fallen off every ingredient! Match each description to the right food. Without names, the cook cannot tell rice from noodles!", xpEach:5,
@@ -11188,11 +11190,13 @@ campaignLevels = [
     {speaker:"book", text:"You enter a cosy living room — pets everywhere! Dogs, cats, hamsters. But the sentences are broken."},
     {speaker:"book", text:"'I love he.' 'She feeds they.' The pronouns are all WRONG. A girl tries to say 'I love HIM' but 'he' comes out instead. Nothing makes sense!"},
     {speaker:"book", text:"Without proper object pronouns, the characters cannot talk about each other or their pets. Fix him, her, them, us — before communication breaks down completely!"},
-    {speaker:"mia", text:"And look — I found Griffin's letters. Three of them. He has been writing to someone... but nobody ever answers. My heart aches for him."}
+    {speaker:"mia", text:"And look — I found Griffin's letters. Three of them. The paper is soft from tears. He has been writing to someone... but nobody ever answers."}
   ],
   completion:[
     {speaker:"book", text:"The pronouns are fixed. Characters can finally talk about their pets properly."},
-    {speaker:"mia", text:"Those letters... Griffin is lonely. He keeps asking for help, but nobody can hear him."}
+    {speaker:"mia", text:"Those letters broke my heart. The first one is polite. He says 'please' four times. The second one is angry. He stopped saying please.", emotion:"sad"},
+    {speaker:"mia", text:"But the third one... in the third one he asks himself: 'Am I wrong?' That is the most important question anyone can ask."},
+    {speaker:"book", text:"A person who asks 'Am I wrong?' is not a villain. He is someone who still wants to be good.", emotion:"sad"}
   ],
   tasks:[
     {name:"My Pet", type:"image-matching", context:"The pets in the Book have lost their names — a furry shape barks but nobody knows what to call it! Match each description to the right animal before the pets fade away completely.", xpEach:5,
@@ -11214,13 +11218,13 @@ campaignLevels = [
         {prompt:"___ is your tortoise's name? — Speedy.", answer:"What", options:["What","Who","Where","How"], hint:"Asking about a thing/name.", hintDe:"Was/Wie"}
       ]},
     {name:"Griffin's Letters", type:"reading", context:"Three crumpled letters lie between the pages — written by Griffin himself. This is the first time we hear his voice directly. Read carefully. Understanding his words is the key to understanding who he really is.", xpEach:10,
-      passage:"<h4>Letter 1</h4><p>To anyone who can read this: My name is Griffin. I am trapped in this book. I have been here for a long time. Please help me. Nobody answers.</p><h4>Letter 2</h4><p>I wrote before. Did you read it? I don't think so. The pages keep turning but nobody stops at my letters. I am between the chapters, in the empty spaces. Can you see me?</p><h4>Letter 3</h4><p>I am still here. I started erasing things because I was angry. If nobody reads my words, why should any words exist? But now I am not sure. Maybe erasing was wrong. I don't know any more.</p>",
+      passage:"<h4>Letter 1 — Early Days</h4><p>To anyone who can read this: My name is Griffin. I am 14. I am from Austria. I was good at maths and science, but English was always hard for me. I tried and tried. Then the Book pulled me in. I do not understand why.</p><p>Please help me. I am scared. I do not know where I am. The pages are very big and very quiet. If you can read this, please answer. Please. I am asking nicely. Please.</p><h4>Letter 2 — Months Later</h4><p>Nobody answered my first letter. Nobody. I waited and waited. The pages keep turning but nobody stops for me. I am invisible here, just like I was invisible in English class.</p><p>You know what? I do not care any more. I found an eraser between the pages. A big one. If nobody reads my words, why should any words exist? I am going to erase everything. Every verb. Every noun. If there are no rules, then nobody can fail. Not even me.</p><h4>Letter 3 — Recent</h4><p>I am tired. I erased so many words. Hundreds. Maybe thousands. But the Book keeps growing back. And I keep feeling... empty.</p><p>Last night I sat in the garden chapter and looked at the stars. They were beautiful. I did not erase them. I could not.</p><p>Maybe erasing is wrong. Maybe I am wrong. But if I stop erasing... then what am I? Just a boy who is bad at English, lost in a book nobody reads. I do not know what is worse.</p>",
       questions:[
-        {question:"What is the writer's name?", answer:"Griffin", options:["Griffin","Mia","The Book","Professor Syntax"]},
-        {question:"Where is Griffin hiding?", answer:"Between the chapters", options:["Between the chapters","In the cover","On the first page","In the pictures"]},
-        {question:"Why did Griffin start erasing?", answer:"Because he was angry", options:["Because he was angry","Because it was fun","Because someone told him to","Because he was bored"]},
-        {question:"How does Griffin feel in Letter 3?", answer:"Not sure if erasing was right", options:["Not sure if erasing was right","Happy","Excited","Proud"]},
-        {question:"Why do you think Griffin says 'maybe erasing was wrong'?", answer:"He is starting to regret what he did", options:["He is starting to regret what he did","He ran out of erasers","Someone told him to stop","He wants to erase more things"]}
+        {question:"Where is Griffin from?", answer:"Austria", options:["Austria","England","Germany","America"]},
+        {question:"What was Griffin good at before?", answer:"Maths and science", options:["Maths and science","English and music","Sports and art","Reading and writing"]},
+        {question:"Why did Griffin start erasing?", answer:"He believed if there are no rules, nobody can fail", options:["He believed if there are no rules, nobody can fail","Because it was fun","Because someone told him to","Because he was bored"]},
+        {question:"What did Griffin NOT erase in the garden chapter?", answer:"The stars", options:["The stars","The trees","The flowers","The grass"]},
+        {question:"How does Griffin feel in Letter 3?", answer:"Tired and not sure if erasing is right", options:["Tired and not sure if erasing is right","Happy and proud","Angry and strong","Excited about erasing more"]}
       ]},
     {name:"Object Pronouns", type:"gap-fill-mc", context:"The characters want to talk about their pets — but 'him', 'her', 'them', 'us', and 'it' are all missing! Fill in the right object pronoun so each sentence makes sense again.", xpEach:10,
       items:[
@@ -11243,14 +11247,17 @@ campaignLevels = [
     {speaker:"book", text:"Without demonstratives, buying and selling is impossible. Restore them before the market collapses into chaos — and Mia loses the trail!"}
   ],
   storyB:[
-    {speaker:"mia", text:"I have made a decision. I am going to find Griffin.", emotion:"excited"},
-    {speaker:"mia", text:"His letters show he is not evil. He is lost and scared. Just like I was."},
-    {speaker:"book", text:"Be careful, Mia. The empty pages at the back are... strange.", emotion:"scared"},
-    {speaker:"mia", text:"I know. But someone has to reach him. End of Act II. Wish me luck."}
+    {speaker:"mia", text:"I have made a decision. I am going to find Griffin."},
+    {speaker:"book", text:"Mia, the empty pages at the back are dangerous. Nobody comes back from there.", emotion:"scared"},
+    {speaker:"mia", text:"I read his letters three times. He is not a monster. He is a 14-year-old boy who was bad at English and felt stupid because of it."},
+    {speaker:"mia", text:"I know that feeling. I was bad at maths. I cried every night before maths tests. My stomach hurt. I felt like the dumbest person in the room."},
+    {speaker:"mia", text:"But nobody pulled ME into a book. Nobody left ME alone for months with only an eraser. He needs someone to say: 'You are not stupid. You just need help.'"},
+    {speaker:"book", text:"Then go. We will keep the Book alive while you are gone. Be careful.", emotion:"sad"},
+    {speaker:"mia", text:"End of Act II. Wish me luck."}
   ],
   completion:[
     {speaker:"book", text:"The shop is buzzing again! Everyone can point, compare, and buy.", emotion:"excited"},
-    {speaker:"book", text:"Mia has gone to find Griffin. We continue the story in Act III."}
+    {speaker:"book", text:"Mia has gone into the empty pages to find Griffin. She carries nothing but her notebook and her courage. We continue the story in Act III."}
   ],
   tasks:[
     {name:"At the Shop", type:"image-matching", context:"The market stalls have lost their price tags AND their labels! Match each description to the right item so the shoppers can finally see what is for sale.", xpEach:5,
@@ -11348,8 +11355,9 @@ campaignLevels = [
     {speaker:"mia", text:"I am close to him now. Every past tense word you fix lights up his trail like footprints in the dark!"}
   ],
   completion:[
-    {speaker:"book", text:"The past is clear again. We can see where Griffin was."},
-    {speaker:"mia", text:"He was in the kitchen at 6, in the bedroom at 7, in the garden at midnight. He was looking for something."}
+    {speaker:"book", text:"The past is clear again. We can see where Griffin was — and who he really is.", emotion:"sad"},
+    {speaker:"mia", text:"He was not destroying. He was trying to learn. He read the words. He looked at families. He tried to write. And when he could not... he cried."},
+    {speaker:"mia", text:"Griffin is not our enemy. He is a student who gave up on himself. We have to reach him before he gives up completely."}
   ],
   tasks:[
     {name:"Rooms of the House", type:"image-matching", context:"Griffin moved through these rooms last night — but their names have been erased from the doors! Match each description to the right room so we can follow his trail.", xpEach:5,
@@ -11380,13 +11388,13 @@ campaignLevels = [
         {prompt:"He arrived ___ midnight.", sentence:"He arrived ___ midnight.", answer:"at", options:["at","in","on"], hint:"Specific time = at.", hintDe:"um"}
       ]},
     {name:"Where Was Griffin?", type:"reading", context:"This is Mia's tracking report — a moment-by-moment account of Griffin's movements last night. Read every detail. The final paragraph might change how you feel about The Fader forever.", xpEach:10,
-      passage:"<h4>Where Was Griffin? — Tracking Report</h4><p>We now know where Griffin was last night, because Mia followed his eraser dust through the chapters.</p><p>At 6 pm, he was in the kitchen chapter. He was looking at the food pictures, and some of them were already faded. He touched the word 'bread' but he did not erase it.</p><p>At 7 pm, he was in the bedroom chapter. He was near the wardrobe description. The word 'wardrobe' was half-erased, but he stopped before finishing.</p><p>At 9 pm, he was in the living room chapter. The TV was on, but the screen was blank — he had erased the programme names.</p><p>At midnight, he was in the garden. He was sitting under a tree. He wasn't erasing anything. He was just sitting there, alone and quiet. Mia said he looked sad, not angry.</p>",
+      passage:"<h4>Where Was Griffin? — Tracking Report</h4><p>We now know where Griffin was last night. Mia followed his eraser dust through the chapters. What she found was not what she expected.</p><p>At 6 pm, he was in the kitchen chapter. He was looking at the food pictures. But he did not erase them. He was reading the words slowly, one by one. He moved his finger under each word like a young child learning to read. He whispered 'bread' three times. Then he walked away.</p><p>At 7 pm, he was in the bedroom chapter. He stopped at a picture of a family saying goodnight. He looked at it for a long time. He touched the mother's face in the picture. He did not erase anything in this chapter.</p><p>At 9 pm, he was in the living room chapter. He sat on the floor and opened a small notebook. He was trying to write a sentence. Mia found the page later. It said: 'I was happy. I were... I was...' He crossed it out many times. He could not get 'was' and 'were' right.</p><p>At midnight, he was in the garden. He was sitting under a tree, looking at the stars. His eraser was on the ground next to him, not in his hand. He was crying. Not angry crying. Quiet crying. The kind that comes when you are very tired of being alone.</p>",
       questions:[
-        {question:"Where was Griffin at 6 pm?", answer:"In the kitchen chapter", options:["In the kitchen chapter","In the garden","In the bedroom","In the living room"]},
-        {question:"What was half-erased in the bedroom?", answer:"The word 'wardrobe'", options:["The word 'wardrobe'","The bed","The window","The pillow"]},
-        {question:"What had Griffin erased from the TV?", answer:"The programme names", options:["The programme names","The screen","The sofa","The remote"]},
-        {question:"What was Griffin doing at midnight?", answer:"Sitting under a tree alone", options:["Sitting under a tree alone","Erasing words","Running away","Sleeping"]},
-        {question:"Why do you think Griffin stopped erasing at midnight?", answer:"He was feeling sad, not angry", options:["He was feeling sad, not angry","He was too tired","He ran out of eraser","He was hiding from Mia"]}
+        {question:"What was Griffin doing in the kitchen chapter?", answer:"Reading the words slowly, one by one", options:["Reading the words slowly, one by one","Erasing food pictures","Looking for Mia","Eating food"]},
+        {question:"What did Griffin look at in the bedroom chapter?", answer:"A picture of a family saying goodnight", options:["A picture of a family saying goodnight","The wardrobe","The bed","The window"]},
+        {question:"What was Griffin trying to do in the living room?", answer:"Write a correct sentence", options:["Write a correct sentence","Erase the TV","Watch a programme","Hide from Mia"]},
+        {question:"Where was Griffin's eraser at midnight?", answer:"On the ground next to him", options:["On the ground next to him","In his hand","In his pocket","He lost it"]},
+        {question:"Why do you think Griffin was crying at midnight?", answer:"He was tired of being alone", options:["He was tired of being alone","He was angry","He was cold","He was scared of the dark"]}
       ]}
   ]
 },
@@ -11455,19 +11463,42 @@ campaignLevels = [
     {speaker:"mia", text:"He is HERE. I can feel him on the other side of this page. Fix the verbs and we face him together."}
   ],
   storyB:[
-    {speaker:"mia", text:"Griffin? I know you are there. Please come out."},
-    {speaker:"emre", text:"Why? So you can fix everything I broke? So you can pretend I was never here?"},
-    {speaker:"mia", text:"No. So we can talk."},
-    {speaker:"emre", text:"I erased things because nobody listened. I wrote three letters and nobody answered."},
-    {speaker:"book", text:"We heard you, Griffin. We read every letter.", emotion:"sad"},
-    {speaker:"emre", text:"...you did?"},
-    {speaker:"mia", text:"Yes. And the Book says: your feelings are real, even when your grammar is not perfect."},
-    {speaker:"emre", text:"I just wanted someone to notice I was here."},
-    {speaker:"book", text:"We notice you. We have always noticed you."}
+    {speaker:"mia", text:"Griffin? I know you are there. I read your letters. All three of them."},
+    {speaker:"emre", text:"Go away."},
+    {speaker:"mia", text:"No."},
+    {speaker:"emre", text:"I said go away! I am dangerous. I erase things. I destroy things. That is what I do."},
+    {speaker:"mia", text:"That is what you DID. It is not who you ARE. Tell me why. Please."},
+    {speaker:"emre", text:"...you really want to know?"},
+    {speaker:"mia", text:"Yes. I really want to know."},
+    {speaker:"emre", text:"I tried to learn English for two years. Two years. I memorised vocabulary every night. Hundreds of words. But grammar... grammar made no sense to me."},
+    {speaker:"emre", text:"My teacher said: 'Try harder, Griffin.' But she never showed me HOW. She just said the rule again, faster, like I was deaf instead of confused."},
+    {speaker:"emre", text:"I failed the English test. I studied for two weeks and I still failed. And when I got my paper back... the other kids whispered."},
+    {speaker:"mia", text:"What did they say?"},
+    {speaker:"emre", text:"'Griffin is stupid.' They thought I could not hear them. But I heard every word. And after a while... I believed them. I thought: they are right. I AM stupid.", emotion:"sad"},
+    {speaker:"emre", text:"One night I was so angry that I opened my English book and wished the grammar would just disappear. And then the Book pulled me in."},
+    {speaker:"emre", text:"I found the eraser on my first day here. And I thought: if I erase all the rules, then nobody can get them wrong. If there is no grammar, nobody fails. Not me. Not anyone."},
+    {speaker:"mia", text:"Griffin... I understand. I really do.", emotion:"sad"},
+    {speaker:"emre", text:"How? How can YOU understand? You are fixing the Book. You are GOOD at this."},
+    {speaker:"mia", text:"I was bad at maths. So bad that I cried before every test. My hands shook. I felt sick. My classmates finished in twenty minutes and I was still on question one."},
+    {speaker:"mia", text:"One day a girl looked at my paper and laughed. I wanted to disappear. I wanted every maths book in the world to burn."},
+    {speaker:"emre", text:"...that is exactly how I felt."},
+    {speaker:"mia", text:"But I did not burn the books. Someone helped me. My older sister sat with me every evening and explained things slowly, with patience. She never said 'try harder.' She said 'let me show you another way.'"},
+    {speaker:"book", text:"Griffin... I owe you an apology.", emotion:"sad"},
+    {speaker:"emre", text:"What? Why?"},
+    {speaker:"book", text:"I am a book. I have hundreds of pages, thousands of words. But I never noticed that one of my readers was hurting. I should have seen it sooner. I am sorry."},
+    {speaker:"emre", text:"...nobody ever said sorry to me before. Not about English. Everyone just said 'try harder.'"},
+    {speaker:"mia", text:"You are not stupid, Griffin. You never were. You just needed someone to show you HOW. And nobody did. That is not your fault."},
+    {speaker:"emre", text:"Then whose fault is it?"},
+    {speaker:"mia", text:"It does not matter whose fault it is. What matters is: do you want to try again? Not alone this time. With us."},
+    {speaker:"emre", text:"...I am scared. What if I fail again?"},
+    {speaker:"mia", text:"Then we try again. And again. That is what learning is."},
+    {speaker:"emre", text:"OK. I... OK."}
   ],
   completion:[
-    {speaker:"book", text:"Griffin is not erasing any more. He is listening now."},
-    {speaker:"mia", text:"One more chapter to go. And this time, we write it together."}
+    {speaker:"book", text:"Griffin put down the eraser. His hands are shaking. But he is not erasing any more. He is listening.", emotion:"sad"},
+    {speaker:"mia", text:"One more chapter to go. The future chapter. Griffin erased every word of it. But this time... we write it together. All of us."},
+    {speaker:"emre", text:"I do not know how to write about the future. I never thought I had one."},
+    {speaker:"mia", text:"You do now. Turn the page, Griffin. Let us begin."}
   ],
   tasks:[
     {name:"Irregular Verbs", type:"mc", context:"The broadcast tower is blasting wrong past tenses across the Book! 'Goed', 'thinked', 'eated' — these verbs do not follow the -ed rule. Choose the correct irregular form to shut down each broken broadcast!", xpEach:5,
@@ -11516,21 +11547,75 @@ campaignLevels = [
   storyA:[
     {speaker:"book", text:"You turn to the last chapter. The page is completely, perfectly blank. White as snow. Griffin erased ALL of it — every word, every plan, every dream.", emotion:"scared"},
     {speaker:"book", text:"This was the future chapter. 'Going to' lived here — every plan, every hope, every 'I am going to...' Gone."},
-    {speaker:"emre", text:"I erased the future because I did not think I had one. What is the point of plans when nobody hears you?"},
-    {speaker:"mia", text:"Then let us write it together, Griffin. Everyone deserves a future — and it starts with 'going to'. Your future, our future. Let us build it word by word."}
+    {speaker:"emre", text:"I erased the future because I did not think I had one.", emotion:"sad"},
+    {speaker:"emre", text:"Back in school, the teacher asked us: 'What are you going to be when you grow up?' Every kid had an answer. Doctor. Pilot. Singer."},
+    {speaker:"emre", text:"I said nothing. Because every job needs English. And I could not learn English. So I had no future. Or that is what I believed."},
+    {speaker:"mia", text:"Griffin... you erased the future chapter because you were afraid of your OWN future?"},
+    {speaker:"emre", text:"If nobody can plan, then nobody has to worry about failing their plans. That was my logic. Stupid logic, I know."},
+    {speaker:"mia", text:"It is not stupid. It is sad. But it is wrong. Everyone deserves a future. Even you. ESPECIALLY you. And it starts with two words: 'going to.'"},
+    {speaker:"mia", text:"Let us write it together, Griffin. Your future, our future. Word by word."}
   ],
   storyB:[
-    {speaker:"emre", text:"OK. I will try. Give me the eraser — but this time I want to write with it, not erase."},
-    {speaker:"syntax", text:"Ah, how poetic. The one who erased now wants to write. Grammar truly is the tool of transformation."},
+    {speaker:"emre", text:"OK. I want to try. But I cannot write. My grammar..."},
+    {speaker:"mia", text:"Forget about perfect grammar for one minute. Just tell me: what do you WANT?"},
+    {speaker:"emre", text:"I... I want to learn. I want to understand the rules I erased. But I do not know where to start."},
+    {speaker:"mia", text:"Start here. This chapter is about 'going to.' It is for plans. Listen: I am going to help you. Say it back."},
+    {speaker:"emre", text:"I... am going to... let you help me?"},
+    {speaker:"mia", text:"Good. Now: You are going to learn. Say it."},
+    {speaker:"emre", text:"I am going to learn.", emotion:"excited"},
+    {speaker:"mia", text:"Yes! Now write it. With my pen. Not your eraser."},
+    {speaker:"emre", text:"Your pen?"},
+    {speaker:"mia", text:"Here. Take it. I am giving it to you. A pen can only build things. It cannot erase."},
+    {speaker:"book", text:"Griffin takes the pen. His hand shakes. He writes slowly, carefully, one word at a time.", emotion:"sad"},
+    {speaker:"emre", text:"I... am... going... to... try... again."},
+    {speaker:"book", text:"Five words. His first correct sentence. And the blank page is not blank any more.", emotion:"excited"},
+    {speaker:"syntax", text:"Ah. There it is."},
     {speaker:"book", text:"Professor Syntax! You came!", emotion:"excited"},
-    {speaker:"syntax", text:"Of course. The last chapter needs all of us. Now, Griffin — let us conjugate the future together."}
+    {speaker:"syntax", text:"Of course I came. Did you think I would miss the last chapter?"},
+    {speaker:"syntax", text:"Griffin, look at me. You just wrote a perfect sentence. 'I am going to try again.' Subject, verb, complement. Beautiful."},
+    {speaker:"emre", text:"It is only five words."},
+    {speaker:"syntax", text:"Every book in the world started with one sentence. Every language in the world started with one word. Five words is not small. Five words is a beginning."},
+    {speaker:"syntax", text:"And let me tell you something about mistakes, young man. I am Professor Syntax. I have guarded the grammar of this book for a hundred years. And do you know what I have learned?"},
+    {speaker:"emre", text:"What?"},
+    {speaker:"syntax", text:"Every rule in this book exists because someone made a mistake first. Mistakes are not the enemy of learning. Mistakes ARE learning. You were never stupid, Griffin. You were learning. You just did not know it yet."},
+    {speaker:"emre", text:"I... I am sorry. I am sorry I erased your stories. All of them. I was afraid. I was afraid of the rules because the rules made me feel broken.", emotion:"sad"},
+    {speaker:"book", text:"You are not broken, Griffin. You never were.", emotion:"sad"},
+    {speaker:"emre", text:"I am going to learn every rule I erased. Every single one. That is my promise."}
   ],
   completion:[
-    {speaker:"book", text:"The future chapter is complete. Every plan, every dream, every 'going to' is in place."},
-    {speaker:"emre", text:"I am sorry for erasing. I am going to help fix the book from now on."},
-    {speaker:"mia", text:"I am going to leave my notebook here. So the next student who gets lost can find it."},
-    {speaker:"book", text:"And I... I am going to remember every student who ever opened me. I will always know your name.", emotion:"excited"},
-    {speaker:"book", text:"Thank you for saving the words. The Book is whole again. Until next time..."}
+    {speaker:"book", text:"— THE BOOK RESTORED —", emotion:"excited"},
+    {speaker:"book", text:"All fifteen chapters glow. One by one, from the first page to the last, light fills every word, every sentence, every story."},
+    {speaker:"book", text:"I can feel it. Like blood returning to a sleeping hand. The plurals in Chapter 1. The prepositions in Chapter 2. The feelings in Chapter 4. The negatives in Chapter 7. Every word you saved, every rule you fixed — I feel all of it."},
+    {speaker:"book", text:"For the first time in a very long time, I am whole. And it is because of you."},
+    {speaker:"book", text:"— GRIFFIN'S PROMISE —"},
+    {speaker:"emre", text:"I am going to stay in the Book for a while. Not to erase. To fix."},
+    {speaker:"emre", text:"I am going to learn every rule I destroyed. Every plural. Every verb form. Every tense. That is my homework. And this time, nobody has to tell me to try harder. I WANT to try."},
+    {speaker:"emre", text:"Mia showed me something today. She showed me that the scariest sentence in the world is also the most important one: 'I am going to try again.'"},
+    {speaker:"emre", text:"I am going to write that sentence every morning. Until I believe it. And then I am going to write a new one."},
+    {speaker:"book", text:"— MIA'S FAREWELL —"},
+    {speaker:"mia", text:"It is time for me to go. I have been in this Book for a long time. I miss my family. I miss my sister. I miss my bed and my cat and even my maths homework."},
+    {speaker:"emre", text:"Mia... thank you. For reading my letters. For coming to find me. For not giving up."},
+    {speaker:"mia", text:"Griffin, listen to me. You are going to be OK. You are smart and brave and you feel things deeply. That is not a weakness. That is a gift."},
+    {speaker:"mia", text:"I am going to leave my notebook here. Inside the Book. If another student ever gets lost, if another kid ever feels stupid and alone... they will find it. And they will know that someone came before them. And that someone cared."},
+    {speaker:"emre", text:"Goodbye, Mia."},
+    {speaker:"mia", text:"Not goodbye. Just... see you later. In the real world. Where the grammar is messy and nobody gets it right all the time. I will look for you there.", emotion:"sad"},
+    {speaker:"book", text:"— PROFESSOR SYNTAX'S WISDOM —"},
+    {speaker:"syntax", text:"Well. Here we are. The last page of the last chapter."},
+    {speaker:"syntax", text:"You know, people think grammar is about rules. Subject. Verb. Object. Present tense. Past tense. Future tense. They think it is cold and boring and difficult."},
+    {speaker:"syntax", text:"But grammar is not about rules. Grammar is about CONNECTION. It is the bridge between one person and another. When you say 'I am going to help you,' that is not just grammar. That is a promise. That is love."},
+    {speaker:"syntax", text:"Today, you did not just save a book. You saved a person. A real, living, feeling person who was trapped and alone and afraid. You reached him with words. THAT is what language is for — to reach someone who cannot reach you back."},
+    {speaker:"syntax", text:"Remember that. Every verb you learn, every rule you practise, every mistake you make and fix — it all leads to THIS. The moment when your words find the person who needs them most."},
+    {speaker:"syntax", text:"I am very proud of all of you. Now go. The real world is waiting."},
+    {speaker:"book", text:"— A MESSAGE FOR YOU —"},
+    {speaker:"book", text:"Yes, you. The one reading this. The one who opened me on the first day and did not give up."},
+    {speaker:"book", text:"You did not just press buttons and choose answers. You saved fifteen chapters. You helped a girl named Mia. You reached a boy named Griffin. You listened when nobody else did."},
+    {speaker:"book", text:"I know that English is hard sometimes. I know that grammar can feel like a wall. I know there are days when you want to close the book and never open it again."},
+    {speaker:"book", text:"But you did not close me. You kept going. Page after page. Chapter after chapter. Even when it was difficult. Even when you made mistakes. You stayed."},
+    {speaker:"book", text:"Every word you learned makes me stronger. Every mistake you made taught me something new. Every minute you spent with me matters. You matter."},
+    {speaker:"book", text:"Thank you for not giving up on Griffin. Thank you for not giving up on English. Thank you for not giving up on yourself."},
+    {speaker:"book", text:"I will always know your name.", emotion:"excited"},
+    {speaker:"book", text:"— A FINAL WHISPER —"},
+    {speaker:"book", text:"Open me again tomorrow. There is always more to learn. And I will always be here, waiting for you. Always."}
   ],
   tasks:[
     {name:"Going To (Statements)", type:"mc", context:"The blank future page is waiting to be written! Each character has a plan — but they need the right form of 'going to' to make it real. Choose am/is/are going to and watch each dream appear on the page!", xpEach:10,
