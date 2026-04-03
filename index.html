@@ -1413,20 +1413,26 @@ body.playing .header-container { display: none; }
 /* --- 5. READING SCREEN --- */
 .campaign-reading-card {
   background: #FFFDE7;
-  border: 1px solid #D7CCC8;
-  border-radius: 12px;
-  padding: 1rem;
+  border: 1.5px solid #D7CCC8;
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
   margin: 0 0.5rem;
   font-size: 0.88rem;
-  line-height: 1.75;
+  line-height: 1.8;
   color: #3E2723;
-  max-height: 40vh;
+  max-height: 45vh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
 }
 [data-theme="dark"] .campaign-reading-card {
   background: #3e2f22;
   border-color: #5D4037;
   color: #FFE0B2;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
 }
 
 /* --- 6. FEEDBACK --- */
@@ -11200,7 +11206,7 @@ campaignLevels = [
         {prompt:"I ___ a telescope.", answer:"have got", options:["have got","has got","hasn't got","haven't got"], hint:"I + have got.", hintDe:"habe"}
       ]},
     {name:"Mia's Notebook", type:"reading", context:"A crumpled notebook page blows across the deck — it is Mia's diary! She has been trapped in this book for 347 days. Read her words carefully. Every correct answer strengthens the page.", xpEach:10,
-      passage:"<h4>Mia's Notebook — Day 347</h4><p>I am still here. In the book. In the pirate chapter.</p><p>The pirates have got their swords back now. The captain has got his beard again. Someone out there is helping — putting the words back.</p><p>But The Fader is angry. He has got an eraser, and it is big. Every night he erases more words. Last night, the parrot lost its name. It was just a colourful shape.</p><p>I have got a plan. I am going to follow him. He always goes to the back of the book, near the empty pages. Nobody goes there.</p><p>If you can read this — keep going. Every word you fix makes the book stronger.</p>",
+      passage:"<h4>Mia's Notebook — Day 347</h4><p>I am still here. In the book. In the pirate chapter.</p><p>The pirates have got their swords back now. The captain has got his beard again. Someone out there is helping — putting the words back.</p><p>But The Fader is angry. He has got a big eraser. Every night he erases more words. Last night, the parrot lost its name.</p><p>I have got a plan. I am going to follow him. He always goes to the back of the book, near the empty pages.</p><p>If you can read this — keep going. Every word you fix makes the book stronger.</p>",
       questions:[
         {question:"How many days has Mia been in the book?", answer:"347", options:["347","100","200","365"]},
         {question:"What does The Fader use to erase words?", answer:"An eraser", options:["An eraser","A pen","A sword","His hands"]},
@@ -11265,6 +11271,15 @@ campaignLevels = [
         {prompt:"Are you scared? — No, ___.", answer:"I'm not", options:["I'm not","I aren't","I doesn't","I isn't"], hint:"Are you? No, I'm not.", hintDe:"Nein, bin ich nicht."},
         {prompt:"Is it cold? — Yes, ___.", answer:"it is", options:["it is","it are","it does","it has"], hint:"Is it? Yes, it is.", hintDe:"Ja, ist es."},
         {prompt:"Are we late? — No, ___.", answer:"we aren't", options:["we aren't","we isn't","we don't","we hasn't"], hint:"Are we? No, we aren't.", hintDe:"Nein, sind wir nicht."}
+      ]},
+    {name:"A Day on the Emotion Islands",type:"reading",context:"Read about the Emotion Islands and answer the questions.",xpEach:10,
+      passage:"<strong>A Day on the Emotion Islands</strong><br><br>Today I visited four islands. On the first island, everyone was happy. They were smiling and laughing. But on the second island, the people were not happy. They were sad. 'We aren't happy here,' they said. 'We are looking for our smiles.'<br><br>On the third island, I met some angry children. 'Are you angry?' I asked. 'No, we aren't angry,' they said. 'We are just loud!'<br><br>The last island was quiet. The people were scared. 'Is everything OK?' I asked. 'Yes,' they whispered. 'We are just a little nervous.'<br><br>Every feeling is real. Every feeling is important.",
+      questions:[
+        {question:"How many islands did the writer visit?", answer:"Four", options:["Four","Three","Five","Two"]},
+        {question:"How did the people on the second island feel?", answer:"Sad and looking for their smiles", options:["Sad and looking for their smiles","Happy and excited to play","Angry and wanting to leave","Scared and hiding at home"]},
+        {question:"Were the children on the third island really angry?", answer:"No, they were just loud", options:["No, they were just loud","Yes, they were very angry","No, they were very quiet","Yes, they were scared"]},
+        {question:"How did the people on the last island feel?", answer:"A little nervous and scared", options:["A little nervous and scared","Very happy and excited","Angry and shouting loudly","Bored and wanting to leave"]},
+        {question:"What does the writer learn at the end?", answer:"Every feeling is real and important", options:["Every feeling is real and important","Only happy feelings are good","Angry feelings are always bad","Scared people need to leave"]}
       ]}
   ]
 },
@@ -11318,7 +11333,7 @@ campaignLevels = [
         {prompt:"We ___ all sing this song together!", answer:"can", options:["can","can't","cans","don't can"], hint:"We have the ability.", hintDe:"koennen"}
       ]},
     {name:"Concert Poster", type:"reading", context:"A concert poster appears on the wall — it is for Paper Notes! Read every detail. If you answer the questions correctly, the poster glows and the concert can finally begin.", xpEach:10,
-      passage:"<h4>LIVE TONIGHT: Paper Notes</h4><p>Come and see <b>Paper Notes</b> live at the Domi School Hall!</p><p>The band has got four members. Tom can play the guitar and the bass. Lisa can sing and play the keyboard. Ahmed can play the drums — he is amazing! And Sophie can play the flute and the saxophone.</p><p>Their concert is at 7 pm. Tickets are 3 euros for students. You can buy tickets at the school office.</p><p>Don't miss it! Paper Notes can play rock, pop, and jazz. Their music is fantastic!</p>",
+      passage:"<h4>LIVE TONIGHT: Paper Notes</h4><p>Come and see <b>Paper Notes</b> live at the Domi School Hall!</p><p>The band has got four members. Tom can play the guitar and the bass. Lisa can sing and play the keyboard. Ahmed can play the drums — he is amazing! And Sophie can play the flute and the saxophone.</p><p>Their concert is at 7 pm. Doors open at half past six. Tickets are 3 euros for students. You can buy tickets at the school office or at the door.</p><p>Don't miss it! Paper Notes can play rock, pop, and jazz. Their last concert was sold out, so come early! Their music is fantastic!</p>",
       questions:[
         {question:"How many members are in Paper Notes?", answer:"Four", options:["Four","Three","Five","Six"]},
         {question:"What can Tom play?", answer:"Guitar and bass", options:["Guitar and bass","Drums and guitar","Keyboard and flute","Saxophone and drums"]},
@@ -11498,13 +11513,22 @@ campaignLevels = [
         {prompt:"Do we need a sweater? — No, ___.", answer:"we don't", options:["we don't","we doesn't","we aren't","we hasn't"], hint:"Do we? No, we don't.", hintDe:"Nein, brauchen wir nicht."}
       ]},
     {name:"The Fashion Show", type:"reading", context:"The fashion show is in full swing! Read about Emma's birthday party carefully. Professor Syntax says: every correct answer helps rebuild the chapter and brings us closer to The Fader.", xpEach:10,
-      passage:"<h4>The Birthday Fashion Show</h4><p>It is Emma's birthday party, and all her friends are here. They are having a fashion show in the living room because Emma loves clothes!</p><p>Tom walks in first. He wears a blue T-shirt and black jeans. He has got cool trainers too. 'Do you like my outfit?' he asks. 'Yes, I do! You look great!' says Emma.</p><p>Lisa wears a red dress and white boots. She looks very nice. 'Does this dress fit well?' she asks. 'It looks perfect on you!' says her mum.</p><p>Ahmed wears a green sweater and a very funny cap with stars on it. Everybody laughs. 'Does my cap look silly?' he asks. 'No, it doesn't — it looks fantastic!' says Tom.</p><p>After the fashion show, they eat chocolate cake and dance to pop music. It is the best birthday party ever!</p>",
+      passage:"<h4>The Birthday Fashion Show</h4><p>It is Emma's birthday party. They are having a fashion show in the living room because Emma loves clothes!</p><p>Tom walks in first. He wears a blue T-shirt and black jeans. 'Do you like my outfit?' he asks. 'Yes, I do! You look great!' says Emma.</p><p>Lisa wears a red dress and white boots. 'Does this dress fit well?' she asks. 'It looks perfect on you!' says her mum.</p><p>Ahmed wears a green sweater and a funny cap with stars on it. Everybody laughs. 'Does my cap look silly?' he asks. 'No, it doesn't!' says Tom.</p><p>After the fashion show, they eat chocolate cake and dance. It is the best birthday party ever!</p>",
       questions:[
         {question:"Whose birthday is it?", answer:"Emma's", options:["Emma's","Tom's","Lisa's","Ahmed's"]},
         {question:"What colour is Tom's T-shirt?", answer:"Blue", options:["Blue","Red","Green","White"]},
         {question:"What does Lisa wear?", answer:"A red dress and white boots", options:["A red dress and white boots","A blue dress and black shoes","Jeans and a green T-shirt","A skirt and white trainers"]},
         {question:"What does Ahmed wear on his head?", answer:"A funny cap with stars", options:["A funny cap with stars","A red hat with stripes","A blue headband with dots","A black cap with letters"]},
         {question:"What do they do after the fashion show?", answer:"Eat cake and dance", options:["Eat cake and dance","Go home and sleep","Watch TV and relax","Play football outside"]}
+      ]},
+    {name:"The School Trip Shop",type:"reading",context:"Read about the school trip to the shop and answer the questions.",xpEach:10,
+      passage:"<strong>The School Trip Shop</strong><br><br>Our class went to a big clothes shop on Monday. The teacher asked us many questions about the clothes.<br><br>'Does this blue sweater cost 20 euros?' asked Max. 'No, it doesn't,' said the shop lady. 'It costs 25 euros.'<br><br>'Do these trainers come in red?' asked Lisa. 'Yes, they do! And they also come in green and white.'<br><br>Tom tried on a funny hat. 'Does this hat look good on me?' he asked. Everyone laughed. 'No, it doesn't!' said Emma. 'But it makes you look funny!'<br><br>In the end, nobody bought anything because everything was too expensive. But we had a great time. 'Do you want to come back next week?' asked the teacher. 'Yes, we do!' we all shouted.",
+      questions:[
+        {question:"Where did the class go?", answer:"To a big clothes shop", options:["To a big clothes shop","To a small shoe shop","To a food market","To a book store"]},
+        {question:"How much does the blue sweater cost?", answer:"25 euros", options:["25 euros","20 euros","15 euros","30 euros"]},
+        {question:"What colours do the trainers come in?", answer:"Red, green and white", options:["Red, green and white","Blue, black and grey","Red, blue and yellow","Green, orange and pink"]},
+        {question:"Why did everyone laugh at Tom?", answer:"The hat looked funny on him", options:["The hat looked funny on him","He fell down in the shop","He bought the wrong shoes","He forgot his money at home"]},
+        {question:"Why did nobody buy anything?", answer:"Everything was too expensive", options:["Everything was too expensive","The shop was closing early","They forgot their money","The teacher said no shopping"]}
       ]}
   ]
 },
@@ -11544,7 +11568,7 @@ campaignLevels = [
         {prompt:"___ is your tortoise's name? — Speedy.", answer:"What", options:["What","Who","Where","How"], hint:"Asking about a thing/name.", hintDe:"Was/Wie"}
       ]},
     {name:"Griffin's Letters", type:"reading", context:"Three crumpled letters lie between the pages — written by Griffin himself. This is the first time we hear his voice directly. Read carefully. Understanding his words is the key to understanding who he really is.", xpEach:10,
-      passage:"<h4>Letter 1 — Early Days</h4><p>To anyone who can read this: My name is Griffin. I am 14. I was good at maths and science, but English was always hard for me. I tried and tried. Then the Book pulled me in. I do not understand why.</p><p>Please help me. I am scared. I do not know where I am. The pages are very big and very quiet. If you can read this, please answer. Please. I am asking nicely. Please.</p><h4>Letter 2 — Months Later</h4><p>Nobody answered my first letter. Nobody. I waited and waited. The pages keep turning but nobody stops for me. I am invisible here, just like I was invisible in English class.</p><p>You know what? I do not care any more. I found an eraser between the pages. A big one. If nobody reads my words, why should any words exist? I am going to erase everything. Every verb. Every noun. If there are no rules, then nobody can fail. Not even me.</p><h4>Letter 3 — Recent</h4><p>I am tired. I erased so many words. Hundreds. Maybe thousands. But the Book keeps growing back. And I keep feeling... empty.</p><p>Last night I sat in the garden chapter and looked at the stars. They were beautiful. I did not erase them. I could not.</p><p>Maybe erasing is wrong. Maybe I am wrong. But if I stop erasing... then what am I? Just a boy who is bad at English, lost in a book nobody reads. I do not know what is worse.</p>",
+      passage:"<h4>Letter 1 — Early Days</h4><p>My name is Griffin. I am 14. English was always hard for me. Then the Book pulled me in. Please help me. I am scared. The pages are very big and very quiet. Please answer.</p><h4>Letter 2 — Months Later</h4><p>Nobody answered my first letter. I waited and waited. I am invisible here, just like I was invisible in English class. I found an eraser. If nobody reads my words, why should any words exist? I am going to erase everything.</p><h4>Letter 3 — Recent</h4><p>I am tired. I erased so many words. But the Book keeps growing back. Last night I looked at the stars. They were beautiful. I did not erase them. I could not. Maybe erasing is wrong. Maybe I am wrong.</p>",
       questions:[
         {question:"How old is Griffin?", answer:"14", options:["14","12","16","10"]},
         {question:"What was Griffin good at before?", answer:"Maths and science", options:["Maths and science","English and music","Sports and art","Reading and writing"]},
@@ -11614,13 +11638,13 @@ campaignLevels = [
         {prompt:"How much ___ the jeans?", sentence:"How much ___ the jeans?", answer:"are", options:["are","is"], hint:"Jeans is always plural.", hintDe:"kosten"}
       ]},
     {name:"The Clever Shopper", type:"reading", context:"Jack is the last shopper at the market — and his story is the last page before Act II ends. Read carefully and answer every question. Mia is counting on us to keep the Book strong while she goes to find Griffin.", xpEach:10,
-      passage:"<h4>The Clever Shopper</h4><p>Jack goes to the market with 20 euros. He wants to buy something special.</p><p>'How much is this hat?' he asks. 'That hat is 12 euros,' says the seller.</p><p>'And how much are those sunglasses over there?' 'Those are 15 euros.'</p><p>'Hmm, that is too much. How much is this key ring here?' 'This key ring is only 3 euros.'</p><p>Jack buys the key ring and the hat. He pays 15 euros and gets 5 euros back. 'These are great presents!' he says happily.</p>",
+      passage:"<h4>The Clever Shopper</h4><p>Jack goes to the market with 20 euros. He wants to buy presents for his family.</p><p>'How much is this hat?' he asks the first seller. 'That hat is 12 euros,' she says.</p><p>'And how much are those sunglasses over there?' 'Those are 15 euros.' 'Hmm, that is too much,' says Jack.</p><p>He walks to the next stall. 'How much is this key ring here?' 'This key ring is only 3 euros,' says the man.</p><p>'And how much are these postcards?' 'Those are 1 euro each.'</p><p>'Perfect!' says Jack. He buys the hat for his dad, the key ring for his mum, and two postcards for his friends. He pays 18 euros and gets 2 euros back.</p><p>'These are great presents!' he says happily. 'And I still have money for an ice cream!'</p>",
       questions:[
         {question:"How much money does Jack have?", answer:"20 euros", options:["20 euros","15 euros","10 euros","25 euros"]},
         {question:"How much is the hat?", answer:"12 euros", options:["12 euros","15 euros","10 euros","3 euros"]},
         {question:"Why doesn't Jack buy the sunglasses?", answer:"They are too expensive", options:["They are too expensive","They are the wrong colour","He does not need them","They are not very nice"]},
-        {question:"What does Jack buy?", answer:"A key ring and a hat", options:["A key ring and a hat","A hat and sunglasses","Only the sunglasses","A key ring and sunglasses"]},
-        {question:"How much change does Jack get?", answer:"5 euros", options:["5 euros","3 euros","8 euros","2 euros"]}
+        {question:"What does Jack buy?", answer:"A hat, a key ring and two postcards", options:["A hat, a key ring and two postcards","A hat and sunglasses","Only the sunglasses","A key ring and sunglasses"]},
+        {question:"How much change does Jack get?", answer:"2 euros", options:["2 euros","3 euros","5 euros","1 euro"]}
       ]}
   ]
 },
@@ -11714,13 +11738,13 @@ campaignLevels = [
         {prompt:"He arrived ___ midnight.", sentence:"He arrived ___ midnight.", answer:"at", options:["at","in","on"], hint:"Specific time = at.", hintDe:"um"}
       ]},
     {name:"Where Was Griffin?", type:"reading", context:"This is Mia's tracking report — a moment-by-moment account of Griffin's movements last night. Read every detail. The final paragraph might change how you feel about The Fader forever.", xpEach:10,
-      passage:"<h4>Where Was Griffin? — Tracking Report</h4><p>We now know where Griffin was last night. Mia followed his eraser dust through the chapters. What she found was not what she expected.</p><p>At 6 pm, he was in the kitchen chapter. He was looking at the food pictures. But he did not erase them. He was reading the words slowly, one by one. He moved his finger under each word like a young child learning to read. He whispered 'bread' three times. Then he walked away.</p><p>At 7 pm, he was in the bedroom chapter. He stopped at a picture of a family saying goodnight. He looked at it for a long time. He touched the mother's face in the picture. He did not erase anything in this chapter.</p><p>At 9 pm, he was in the living room chapter. He sat on the floor and opened a small notebook. He was trying to write a sentence. Mia found the page later. It said: 'I was happy. I were... I was...' He crossed it out many times. He could not get 'was' and 'were' right.</p><p>At midnight, he was in the garden. He was sitting under a tree, looking at the stars. His eraser was on the ground next to him, not in his hand. He was crying. Not angry crying. Quiet crying. The kind that comes when you are very tired of being alone.</p>",
+      passage:"<h4>Where Was Griffin? — Tracking Report</h4><p>We now know where Griffin was last night. Mia followed his eraser dust through the chapters.</p><p>At 6 pm, he was in the kitchen chapter. He was reading the food words slowly, one by one. He moved his finger under each word like a young child learning to read. He did not erase them.</p><p>At 7 pm, he was in the bedroom chapter. He stopped at a picture of a family saying goodnight. He looked at it for a long time. He did not erase anything.</p><p>At 9 pm, he was in the living room chapter. He was trying to write a sentence. Mia found the page later. It said: 'I was happy. I were... I was...' He crossed it out many times.</p><p>At midnight, he was in the garden, sitting under a tree. His eraser was on the ground next to him, not in his hand. He was crying quietly — the kind of crying that comes when you are very tired of being alone.</p>",
       questions:[
-        {question:"What was Griffin doing in the kitchen chapter?", answer:"Reading the words slowly, one by one", options:["Reading the words slowly, one by one","Erasing the food pictures carefully","Looking for Mia in every corner","Writing new words on the pages"]},
+        {question:"What was Griffin doing in the kitchen chapter?", answer:"Reading the food words slowly", options:["Reading the food words slowly","Erasing the food pictures carefully","Looking for Mia in every corner","Writing new words on the pages"]},
         {question:"What did Griffin look at in the bedroom chapter?", answer:"A picture of a family saying goodnight", options:["A picture of a family saying goodnight","A drawing of a boy reading a book","A photo of a school classroom scene","A painting of a dog sleeping outside"]},
         {question:"What was Griffin trying to do in the living room?", answer:"Write a correct sentence", options:["Write a correct sentence","Erase the TV","Watch a programme","Hide from Mia"]},
         {question:"Where was Griffin's eraser at midnight?", answer:"On the ground next to him", options:["On the ground next to him","In his hand as always","Hidden inside his pocket","Lost somewhere in the dark"]},
-        {question:"Why do you think Griffin was crying at midnight?", answer:"He was tired of being alone", options:["He was tired of being alone","He was angry about the Book","He was cold under the tree","He was scared of the dark"]}
+        {question:"Why was Griffin crying at midnight?", answer:"He was tired of being alone", options:["He was tired of being alone","He was angry about the Book","He was cold under the tree","He was scared of the dark"]}
       ]}
   ]
 },
@@ -11863,6 +11887,15 @@ campaignLevels = [
         {prompt:"Griffin wrote: 'I thinked nobody cared.'", answer:"I thought nobody cared.", options:["I thought nobody cared.","I thinked nobody cared.","I was thinked.","I thinking nobody cared."], hint:"think → thought.", hintDe:"Ich dachte, es kuemmert niemanden."},
         {prompt:"Griffin wrote: 'I maked everything disappear.'", answer:"I made everything disappear.", options:["I made everything disappear.","I maked everything disappear.","I was maked.","I making disappear."], hint:"make → made.", hintDe:"Ich liess alles verschwinden."},
         {prompt:"Griffin wrote: 'I didn't knew what to do.'", answer:"I didn't know what to do.", options:["I didn't know what to do.","I didn't knew what to do.","I not knew.","I didn't knowed."], hint:"didn't + base form.", hintDe:"Ich wusste nicht, was ich tun sollte."}
+      ]},
+    {name:"What Griffin Didn't Erase",type:"reading",context:"Read about what survived in the Book and answer the questions.",xpEach:10,
+      passage:"<strong>What Griffin Didn't Erase</strong><br><br>Mia made a list of everything Griffin erased and everything he kept. The pattern was surprising.<br><br>He erased grammar rules first. Verb endings, articles, prepositions — the small words that hold sentences together. Then he erased bigger structures: past tense forms, question patterns, negative sentences.<br><br>But he didn't erase everything. He didn't erase the jokes. On page 34, there was a funny story about a cat and a fish. Griffin left it completely untouched. He didn't erase the song lyrics on page 56 either. And he didn't erase the story about two friends on a camping trip — he even drew a small star next to it.<br><br>The things Griffin erased were the things that made him feel stupid. The things he kept were the things that made him feel something good. He didn't hate language. He hated feeling like he couldn't use it.<br><br>'He is not our enemy,' Mia wrote in her notebook. 'He is a reader who lost his confidence.'",
+      questions:[
+        {question:"What did Griffin erase first?", answer:"Grammar rules and small words", options:["Grammar rules and small words","Pictures and drawings","Jokes and funny stories","Names and titles"]},
+        {question:"What did Griffin NOT erase on page 34?", answer:"A funny story about a cat and fish", options:["A funny story about a cat and fish","A grammar rule about verbs","A picture of The Fader","A list of vocabulary words"]},
+        {question:"What did Griffin draw next to the camping story?", answer:"A small star", options:["A small star","A sad face","An eraser mark","His name"]},
+        {question:"Why did Griffin erase grammar rules?", answer:"They made him feel like he couldn't learn", options:["They made him feel like he couldn't learn","He thought they were boring to read","He wanted to make the Book angry","He was testing his eraser power"]},
+        {question:"What does Mia call Griffin at the end?", answer:"A reader who lost his confidence", options:["A reader who lost his confidence","A dangerous enemy of grammar","A student who doesn't care","A boy who hates all books"]}
       ]}
   ]
 },
