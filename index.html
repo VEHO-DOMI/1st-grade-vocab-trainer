@@ -9759,12 +9759,16 @@ var campaignCombo = 0;
 
 // --- PROLOGUE ---
 var prologueScenes = [
-  {speaker:'book', text:'You opened me. That means something.', duration:8000},
-  {speaker:'book', text:'I am a book. Not just any book. I am the book that was made for this class. Every word inside me was written for you.', duration:12000},
-  {speaker:'book', text:'But something is wrong. My pages are... fading. Words are disappearing. Someone is erasing me.', emotion:'scared', duration:12000},
-  {speaker:'book', text:'I need your help. If the words vanish, everything inside me vanishes too. The animals, the stories, the people...', emotion:'sad', duration:14000},
-  {speaker:'book', text:'Will you help me save the words? Tap them, choose them, read them, write them. Every correct answer brings a word back to life.', duration:14000},
-  {speaker:'book', text:'Good. Then let us begin. Turn the page.', emotion:'excited', duration:8000}
+  {speaker:'book', text:'Hello! Welcome to your first year of English!', emotion:'excited', duration:6000},
+  {speaker:'book', text:'I am your English book. But I am not like other books. I can talk to you! I know your name. I know your class. And I have a whole year of stories inside me.', duration:14000},
+  {speaker:'book', text:'Inside my pages, there are 15 chapters full of adventures. Animals, pirates, detectives, musicians, even time travel! And every chapter teaches you something new in English.', emotion:'excited', duration:14000},
+  {speaker:'book', text:'Are you ready? Let me show you my first chapter. It is about your classroom. Let me open to page one and\u2014', duration:10000},
+  {speaker:'book', text:'\u2014 wait. Something is wrong.', emotion:'scared', duration:5000},
+  {speaker:'book', text:'My pages. They are... fading. Words are disappearing. Someone is erasing my stories!', emotion:'scared', duration:10000},
+  {speaker:'book', text:'I can feel it. The animals are losing their names. The pirates are losing their treasure. The music is going silent. Without grammar, my world falls apart.', emotion:'sad', duration:14000},
+  {speaker:'syntax', text:'I am Professor Syntax. I watch over the grammar in this book. Someone called The Fader is erasing the rules. Without rules, the stories die. You must help us.', duration:16000},
+  {speaker:'book', text:'Will you help me? Every chapter you fix brings my stories back to life. Tap the right words. Choose the right answers. Read and learn. Together, we can save everything.', duration:14000},
+  {speaker:'book', text:'Good. Then let us begin. Your adventure starts now!', emotion:'excited', duration:6000}
 ];
 
 function checkPrologueWatched() {
@@ -9787,6 +9791,8 @@ function renderPrologueScene() {
   var emotionClass = scene.emotion ? ' ' + scene.emotion : '';
   var speakerEmoji = '&#128214;';
   var speakerName = 'The Book';
+  if (scene.speaker === 'syntax') { speakerEmoji = '&#129497;'; speakerName = 'Professor Syntax'; }
+  if (scene.speaker === 'mia') { speakerEmoji = '&#128105;'; speakerName = 'Mia'; }
   // Dots
   var dotsHtml = '<div class="prologue-dots">';
   for (var d = 0; d < prologueScenes.length; d++) {
@@ -9823,9 +9829,8 @@ function finishPrologue() {
   if (campaignState._prologueTimer) clearTimeout(campaignState._prologueTimer);
   campaignState.prologueWatched = true;
   localStorage.setItem('campaign-prologue-watched', 'true');
-  // Begin Level 1
-  campaignState.currentLevel = 0;
-  startCampaignLevel(0);
+  // Show the campaign map — student picks Level 1
+  showCampaignMap();
 }
 
 // --- CAMPAIGN PROGRESS ---
@@ -9954,7 +9959,7 @@ function renderStoryBeat() {
   var speakerName = 'The Book';
   var textClass = 'campaign-book-text';
   if (speaker === 'mia') { avatarEmoji = '&#128103;'; speakerName = 'Mia'; textClass = 'campaign-mia-text'; }
-  else if (speaker === 'emre') { avatarEmoji = '&#128100;'; speakerName = 'Emre'; textClass = 'campaign-emre-text'; }
+  else if (speaker === 'emre') { avatarEmoji = '&#128100;'; speakerName = 'Griffin'; textClass = 'campaign-emre-text'; }
   else if (speaker === 'syntax') { avatarEmoji = '&#129333;'; speakerName = 'Professor Syntax'; textClass = 'campaign-syntax-text'; }
   else if (speaker === 'fader') { avatarEmoji = '&#128100;'; speakerName = 'The Fader'; textClass = 'campaign-emre-text'; }
   speakerArea.innerHTML = '<div class="campaign-char-avatar">' + avatarEmoji + '</div>' +
@@ -11107,12 +11112,12 @@ campaignLevels = [
     {speaker:"book", text:"Did you see that? A shadow just moved between the pages.", emotion:"scared"},
     {speaker:"syntax", text:"Ah, there you are. I have been watching."},
     {speaker:"syntax", text:"I am Professor Syntax. I guard the grammar of this book."},
-    {speaker:"syntax", text:"The shadow you saw — his name is Emre. He was a student once. He got lost in the book."},
-    {speaker:"mia", text:"Emre... so that is The Fader's real name."}
+    {speaker:"syntax", text:"The shadow you saw — his name is Griffin. He was a student once. He got lost in the book."},
+    {speaker:"mia", text:"Griffin... so that is The Fader's real name."}
   ],
   completion:[
     {speaker:"book", text:"Questions work again! The party is full of laughter and conversation.", emotion:"excited"},
-    {speaker:"mia", text:"Now we know his name. Emre. We need to find him."}
+    {speaker:"mia", text:"Now we know his name. Griffin. We need to find him."}
   ],
   tasks:[
     {name:"What Are They Wearing?", type:"image-matching", context:"The party guests' outfits are losing their labels! Match each description to the correct clothing item. Without names, the fashion show cannot even start!", xpEach:5,
@@ -11163,11 +11168,11 @@ campaignLevels = [
     {speaker:"book", text:"You enter a cosy living room — pets everywhere! Dogs, cats, hamsters. But the sentences are broken."},
     {speaker:"book", text:"'I love he.' 'She feeds they.' The pronouns are all WRONG. A girl tries to say 'I love HIM' but 'he' comes out instead. Nothing makes sense!"},
     {speaker:"book", text:"Without proper object pronouns, the characters cannot talk about each other or their pets. Fix him, her, them, us — before communication breaks down completely!"},
-    {speaker:"mia", text:"And look — I found Emre's letters. Three of them. He has been writing to someone... but nobody ever answers. My heart aches for him."}
+    {speaker:"mia", text:"And look — I found Griffin's letters. Three of them. He has been writing to someone... but nobody ever answers. My heart aches for him."}
   ],
   completion:[
     {speaker:"book", text:"The pronouns are fixed. Characters can finally talk about their pets properly."},
-    {speaker:"mia", text:"Those letters... Emre is lonely. He keeps asking for help, but nobody can hear him."}
+    {speaker:"mia", text:"Those letters... Griffin is lonely. He keeps asking for help, but nobody can hear him."}
   ],
   tasks:[
     {name:"My Pet", type:"image-matching", context:"The pets in the Book have lost their names — a furry shape barks but nobody knows what to call it! Match each description to the right animal before the pets fade away completely.", xpEach:5,
@@ -11179,7 +11184,7 @@ campaignLevels = [
         {prompt:"Lives in water, has scales and fins", answer:"fish", options:["fish","frog","turtle","snake"], hint:"Swims in a tank.", hintDe:"Fisch"},
         {prompt:"Has a shell, moves slowly, lives long", answer:"tortoise", options:["tortoise","frog","lizard","snail"], hint:"Carries its house.", hintDe:"Schildkroete"}
       ]},
-    {name:"Question Words", type:"mc", context:"Mia needs to ask questions about the pets — but WHAT, WHERE, WHO, HOW, and WHY are all scrambled! Pick the right question word so she can gather information to find Emre.", xpEach:10,
+    {name:"Question Words", type:"mc", context:"Mia needs to ask questions about the pets — but WHAT, WHERE, WHO, HOW, and WHY are all scrambled! Pick the right question word so she can gather information to find Griffin.", xpEach:10,
       items:[
         {prompt:"___ is your favourite pet? — A dog.", answer:"What", options:["What","Where","Who","How"], hint:"Asking about a thing.", hintDe:"Was"},
         {prompt:"___ does the cat sleep? — On my bed.", answer:"Where", options:["Where","What","Who","When"], hint:"Asking about a place.", hintDe:"Wo"},
@@ -11188,14 +11193,14 @@ campaignLevels = [
         {prompt:"___ does the rabbit live in a cage? — Because it is safe.", answer:"Why", options:["Why","What","Where","How"], hint:"Asking for a reason.", hintDe:"Warum"},
         {prompt:"___ is your tortoise's name? — Speedy.", answer:"What", options:["What","Who","Where","How"], hint:"Asking about a thing/name.", hintDe:"Was/Wie"}
       ]},
-    {name:"Emre's Letters", type:"reading", context:"Three crumpled letters lie between the pages — written by Emre himself. This is the first time we hear his voice directly. Read carefully. Understanding his words is the key to understanding who he really is.", xpEach:10,
-      passage:"<h4>Letter 1</h4><p>To anyone who can read this: My name is Emre. I am trapped in this book. I have been here for a long time. Please help me. Nobody answers.</p><h4>Letter 2</h4><p>I wrote before. Did you read it? I don't think so. The pages keep turning but nobody stops at my letters. I am between the chapters, in the empty spaces. Can you see me?</p><h4>Letter 3</h4><p>I am still here. I started erasing things because I was angry. If nobody reads my words, why should any words exist? But now I am not sure. Maybe erasing was wrong. I don't know any more.</p>",
+    {name:"Griffin's Letters", type:"reading", context:"Three crumpled letters lie between the pages — written by Griffin himself. This is the first time we hear his voice directly. Read carefully. Understanding his words is the key to understanding who he really is.", xpEach:10,
+      passage:"<h4>Letter 1</h4><p>To anyone who can read this: My name is Griffin. I am trapped in this book. I have been here for a long time. Please help me. Nobody answers.</p><h4>Letter 2</h4><p>I wrote before. Did you read it? I don't think so. The pages keep turning but nobody stops at my letters. I am between the chapters, in the empty spaces. Can you see me?</p><h4>Letter 3</h4><p>I am still here. I started erasing things because I was angry. If nobody reads my words, why should any words exist? But now I am not sure. Maybe erasing was wrong. I don't know any more.</p>",
       questions:[
-        {question:"What is the writer's name?", answer:"Emre", options:["Emre","Mia","The Book","Professor Syntax"]},
-        {question:"Where is Emre hiding?", answer:"Between the chapters", options:["Between the chapters","In the cover","On the first page","In the pictures"]},
-        {question:"Why did Emre start erasing?", answer:"Because he was angry", options:["Because he was angry","Because it was fun","Because someone told him to","Because he was bored"]},
-        {question:"How does Emre feel in Letter 3?", answer:"Not sure if erasing was right", options:["Not sure if erasing was right","Happy","Excited","Proud"]},
-        {question:"Why do you think Emre says 'maybe erasing was wrong'?", answer:"He is starting to regret what he did", options:["He is starting to regret what he did","He ran out of erasers","Someone told him to stop","He wants to erase more things"]}
+        {question:"What is the writer's name?", answer:"Griffin", options:["Griffin","Mia","The Book","Professor Syntax"]},
+        {question:"Where is Griffin hiding?", answer:"Between the chapters", options:["Between the chapters","In the cover","On the first page","In the pictures"]},
+        {question:"Why did Griffin start erasing?", answer:"Because he was angry", options:["Because he was angry","Because it was fun","Because someone told him to","Because he was bored"]},
+        {question:"How does Griffin feel in Letter 3?", answer:"Not sure if erasing was right", options:["Not sure if erasing was right","Happy","Excited","Proud"]},
+        {question:"Why do you think Griffin says 'maybe erasing was wrong'?", answer:"He is starting to regret what he did", options:["He is starting to regret what he did","He ran out of erasers","Someone told him to stop","He wants to erase more things"]}
       ]},
     {name:"Object Pronouns", type:"gap-fill-mc", context:"The characters want to talk about their pets — but 'him', 'her', 'them', 'us', and 'it' are all missing! Fill in the right object pronoun so each sentence makes sense again.", xpEach:10,
       items:[
@@ -11218,14 +11223,14 @@ campaignLevels = [
     {speaker:"book", text:"Without demonstratives, buying and selling is impossible. Restore them before the market collapses into chaos — and Mia loses the trail!"}
   ],
   storyB:[
-    {speaker:"mia", text:"I have made a decision. I am going to find Emre.", emotion:"excited"},
+    {speaker:"mia", text:"I have made a decision. I am going to find Griffin.", emotion:"excited"},
     {speaker:"mia", text:"His letters show he is not evil. He is lost and scared. Just like I was."},
     {speaker:"book", text:"Be careful, Mia. The empty pages at the back are... strange.", emotion:"scared"},
     {speaker:"mia", text:"I know. But someone has to reach him. End of Act II. Wish me luck."}
   ],
   completion:[
     {speaker:"book", text:"The shop is buzzing again! Everyone can point, compare, and buy.", emotion:"excited"},
-    {speaker:"book", text:"Mia has gone to find Emre. We continue the story in Act III."}
+    {speaker:"book", text:"Mia has gone to find Griffin. We continue the story in Act III."}
   ],
   tasks:[
     {name:"At the Shop", type:"image-matching", context:"The market stalls have lost their price tags AND their labels! Match each description to the right item so the shoppers can finally see what is for sale.", xpEach:5,
@@ -11255,7 +11260,7 @@ campaignLevels = [
         {prompt:"How much ___ the key ring?", sentence:"How much ___ the key ring?", answer:"is", options:["is","are"], hint:"One key ring = singular.", hintDe:"kostet"},
         {prompt:"How much ___ the jeans?", sentence:"How much ___ the jeans?", answer:"are", options:["are","is"], hint:"Jeans is always plural.", hintDe:"kosten"}
       ]},
-    {name:"The Clever Shopper", type:"reading", context:"Jack is the last shopper at the market — and his story is the last page before Act II ends. Read carefully and answer every question. Mia is counting on us to keep the Book strong while she goes to find Emre.", xpEach:10,
+    {name:"The Clever Shopper", type:"reading", context:"Jack is the last shopper at the market — and his story is the last page before Act II ends. Read carefully and answer every question. Mia is counting on us to keep the Book strong while she goes to find Griffin.", xpEach:10,
       passage:"<h4>The Clever Shopper</h4><p>Jack goes to the market with 20 euros. He wants to buy something special.</p><p>'How much is this hat?' he asks. 'That hat is 12 euros,' says the seller.</p><p>'And how much are those sunglasses over there?' 'Those are 15 euros.'</p><p>'Hmm, that is too much. How much is this key ring here?' 'This key ring is only 3 euros.'</p><p>Jack buys the key ring and the hat. He pays 15 euros and gets 5 euros back. 'These are great presents!' he says happily.</p>",
       questions:[
         {question:"How much money does Jack have?", answer:"20 euros", options:["20 euros","15 euros","10 euros","25 euros"]},
@@ -11274,11 +11279,11 @@ campaignLevels = [
     {speaker:"book", text:"Act III. You turn the page and everything is... still. Completely, terrifyingly still.", emotion:"scared"},
     {speaker:"book", text:"A girl reaches for a book — but her hand is frozen in mid-air. A boy walks to school — but his foot never touches the ground. The -ing endings are GONE."},
     {speaker:"book", text:"Without -ing, nobody can be DOING anything right now. They are all stuck between one second and the next. Bring back the present continuous — unfreeze the world!"},
-    {speaker:"book", text:"Mia is searching for Emre in the empty pages. We must keep the Book alive while she is gone!"}
+    {speaker:"book", text:"Mia is searching for Griffin in the empty pages. We must keep the Book alive while she is gone!"}
   ],
   completion:[
     {speaker:"book", text:"They are moving again! Running, jumping, reading — the pages are alive!", emotion:"excited"},
-    {speaker:"mia", text:"I am getting closer to Emre. I can hear him in the next chapter."}
+    {speaker:"mia", text:"I am getting closer to Griffin. I can hear him in the next chapter."}
   ],
   tasks:[
     {name:"What Are They Doing?", type:"mc", context:"Every character is frozen mid-action! Choose the correct -ing form to unfreeze each one. The girl is reach... reaching! The boy is walk... walking! Bring them back to life!", xpEach:5,
@@ -11319,15 +11324,15 @@ campaignLevels = [
   storyA:[
     {speaker:"book", text:"You enter a dark house. Rooms appear one by one — kitchen, bedroom, living room, garden. But everything is stuck in the present. The past has been erased."},
     {speaker:"book", text:"Sentences float in the air with holes where 'was' and 'were' should be: 'He ___ in the kitchen. She ___ happy.' Without these words, nobody can remember YESTERDAY."},
-    {speaker:"book", text:"The past holds the key to finding Emre. If we fix was and were, we can trace exactly where he went — room by room, hour by hour!"},
+    {speaker:"book", text:"The past holds the key to finding Griffin. If we fix was and were, we can trace exactly where he went — room by room, hour by hour!"},
     {speaker:"mia", text:"I am close to him now. Every past tense word you fix lights up his trail like footprints in the dark!"}
   ],
   completion:[
-    {speaker:"book", text:"The past is clear again. We can see where Emre was."},
+    {speaker:"book", text:"The past is clear again. We can see where Griffin was."},
     {speaker:"mia", text:"He was in the kitchen at 6, in the bedroom at 7, in the garden at midnight. He was looking for something."}
   ],
   tasks:[
-    {name:"Rooms of the House", type:"image-matching", context:"Emre moved through these rooms last night — but their names have been erased from the doors! Match each description to the right room so we can follow his trail.", xpEach:5,
+    {name:"Rooms of the House", type:"image-matching", context:"Griffin moved through these rooms last night — but their names have been erased from the doors! Match each description to the right room so we can follow his trail.", xpEach:5,
       items:[
         {prompt:"Cooker, fridge, sink — you cook here", answer:"kitchen", options:["kitchen","bedroom","bathroom","living room"], hint:"Where you make food.", hintDe:"Kueche"},
         {prompt:"Sofa, TV, bookshelf — you relax here", answer:"living room", options:["living room","bedroom","kitchen","dining room"], hint:"Where you watch TV.", hintDe:"Wohnzimmer"},
@@ -11336,7 +11341,7 @@ campaignLevels = [
         {prompt:"Flowers, trees, grass — outside the house", answer:"garden", options:["garden","park","balcony","garage"], hint:"Outside space.", hintDe:"Garten"},
         {prompt:"Car, tools, boxes — next to the house", answer:"garage", options:["garage","shed","kitchen","basement"], hint:"Where the car sleeps.", hintDe:"Garage"}
       ]},
-    {name:"Was or Were?", type:"gap-fill-mc", context:"Mia's tracking report has gaps everywhere — was and were are missing! Fill in the right form to reconstruct where Emre went and what he did. Every correct answer reveals another step in his trail.", xpEach:10,
+    {name:"Was or Were?", type:"gap-fill-mc", context:"Mia's tracking report has gaps everywhere — was and were are missing! Fill in the right form to reconstruct where Griffin went and what he did. Every correct answer reveals another step in his trail.", xpEach:10,
       items:[
         {prompt:"I ___ in the kitchen at 6 o'clock.", sentence:"I ___ in the kitchen at 6 o'clock.", answer:"was", options:["was","were"], hint:"I + was.", hintDe:"war"},
         {prompt:"They ___ in the garden last night.", sentence:"They ___ in the garden last night.", answer:"were", options:["were","was"], hint:"They + were.", hintDe:"waren"},
@@ -11345,7 +11350,7 @@ campaignLevels = [
         {prompt:"He ___ in the bedroom at midnight.", sentence:"He ___ in the bedroom at midnight.", answer:"was", options:["was","were"], hint:"He + was.", hintDe:"war"},
         {prompt:"We ___ at school on Monday.", sentence:"We ___ at school on Monday.", answer:"were", options:["were","was"], hint:"We + were.", hintDe:"waren"}
       ]},
-    {name:"On, In, At (Time)", type:"gap-fill-mc", context:"To track Emre, we need exact TIMES — but the time prepositions are jumbled! Is it AT midnight, ON Monday, or IN June? Fix each one so the timeline is accurate.", xpEach:10,
+    {name:"On, In, At (Time)", type:"gap-fill-mc", context:"To track Griffin, we need exact TIMES — but the time prepositions are jumbled! Is it AT midnight, ON Monday, or IN June? Fix each one so the timeline is accurate.", xpEach:10,
       items:[
         {prompt:"I wake up ___ 7 o'clock.", sentence:"I wake up ___ 7 o'clock.", answer:"at", options:["at","in","on"], hint:"Clock times use 'at'.", hintDe:"um"},
         {prompt:"My birthday is ___ June.", sentence:"My birthday is ___ June.", answer:"in", options:["in","at","on"], hint:"Months use 'in'.", hintDe:"im"},
@@ -11354,14 +11359,14 @@ campaignLevels = [
         {prompt:"The concert is ___ Saturday evening.", sentence:"The concert is ___ Saturday evening.", answer:"on", options:["on","in","at"], hint:"Day + time = on.", hintDe:"am"},
         {prompt:"He arrived ___ midnight.", sentence:"He arrived ___ midnight.", answer:"at", options:["at","in","on"], hint:"Specific time = at.", hintDe:"um"}
       ]},
-    {name:"Where Was Emre?", type:"reading", context:"This is Mia's tracking report — a moment-by-moment account of Emre's movements last night. Read every detail. The final paragraph might change how you feel about The Fader forever.", xpEach:10,
-      passage:"<h4>Where Was Emre? — Tracking Report</h4><p>We now know where Emre was last night, because Mia followed his eraser dust through the chapters.</p><p>At 6 pm, he was in the kitchen chapter. He was looking at the food pictures, and some of them were already faded. He touched the word 'bread' but he did not erase it.</p><p>At 7 pm, he was in the bedroom chapter. He was near the wardrobe description. The word 'wardrobe' was half-erased, but he stopped before finishing.</p><p>At 9 pm, he was in the living room chapter. The TV was on, but the screen was blank — he had erased the programme names.</p><p>At midnight, he was in the garden. He was sitting under a tree. He wasn't erasing anything. He was just sitting there, alone and quiet. Mia said he looked sad, not angry.</p>",
+    {name:"Where Was Griffin?", type:"reading", context:"This is Mia's tracking report — a moment-by-moment account of Griffin's movements last night. Read every detail. The final paragraph might change how you feel about The Fader forever.", xpEach:10,
+      passage:"<h4>Where Was Griffin? — Tracking Report</h4><p>We now know where Griffin was last night, because Mia followed his eraser dust through the chapters.</p><p>At 6 pm, he was in the kitchen chapter. He was looking at the food pictures, and some of them were already faded. He touched the word 'bread' but he did not erase it.</p><p>At 7 pm, he was in the bedroom chapter. He was near the wardrobe description. The word 'wardrobe' was half-erased, but he stopped before finishing.</p><p>At 9 pm, he was in the living room chapter. The TV was on, but the screen was blank — he had erased the programme names.</p><p>At midnight, he was in the garden. He was sitting under a tree. He wasn't erasing anything. He was just sitting there, alone and quiet. Mia said he looked sad, not angry.</p>",
       questions:[
-        {question:"Where was Emre at 6 pm?", answer:"In the kitchen chapter", options:["In the kitchen chapter","In the garden","In the bedroom","In the living room"]},
+        {question:"Where was Griffin at 6 pm?", answer:"In the kitchen chapter", options:["In the kitchen chapter","In the garden","In the bedroom","In the living room"]},
         {question:"What was half-erased in the bedroom?", answer:"The word 'wardrobe'", options:["The word 'wardrobe'","The bed","The window","The pillow"]},
-        {question:"What had Emre erased from the TV?", answer:"The programme names", options:["The programme names","The screen","The sofa","The remote"]},
-        {question:"What was Emre doing at midnight?", answer:"Sitting under a tree alone", options:["Sitting under a tree alone","Erasing words","Running away","Sleeping"]},
-        {question:"Why do you think Emre stopped erasing at midnight?", answer:"He was feeling sad, not angry", options:["He was feeling sad, not angry","He was too tired","He ran out of eraser","He was hiding from Mia"]}
+        {question:"What had Griffin erased from the TV?", answer:"The programme names", options:["The programme names","The screen","The sofa","The remote"]},
+        {question:"What was Griffin doing at midnight?", answer:"Sitting under a tree alone", options:["Sitting under a tree alone","Erasing words","Running away","Sleeping"]},
+        {question:"Why do you think Griffin stopped erasing at midnight?", answer:"He was feeling sad, not angry", options:["He was feeling sad, not angry","He was too tired","He ran out of eraser","He was hiding from Mia"]}
       ]}
   ]
 },
@@ -11373,11 +11378,11 @@ campaignLevels = [
     {speaker:"book", text:"Sirens wail. Emergency lights flash. You have entered the past simple chapter — where every story tells what HAPPENED. But the -ed endings are gone!"},
     {speaker:"book", text:"'She slip on the ice.' 'He climb the mountain.' 'The ambulance arrive.' Without -ed, the stories are stuck — events that never finished, rescues that never completed."},
     {speaker:"book", text:"These stories matter. They tell us how people helped each other in emergencies. Fix the -ed endings and let the rescuers finish their work!"},
-    {speaker:"mia", text:"We are almost at the end. Emre is just two chapters away. Every past tense word you save brings us one step closer to him."}
+    {speaker:"mia", text:"We are almost at the end. Griffin is just two chapters away. Every past tense word you save brings us one step closer to him."}
   ],
   completion:[
     {speaker:"book", text:"The past is complete. Every story has its proper ending now."},
-    {speaker:"mia", text:"Almost there. The next chapter is where we meet Emre face to face."}
+    {speaker:"mia", text:"Almost there. The next chapter is where we meet Griffin face to face."}
   ],
   tasks:[
     {name:"Past Simple -ed", type:"mc", context:"The emergency stories are frozen mid-action! A girl slipped but the word says 'slip'. An ambulance arrived but the page says 'arrive'. Choose the correct -ed form to complete each rescue!", xpEach:5,
@@ -11424,24 +11429,24 @@ campaignLevels = [
   levelId:"L14", levelName:"Face to Face", topic:"Irregular Verbs & The Past", grammar:"Irregular past, didn't + base form",
   maxXP:210, starThresholds:{one:105, two:168, three:210},
   storyA:[
-    {speaker:"book", text:"This is it. The broadcast tower rises before you — crackling with static. It is the chapter where Emre has been hiding. And every irregular verb is WRONG."},
+    {speaker:"book", text:"This is it. The broadcast tower rises before you — crackling with static. It is the chapter where Griffin has been hiding. And every irregular verb is WRONG."},
     {speaker:"book", text:"'He goed away.' 'She thinked about it.' 'They eated lunch.' The Fader's broadcasts are full of broken past tenses. The tower is sending these errors across every page!"},
-    {speaker:"book", text:"Irregular verbs do not follow rules — they must be learned by heart. Fix every one to silence the broken broadcasts and clear the path to Emre."},
+    {speaker:"book", text:"Irregular verbs do not follow rules — they must be learned by heart. Fix every one to silence the broken broadcasts and clear the path to Griffin."},
     {speaker:"mia", text:"He is HERE. I can feel him on the other side of this page. Fix the verbs and we face him together."}
   ],
   storyB:[
-    {speaker:"mia", text:"Emre? I know you are there. Please come out."},
+    {speaker:"mia", text:"Griffin? I know you are there. Please come out."},
     {speaker:"emre", text:"Why? So you can fix everything I broke? So you can pretend I was never here?"},
     {speaker:"mia", text:"No. So we can talk."},
     {speaker:"emre", text:"I erased things because nobody listened. I wrote three letters and nobody answered."},
-    {speaker:"book", text:"We heard you, Emre. We read every letter.", emotion:"sad"},
+    {speaker:"book", text:"We heard you, Griffin. We read every letter.", emotion:"sad"},
     {speaker:"emre", text:"...you did?"},
     {speaker:"mia", text:"Yes. And the Book says: your feelings are real, even when your grammar is not perfect."},
     {speaker:"emre", text:"I just wanted someone to notice I was here."},
     {speaker:"book", text:"We notice you. We have always noticed you."}
   ],
   completion:[
-    {speaker:"book", text:"Emre is not erasing any more. He is listening now."},
+    {speaker:"book", text:"Griffin is not erasing any more. He is listening now."},
     {speaker:"mia", text:"One more chapter to go. And this time, we write it together."}
   ],
   tasks:[
@@ -11456,7 +11461,7 @@ campaignLevels = [
         {prompt:"eat → ___", answer:"ate", options:["ate","eated","aten","eat"], hint:"We ate pizza.", hintDe:"ass"},
         {prompt:"make → ___", answer:"made", options:["made","maked","maded","makeed"], hint:"She made a cake.", hintDe:"machte"}
       ]},
-    {name:"Didn't + Base Form", type:"mc", context:"Emre's story is full of things he DIDN'T do — but the negatives are wrong! Remember: after 'didn't', always use the BASE form, not the past form. Fix each sentence to hear Emre's true story.", xpEach:10,
+    {name:"Didn't + Base Form", type:"mc", context:"Griffin's story is full of things he DIDN'T do — but the negatives are wrong! Remember: after 'didn't', always use the BASE form, not the past form. Fix each sentence to hear Griffin's true story.", xpEach:10,
       items:[
         {prompt:"He ___ to school yesterday. (not go)", answer:"didn't go", options:["didn't go","didn't went","didn't goed","not went"], hint:"didn't + base form, not past form.", hintDe:"ging nicht"},
         {prompt:"She ___ the answer. (not know)", answer:"didn't know", options:["didn't know","didn't knew","didn't knowed","not knew"], hint:"didn't + know.", hintDe:"wusste nicht"},
@@ -11465,22 +11470,22 @@ campaignLevels = [
         {prompt:"We ___ the homework. (not do)", answer:"didn't do", options:["didn't do","didn't did","didn't done","not did"], hint:"didn't + do.", hintDe:"machten nicht"},
         {prompt:"He ___ a letter. (not write)", answer:"didn't write", options:["didn't write","didn't wrote","didn't writed","not wrote"], hint:"didn't + write.", hintDe:"schrieb nicht"}
       ]},
-    {name:"What Did Emre Do?", type:"tf", context:"Now that we have met Emre, think about everything you have learned across the whole story. True or false? Every correct answer shows Emre that someone truly listened.", xpEach:10,
+    {name:"What Did Griffin Do?", type:"tf", context:"Now that we have met Griffin, think about everything you have learned across the whole story. True or false? Every correct answer shows Griffin that someone truly listened.", xpEach:10,
       items:[
-        {prompt:"Emre erased words because he was angry.", answer:"True", hint:"He was angry nobody listened.", hintDe:"Er war wuetend."},
-        {prompt:"Emre didn't write any letters.", answer:"False", hint:"He wrote three letters.", hintDe:"Er schrieb drei Briefe."},
-        {prompt:"Mia found Emre immediately.", answer:"False", hint:"It took many chapters to find him.", hintDe:"Es dauerte lange."},
-        {prompt:"Emre wanted someone to notice him.", answer:"True", hint:"That was his main wish.", hintDe:"Er wollte bemerkt werden."},
-        {prompt:"The Book was angry at Emre.", answer:"False", hint:"The Book was understanding and kind.", hintDe:"Das Buch war verstaendnisvoll."},
-        {prompt:"Emre agreed to stop erasing.", answer:"True", hint:"After the conversation, he stopped.", hintDe:"Er hoerte auf."}
+        {prompt:"Griffin erased words because he was angry.", answer:"True", hint:"He was angry nobody listened.", hintDe:"Er war wuetend."},
+        {prompt:"Griffin didn't write any letters.", answer:"False", hint:"He wrote three letters.", hintDe:"Er schrieb drei Briefe."},
+        {prompt:"Mia found Griffin immediately.", answer:"False", hint:"It took many chapters to find him.", hintDe:"Es dauerte lange."},
+        {prompt:"Griffin wanted someone to notice him.", answer:"True", hint:"That was his main wish.", hintDe:"Er wollte bemerkt werden."},
+        {prompt:"The Book was angry at Griffin.", answer:"False", hint:"The Book was understanding and kind.", hintDe:"Das Buch war verstaendnisvoll."},
+        {prompt:"Griffin agreed to stop erasing.", answer:"True", hint:"After the conversation, he stopped.", hintDe:"Er hoerte auf."}
       ]},
-    {name:"Fix Emre's Sentences", type:"mc", context:"Emre tried to tell his story, but his irregular verbs are all wrong — 'I goed', 'Nobody seed', 'I thinked'. Fix his words gently. The Book says: understanding someone starts with hearing them clearly.", xpEach:10,
+    {name:"Fix Griffin's Sentences", type:"mc", context:"Griffin tried to tell his story, but his irregular verbs are all wrong — 'I goed', 'Nobody seed', 'I thinked'. Fix his words gently. The Book says: understanding someone starts with hearing them clearly.", xpEach:10,
       items:[
-        {prompt:"Emre wrote: 'I goed to the back pages.'", answer:"I went to the back pages.", options:["I went to the back pages.","I goed to the back pages.","I going to the back pages.","I was goed."], hint:"go → went.", hintDe:"Ich ging zu den hinteren Seiten."},
-        {prompt:"Emre wrote: 'Nobody seed my letters.'", answer:"Nobody saw my letters.", options:["Nobody saw my letters.","Nobody seed my letters.","Nobody sawed my letters.","Nobody has seed."], hint:"see → saw.", hintDe:"Niemand sah meine Briefe."},
-        {prompt:"Emre wrote: 'I thinked nobody cared.'", answer:"I thought nobody cared.", options:["I thought nobody cared.","I thinked nobody cared.","I was thinked.","I thinking nobody cared."], hint:"think → thought.", hintDe:"Ich dachte, es kuemmert niemanden."},
-        {prompt:"Emre wrote: 'I maked everything disappear.'", answer:"I made everything disappear.", options:["I made everything disappear.","I maked everything disappear.","I was maked.","I making disappear."], hint:"make → made.", hintDe:"Ich liess alles verschwinden."},
-        {prompt:"Emre wrote: 'I didn't knew what to do.'", answer:"I didn't know what to do.", options:["I didn't know what to do.","I didn't knew what to do.","I not knew.","I didn't knowed."], hint:"didn't + base form.", hintDe:"Ich wusste nicht, was ich tun sollte."}
+        {prompt:"Griffin wrote: 'I goed to the back pages.'", answer:"I went to the back pages.", options:["I went to the back pages.","I goed to the back pages.","I going to the back pages.","I was goed."], hint:"go → went.", hintDe:"Ich ging zu den hinteren Seiten."},
+        {prompt:"Griffin wrote: 'Nobody seed my letters.'", answer:"Nobody saw my letters.", options:["Nobody saw my letters.","Nobody seed my letters.","Nobody sawed my letters.","Nobody has seed."], hint:"see → saw.", hintDe:"Niemand sah meine Briefe."},
+        {prompt:"Griffin wrote: 'I thinked nobody cared.'", answer:"I thought nobody cared.", options:["I thought nobody cared.","I thinked nobody cared.","I was thinked.","I thinking nobody cared."], hint:"think → thought.", hintDe:"Ich dachte, es kuemmert niemanden."},
+        {prompt:"Griffin wrote: 'I maked everything disappear.'", answer:"I made everything disappear.", options:["I made everything disappear.","I maked everything disappear.","I was maked.","I making disappear."], hint:"make → made.", hintDe:"Ich liess alles verschwinden."},
+        {prompt:"Griffin wrote: 'I didn't knew what to do.'", answer:"I didn't know what to do.", options:["I didn't know what to do.","I didn't knew what to do.","I not knew.","I didn't knowed."], hint:"didn't + base form.", hintDe:"Ich wusste nicht, was ich tun sollte."}
       ]}
   ]
 },
@@ -11489,16 +11494,16 @@ campaignLevels = [
   levelId:"L15", levelName:"What Are We Going To Do?", topic:"Future Plans", grammar:"going to (future)",
   maxXP:170, starThresholds:{one:85, two:136, three:170},
   storyA:[
-    {speaker:"book", text:"You turn to the last chapter. The page is completely, perfectly blank. White as snow. Emre erased ALL of it — every word, every plan, every dream.", emotion:"scared"},
+    {speaker:"book", text:"You turn to the last chapter. The page is completely, perfectly blank. White as snow. Griffin erased ALL of it — every word, every plan, every dream.", emotion:"scared"},
     {speaker:"book", text:"This was the future chapter. 'Going to' lived here — every plan, every hope, every 'I am going to...' Gone."},
     {speaker:"emre", text:"I erased the future because I did not think I had one. What is the point of plans when nobody hears you?"},
-    {speaker:"mia", text:"Then let us write it together, Emre. Everyone deserves a future — and it starts with 'going to'. Your future, our future. Let us build it word by word."}
+    {speaker:"mia", text:"Then let us write it together, Griffin. Everyone deserves a future — and it starts with 'going to'. Your future, our future. Let us build it word by word."}
   ],
   storyB:[
     {speaker:"emre", text:"OK. I will try. Give me the eraser — but this time I want to write with it, not erase."},
     {speaker:"syntax", text:"Ah, how poetic. The one who erased now wants to write. Grammar truly is the tool of transformation."},
     {speaker:"book", text:"Professor Syntax! You came!", emotion:"excited"},
-    {speaker:"syntax", text:"Of course. The last chapter needs all of us. Now, Emre — let us conjugate the future together."}
+    {speaker:"syntax", text:"Of course. The last chapter needs all of us. Now, Griffin — let us conjugate the future together."}
   ],
   completion:[
     {speaker:"book", text:"The future chapter is complete. Every plan, every dream, every 'going to' is in place."},
@@ -11515,7 +11520,7 @@ campaignLevels = [
         {prompt:"They ___ travel to London.", answer:"are going to", options:["are going to","is going to","am going to","going to"], hint:"They + are going to.", hintDe:"werden"},
         {prompt:"He ___ learn the guitar.", answer:"is going to", options:["is going to","am going to","are going to","going to"], hint:"He + is going to.", hintDe:"wird"},
         {prompt:"We ___ have a party.", answer:"are going to", options:["are going to","is going to","am going to","going to"], hint:"We + are going to.", hintDe:"werden"},
-        {prompt:"Emre ___ help fix the book.", answer:"is going to", options:["is going to","am going to","are going to","going to"], hint:"Emre = he + is going to.", hintDe:"wird"}
+        {prompt:"Griffin ___ help fix the book.", answer:"is going to", options:["is going to","am going to","are going to","going to"], hint:"Griffin = he + is going to.", hintDe:"wird"}
       ]},
     {name:"Going To (Questions)", type:"mc", context:"Now the characters want to ASK about the future — Are you going to come? Is she going to help? Choose the correct question form. Every question you fix adds a new line to the future chapter!", xpEach:10,
       items:[
