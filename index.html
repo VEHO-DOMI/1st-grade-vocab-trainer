@@ -10046,8 +10046,15 @@ function showCampaignMap() {
     for (var i = 1; i <= 10; i++) preloadPaths.push('campaign/img/prologue-' + String(i).padStart(2,'0') + '.jpg');
     // Characters
     ['char-book-avatar','char-book-happy','char-book-scared','char-mia-avatar','char-mia-neutral','char-mia-happy','char-mia-scared','char-mia-determined','char-griffin-avatar-before','char-griffin-avatar-after','char-griffin-shadow','char-griffin-confrontation','char-griffin-listening','char-griffin-redemption','char-griffin-after','char-syntax-avatar','char-syntax-appearing','char-syntax-speaking'].forEach(function(n) { preloadPaths.push('campaign/img/' + n + '.jpg'); });
-    // Ch1
-    ['ch01-scene-classroom','ch01-scene-flickering','ch01-reading-flip','ch01-comic-01','ch01-comic-02'].forEach(function(n) { preloadPaths.push('campaign/img/' + n + '.jpg'); });
+    // Chapter scene, reading, and comic images (all levels)
+    if (typeof campaignLevels !== 'undefined') {
+      campaignLevels.forEach(function(lv) {
+        if (lv.sceneImages) { for (var k in lv.sceneImages) { if (lv.sceneImages[k]) preloadPaths.push(lv.sceneImages[k]); } }
+        if (lv.readingImage) preloadPaths.push(lv.readingImage);
+        if (lv.comicPanels) lv.comicPanels.forEach(function(p) { if (p) preloadPaths.push(p); });
+        if (lv.epilogueImages) lv.epilogueImages.forEach(function(p) { if (p) preloadPaths.push(p); });
+      });
+    }
     // Preload all
     preloadPaths.forEach(function(p) {
       var img = new Image();
@@ -10203,7 +10210,13 @@ function renderStoryBeat() {
   var emotionClass = emotion ? ' ' + emotion : '';
   // Scene image from level data
   var lv = campaignLevels[campaignState.currentLevel];
-  var sceneImgSrc = (lv && lv.sceneImages && campaignState.storyPhase) ? lv.sceneImages[campaignState.storyPhase] : '';
+  var sceneImgSrc = '';
+  // Epilogue images: during completion phase, match image index to story beat index
+  if (lv && lv.epilogueImages && campaignState.storyPhase === 'completion' && lv.epilogueImages[idx]) {
+    sceneImgSrc = lv.epilogueImages[idx];
+  } else if (lv && lv.sceneImages && campaignState.storyPhase) {
+    sceneImgSrc = lv.sceneImages[campaignState.storyPhase] || '';
+  }
   var sceneImgHtml = sceneImgSrc ? '<img class="campaign-scene-img" src="' + sceneImgSrc + '" style="width:100%;border-radius:12px;margin-top:0.8rem;max-height:260px;object-fit:cover;" onerror="this.style.display=\'none\'">' : '';
   // Wrap text paragraphs in story-paragraph divs for stagger animation
   var storyParagraphs = text.split(/\n+/).filter(function(p) { return p.trim(); });
@@ -11111,6 +11124,9 @@ campaignLevels = [
 {
   levelId:"L02", levelName:"The Wildlife Park", topic:"Animals & Prepositions", grammar:"Prepositions of place, there is/are, to be",
   maxXP:205, starThresholds:{one:103, two:164, three:205},
+  sceneImages:{storyA:'campaign/img/ch02-scene-animals.jpg', storyB:'campaign/img/ch02-scene-fading.jpg'},
+  readingImage:'campaign/img/ch02-reading-flip.jpg',
+  comicPanels:['campaign/img/ch02-comic-01.jpg','campaign/img/ch02-comic-02.jpg'],
   storyA:[
     {speaker:"book", text:"You turn the page. A wildlife park stretches out — but the animals are floating in mid-air!"},
     {speaker:"book", text:"Penguins hover above the desert. Giraffes drift through the ocean. The prepositions that hold everything IN, ON, and AT their places have vanished!"},
@@ -11168,6 +11184,9 @@ campaignLevels = [
 {
   levelId:"L03", levelName:"The Pirate Dream", topic:"Body & Appearance", grammar:"has got/have got",
   maxXP:210, starThresholds:{one:105, two:168, three:210},
+  sceneImages:{storyA:'campaign/img/ch03-scene-ship.jpg', storyB:'campaign/img/ch03-scene-mia.jpg'},
+  readingImage:'campaign/img/ch03-reading-flip.jpg',
+  comicPanels:['campaign/img/ch03-comic-01.jpg','campaign/img/ch03-comic-02.jpg','campaign/img/ch03-comic-03.jpg'],
   storyA:[
     {speaker:"book", text:"You step into a pirate ship — sails billow, waves crash. But the crew looks... wrong."},
     {speaker:"book", text:"Captain Blackbeard reaches for his chin — no beard! The parrot is a grey outline. The pirates are losing every feature because 'has got' and 'have got' have been erased!"},
@@ -11229,6 +11248,9 @@ campaignLevels = [
 {
   levelId:"L04", levelName:"Feelings Are Real", topic:"Emotions", grammar:"to be negative, questions & short answers",
   maxXP:160, starThresholds:{one:80, two:128, three:160},
+  sceneImages:{storyA:'campaign/img/ch04-scene-emotions.jpg'},
+  readingImage:'campaign/img/ch04-reading-flip.jpg',
+  comicPanels:['campaign/img/ch04-comic-01.jpg','campaign/img/ch04-comic-02.jpg'],
   storyA:[
     {speaker:"book", text:"You open the next chapter and see a crowd of faces — but every face is blank. No smiles, no tears, no frowns. Just... nothing."},
     {speaker:"book", text:"The emotions have been stripped away. A girl stands frozen mid-laugh, but there is no joy on her face. A boy clenches his fists, but feels no anger."},
@@ -11287,6 +11309,9 @@ campaignLevels = [
 {
   levelId:"L05", levelName:"The Silent Band", topic:"Music & Instruments", grammar:"Possessives, can/can't",
   maxXP:175, starThresholds:{one:88, two:140, three:175},
+  sceneImages:{storyA:'campaign/img/ch05-scene-instruments.jpg', storyB:'campaign/img/ch05-scene-message.jpg'},
+  readingImage:'campaign/img/ch05-reading-flip.jpg',
+  comicPanels:['campaign/img/ch05-comic-01.jpg','campaign/img/ch05-comic-02.jpg'],
   storyA:[
     {speaker:"book", text:"A stage appears — spotlights flash, a crowd waits. The band Paper Notes is ready to play... but total chaos!"},
     {speaker:"book", text:"Tom holds Lisa's flute. Lisa has Ahmed's drums. Nobody knows whose instrument is whose because the POSSESSIVES have been erased!"},
@@ -11347,6 +11372,9 @@ campaignLevels = [
 {
   levelId:"L06", levelName:"The Detective's Case", topic:"Daily Routines", grammar:"Present simple 3rd person -s, a lot of",
   maxXP:200, starThresholds:{one:100, two:160, three:200},
+  sceneImages:{storyA:'campaign/img/ch06-scene-office.jpg'},
+  readingImage:'campaign/img/ch06-reading-flip.jpg',
+  comicPanels:['campaign/img/ch06-comic-01.jpg'],
   storyA:[
     {speaker:"book", text:"Act II begins. You turn the page and a detective's office appears — but something is wrong."},
     {speaker:"book", text:"The detective stares at a blurry mirror. His actions have no endings. 'He look' floats above his head instead of 'He looks.' The -s is missing everywhere!"},
@@ -11405,6 +11433,9 @@ campaignLevels = [
 {
   levelId:"L07", levelName:"What I Don't Like", topic:"Food & Preferences", grammar:"don't/doesn't, adverbs of frequency",
   maxXP:210, starThresholds:{one:105, two:168, three:210},
+  sceneImages:{storyB:'campaign/img/ch07-scene-note.jpg'},
+  readingImage:'campaign/img/ch07-reading-flip.jpg',
+  comicPanels:['campaign/img/ch07-comic-01.jpg'],
   storyA:[
     {speaker:"book", text:"You enter a busy kitchen — plates clatter, pots steam. But something is deeply wrong."},
     {speaker:"book", text:"Everyone is eating EVERYTHING. A boy is forced to eat mushrooms he hates. A girl swallows fish even though it makes her sick. Without 'don't' and 'doesn't', nobody can say NO!"},
@@ -11466,6 +11497,9 @@ campaignLevels = [
 {
   levelId:"L08", levelName:"The Birthday Party", topic:"Clothes & Fashion", grammar:"Do/Does questions, short answers",
   maxXP:210, starThresholds:{one:105, two:168, three:210},
+  sceneImages:{storyB:'campaign/img/ch08-scene-shadow.jpg'},
+  readingImage:'campaign/img/ch08-reading-flip.jpg',
+  comicPanels:['campaign/img/ch08-comic-01.jpg','campaign/img/ch08-comic-02.jpg'],
   storyA:[
     {speaker:"book", text:"You step into a brightly decorated room — balloons, cake, music. It is Emma's birthday party!"},
     {speaker:"book", text:"But the guests stand in awkward silence. A girl holds up a dress and opens her mouth... but no question comes out. 'Do' and 'Does' have been erased!"},
@@ -11536,6 +11570,9 @@ campaignLevels = [
 {
   levelId:"L09", levelName:"Letters Nobody Reads", topic:"Pets & Pronouns", grammar:"Question words, object pronouns",
   maxXP:200, starThresholds:{one:100, two:160, three:200},
+  sceneImages:{storyA:'campaign/img/ch09-scene-letters.jpg'},
+  readingImage:'campaign/img/ch09-reading-flip.jpg',
+  comicPanels:['campaign/img/ch09-comic-01.jpg','campaign/img/ch09-comic-02.jpg'],
   storyA:[
     {speaker:"book", text:"You enter a cosy living room — pets everywhere! Dogs, cats, hamsters. But the sentences are broken."},
     {speaker:"book", text:"'I love he.' 'She feeds they.' The pronouns are all WRONG. A girl tries to say 'I love HIM' but 'he' comes out instead. Nothing makes sense!"},
@@ -11591,6 +11628,9 @@ campaignLevels = [
 {
   levelId:"L10", levelName:"How Much Is It?", topic:"Shopping", grammar:"this/that/these/those, How much",
   maxXP:200, starThresholds:{one:100, two:160, three:200},
+  sceneImages:{storyB:'campaign/img/ch10-scene-prepare.jpg'},
+  readingImage:'campaign/img/ch10-reading-flip.jpg',
+  comicPanels:['campaign/img/ch10-comic-01.jpg'],
   storyA:[
     {speaker:"book", text:"A busy market unfolds before you — stalls, signs, colourful goods everywhere. But the shoppers are frozen, pointing at nothing."},
     {speaker:"book", text:"'I want... THAT one? No, THIS one? Or THOSE?' The words this, that, these, and those have all been erased. Nobody can point at anything!"},
@@ -11652,6 +11692,9 @@ campaignLevels = [
 {
   levelId:"L11", levelName:"Right Now", topic:"Actions & Time", grammar:"Present continuous, telling time",
   maxXP:150, starThresholds:{one:75, two:120, three:150},
+  sceneImages:{storyA:'campaign/img/ch11-scene-frozen.jpg'},
+  readingImage:'campaign/img/ch11-reading-flip.jpg',
+  comicPanels:['campaign/img/ch11-comic-01.jpg'],
   storyA:[
     {speaker:"book", text:"Act III. You turn the page and everything is... still. Completely, terrifyingly still.", emotion:"scared"},
     {speaker:"book", text:"A girl reaches for a book — but her hand is frozen in mid-air. A boy walks to school — but his foot never touches the ground. The -ing endings are GONE."},
@@ -11698,6 +11741,9 @@ campaignLevels = [
 {
   levelId:"L12", levelName:"What Happened Yesterday?", topic:"Rooms & Past", grammar:"was/were, prepositions of time",
   maxXP:200, starThresholds:{one:100, two:160, three:200},
+  sceneImages:{storyA:'campaign/img/ch12-scene-tracking.jpg'},
+  readingImage:'campaign/img/ch12-reading-flip.jpg',
+  comicPanels:['campaign/img/ch12-comic-01.jpg','campaign/img/ch12-comic-02.jpg'],
   storyA:[
     {speaker:"book", text:"You enter a dark house. Rooms appear one by one — kitchen, bedroom, living room, garden. But everything is stuck in the present. The past has been erased."},
     {speaker:"book", text:"Sentences float in the air with holes where 'was' and 'were' should be: 'He ___ in the kitchen. She ___ happy.' Without these words, nobody can remember YESTERDAY."},
@@ -11752,6 +11798,9 @@ campaignLevels = [
 {
   levelId:"L13", levelName:"What Happened?", topic:"Emergencies & Past Simple", grammar:"Past simple -ed, linking words",
   maxXP:200, starThresholds:{one:100, two:160, three:200},
+  sceneImages:{storyA:'campaign/img/ch13-scene-dying.jpg'},
+  readingImage:'campaign/img/ch13-reading-flip.jpg',
+  comicPanels:['campaign/img/ch13-comic-01.jpg'],
   storyA:[
     {speaker:"book", text:"Sirens wail. Emergency lights flash. You have entered the past simple chapter — where every story tells what HAPPENED. But the -ed endings are gone!"},
     {speaker:"book", text:"'She slip on the ice.' 'He climb the mountain.' 'The ambulance arrive.' Without -ed, the stories are stuck — events that never finished, rescues that never completed."},
@@ -11806,6 +11855,9 @@ campaignLevels = [
 {
   levelId:"L14", levelName:"Face to Face", topic:"Irregular Verbs & The Past", grammar:"Irregular past, didn't + base form",
   maxXP:210, starThresholds:{one:105, two:168, three:210},
+  sceneImages:{storyA:'campaign/img/ch14-scene-confrontation.jpg', storyB:'campaign/img/ch14-scene-connection.jpg'},
+  readingImage:'campaign/img/ch14-reading-flip.jpg',
+  comicPanels:['campaign/img/ch14-comic-01.jpg','campaign/img/ch14-comic-02.jpg','campaign/img/ch14-comic-03.jpg'],
   storyA:[
     {speaker:"book", text:"This is it. The broadcast tower rises before you — crackling with static. It is the chapter where Griffin has been hiding. And every irregular verb is WRONG."},
     {speaker:"book", text:"'He goed away.' 'She thinked about it.' 'They eated lunch.' The Fader's broadcasts are full of broken past tenses. The tower is sending these errors across every page!"},
@@ -11903,6 +11955,10 @@ campaignLevels = [
 {
   levelId:"L15", levelName:"What Are We Going To Do?", topic:"Future Plans", grammar:"going to (future)",
   maxXP:170, starThresholds:{one:85, two:136, three:170},
+  sceneImages:{storyA:'campaign/img/ch15-scene-blank.jpg', storyB:'campaign/img/ch15-scene-pen.jpg'},
+  readingImage:'campaign/img/ch15-reading-flip.jpg',
+  comicPanels:['campaign/img/ch15-comic-01.jpg','campaign/img/ch15-comic-02.jpg','campaign/img/ch15-comic-03.jpg'],
+  epilogueImages:['campaign/img/epilogue-01.jpg','','campaign/img/epilogue-03.jpg','campaign/img/epilogue-04.jpg','campaign/img/epilogue-05.jpg','campaign/img/epilogue-06.jpg'],
   storyA:[
     {speaker:"book", text:"You turn to the last chapter. The page is completely, perfectly blank. White as snow. Griffin erased ALL of it — every word, every plan, every dream.", emotion:"scared"},
     {speaker:"book", text:"This was the future chapter. 'Going to' lived here — every plan, every hope, every 'I am going to...' Gone."},
