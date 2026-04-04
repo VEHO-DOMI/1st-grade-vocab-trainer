@@ -10517,7 +10517,9 @@ function renderCampaignTF(task) {
   var area = document.getElementById('campaign-exercise-area');
   var feedback = document.getElementById('campaign-feedback-area');
   feedback.innerHTML = '';
-  var html = '<div style="font-size:0.9rem;margin-bottom:0.5rem;color:var(--text);">' + escapeHtml(item.prompt || item.sentence || '') + '</div>';
+  var refImgHtml = task.refImage ? '<img src="' + task.refImage + '" style="width:100%;max-width:300px;border-radius:12px;margin:0.5rem auto;display:block;" onerror="this.style.display=\'none\'">' : '';
+  var html = refImgHtml;
+  html += '<div style="font-size:0.9rem;margin-bottom:0.5rem;color:var(--text);">' + escapeHtml(item.prompt || item.sentence || '') + '</div>';
   html += '<div class="campaign-tf-grid">';
   html += '<button class="campaign-tf-btn" onclick="submitTFAnswer(this, \'True\')">TRUE</button>';
   html += '<button class="campaign-tf-btn" onclick="submitTFAnswer(this, \'False\')">FALSE</button>';
@@ -11099,7 +11101,7 @@ campaignLevels = [
 {
   levelId:"L01", levelName:"The Book Opens", topic:"School & Classroom", grammar:"Plurals, imperatives",
   maxXP:190, starThresholds:{one:95, two:152, three:190},
-  sceneImages:{storyA:'campaign/img/ch01-scene-classroom.jpg', storyB:'campaign/img/ch01-scene-flickering.jpg'},
+  sceneImages:{storyA:'campaign/img/ch01-scene-classroom.jpg', storyB:'campaign/img/ch01-scene-flickering.jpg', completion:'campaign/img/ch01-scene-completion.jpg'},
   readingImage:'campaign/img/ch01-reading-flip.jpg',
   comicPanels:['campaign/img/ch01-comic-01.jpg','campaign/img/ch01-comic-02.jpg'],
   storyA:[
@@ -11162,7 +11164,7 @@ campaignLevels = [
 {
   levelId:"L02", levelName:"The Wildlife Park", topic:"Animals & Prepositions", grammar:"Prepositions of place, there is/are, to be",
   maxXP:205, starThresholds:{one:103, two:164, three:205},
-  sceneImages:{storyA:'campaign/img/ch02-scene-animals.jpg', storyB:'campaign/img/ch02-scene-fading.jpg'},
+  sceneImages:{storyA:'campaign/img/ch02-scene-animals.jpg', storyB:'campaign/img/ch02-scene-fading.jpg', completion:'campaign/img/ch02-scene-completion.jpg'},
   readingImage:'campaign/img/ch02-reading-flip.jpg',
   comicPanels:['campaign/img/ch02-comic-01.jpg','campaign/img/ch02-comic-02.jpg'],
   storyA:[
@@ -11222,7 +11224,7 @@ campaignLevels = [
 {
   levelId:"L03", levelName:"The Pirate Dream", topic:"Body & Appearance", grammar:"has got/have got",
   maxXP:210, starThresholds:{one:105, two:168, three:210},
-  sceneImages:{storyA:'campaign/img/ch03-scene-ship.jpg', storyB:'campaign/img/ch03-scene-mia.jpg'},
+  sceneImages:{storyA:'campaign/img/ch03-scene-ship.jpg', storyB:'campaign/img/ch03-scene-mia.jpg', completion:'campaign/img/ch03-scene-completion.jpg'},
   readingImage:'campaign/img/ch03-reading-flip.jpg',
   comicPanels:['campaign/img/ch03-comic-01.jpg','campaign/img/ch03-comic-02.jpg','campaign/img/ch03-comic-03.jpg'],
   storyA:[
@@ -11271,7 +11273,7 @@ campaignLevels = [
         {question:"Where does The Fader go?", answer:"To the back of the book", options:["To the back of the book","To the front cover","To the pirate ship","Outside the book"]},
         {question:"What is Mia's plan?", answer:"To follow The Fader", options:["To follow The Fader","To escape the book","To fight The Fader","To hide from danger"]}
       ]},
-    {name:"True or False?", type:"tf", context:"The pirate captain stands before you — some features are real, some are tricks of the fading ink. Look closely and decide: true or false? Get it right and his colours grow brighter!", xpEach:10,
+    {name:"True or False?", type:"tf", refImage:'campaign/img/ch03-pirate-ref.jpg', context:"The pirate captain stands before you — some features are real, some are tricks of the fading ink. Look closely and decide: true or false? Get it right and his colours grow brighter!", xpEach:10,
       items:[
         {prompt:"The pirate has got a wooden leg.", answer:"True", hint:"Look at his leg.", hintDe:"Holzbein"},
         {prompt:"The pirate has got two eyes visible.", answer:"False", hint:"He wears an eye patch.", hintDe:"Augenklappe"},
@@ -11286,7 +11288,7 @@ campaignLevels = [
 {
   levelId:"L04", levelName:"Feelings Are Real", topic:"Emotions", grammar:"to be negative, questions & short answers",
   maxXP:160, starThresholds:{one:80, two:128, three:160},
-  sceneImages:{storyA:'campaign/img/ch04-scene-emotions.jpg'},
+  sceneImages:{storyA:'campaign/img/ch04-scene-emotions.jpg', completion:'campaign/img/ch04-scene-completion.jpg'},
   readingImage:'campaign/img/ch04-reading-flip.jpg',
   comicPanels:['campaign/img/ch04-comic-01.jpg','campaign/img/ch04-comic-02.jpg'],
   storyA:[
@@ -11305,14 +11307,14 @@ campaignLevels = [
   tasks:[
     {name:"Name the Feeling", type:"image-matching", context:"Each character's face is blank — frozen without expression. Match the description to the right emotion. Every correct answer paints a feeling back onto their face!", xpEach:5,
       items:[
-        {prompt:"A big smile, bright eyes", answer:"happy", options:["happy","sad","angry","bored"], icon:'<svg viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="#795548" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>', hint:"Feeling good!", hintDe:"gluecklich"},
-        {prompt:"Tears, mouth turned down", answer:"sad", options:["sad","happy","tired","scared"], icon:'<svg viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="#795548" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>', hint:"Feeling blue.", hintDe:"traurig"},
-        {prompt:"Red face, frowning, fists tight", answer:"angry", options:["angry","excited","proud","bored"], icon:'<svg viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="#795548" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="7" y1="8" x2="10" y2="10"/><line x1="17" y1="8" x2="14" y2="10"/></svg>', hint:"Very mad.", hintDe:"wuetend"},
-        {prompt:"Wide eyes, mouth open, shaking", answer:"scared", options:["scared","excited","angry","tired"], icon:'<svg viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="#795548" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="16" r="2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>', hint:"Afraid!", hintDe:"veraengstigt"},
-        {prompt:"Eyes closing, yawning", answer:"tired", options:["tired","bored","sad","happy"], icon:'<svg viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="#795548" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 15h8"/><path d="M8 9h2"/><path d="M14 9h2"/></svg>', hint:"Needs sleep.", hintDe:"muede"},
-        {prompt:"Blank face, looking at the clock", answer:"bored", options:["bored","tired","sad","angry"], icon:'<svg viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="#795548" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>', hint:"Nothing to do.", hintDe:"gelangweilt"},
-        {prompt:"Jumping up and down, big smile", answer:"excited", options:["excited","happy","scared","proud"], icon:'<svg viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="#795548" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 13s1.5 3 4 3 4-3 4-3"/><path d="M7 8l3 1"/><path d="M17 8l-3 1"/></svg>', hint:"Can't wait!", hintDe:"aufgeregt"},
-        {prompt:"Standing tall, big grin, chest out", answer:"proud", options:["proud","happy","excited","angry"], icon:'<svg viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="#795548" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 15s1 1 3 1 3-1 3-1"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>', hint:"Did something great.", hintDe:"stolz"}
+        {prompt:"A big smile, bright eyes", answer:"happy", options:["happy","sad","angry","bored"], icon:'<img src="campaign/img/ch04-face-happy.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">', hint:"Feeling good!", hintDe:"gluecklich"},
+        {prompt:"Tears, mouth turned down", answer:"sad", options:["sad","happy","tired","scared"], icon:'<img src="campaign/img/ch04-face-sad.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">', hint:"Feeling blue.", hintDe:"traurig"},
+        {prompt:"Red face, frowning, fists tight", answer:"angry", options:["angry","excited","proud","bored"], icon:'<img src="campaign/img/ch04-face-angry.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">', hint:"Very mad.", hintDe:"wuetend"},
+        {prompt:"Wide eyes, mouth open, shaking", answer:"scared", options:["scared","excited","angry","tired"], icon:'<img src="campaign/img/ch04-face-scared.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">', hint:"Afraid!", hintDe:"veraengstigt"},
+        {prompt:"Eyes closing, yawning", answer:"tired", options:["tired","bored","sad","happy"], icon:'<img src="campaign/img/ch04-face-tired.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">', hint:"Needs sleep.", hintDe:"muede"},
+        {prompt:"Blank face, looking at the clock", answer:"bored", options:["bored","tired","sad","angry"], icon:'<img src="campaign/img/ch04-face-bored.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">', hint:"Nothing to do.", hintDe:"gelangweilt"},
+        {prompt:"Jumping up and down, big smile", answer:"excited", options:["excited","happy","scared","proud"], icon:'<img src="campaign/img/ch04-face-excited.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">', hint:"Can't wait!", hintDe:"aufgeregt"},
+        {prompt:"Standing tall, big grin, chest out", answer:"proud", options:["proud","happy","excited","angry"], icon:'<img src="campaign/img/ch04-face-proud.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">', hint:"Did something great.", hintDe:"stolz"}
       ]},
     {name:"Not Feeling It", type:"mc", context:"Some characters need to say what they are NOT feeling — but the negative forms of 'to be' have been erased! Choose isn't, aren't, or am not to let them express themselves.", xpEach:10,
       items:[
@@ -11347,7 +11349,7 @@ campaignLevels = [
 {
   levelId:"L05", levelName:"The Silent Band", topic:"Music & Instruments", grammar:"Possessives, can/can't",
   maxXP:175, starThresholds:{one:88, two:140, three:175},
-  sceneImages:{storyA:'campaign/img/ch05-scene-instruments.jpg', storyB:'campaign/img/ch05-scene-message.jpg'},
+  sceneImages:{storyA:'campaign/img/ch05-scene-instruments.jpg', storyB:'campaign/img/ch05-scene-message.jpg', completion:'campaign/img/ch05-scene-completion.jpg'},
   readingImage:'campaign/img/ch05-reading-flip.jpg',
   comicPanels:['campaign/img/ch05-comic-01.jpg','campaign/img/ch05-comic-02.jpg'],
   storyA:[
@@ -11996,7 +11998,7 @@ campaignLevels = [
   sceneImages:{storyA:'campaign/img/ch15-scene-blank.jpg', storyB:'campaign/img/ch15-scene-pen.jpg'},
   readingImage:'campaign/img/ch15-reading-flip.jpg',
   comicPanels:['campaign/img/ch15-comic-01.jpg','campaign/img/ch15-comic-02.jpg','campaign/img/ch15-comic-03.jpg'],
-  epilogueImages:['campaign/img/epilogue-01.jpg','','campaign/img/epilogue-03.jpg','campaign/img/epilogue-04.jpg','campaign/img/epilogue-05.jpg','campaign/img/epilogue-06.jpg'],
+  epilogueImages:['campaign/img/epilogue-01.jpg','campaign/img/epilogue-02.jpg','campaign/img/epilogue-03.jpg','campaign/img/epilogue-04.jpg','campaign/img/epilogue-05.jpg','campaign/img/epilogue-06.jpg'],
   storyA:[
     {speaker:"book", text:"You turn to the last chapter. The page is completely, perfectly blank. White as snow. Griffin erased ALL of it — every word, every plan, every dream.", emotion:"scared"},
     {speaker:"book", text:"This was the future chapter. 'Going to' lived here — every plan, every hope, every 'I am going to...' Gone."},
