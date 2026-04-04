@@ -10206,9 +10206,19 @@ function renderStoryBeat() {
   };
   // Use emotion-specific images when available
   if (speaker === 'book' && emotion === 'scared') avatarMap.book.img = 'campaign/img/char-book-scared.jpg';
-  if (speaker === 'mia' && emotion === 'happy') avatarMap.mia.img = 'campaign/img/char-mia-happy.jpg';
-  if (speaker === 'mia' && emotion === 'scared') avatarMap.mia.img = 'campaign/img/char-mia-scared.jpg';
-  if (speaker === 'mia' && emotion === 'determined') avatarMap.mia.img = 'campaign/img/char-mia-determined.jpg';
+  if (speaker === 'mia') {
+    // Auto-select Mia's pose based on emotion tag OR story context
+    if (emotion === 'happy' || campaignState.storyPhase === 'completion') {
+      avatarMap.mia.img = 'campaign/img/char-mia-happy.jpg';
+    } else if (emotion === 'scared') {
+      avatarMap.mia.img = 'campaign/img/char-mia-scared.jpg';
+    } else if (emotion === 'determined' || (campaignState.currentLevel !== null && campaignState.currentLevel >= 9)) {
+      avatarMap.mia.img = 'campaign/img/char-mia-determined.jpg';
+    } else if (emotion === 'sad') {
+      avatarMap.mia.img = 'campaign/img/char-mia-scared.jpg';
+    }
+    // Default: neutral (already set)
+  }
   if (speaker === 'griffin' && emotion === 'listening') avatarMap.griffin.img = 'campaign/img/char-griffin-listening.jpg';
   if (speaker === 'griffin' && emotion === 'redemption') avatarMap.griffin.img = 'campaign/img/char-griffin-redemption.jpg';
   var av = avatarMap[speaker] || avatarMap.book;
@@ -10231,8 +10241,8 @@ function renderStoryBeat() {
   if (lv && lv.epilogueImages && campaignState.storyPhase === 'completion' && lv.epilogueImages[idx]) {
     sceneImgSrc = lv.epilogueImages[idx];
   } else if (lv && lv.sceneImages && campaignState.storyPhase) {
-    // Show scene image for ALL beats in the current phase (not just the first)
-    sceneImgSrc = lv.sceneImages[campaignState.storyPhase] || lv.sceneImages['storyA'] || '';
+    // Show scene image for the current phase only — no fallback to storyA for completion/storyB
+    sceneImgSrc = lv.sceneImages[campaignState.storyPhase] || '';
   }
   var sceneImgHtml = sceneImgSrc ? '<img class="campaign-scene-img" src="' + sceneImgSrc + '" style="width:100%;border-radius:12px;margin-top:0.8rem;max-height:260px;object-fit:cover;" onerror="this.style.display=\'none\'">' : '';
   // Wrap text paragraphs in story-paragraph divs for stagger animation
