@@ -10281,6 +10281,7 @@ function renderStoryBeat() {
     // Default: neutral (already set)
   }
   if (speaker === 'griffin' && emotion === 'listening') avatarMap.griffin.img = 'campaign/img/char-griffin-listening.jpg';
+  if (speaker === 'griffin' && emotion === 'confrontation') avatarMap.griffin.img = 'campaign/img/char-griffin-confrontation.jpg';
   if (speaker === 'griffin' && emotion === 'redemption') avatarMap.griffin.img = 'campaign/img/char-griffin-redemption.jpg';
   var av = avatarMap[speaker] || avatarMap.book;
   var avatarHtml = '<img class="campaign-speaker-avatar" src="' + av.img + '" onerror="this.outerHTML=\'' + av.emoji + '\'">';
@@ -12201,7 +12202,7 @@ campaignLevels = [
     {speaker:"mia", text:"Griffin? I know you are there. I read your letters. All three of them.", emotion:"determined"},
     {speaker:"emre", text:"Go away."},
     {speaker:"mia", text:"No.", emotion:"determined"},
-    {speaker:"emre", text:"I said go away! I am dangerous. I erase things. I destroy things. That is what I do."},
+    {speaker:"emre", text:"I said go away! I am dangerous. I erase things. I destroy things. That is what I do.", emotion:"confrontation"},
     {speaker:"mia", text:"That is what you DID. It is not who you ARE. Tell me why. Please.", emotion:"determined"},
     {speaker:"emre", text:"...you really want to know?"},
     {speaker:"mia", text:"Yes. I really want to know."},
@@ -12297,7 +12298,7 @@ campaignLevels = [
 {
   levelId:"L15", levelName:"What Are We Going To Do?", topic:"Future Plans", grammar:"going to (future)",
   maxXP:255, starThresholds:{one:128, two:204, three:255},
-  sceneImages:{storyA:'campaign/img/ch15-scene-blank.jpg', storyB:'campaign/img/ch15-scene-pen.jpg'},
+  sceneImages:{storyA:'campaign/img/ch15-scene-blank.jpg', storyB:'campaign/img/ch15-scene-pen.jpg', completion:'campaign/img/ch15-scene-sentence.jpg'},
   readingImage:'campaign/img/ch15-reading-flip.jpg',
   comicPanels:['campaign/img/ch15-comic-01.jpg','campaign/img/ch15-comic-02.jpg','campaign/img/ch15-comic-03.jpg'],
   epilogueImages:['campaign/img/epilogue-01.jpg','campaign/img/epilogue-02.jpg','campaign/img/epilogue-03.jpg','campaign/img/epilogue-04.jpg','campaign/img/epilogue-05.jpg','campaign/img/epilogue-06.jpg'],
