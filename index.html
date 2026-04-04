@@ -567,7 +567,15 @@ h1 { display: none; }
 [data-theme="light"] .mc-option { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); color: var(--text); }
 [data-theme="light"] #avatar-picker-modal { background: white; color: var(--text); }
 [data-theme="light"] .battle-modal-bg { background: white; color: var(--text); }
-[data-theme="light"] .setup-step { background: white; }
+[data-theme="light"] .practice-setup-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 9000; overflow-y: auto; -webkit-overflow-scrolling: touch; animation: fadeIn 0.2s ease; }
+.setup-step { max-width: 520px; margin: 0 auto; padding: 0 1rem; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; background: var(--bg); }
+.setup-header { position: sticky; top: 0; background: var(--bg); padding: 1rem 0 0.8rem; z-index: 10; text-align: center; }
+.setup-header h2 { font-size: 1.3rem; font-weight: 800; margin: 0; }
+.setup-step-indicator { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+.setup-close, .setup-back { position: absolute; left: 0; top: 1rem; background: none; border: none; color: var(--text); font-size: 1.2rem; cursor: pointer; padding: 4px 8px; border-radius: 8px; }
+.setup-close:hover, .setup-back:hover { background: var(--card-hover); }
+.setup-body { flex: 1; padding: 0.5rem 0; }
+.setup-footer { position: sticky; bottom: 0; background: var(--bg); padding: 1rem 0 calc(env(safe-area-inset-bottom) + 1rem); }
 
 /* ===== NAIVE TYPOGRAPHY & POLISH ===== */
 .profile-name, .nav-title, h2, .card h3, .grammar-topic-name,
