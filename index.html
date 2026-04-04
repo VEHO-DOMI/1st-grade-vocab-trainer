@@ -1311,6 +1311,14 @@ body.playing .header-container { display: none; }
   animation: wrongShake 0.4s ease;
 }
 [data-theme="dark"] .campaign-mc-btn.wrong { background: #B71C1C; color: #EF9A9A; border-color: #E53935; }
+.campaign-mc-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.campaign-mc-btn.correct:disabled,
+.campaign-mc-btn.wrong:disabled {
+  opacity: 1;
+}
 
 /* --- Gap-Fill --- */
 .campaign-gap-sentence {
@@ -1424,6 +1432,7 @@ body.playing .header-container { display: none; }
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  touch-action: pan-y;
   scroll-behavior: smooth;
 }
 [data-theme="dark"] .campaign-reading-card {
@@ -1637,6 +1646,16 @@ body.playing .header-container { display: none; }
 #campaign-reading-screen.active,
 #campaign-results-screen.active,
 #campaign-prologue-screen.active { animation: campaignScreenIn 0.4s ease-out; }
+#campaign-task-screen,
+#campaign-story-screen,
+#campaign-reading-screen,
+#campaign-results-screen,
+#campaign-map-screen,
+#campaign-prologue-screen {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: auto;
+}
 @keyframes campaignScreenIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 
 /* Continue/Next button pulse */
@@ -1935,9 +1954,9 @@ body.playing .header-container { display: none; }
 <!-- CAMPAIGN STORY SCREEN -->
 <div id="campaign-story-screen" class="screen">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:0 0.5rem;margin-bottom:0.3rem;">
-    <button style="background:none;border:none;color:var(--muted);font-size:0.78rem;cursor:pointer;font-family:inherit;" onclick="quitCampaignToMap()">← Map</button>
+    <button style="background:var(--card);border:1.5px solid var(--card-border);color:var(--text-secondary);font-size:0.78rem;font-weight:600;padding:0.35rem 0.7rem;border-radius:8px;cursor:pointer;font-family:inherit;" onclick="quitCampaignToMap()">← Map</button>
     <span style="font-size:0.72rem;color:var(--muted);font-weight:600;" id="campaign-story-chapter-label"></span>
-    <button style="background:none;border:none;color:var(--muted);font-size:0.78rem;cursor:pointer;font-family:inherit;" onclick="quitCampaignToHome()">✕ Quit</button>
+    <button style="background:var(--card);border:1.5px solid var(--card-border);color:var(--text-secondary);font-size:0.78rem;font-weight:600;padding:0.35rem 0.7rem;border-radius:8px;cursor:pointer;font-family:inherit;" onclick="quitCampaignToHome()">✕ Quit</button>
   </div>
   <div class="campaign-story-card" style="margin:0 0.5rem;">
     <div class="campaign-story-speaker" id="campaign-story-speaker"></div>
@@ -1949,7 +1968,7 @@ body.playing .header-container { display: none; }
 <!-- CAMPAIGN TASK SCREEN -->
 <div id="campaign-task-screen" class="screen">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:0 0.5rem;margin-bottom:0.2rem;">
-    <button style="background:none;border:none;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:inherit;" onclick="confirmQuitLevel()">← Quit Level</button>
+    <button style="background:var(--card);border:1.5px solid var(--card-border);color:var(--text-secondary);font-size:0.78rem;font-weight:600;padding:0.35rem 0.7rem;border-radius:8px;cursor:pointer;font-family:inherit;" onclick="confirmQuitLevel()">← Quit Level</button>
     <span style="font-size:0.68rem;color:var(--muted);" id="campaign-task-chapter-label"></span>
   </div>
   <div class="campaign-task-progress" id="campaign-task-progress">
@@ -1958,20 +1977,20 @@ body.playing .header-container { display: none; }
     <span id="campaign-task-xp" style="font-weight:700;color:#795548;">0 XP</span>
   </div>
   <div id="campaign-task-header" style="margin-bottom:0.4rem;"></div>
-  <div id="campaign-exercise-area" style="padding:0 0.5rem;"></div>
   <div id="campaign-feedback-area" style="padding:0 0.5rem;"></div>
+  <div id="campaign-exercise-area" style="padding:0 0.5rem;"></div>
 </div>
 
 <!-- CAMPAIGN READING SCREEN -->
 <div id="campaign-reading-screen" class="screen">
   <div class="progress-nav">
-    <button style="background:none;border:none;color:var(--muted);font-size:0.72rem;cursor:pointer;font-family:inherit;" onclick="confirmQuitLevel()">← Quit</button>
+    <button style="background:var(--card);border:1.5px solid var(--card-border);color:var(--text-secondary);font-size:0.78rem;font-weight:600;padding:0.35rem 0.7rem;border-radius:8px;cursor:pointer;font-family:inherit;" onclick="confirmQuitLevel()">← Quit</button>
     <span class="nav-title">&#128214; Reading</span>
     <span id="campaign-reading-xp" style="font-weight:700;color:#795548;font-size:0.82rem;">0 XP</span>
   </div>
   <div class="campaign-reading-card" id="campaign-passage"></div>
-  <div id="campaign-question-area" style="margin:0.6rem 0.5rem 0;"></div>
   <div id="campaign-reading-feedback" style="padding:0 0.5rem;"></div>
+  <div id="campaign-question-area" style="margin:0.6rem 0.5rem 0;"></div>
 </div>
 
 <!-- CAMPAIGN RESULTS SCREEN -->
@@ -9964,9 +9983,9 @@ function renderPrologueScene() {
   dotsHtml += '</div>';
   // Navigation buttons
   var navHtml = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">';
-  navHtml += '<button style="background:none;border:none;color:var(--muted);font-size:0.78rem;cursor:pointer;font-family:inherit;padding:0.3rem 0;" onclick="quitPrologue()">✕ Quit</button>';
+  navHtml += '<button style="background:var(--card);border:1.5px solid var(--card-border);color:var(--text-secondary);font-size:0.78rem;font-weight:600;padding:0.35rem 0.7rem;border-radius:8px;cursor:pointer;font-family:inherit;" onclick="quitPrologue()">✕ Quit</button>';
   navHtml += '<span style="font-size:0.7rem;color:var(--muted);">' + (campaignState.prologueScene + 1) + ' / ' + prologueScenes.length + '</span>';
-  navHtml += campaignState.prologueScene >= 2 ? '<button style="background:none;border:none;color:var(--muted);font-size:0.78rem;cursor:pointer;font-family:inherit;padding:0.3rem 0;" onclick="finishPrologue()">Skip ▸</button>' : '<span></span>';
+  navHtml += campaignState.prologueScene >= 2 ? '<button style="background:var(--card);border:1.5px solid var(--card-border);color:var(--text-secondary);font-size:0.78rem;font-weight:600;padding:0.35rem 0.7rem;border-radius:8px;cursor:pointer;font-family:inherit;" onclick="finishPrologue()">Skip ▸</button>' : '<span></span>';
   navHtml += '</div>';
   container.innerHTML = navHtml +
     '<div class="prologue-scene">' +
@@ -10010,11 +10029,8 @@ function quitCampaignToMap() {
 }
 
 function quitCampaignToHome() {
-  // Exit campaign mode entirely
   if (campaignState._prologueTimer) clearTimeout(campaignState._prologueTimer);
-  state.mode = 'vocab';
-  localStorage.setItem(LS_KEY + '-mode', 'vocab');
-  showHomeScreen();
+  showModeSelectScreen();
 }
 
 function confirmQuitLevel() {
@@ -10215,7 +10231,8 @@ function renderStoryBeat() {
   if (lv && lv.epilogueImages && campaignState.storyPhase === 'completion' && lv.epilogueImages[idx]) {
     sceneImgSrc = lv.epilogueImages[idx];
   } else if (lv && lv.sceneImages && campaignState.storyPhase) {
-    sceneImgSrc = lv.sceneImages[campaignState.storyPhase] || '';
+    // Show scene image for ALL beats in the current phase (not just the first)
+    sceneImgSrc = lv.sceneImages[campaignState.storyPhase] || lv.sceneImages['storyA'] || '';
   }
   var sceneImgHtml = sceneImgSrc ? '<img class="campaign-scene-img" src="' + sceneImgSrc + '" style="width:100%;border-radius:12px;margin-top:0.8rem;max-height:260px;object-fit:cover;" onerror="this.style.display=\'none\'">' : '';
   // Wrap text paragraphs in story-paragraph divs for stagger animation
@@ -10292,6 +10309,7 @@ function renderCampaignTask(taskIndex) {
 
 // --- IMAGE MATCHING (tap word bank) ---
 function renderCampaignImageMatching(task) {
+  window.scrollTo(0, 0);
   var items = task.items || [];
   var itemIdx = campaignState.currentItemIndex;
   if (itemIdx >= items.length) { campaignState.currentTaskIndex++; advanceCampaignTask(); return; }
@@ -10348,6 +10366,7 @@ function submitVocabAnswer() {
 
 // --- MC TASK ---
 function renderCampaignMC(task) {
+  window.scrollTo(0, 0);
   var items = task.items || [];
   var itemIdx = campaignState.currentItemIndex;
   if (itemIdx >= items.length) { campaignState.currentTaskIndex++; advanceCampaignTask(); return; }
@@ -10389,6 +10408,7 @@ function submitMCAnswer(btn, answer) {
 
 // --- GAP-FILL MC ---
 function renderCampaignGapFillMC(task) {
+  window.scrollTo(0, 0);
   var items = task.items || [];
   var itemIdx = campaignState.currentItemIndex;
   if (itemIdx >= items.length) { campaignState.currentTaskIndex++; advanceCampaignTask(); return; }
@@ -10433,6 +10453,7 @@ function submitGapFill(btn, answer) {
 
 // --- GAP-FILL TYPED ---
 function renderCampaignGapFillTyped(task) {
+  window.scrollTo(0, 0);
   var items = task.items || [];
   var itemIdx = campaignState.currentItemIndex;
   if (itemIdx >= items.length) { campaignState.currentTaskIndex++; advanceCampaignTask(); return; }
@@ -10476,6 +10497,7 @@ function submitTypedAnswer() {
 
 // --- TRUE/FALSE ---
 function renderCampaignTF(task) {
+  window.scrollTo(0, 0);
   var items = task.items || [];
   var itemIdx = campaignState.currentItemIndex;
   if (itemIdx >= items.length) { campaignState.currentTaskIndex++; advanceCampaignTask(); return; }
@@ -10514,6 +10536,7 @@ function submitTFAnswer(btn, answer) {
 
 // --- READING COMPREHENSION (now a task type) ---
 function renderCampaignReading(task) {
+  window.scrollTo(0, 0);
   var passage = document.getElementById('campaign-passage');
   var qArea = document.getElementById('campaign-question-area');
   var feedback = document.getElementById('campaign-reading-feedback');
@@ -10547,6 +10570,7 @@ function toggleReadingIllustration() {
 }
 
 function renderReadingQuestion(task) {
+  window.scrollTo(0, 0);
   var qArea = document.getElementById('campaign-question-area');
   var feedback = document.getElementById('campaign-reading-feedback');
   feedback.innerHTML = '';
@@ -10595,6 +10619,7 @@ function showReadingFeedback(result, correctAnswer, xp) {
   var msg = result.isCorrect ? ('Correct! +' + xp + ' XP') : (result.isClose ? ('Close! The answer is: ' + correctAnswer) : ('The answer is: ' + correctAnswer));
   feedback.innerHTML = '<div class="campaign-feedback ' + cls + '">' + msg + '</div>' +
     '<button class="btn" onclick="nextReadingQuestion()" style="margin-top:0.5rem;width:100%;">Next</button>';
+  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 function nextReadingQuestion() {
@@ -10688,6 +10713,7 @@ function showCampaignFeedback(result, correctAnswer, xp) {
   var msg = result.isCorrect ? ('Correct! +' + xp + ' XP' + comboHtml) : (result.isClose ? ('Close! The answer is: ' + correctAnswer) : ('The answer is: ' + correctAnswer));
   feedback.innerHTML = '<div class="campaign-feedback ' + cls + '">' + msg + '</div>' +
     '<button class="btn" onclick="nextCampaignItem()" style="margin-top:0.5rem;width:100%;">Next</button>';
+  window.scrollTo({top: 0, behavior: 'smooth'});
   var xpEl = document.getElementById('campaign-task-xp');
   if (xpEl) xpEl.textContent = campaignState.levelXP + ' XP';
   // XP fly-up
