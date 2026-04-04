@@ -818,10 +818,10 @@ body.playing .header-container { display: none; }
 /* --- 1. CAMPAIGN MAP — Book Aesthetic --- */
 .campaign-map {
   padding: 1rem 0.5rem 2rem;
-  overflow-y: auto;
-  max-height: calc(100vh - 60px);
+  overflow-y: visible;
+  max-height: none;
   background: linear-gradient(180deg, #FFFDE7 0%, #FFF8E1 50%, #FFECB3 100%);
-  min-height: 100vh;
+  min-height: 0;
 }
 [data-theme="dark"] .campaign-map {
   background: linear-gradient(180deg, #2c2218 0%, #3e2f22 50%, #2c2218 100%);
@@ -1693,6 +1693,8 @@ body.playing .header-container { display: none; }
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: auto;
+  max-height: 100dvh;
+  max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
 }
 @keyframes campaignScreenIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
 
