@@ -10372,7 +10372,7 @@ function submitVocabAnswer() {
   var item = task.items[campaignState.currentItemIndex];
   var answer = selected.getAttribute('data-val');
   var result = checkCampaignAnswer(answer, item.answer, item.alts, 'mc');
-  var xp = result.isCorrect ? (task.xpEach || 5) : 0;
+  var xp = applyCampaignComboXP(task.xpEach || 5, result.isCorrect);
   campaignState.vocabXP += xp;
   campaignState.levelXP += xp;
   var chips = document.querySelectorAll('.campaign-vocab-chip');
@@ -10414,7 +10414,7 @@ function submitMCAnswer(btn, answer) {
   var task = lv.tasks[campaignState.currentTaskIndex];
   var item = task.items[campaignState.currentItemIndex];
   var result = checkCampaignAnswer(answer, item.answer, item.alts, 'mc');
-  var xp = result.isCorrect ? (task.xpEach || 10) : 0;
+  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect);
   if (task.type === 'image-matching') campaignState.vocabXP += xp;
   else campaignState.grammarXP += xp;
   campaignState.levelXP += xp;
@@ -10458,7 +10458,7 @@ function submitGapFill(btn, answer) {
   var task = lv.tasks[campaignState.currentTaskIndex];
   var item = task.items[campaignState.currentItemIndex];
   var result = checkCampaignAnswer(answer, item.answer, item.alts, 'gap-fill');
-  var xp = result.isCorrect ? (task.xpEach || 10) : 0;
+  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect);
   campaignState.grammarXP += xp;
   campaignState.levelXP += xp;
   var btns = document.querySelectorAll('.campaign-mc-btn');
@@ -10506,7 +10506,7 @@ function submitTypedAnswer() {
   var item = task.items[campaignState.currentItemIndex];
   var userAnswer = input.value.trim();
   var result = checkCampaignAnswer(userAnswer, item.answer, item.alts, 'typed');
-  var xp = result.isCorrect ? (task.xpEach || 10) : 0;
+  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect);
   campaignState.grammarXP += xp;
   campaignState.levelXP += xp;
   input.disabled = true;
@@ -10545,7 +10545,7 @@ function submitTFAnswer(btn, answer) {
   var task = lv.tasks[campaignState.currentTaskIndex];
   var item = task.items[campaignState.currentItemIndex];
   var result = checkCampaignAnswer(answer, item.answer, item.alts, 'tf');
-  var xp = result.isCorrect ? (task.xpEach || 10) : 0;
+  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect);
   campaignState.grammarXP += xp;
   campaignState.levelXP += xp;
   var btns = document.querySelectorAll('.campaign-tf-btn');
@@ -10623,7 +10623,7 @@ function submitReadingAnswer(btn, answer) {
   var questions = task.questions || task.items || [];
   var q = questions[campaignState.readingQuestionIndex];
   var result = checkCampaignAnswer(answer, q.answer, q.alts, 'reading');
-  var xp = result.isCorrect ? (task.xpEach || 10) : 0;
+  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect);
   campaignState.readingXP += xp;
   campaignState.levelXP += xp;
   var btns = document.querySelectorAll('#campaign-question-area .campaign-mc-btn');
@@ -10730,13 +10730,28 @@ function levenshteinDist(a, b) {
 }
 
 // --- FEEDBACK & CONTINUE ---
+function getCampaignComboMult() {
+  // Same tiers as grammar mode: 3-streak=1.5x, 5-streak=2x, 10-streak=3x
+  if (campaignCombo >= 10) return {mult:3, label:'3x'};
+  if (campaignCombo >= 5) return {mult:2, label:'2x'};
+  if (campaignCombo >= 3) return {mult:1.5, label:'1.5x'};
+  return {mult:1, label:''};
+}
+
+function applyCampaignComboXP(baseXP, isCorrect) {
+  if (!isCorrect) { campaignCombo = 0; return 0; }
+  campaignCombo++;
+  var tier = getCampaignComboMult();
+  return Math.round(baseXP * tier.mult);
+}
+
 function showCampaignFeedback(result, correctAnswer, xp) {
   var feedback = document.getElementById('campaign-feedback-area');
   var cls = result.isCorrect ? 'correct' : (result.isClose ? 'close' : 'wrong');
-  if (result.isCorrect) { campaignCombo++; } else { campaignCombo = 0; }
+  var tier = getCampaignComboMult();
   var comboHtml = '';
-  if (campaignCombo >= 3 && result.isCorrect) {
-    comboHtml = ' <span style="color:#F9A825;font-weight:700;">' + campaignCombo + 'x!</span>';
+  if (tier.label && result.isCorrect) {
+    comboHtml = ' <span style="color:#F9A825;font-weight:700;">🔥 ' + tier.label + '</span>';
   }
   var msg = result.isCorrect ? ('Correct! +' + xp + ' XP' + comboHtml) : (result.isClose ? ('Close! The answer is: ' + correctAnswer) : ('The answer is: ' + correctAnswer));
   feedback.innerHTML = '<div class="campaign-feedback ' + cls + '" style="margin-bottom:0.4rem;">' + msg + '</div>' +
@@ -11429,7 +11444,7 @@ campaignLevels = [
 // ============ L06 — "The Detective's Case" ============
 {
   levelId:"L06", levelName:"The Detective's Case", topic:"Daily Routines", grammar:"Present simple 3rd person -s, a lot of",
-  maxXP:200, starThresholds:{one:100, two:160, three:200},
+  maxXP:288, starThresholds:{one:144, two:230, three:288},
   sceneImages:{storyA:'campaign/img/ch06-scene-office.jpg'},
   readingImage:'campaign/img/ch06-reading-flip.jpg',
   comicPanels:['campaign/img/ch06-comic-01.jpg'],
@@ -11448,7 +11463,7 @@ campaignLevels = [
     {speaker:"mia", text:"I found The Fader's hiding spot. It is in the back of the book, between the blank pages."}
   ],
   tasks:[
-    {name:"Third Person -s", type:"mc", context:"The detective is frozen because every 'he/she/it' verb has lost its -s ending! Choose the correct form to unfreeze each action. Every verb you fix lets the detective move one step closer to the clue!", xpEach:5,
+    {name:"Third Person -s", type:"mc", context:"The detective is frozen because every 'he/she/it' verb has lost its -s ending! Choose the correct form to unfreeze each action. Every verb you fix lets the detective move one step closer to the clue!", xpEach:12,
       items:[
         {prompt:"She ___ at the clues carefully.", answer:"looks", options:["looks","look","lookes","looking"], hint:"She + verb + s.", hintDe:"schaut"},
         {prompt:"He ___ to school every day.", answer:"walks", options:["walks","walk","walkes","walking"], hint:"He + verb + s.", hintDe:"geht"},
@@ -11459,7 +11474,7 @@ campaignLevels = [
         {prompt:"The cat ___ the mouse.", answer:"catches", options:["catches","catchs","catch","catching"], hint:"-tch adds -es.", hintDe:"faengt"},
         {prompt:"She ___ the heavy bag.", answer:"carries", options:["carries","carrys","carry","carrieing"], hint:"Consonant + y becomes -ies.", hintDe:"traegt"}
       ]},
-    {name:"Daily Routines", type:"gap-fill-typed", context:"Mia discovered the detective's daily schedule — but the verb forms are erased! Type the correct third-person form to reconstruct his routine and track where he goes each day.", xpEach:10,
+    {name:"Daily Routines", type:"gap-fill-typed", context:"Mia discovered the detective's daily schedule — but the verb forms are erased! Type the correct third-person form to reconstruct his routine and track where he goes each day.", xpEach:12,
       items:[
         {prompt:"She ___ (drink) tea every morning.", sentence:"She ___ (drink) tea every morning.", answer:"drinks", hint:"Add -s.", hintDe:"trinkt"},
         {prompt:"He ___ (read) before bed.", sentence:"He ___ (read) before bed.", answer:"reads", hint:"Add -s.", hintDe:"liest"},
@@ -11468,7 +11483,7 @@ campaignLevels = [
         {prompt:"He ___ (look) out of the window.", sentence:"He ___ (look) out of the window.", answer:"looks", hint:"Add -s.", hintDe:"schaut"},
         {prompt:"She ___ (wash) the dishes after dinner.", sentence:"She ___ (wash) the dishes after dinner.", answer:"washes", hint:"-sh adds -es.", hintDe:"waescht"}
       ]},
-    {name:"The Detective's Report", type:"reading", context:"The detective left a case report about The Fader's movements — the first real evidence! Read every word carefully. Your answers will help Mia follow the trail.", xpEach:10,
+    {name:"The Detective's Report", type:"reading", context:"The detective left a case report about The Fader's movements — the first real evidence! Read every word carefully. Your answers will help Mia follow the trail.", xpEach:12,
       passage:"<h4>Detective's Case Report: The Fader</h4><p>Date: Day 350</p><p>The suspect enters the book every night at midnight. He walks to the back pages. He carries a large eraser.</p><p>He erases words carefully. He always starts with small words first — articles, prepositions. Then he erases bigger words — nouns, verbs.</p><p>He works for about one hour. Then he goes back to the empty pages.</p><p>I have found eraser dust on pages 45, 67, and 89. He visits a lot of pages every night. There are a lot of eraser marks near the chapter endings.</p>",
       questions:[
         {question:"When does the suspect enter the book?", answer:"At midnight", options:["At midnight","In the morning","At noon","In the evening"]},
@@ -11477,7 +11492,7 @@ campaignLevels = [
         {question:"How long does he work?", answer:"About one hour", options:["About one hour","About two hours","About 30 minutes","The whole night"]},
         {question:"Where did Mia find eraser dust?", answer:"On pages 45, 67, and 89", options:["On pages 45, 67, and 89","On pages 10, 20, and 30","On pages 1, 2, and 3","On the cover and last page"]}
       ]},
-    {name:"A Lot Of", type:"mc", context:"The detective's notes describe how MUCH evidence The Fader left — but 'a lot of' keeps getting written wrong. Fix each phrase so the case file is accurate!", xpEach:10,
+    {name:"A Lot Of", type:"mc", context:"The detective's notes describe how MUCH evidence The Fader left — but 'a lot of' keeps getting written wrong. Fix each phrase so the case file is accurate!", xpEach:12,
       items:[
         {prompt:"There are ___ clues in this room.", answer:"a lot of", options:["a lot of","a lot","lot of","many of"], hint:"a lot of + plural noun.", hintDe:"viele"},
         {prompt:"He has ___ experience.", answer:"a lot of", options:["a lot of","a lot","lot of","much of"], hint:"a lot of + uncountable noun.", hintDe:"viel"},
@@ -11490,7 +11505,7 @@ campaignLevels = [
 // ============ L07 — "What I Don't Like" ============
 {
   levelId:"L07", levelName:"What I Don't Like", topic:"Food & Preferences", grammar:"don't/doesn't, adverbs of frequency",
-  maxXP:210, starThresholds:{one:105, two:168, three:210},
+  maxXP:268, starThresholds:{one:134, two:214, three:268},
   sceneImages:{storyB:'campaign/img/ch07-scene-note.jpg'},
   readingImage:'campaign/img/ch07-reading-flip.jpg',
   comicPanels:['campaign/img/ch07-comic-01.jpg'],
@@ -11512,7 +11527,7 @@ campaignLevels = [
     {speaker:"book", text:"His grammar is broken, but his feelings are clear. He wants to disappear because he feels invisible.", emotion:"sad"}
   ],
   tasks:[
-    {name:"Food Words", type:"image-matching", context:"The kitchen labels have fallen off every ingredient! Match each description to the right food. Without names, the cook cannot tell rice from noodles!", xpEach:5,
+    {name:"Food Words", type:"image-matching", context:"The kitchen labels have fallen off every ingredient! Match each description to the right food. Without names, the cook cannot tell rice from noodles!", xpEach:8,
       items:[
         {prompt:"Long thin yellow pasta", answer:"noodles", options:["noodles","bread","rice","chips"], icon:'<span style="font-size:2.5rem;">🍜</span>', hint:"Italian food.", hintDe:"Nudeln"},
         {prompt:"Small white grains, very common in Asia", answer:"rice", options:["rice","noodles","flour","sugar"], icon:'<span style="font-size:2.5rem;">🍚</span>', hint:"Eaten with chopsticks.", hintDe:"Reis"},
@@ -11523,7 +11538,7 @@ campaignLevels = [
         {prompt:"A round orange citrus fruit", answer:"orange", options:["orange","apple","lemon","mango"], icon:'<span style="font-size:2.5rem;">🍊</span>', hint:"Also a colour.", hintDe:"Orange"},
         {prompt:"Made from flour, you slice it", answer:"bread", options:["bread","cake","pizza","toast"], icon:'<span style="font-size:2.5rem;">🍞</span>', hint:"Sandwiches need it.", hintDe:"Brot"}
       ]},
-    {name:"Don't / Doesn't", type:"gap-fill-mc", context:"The characters are stuck saying YES to everything! Fill in 'don't' or 'doesn't' to give them the power to refuse. Every correct answer frees someone from eating food they hate!", xpEach:10,
+    {name:"Don't / Doesn't", type:"gap-fill-mc", context:"The characters are stuck saying YES to everything! Fill in 'don't' or 'doesn't' to give them the power to refuse. Every correct answer frees someone from eating food they hate!", xpEach:12,
       items:[
         {prompt:"I ___ like mushrooms.", sentence:"I ___ like mushrooms.", answer:"don't", options:["don't","doesn't"], hint:"I + don't.", hintDe:"mag nicht"},
         {prompt:"She ___ eat meat.", sentence:"She ___ eat meat.", answer:"doesn't", options:["doesn't","don't"], hint:"She + doesn't.", hintDe:"isst nicht"},
@@ -11532,7 +11547,7 @@ campaignLevels = [
         {prompt:"We ___ have any bread.", sentence:"We ___ have any bread.", answer:"don't", options:["don't","doesn't"], hint:"We + don't.", hintDe:"haben nicht"},
         {prompt:"My cat ___ like fish.", sentence:"My cat ___ like fish.", answer:"doesn't", options:["doesn't","don't"], hint:"It + doesn't.", hintDe:"mag nicht"}
       ]},
-    {name:"How Often?", type:"mc", context:"The adverbs of frequency — always, usually, often, sometimes, rarely, never — are floating in the wrong places! Put each one in the correct position before the characters' daily routines become total nonsense.", xpEach:10,
+    {name:"How Often?", type:"mc", context:"The adverbs of frequency — always, usually, often, sometimes, rarely, never — are floating in the wrong places! Put each one in the correct position before the characters' daily routines become total nonsense.", xpEach:12,
       items:[
         {prompt:"always / I / eat breakfast", answer:"I always eat breakfast.", options:["I always eat breakfast.","I eat always breakfast.","Always I eat breakfast.","I eat breakfast always."], hint:"Adverb goes before the main verb.", hintDe:"Ich esse immer Fruehstueck."},
         {prompt:"usually / she / walks to school", answer:"She usually walks to school.", options:["She usually walks to school.","She walks usually to school.","Usually she walks to school.","She walks to school usually."], hint:"Adverb before main verb.", hintDe:"Sie geht normalerweise zu Fuss."},
@@ -11541,7 +11556,7 @@ campaignLevels = [
         {prompt:"rarely / he / cooks dinner", answer:"He rarely cooks dinner.", options:["He rarely cooks dinner.","He cooks rarely dinner.","Rarely he cooks dinner.","He cooks dinner rarely."], hint:"Adverb before main verb.", hintDe:"Er kocht selten."},
         {prompt:"never / I / drink cola", answer:"I never drink cola.", options:["I never drink cola.","I drink never cola.","Never I drink cola.","I drink cola never."], hint:"Never goes before the main verb.", hintDe:"Ich trinke nie Cola."}
       ]},
-    {name:"Fix the Fader's Grammar", type:"mc", context:"Mia found a note from The Fader — but it is full of grammar errors! Fix his broken sentences. The Book says: if we understand his words, maybe we can understand HIM.", xpEach:10,
+    {name:"Fix the Fader's Grammar", type:"mc", context:"Mia found a note from The Fader — but it is full of grammar errors! Fix his broken sentences. The Book says: if we understand his words, maybe we can understand HIM.", xpEach:12,
       items:[
         {prompt:"The Fader wrote: 'I doesn't want nobody.'", answer:"I don't want anybody.", options:["I don't want anybody.","I doesn't want nobody.","I doesn't want anybody.","I don't want nobody."], hint:"I + don't, not doesn't.", hintDe:"Ich will niemanden."},
         {prompt:"The Fader wrote: 'She don't understand me.'", answer:"She doesn't understand me.", options:["She doesn't understand me.","She don't understand me.","She doesn't understands me.","She don't understands me."], hint:"She + doesn't.", hintDe:"Sie versteht mich nicht."},
@@ -11554,7 +11569,7 @@ campaignLevels = [
 // ============ L08 — "The Birthday Party" ============
 {
   levelId:"L08", levelName:"The Birthday Party", topic:"Clothes & Fashion", grammar:"Do/Does questions, short answers",
-  maxXP:210, starThresholds:{one:105, two:168, three:210},
+  maxXP:328, starThresholds:{one:164, two:262, three:328},
   sceneImages:{storyB:'campaign/img/ch08-scene-shadow.jpg'},
   readingImage:'campaign/img/ch08-reading-flip.jpg',
   comicPanels:['campaign/img/ch08-comic-01.jpg','campaign/img/ch08-comic-02.jpg'],
@@ -11575,7 +11590,7 @@ campaignLevels = [
     {speaker:"mia", text:"Now we know his name. Griffin. We need to find him."}
   ],
   tasks:[
-    {name:"What Are They Wearing?", type:"image-matching", context:"The party guests' outfits are losing their labels! Match each description to the correct clothing item. Without names, the fashion show cannot even start!", xpEach:5,
+    {name:"What Are They Wearing?", type:"image-matching", context:"The party guests' outfits are losing their labels! Match each description to the correct clothing item. Without names, the fashion show cannot even start!", xpEach:8,
       items:[
         {prompt:"Blue denim trousers", answer:"jeans", options:["jeans","shorts","trousers","leggings"], icon:'<span style="font-size:2.5rem;">👖</span>', hint:"Very common trousers.", hintDe:"Jeans"},
         {prompt:"A casual top with short sleeves", answer:"T-shirt", options:["T-shirt","shirt","sweater","blouse"], icon:'<span style="font-size:2.5rem;">👕</span>', hint:"A basic casual top.", hintDe:"T-Shirt"},
@@ -11586,7 +11601,7 @@ campaignLevels = [
         {prompt:"A soft hat with a brim at the front", answer:"cap", options:["cap","hat","helmet","headband"], icon:'<span style="font-size:2.5rem;">🧢</span>', hint:"Baseball style.", hintDe:"Kappe"},
         {prompt:"A short bottom piece, not trousers", answer:"skirt", options:["skirt","shorts","dress","jeans"], icon:'<span style="font-size:2.5rem;">👗</span>', hint:"Like the bottom half of a dress.", hintDe:"Rock"}
       ]},
-    {name:"Do or Does?", type:"gap-fill-mc", context:"Emma's fashion show judges cannot ask questions! The Do/Does words are scrambled. Fix them so the judges can ask the models about their outfits — the show must go on!", xpEach:10,
+    {name:"Do or Does?", type:"gap-fill-mc", context:"Emma's fashion show judges cannot ask questions! The Do/Does words are scrambled. Fix them so the judges can ask the models about their outfits — the show must go on!", xpEach:12,
       items:[
         {prompt:"___ you like this T-shirt?", sentence:"___ you like this T-shirt?", answer:"Do", options:["Do","Does"], hint:"You + Do.", hintDe:"Magst du"},
         {prompt:"___ she want the blue dress?", sentence:"___ she want the blue dress?", answer:"Does", options:["Does","Do"], hint:"She + Does.", hintDe:"Will sie"},
@@ -11595,7 +11610,7 @@ campaignLevels = [
         {prompt:"___ your parents like shopping?", sentence:"___ your parents like shopping?", answer:"Do", options:["Do","Does"], hint:"Parents = they + Do.", hintDe:"Moegen deine Eltern"},
         {prompt:"___ the shop sell trainers?", sentence:"___ the shop sell trainers?", answer:"Does", options:["Does","Do"], hint:"The shop = it + Does.", hintDe:"Verkauft der Laden"}
       ]},
-    {name:"Short Answers", type:"mc", context:"The party guests can finally ask questions — but now their answers are broken! Pick the right short answer for each question so the conversations can flow again.", xpEach:10,
+    {name:"Short Answers", type:"mc", context:"The party guests can finally ask questions — but now their answers are broken! Pick the right short answer for each question so the conversations can flow again.", xpEach:12,
       items:[
         {prompt:"Does she like jeans? — Yes, ___.", answer:"she does", options:["she does","she do","she is","she has"], hint:"Does she? Yes, she does.", hintDe:"Ja, tut sie."},
         {prompt:"Do they wear uniforms? — No, ___.", answer:"they don't", options:["they don't","they doesn't","they aren't","they hasn't"], hint:"Do they? No, they don't.", hintDe:"Nein, tun sie nicht."},
@@ -11604,7 +11619,7 @@ campaignLevels = [
         {prompt:"Does it fit? — Yes, ___.", answer:"it does", options:["it does","it do","it is","it has"], hint:"Does it? Yes, it does.", hintDe:"Ja, passt es."},
         {prompt:"Do we need a sweater? — No, ___.", answer:"we don't", options:["we don't","we doesn't","we aren't","we hasn't"], hint:"Do we? No, we don't.", hintDe:"Nein, brauchen wir nicht."}
       ]},
-    {name:"The Fashion Show", type:"reading", context:"The fashion show is in full swing! Read about Emma's birthday party carefully. Professor Syntax says: every correct answer helps rebuild the chapter and brings us closer to The Fader.", xpEach:10,
+    {name:"The Fashion Show", type:"reading", context:"The fashion show is in full swing! Read about Emma's birthday party carefully. Professor Syntax says: every correct answer helps rebuild the chapter and brings us closer to The Fader.", xpEach:12,
       passage:"<h4>The Birthday Fashion Show</h4><p>It is Emma's birthday party. They are having a fashion show in the living room because Emma loves clothes!</p><p>Tom walks in first. He wears a blue T-shirt and black jeans. 'Do you like my outfit?' he asks. 'Yes, I do! You look great!' says Emma.</p><p>Lisa wears a red dress and white boots. 'Does this dress fit well?' she asks. 'It looks perfect on you!' says her mum.</p><p>Ahmed wears a green sweater and a funny cap with stars on it. Everybody laughs. 'Does my cap look silly?' he asks. 'No, it doesn't!' says Tom.</p><p>After the fashion show, they eat chocolate cake and dance. It is the best birthday party ever!</p>",
       questions:[
         {question:"Whose birthday is it?", answer:"Emma's", options:["Emma's","Tom's","Lisa's","Ahmed's"]},
@@ -11613,7 +11628,7 @@ campaignLevels = [
         {question:"What does Ahmed wear on his head?", answer:"A funny cap with stars", options:["A funny cap with stars","A red hat with stripes","A blue headband with dots","A black cap with letters"]},
         {question:"What do they do after the fashion show?", answer:"Eat cake and dance", options:["Eat cake and dance","Go home and sleep","Watch TV and relax","Play football outside"]}
       ]},
-    {name:"The School Trip Shop",type:"reading",context:"Read about the school trip to the shop and answer the questions.",xpEach:10,
+    {name:"The School Trip Shop",type:"reading",context:"Read about the school trip to the shop and answer the questions.",xpEach:12,
       passage:"<strong>The School Trip Shop</strong><br><br>Our class went to a big clothes shop on Monday. The teacher asked us many questions about the clothes.<br><br>'Does this blue sweater cost 20 euros?' asked Max. 'No, it doesn't,' said the shop lady. 'It costs 25 euros.'<br><br>'Do these trainers come in red?' asked Lisa. 'Yes, they do! And they also come in green and white.'<br><br>Tom tried on a funny hat. 'Does this hat look good on me?' he asked. Everyone laughed. 'No, it doesn't!' said Emma. 'But it makes you look funny!'<br><br>In the end, nobody bought anything because everything was too expensive. But we had a great time. 'Do you want to come back next week?' asked the teacher. 'Yes, we do!' we all shouted.",
       questions:[
         {question:"Where did the class go?", answer:"To a big clothes shop", options:["To a big clothes shop","To a small shoe shop","To a food market","To a book store"]},
@@ -11627,7 +11642,7 @@ campaignLevels = [
 // ============ L09 — "Letters Nobody Reads" ============
 {
   levelId:"L09", levelName:"Letters Nobody Reads", topic:"Pets & Pronouns", grammar:"Question words, object pronouns",
-  maxXP:200, starThresholds:{one:100, two:160, three:200},
+  maxXP:252, starThresholds:{one:126, two:202, three:252},
   sceneImages:{storyA:'campaign/img/ch09-scene-letters.jpg'},
   readingImage:'campaign/img/ch09-reading-flip.jpg',
   comicPanels:['campaign/img/ch09-comic-01.jpg','campaign/img/ch09-comic-02.jpg'],
@@ -11644,7 +11659,7 @@ campaignLevels = [
     {speaker:"book", text:"A person who asks 'Am I wrong?' is not a villain. He is someone who still wants to be good.", emotion:"sad"}
   ],
   tasks:[
-    {name:"My Pet", type:"image-matching", context:"The pets in the Book have lost their names — a furry shape barks but nobody knows what to call it! Match each description to the right animal before the pets fade away completely.", xpEach:5,
+    {name:"My Pet", type:"image-matching", context:"The pets in the Book have lost their names — a furry shape barks but nobody knows what to call it! Match each description to the right animal before the pets fade away completely.", xpEach:8,
       items:[
         {prompt:"It barks, wags its tail, loves walks", answer:"dog", options:["dog","cat","rabbit","hamster"], icon:'<span style="font-size:2.5rem;">🐕</span>', hint:"Man's best friend.", hintDe:"Hund"},
         {prompt:"It purrs, likes milk, chases mice", answer:"cat", options:["cat","dog","fish","rabbit"], icon:'<span style="font-size:2.5rem;">🐈</span>', hint:"Says meow.", hintDe:"Katze"},
@@ -11653,7 +11668,7 @@ campaignLevels = [
         {prompt:"Lives in water, has scales and fins", answer:"fish", options:["fish","frog","turtle","snake"], icon:'<span style="font-size:2.5rem;">🐟</span>', hint:"Swims in a tank.", hintDe:"Fisch"},
         {prompt:"Has a shell, moves slowly, lives long", answer:"tortoise", options:["tortoise","frog","lizard","snail"], icon:'<span style="font-size:2.5rem;">🐢</span>', hint:"Carries its house.", hintDe:"Schildkroete"}
       ]},
-    {name:"Question Words", type:"mc", context:"Mia needs to ask questions about the pets — but WHAT, WHERE, WHO, HOW, and WHY are all scrambled! Pick the right question word so she can gather information to find Griffin.", xpEach:10,
+    {name:"Question Words", type:"mc", context:"Mia needs to ask questions about the pets — but WHAT, WHERE, WHO, HOW, and WHY are all scrambled! Pick the right question word so she can gather information to find Griffin.", xpEach:12,
       items:[
         {prompt:"___ is your favourite pet? — A dog.", answer:"What", options:["What","Where","Who","How"], hint:"Asking about a thing.", hintDe:"Was"},
         {prompt:"___ does the cat sleep? — On my bed.", answer:"Where", options:["Where","What","Who","When"], hint:"Asking about a place.", hintDe:"Wo"},
@@ -11662,7 +11677,7 @@ campaignLevels = [
         {prompt:"___ does the rabbit live in a cage? — Because it is safe.", answer:"Why", options:["Why","What","Where","How"], hint:"Asking for a reason.", hintDe:"Warum"},
         {prompt:"___ is your tortoise's name? — Speedy.", answer:"What", options:["What","Who","Where","How"], hint:"Asking about a thing/name.", hintDe:"Was/Wie"}
       ]},
-    {name:"Griffin's Letters", type:"reading", context:"Three crumpled letters lie between the pages — written by Griffin himself. This is the first time we hear his voice directly. Read carefully. Understanding his words is the key to understanding who he really is.", xpEach:10,
+    {name:"Griffin's Letters", type:"reading", context:"Three crumpled letters lie between the pages — written by Griffin himself. This is the first time we hear his voice directly. Read carefully. Understanding his words is the key to understanding who he really is.", xpEach:12,
       passage:"<h4>Letter 1 — Early Days</h4><p>My name is Griffin. I am 14. English was always hard for me. Then the Book pulled me in. Please help me. I am scared. The pages are very big and very quiet. Please answer.</p><h4>Letter 2 — Months Later</h4><p>Nobody answered my first letter. I waited and waited. I am invisible here, just like I was invisible in English class. I found an eraser. If nobody reads my words, why should any words exist? I am going to erase everything.</p><h4>Letter 3 — Recent</h4><p>I am tired. I erased so many words. But the Book keeps growing back. Last night I looked at the stars. They were beautiful. I did not erase them. I could not. Maybe erasing is wrong. Maybe I am wrong.</p>",
       questions:[
         {question:"How old is Griffin?", answer:"14", options:["14","12","16","10"]},
@@ -11671,7 +11686,7 @@ campaignLevels = [
         {question:"What did Griffin NOT erase in the garden chapter?", answer:"The stars", options:["The stars","The trees","The flowers","The grass"]},
         {question:"How does Griffin feel in Letter 3?", answer:"Tired and not sure if erasing is right", options:["Tired and not sure if erasing is right","Happy and proud of what he erased","Angry and ready to erase even more","Excited about erasing new chapters"]}
       ]},
-    {name:"Object Pronouns", type:"gap-fill-mc", context:"The characters want to talk about their pets — but 'him', 'her', 'them', 'us', and 'it' are all missing! Fill in the right object pronoun so each sentence makes sense again.", xpEach:10,
+    {name:"Object Pronouns", type:"gap-fill-mc", context:"The characters want to talk about their pets — but 'him', 'her', 'them', 'us', and 'it' are all missing! Fill in the right object pronoun so each sentence makes sense again.", xpEach:12,
       items:[
         {prompt:"I love my dog Max. I walk ___ every day.", sentence:"I love my dog Max. I walk ___ every day.", answer:"him", options:["him","he","his","her"], hint:"Object form of 'he'.", hintDe:"ihn"},
         {prompt:"My cat Whiskers is hungry. Lisa feeds ___ twice a day.", sentence:"My cat Whiskers is hungry. Lisa feeds ___ twice a day.", answer:"it", options:["it","its","him","her"], hint:"Whiskers is an animal — use 'it'.", hintDe:"es"},
@@ -11685,7 +11700,7 @@ campaignLevels = [
 // ============ L10 — "How Much Is It?" ============
 {
   levelId:"L10", levelName:"How Much Is It?", topic:"Shopping", grammar:"this/that/these/those, How much",
-  maxXP:200, starThresholds:{one:100, two:160, three:200},
+  maxXP:252, starThresholds:{one:126, two:202, three:252},
   sceneImages:{storyB:'campaign/img/ch10-scene-prepare.jpg'},
   readingImage:'campaign/img/ch10-reading-flip.jpg',
   comicPanels:['campaign/img/ch10-comic-01.jpg'],
@@ -11708,7 +11723,7 @@ campaignLevels = [
     {speaker:"book", text:"Mia has gone into the empty pages to find Griffin. She carries nothing but her notebook and her courage. We continue the story in Act III."}
   ],
   tasks:[
-    {name:"At the Shop", type:"image-matching", context:"The market stalls have lost their price tags AND their labels! Match each description to the right item so the shoppers can finally see what is for sale.", xpEach:5,
+    {name:"At the Shop", type:"image-matching", context:"The market stalls have lost their price tags AND their labels! Match each description to the right item so the shoppers can finally see what is for sale.", xpEach:8,
       items:[
         {prompt:"A casual top with a print on it", answer:"T-shirt", options:["T-shirt","dress","shirt","blouse"], icon:'<span style="font-size:2.5rem;">👕</span>', hint:"Casual top.", hintDe:"T-Shirt"},
         {prompt:"Something you wear on your head", answer:"hat", options:["hat","cap","scarf","gloves"], icon:'<span style="font-size:2.5rem;">🎩</span>', hint:"On your head.", hintDe:"Hut"},
@@ -11717,7 +11732,7 @@ campaignLevels = [
         {prompt:"You listen to music with these", answer:"headphones", options:["headphones","earrings","speakers","microphone"], icon:'<span style="font-size:2.5rem;">🎧</span>', hint:"On your ears for music.", hintDe:"Kopfhoerer"},
         {prompt:"A device for calls, photos, and apps", answer:"phone", options:["phone","tablet","camera","radio"], icon:'<span style="font-size:2.5rem;">📱</span>', hint:"Everyone has one.", hintDe:"Handy"}
       ]},
-    {name:"This, That, These, Those", type:"mc", context:"Shoppers are pointing wildly but using the wrong words! Is it THIS (near, one) or THAT (far, one)? THESE (near, many) or THOSE (far, many)? Fix each one so the market comes back to life!", xpEach:10,
+    {name:"This, That, These, Those", type:"mc", context:"Shoppers are pointing wildly but using the wrong words! Is it THIS (near, one) or THAT (far, one)? THESE (near, many) or THOSE (far, many)? Fix each one so the market comes back to life!", xpEach:12,
       items:[
         {prompt:"Look at ___ T-shirt here in my hand. (near, singular)", answer:"this", options:["this","that","these","those"], hint:"Near + singular = this.", hintDe:"dieses"},
         {prompt:"Can you see ___ building over there? (far, singular)", answer:"that", options:["that","this","these","those"], hint:"Far + singular = that.", hintDe:"jenes"},
@@ -11726,7 +11741,7 @@ campaignLevels = [
         {prompt:"Is ___ your bag right here? (near, singular)", answer:"this", options:["this","that","these","those"], hint:"Near = this.", hintDe:"das hier"},
         {prompt:"Who are ___ people over there? (far, plural)", answer:"those", options:["those","these","this","that"], hint:"Far + plural = those.", hintDe:"jene"}
       ]},
-    {name:"How Much?", type:"gap-fill-mc", context:"Jack wants to buy presents but the price signs are broken! Fill in 'is' or 'are' after 'How much' so he can ask about each item. Singular gets 'is', plural gets 'are'!", xpEach:10,
+    {name:"How Much?", type:"gap-fill-mc", context:"Jack wants to buy presents but the price signs are broken! Fill in 'is' or 'are' after 'How much' so he can ask about each item. Singular gets 'is', plural gets 'are'!", xpEach:12,
       items:[
         {prompt:"How much ___ this T-shirt?", sentence:"How much ___ this T-shirt?", answer:"is", options:["is","are"], hint:"One T-shirt = singular.", hintDe:"kostet"},
         {prompt:"How much ___ these trainers?", sentence:"How much ___ these trainers?", answer:"are", options:["are","is"], hint:"Trainers = plural.", hintDe:"kosten"},
@@ -11735,7 +11750,7 @@ campaignLevels = [
         {prompt:"How much ___ the key ring?", sentence:"How much ___ the key ring?", answer:"is", options:["is","are"], hint:"One key ring = singular.", hintDe:"kostet"},
         {prompt:"How much ___ the jeans?", sentence:"How much ___ the jeans?", answer:"are", options:["are","is"], hint:"Jeans is always plural.", hintDe:"kosten"}
       ]},
-    {name:"The Clever Shopper", type:"reading", context:"Jack is the last shopper at the market — and his story is the last page before Act II ends. Read carefully and answer every question. Mia is counting on us to keep the Book strong while she goes to find Griffin.", xpEach:10,
+    {name:"The Clever Shopper", type:"reading", context:"Jack is the last shopper at the market — and his story is the last page before Act II ends. Read carefully and answer every question. Mia is counting on us to keep the Book strong while she goes to find Griffin.", xpEach:12,
       passage:"<h4>The Clever Shopper</h4><p>Jack goes to the market with 20 euros. He wants to buy presents for his family.</p><p>'How much is this hat?' he asks the first seller. 'That hat is 12 euros,' she says.</p><p>'And how much are those sunglasses over there?' 'Those are 15 euros.' 'Hmm, that is too much,' says Jack.</p><p>He walks to the next stall. 'How much is this key ring here?' 'This key ring is only 3 euros,' says the man.</p><p>'And how much are these postcards?' 'Those are 1 euro each.'</p><p>'Perfect!' says Jack. He buys the hat for his dad, the key ring for his mum, and two postcards for his friends. He pays 18 euros and gets 2 euros back.</p><p>'These are great presents!' he says happily. 'And I still have money for an ice cream!'</p>",
       questions:[
         {question:"How much money does Jack have?", answer:"20 euros", options:["20 euros","15 euros","10 euros","25 euros"]},
@@ -11749,7 +11764,7 @@ campaignLevels = [
 // ============ L11 — "Right Now" ============
 {
   levelId:"L11", levelName:"Right Now", topic:"Actions & Time", grammar:"Present continuous, telling time",
-  maxXP:150, starThresholds:{one:75, two:120, three:150},
+  maxXP:285, starThresholds:{one:143, two:228, three:285},
   sceneImages:{storyA:'campaign/img/ch11-scene-frozen.jpg'},
   readingImage:'campaign/img/ch11-reading-flip.jpg',
   comicPanels:['campaign/img/ch11-comic-01.jpg'],
@@ -11764,7 +11779,7 @@ campaignLevels = [
     {speaker:"mia", text:"I am getting closer to Griffin. I can hear him in the next chapter."}
   ],
   tasks:[
-    {name:"What Are They Doing?", type:"mc", context:"Every character is frozen mid-action! Choose the correct -ing form to unfreeze each one. The girl is reach... reaching! The boy is walk... walking! Bring them back to life!", xpEach:5,
+    {name:"What Are They Doing?", type:"mc", context:"Every character is frozen mid-action! Choose the correct -ing form to unfreeze each one. The girl is reach... reaching! The boy is walk... walking! Bring them back to life!", xpEach:15,
       items:[
         {prompt:"The girl is reaching for a book on the shelf. She is ___.", answer:"reaching", options:["reaching","reached","reaches","reach"], hint:"-ing form for right now.", hintDe:"greift"},
         {prompt:"The boy is walking to school. He is ___.", answer:"walking", options:["walking","walked","walks","walk"], hint:"Happening now = -ing.", hintDe:"geht"},
@@ -11775,7 +11790,7 @@ campaignLevels = [
         {prompt:"The baby is sleeping. It is ___.", answer:"sleeping", options:["sleeping","sleeps","slept","sleep"], hint:"Now = -ing.", hintDe:"schlaeft"},
         {prompt:"Dad is reading the newspaper. He is ___.", answer:"reading", options:["reading","reads","read","readed"], hint:"Now = -ing.", hintDe:"liest"}
       ]},
-    {name:"What Time Is It?", type:"mc", context:"The clocks in the Book have stopped! Each one shows a time but the characters cannot read it. Tell them the correct time in words — when all the clocks are read, time starts moving again.", xpEach:10,
+    {name:"What Time Is It?", type:"mc", context:"The clocks in the Book have stopped! Each one shows a time but the characters cannot read it. Tell them the correct time in words — when all the clocks are read, time starts moving again.", xpEach:15,
       items:[
         {prompt:"The clock shows 3:00.", answer:"three o'clock", options:["three o'clock","half past three","quarter past three","quarter to three"], hint:"Exactly on the hour.", hintDe:"drei Uhr"},
         {prompt:"The clock shows 3:30.", answer:"half past three", options:["half past three","three o'clock","quarter past three","quarter to four"], hint:"30 minutes = half past.", hintDe:"halb vier"},
@@ -11784,7 +11799,7 @@ campaignLevels = [
         {prompt:"The clock shows 12:00.", answer:"twelve o'clock", options:["twelve o'clock","half past twelve","midnight","quarter to twelve"], hint:"Noon or midnight.", hintDe:"zwoelf Uhr"},
         {prompt:"The clock shows 7:30.", answer:"half past seven", options:["half past seven","seven o'clock","quarter past seven","quarter to eight"], hint:"30 minutes past.", hintDe:"halb acht"}
       ]},
-    {name:"Saturday Morning", type:"reading", context:"A page glows softly — it is a story about a lazy Saturday morning. Read it carefully. Mia says the more stories we save, the stronger the Book becomes. Every correct answer sends light to the empty pages where she is searching.", xpEach:10,
+    {name:"Saturday Morning", type:"reading", context:"A page glows softly — it is a story about a lazy Saturday morning. Read it carefully. Mia says the more stories we save, the stronger the Book becomes. Every correct answer sends light to the empty pages where she is searching.", xpEach:15,
       passage:"<h4>Saturday Morning</h4><p>It is Saturday morning. The sun is shining and the birds are singing.</p><p>Tom is still sleeping. His alarm clock shows half past eight, but he is not getting up.</p><p>In the kitchen, Mum is making pancakes. 'Breakfast is ready!' she calls. But Tom is not listening — he is dreaming about a squirrel on a skateboard.</p><p>The dog is barking at the postman. The cat is sitting on the windowsill, watching the birds. And Dad? He is reading the newspaper and drinking coffee. It is quarter past nine.</p><p>Finally, Tom wakes up. 'What time is it?' he asks. 'It is almost ten o'clock!' says Mum. Tom runs to the kitchen. The pancakes are cold now, but he doesn't mind.</p>",
       questions:[
         {question:"What time does Tom's alarm show?", answer:"Half past eight", options:["Half past eight","Nine o'clock","Seven o'clock","Quarter past eight"]},
@@ -11798,7 +11813,7 @@ campaignLevels = [
 // ============ L12 — "What Happened Yesterday?" ============
 {
   levelId:"L12", levelName:"What Happened Yesterday?", topic:"Rooms & Past", grammar:"was/were, prepositions of time",
-  maxXP:200, starThresholds:{one:100, two:160, three:200},
+  maxXP:315, starThresholds:{one:158, two:252, three:315},
   sceneImages:{storyA:'campaign/img/ch12-scene-tracking.jpg'},
   readingImage:'campaign/img/ch12-reading-flip.jpg',
   comicPanels:['campaign/img/ch12-comic-01.jpg','campaign/img/ch12-comic-02.jpg'],
@@ -11814,7 +11829,7 @@ campaignLevels = [
     {speaker:"mia", text:"Griffin is not our enemy. He is a student who gave up on himself. We have to reach him before he gives up completely."}
   ],
   tasks:[
-    {name:"Rooms of the House", type:"image-matching", context:"Griffin moved through these rooms last night — but their names have been erased from the doors! Match each description to the right room so we can follow his trail.", xpEach:5,
+    {name:"Rooms of the House", type:"image-matching", context:"Griffin moved through these rooms last night — but their names have been erased from the doors! Match each description to the right room so we can follow his trail.", xpEach:10,
       items:[
         {prompt:"Cooker, fridge, sink — you cook here", answer:"kitchen", options:["kitchen","bedroom","bathroom","living room"], icon:'<span style="font-size:2.5rem;">🍳</span>', hint:"Where you make food.", hintDe:"Kueche"},
         {prompt:"Sofa, TV, bookshelf — you relax here", answer:"living room", options:["living room","bedroom","kitchen","dining room"], icon:'<span style="font-size:2.5rem;">🛋️</span>', hint:"Where you watch TV.", hintDe:"Wohnzimmer"},
@@ -11823,7 +11838,7 @@ campaignLevels = [
         {prompt:"Flowers, trees, grass — outside the house", answer:"garden", options:["garden","park","balcony","garage"], icon:'<span style="font-size:2.5rem;">🌳</span>', hint:"Outside space.", hintDe:"Garten"},
         {prompt:"Car, tools, boxes — next to the house", answer:"garage", options:["garage","shed","kitchen","basement"], icon:'<span style="font-size:2.5rem;">🚗</span>', hint:"Where the car sleeps.", hintDe:"Garage"}
       ]},
-    {name:"Was or Were?", type:"gap-fill-mc", context:"Mia's tracking report has gaps everywhere — was and were are missing! Fill in the right form to reconstruct where Griffin went and what he did. Every correct answer reveals another step in his trail.", xpEach:10,
+    {name:"Was or Were?", type:"gap-fill-mc", context:"Mia's tracking report has gaps everywhere — was and were are missing! Fill in the right form to reconstruct where Griffin went and what he did. Every correct answer reveals another step in his trail.", xpEach:15,
       items:[
         {prompt:"I ___ in the kitchen at 6 o'clock.", sentence:"I ___ in the kitchen at 6 o'clock.", answer:"was", options:["was","were"], hint:"I + was.", hintDe:"war"},
         {prompt:"They ___ in the garden last night.", sentence:"They ___ in the garden last night.", answer:"were", options:["were","was"], hint:"They + were.", hintDe:"waren"},
@@ -11832,7 +11847,7 @@ campaignLevels = [
         {prompt:"He ___ in the bedroom at midnight.", sentence:"He ___ in the bedroom at midnight.", answer:"was", options:["was","were"], hint:"He + was.", hintDe:"war"},
         {prompt:"We ___ at school on Monday.", sentence:"We ___ at school on Monday.", answer:"were", options:["were","was"], hint:"We + were.", hintDe:"waren"}
       ]},
-    {name:"On, In, At (Time)", type:"gap-fill-mc", context:"To track Griffin, we need exact TIMES — but the time prepositions are jumbled! Is it AT midnight, ON Monday, or IN June? Fix each one so the timeline is accurate.", xpEach:10,
+    {name:"On, In, At (Time)", type:"gap-fill-mc", context:"To track Griffin, we need exact TIMES — but the time prepositions are jumbled! Is it AT midnight, ON Monday, or IN June? Fix each one so the timeline is accurate.", xpEach:15,
       items:[
         {prompt:"I wake up ___ 7 o'clock.", sentence:"I wake up ___ 7 o'clock.", answer:"at", options:["at","in","on"], hint:"Clock times use 'at'.", hintDe:"um"},
         {prompt:"My birthday is ___ June.", sentence:"My birthday is ___ June.", answer:"in", options:["in","at","on"], hint:"Months use 'in'.", hintDe:"im"},
@@ -11841,7 +11856,7 @@ campaignLevels = [
         {prompt:"The concert is ___ Saturday evening.", sentence:"The concert is ___ Saturday evening.", answer:"on", options:["on","in","at"], hint:"Day + time = on.", hintDe:"am"},
         {prompt:"He arrived ___ midnight.", sentence:"He arrived ___ midnight.", answer:"at", options:["at","in","on"], hint:"Specific time = at.", hintDe:"um"}
       ]},
-    {name:"Where Was Griffin?", type:"reading", context:"This is Mia's tracking report — a moment-by-moment account of Griffin's movements last night. Read every detail. The final paragraph might change how you feel about The Fader forever.", xpEach:10,
+    {name:"Where Was Griffin?", type:"reading", context:"This is Mia's tracking report — a moment-by-moment account of Griffin's movements last night. Read every detail. The final paragraph might change how you feel about The Fader forever.", xpEach:15,
       passage:"<h4>Where Was Griffin? — Tracking Report</h4><p>We now know where Griffin was last night. Mia followed his eraser dust through the chapters.</p><p>At 6 pm, he was in the kitchen chapter. He was reading the food words slowly, one by one. He moved his finger under each word like a young child learning to read. He did not erase them.</p><p>At 7 pm, he was in the bedroom chapter. He stopped at a picture of a family saying goodnight. He looked at it for a long time. He did not erase anything.</p><p>At 9 pm, he was in the living room chapter. He was trying to write a sentence. Mia found the page later. It said: 'I was happy. I were... I was...' He crossed it out many times.</p><p>At midnight, he was in the garden, sitting under a tree. His eraser was on the ground next to him, not in his hand. He was crying quietly — the kind of crying that comes when you are very tired of being alone.</p>",
       questions:[
         {question:"What was Griffin doing in the kitchen chapter?", answer:"Reading the food words slowly", options:["Reading the food words slowly","Erasing the food pictures carefully","Looking for Mia in every corner","Writing new words on the pages"]},
@@ -11855,7 +11870,7 @@ campaignLevels = [
 // ============ L13 — "What Happened?" ============
 {
   levelId:"L13", levelName:"What Happened?", topic:"Emergencies & Past Simple", grammar:"Past simple -ed, linking words",
-  maxXP:200, starThresholds:{one:100, two:160, three:200},
+  maxXP:360, starThresholds:{one:180, two:288, three:360},
   sceneImages:{storyA:'campaign/img/ch13-scene-dying.jpg'},
   readingImage:'campaign/img/ch13-reading-flip.jpg',
   comicPanels:['campaign/img/ch13-comic-01.jpg'],
@@ -11870,7 +11885,7 @@ campaignLevels = [
     {speaker:"mia", text:"Almost there. The next chapter is where we meet Griffin face to face."}
   ],
   tasks:[
-    {name:"Past Simple -ed", type:"mc", context:"The emergency stories are frozen mid-action! A girl slipped but the word says 'slip'. An ambulance arrived but the page says 'arrive'. Choose the correct -ed form to complete each rescue!", xpEach:5,
+    {name:"Past Simple -ed", type:"mc", context:"The emergency stories are frozen mid-action! A girl slipped but the word says 'slip'. An ambulance arrived but the page says 'arrive'. Choose the correct -ed form to complete each rescue!", xpEach:15,
       items:[
         {prompt:"She ___ on the ice. (slip)", answer:"slipped", options:["slipped","sliped","slippped","slip"], hint:"Short vowel + consonant: double the last letter + -ed.", hintDe:"rutschte aus"},
         {prompt:"He ___ the tall mountain. (climb)", answer:"climbed", options:["climbed","climbbed","climeded","climbted"], hint:"Just add -ed.", hintDe:"kletterte"},
@@ -11881,7 +11896,7 @@ campaignLevels = [
         {prompt:"The firefighter ___ the cat. (carry)", answer:"carried", options:["carried","carryed","carryd","carryied"], hint:"Consonant + y: change y to -ied.", hintDe:"trug"},
         {prompt:"The car ___ suddenly. (stop)", answer:"stopped", options:["stopped","stoped","stopted","stoppped"], hint:"Short vowel + p: double p + -ed.", hintDe:"hielt an"}
       ]},
-    {name:"And, But, Because", type:"mc", context:"The emergency reports need linking words to connect the events! Was it 'and' (two things happened), 'but' (something unexpected), or 'because' (a reason)? Link the sentences so the stories make sense.", xpEach:10,
+    {name:"And, But, Because", type:"mc", context:"The emergency reports need linking words to connect the events! Was it 'and' (two things happened), 'but' (something unexpected), or 'because' (a reason)? Link the sentences so the stories make sense.", xpEach:15,
       items:[
         {prompt:"She slipped on the ice ___ hit her head on the ground.", answer:"and", options:["and","but","because","so"], hint:"Two things that happened one after the other.", hintDe:"und"},
         {prompt:"He wanted to help, ___ he was too far away.", answer:"but", options:["but","and","because","so"], hint:"Contrast.", hintDe:"aber"},
@@ -11890,7 +11905,7 @@ campaignLevels = [
         {prompt:"She was scared ___ she didn't run away.", answer:"but", options:["but","and","because","so"], hint:"Unexpected contrast.", hintDe:"aber"},
         {prompt:"He stopped the car ___ there was a cat on the road.", answer:"because", options:["because","and","but","so"], hint:"Reason.", hintDe:"weil"}
       ]},
-    {name:"Mountain Rescue", type:"reading", context:"A dramatic news report about a mountain rescue! This is one of the Book's most important stories — it shows how courage and quick thinking save lives. Read every detail. The Book grows stronger with each answer.", xpEach:10,
+    {name:"Mountain Rescue", type:"reading", context:"A dramatic news report about a mountain rescue! This is one of the Book's most important stories — it shows how courage and quick thinking save lives. Read every detail. The Book grows stronger with each answer.", xpEach:15,
       passage:"<h4>Mountain Rescue on Domi Peak</h4><p>Yesterday, two hikers climbed Domi Peak. They started early at 8 am and walked for three hours because they wanted to reach the top before noon.</p><p>At 11 am, the weather changed suddenly. Dark clouds appeared and it started to rain. The path became very slippery. Tom slipped on a wet rock and hurt his leg badly. He shouted for help, but nobody was near because they were the only hikers on the trail.</p><p>His friend Lisa stayed calm. She called the mountain rescue team on her phone. They arrived in 45 minutes and carried Tom down the mountain on a stretcher.</p><p>At the hospital, the doctor checked Tom's leg. It was broken, but Tom was brave. 'I want to climb again,' he said, 'but next time I will check the weather first!' Lisa laughed because she knew he meant it.</p>",
       questions:[
         {question:"What time did the hikers start?", answer:"8 am", options:["8 am","9 am","7 am","10 am"]},
@@ -11899,7 +11914,7 @@ campaignLevels = [
         {question:"How long did the rescue team take?", answer:"45 minutes", options:["45 minutes","1 hour","30 minutes","2 hours"]},
         {question:"Why do you think Tom wants to climb again even though he got hurt?", answer:"Because he is brave and loves hiking", options:["Because he is brave and loves hiking","Because he forgot about the whole accident","Because the doctor told him to try again","Because Lisa wants to go with him again"]}
       ]},
-    {name:"Type the Past Tense", type:"gap-fill-typed", context:"These are Mia's notes about what happened in the Book yesterday. The verb endings are missing — type the correct past tense form to complete each note. Careful: spelling counts!", xpEach:10,
+    {name:"Type the Past Tense", type:"gap-fill-typed", context:"These are Mia's notes about what happened in the Book yesterday. The verb endings are missing — type the correct past tense form to complete each note. Careful: spelling counts!", xpEach:15,
       items:[
         {prompt:"walk → ___", sentence:"Yesterday I ___ (walk) to school.", answer:"walked", hint:"Add -ed.", hintDe:"ging"},
         {prompt:"play → ___", sentence:"We ___ (play) football after school.", answer:"played", hint:"Add -ed.", hintDe:"spielten"},
@@ -11912,7 +11927,7 @@ campaignLevels = [
 // ============ L14 — "Face to Face" ============
 {
   levelId:"L14", levelName:"Face to Face", topic:"Irregular Verbs & The Past", grammar:"Irregular past, didn't + base form",
-  maxXP:210, starThresholds:{one:105, two:168, three:210},
+  maxXP:450, starThresholds:{one:225, two:360, three:450},
   sceneImages:{storyA:'campaign/img/ch14-scene-confrontation.jpg', storyB:'campaign/img/ch14-scene-connection.jpg'},
   readingImage:'campaign/img/ch14-reading-flip.jpg',
   comicPanels:['campaign/img/ch14-comic-01.jpg','campaign/img/ch14-comic-02.jpg','campaign/img/ch14-comic-03.jpg'],
@@ -11961,7 +11976,7 @@ campaignLevels = [
     {speaker:"mia", text:"You do now. Turn the page, Griffin. Let us begin."}
   ],
   tasks:[
-    {name:"Irregular Verbs", type:"mc", context:"The broadcast tower is blasting wrong past tenses across the Book! 'Goed', 'thinked', 'eated' — these verbs do not follow the -ed rule. Choose the correct irregular form to shut down each broken broadcast!", xpEach:5,
+    {name:"Irregular Verbs", type:"mc", context:"The broadcast tower is blasting wrong past tenses across the Book! 'Goed', 'thinked', 'eated' — these verbs do not follow the -ed rule. Choose the correct irregular form to shut down each broken broadcast!", xpEach:15,
       items:[
         {prompt:"go → ___", answer:"went", options:["went","goed","goned","wented"], hint:"Very common irregular verb.", hintDe:"ging"},
         {prompt:"see → ___", answer:"saw", options:["saw","seed","sawed","seeed"], hint:"I saw a bird.", hintDe:"sah"},
@@ -11972,7 +11987,7 @@ campaignLevels = [
         {prompt:"eat → ___", answer:"ate", options:["ate","eated","aten","eat"], hint:"We ate pizza.", hintDe:"ass"},
         {prompt:"make → ___", answer:"made", options:["made","maked","maded","makeed"], hint:"She made a cake.", hintDe:"machte"}
       ]},
-    {name:"Didn't + Base Form", type:"mc", context:"Griffin's story is full of things he DIDN'T do — but the negatives are wrong! Remember: after 'didn't', always use the BASE form, not the past form. Fix each sentence to hear Griffin's true story.", xpEach:10,
+    {name:"Didn't + Base Form", type:"mc", context:"Griffin's story is full of things he DIDN'T do — but the negatives are wrong! Remember: after 'didn't', always use the BASE form, not the past form. Fix each sentence to hear Griffin's true story.", xpEach:15,
       items:[
         {prompt:"He ___ to school yesterday. (not go)", answer:"didn't go", options:["didn't go","didn't went","didn't goed","not went"], hint:"didn't + base form, not past form.", hintDe:"ging nicht"},
         {prompt:"She ___ the answer. (not know)", answer:"didn't know", options:["didn't know","didn't knew","didn't knowed","not knew"], hint:"didn't + know.", hintDe:"wusste nicht"},
@@ -11981,7 +11996,7 @@ campaignLevels = [
         {prompt:"We ___ the homework. (not do)", answer:"didn't do", options:["didn't do","didn't did","didn't done","not did"], hint:"didn't + do.", hintDe:"machten nicht"},
         {prompt:"He ___ a letter. (not write)", answer:"didn't write", options:["didn't write","didn't wrote","didn't writed","not wrote"], hint:"didn't + write.", hintDe:"schrieb nicht"}
       ]},
-    {name:"What Did Griffin Do?", type:"tf", context:"Now that we have met Griffin, think about everything you have learned across the whole story. True or false? Every correct answer shows Griffin that someone truly listened.", xpEach:10,
+    {name:"What Did Griffin Do?", type:"tf", context:"Now that we have met Griffin, think about everything you have learned across the whole story. True or false? Every correct answer shows Griffin that someone truly listened.", xpEach:15,
       items:[
         {prompt:"Griffin erased words because he was angry.", answer:"True", hint:"He was angry nobody listened.", hintDe:"Er war wuetend."},
         {prompt:"Griffin didn't write any letters.", answer:"False", hint:"He wrote three letters.", hintDe:"Er schrieb drei Briefe."},
@@ -11990,7 +12005,7 @@ campaignLevels = [
         {prompt:"The Book was angry at Griffin.", answer:"False", hint:"The Book was understanding and kind.", hintDe:"Das Buch war verstaendnisvoll."},
         {prompt:"Griffin agreed to stop erasing.", answer:"True", hint:"After the conversation, he stopped.", hintDe:"Er hoerte auf."}
       ]},
-    {name:"Fix Griffin's Sentences", type:"mc", context:"Griffin tried to tell his story, but his irregular verbs are all wrong — 'I goed', 'Nobody seed', 'I thinked'. Fix his words gently. The Book says: understanding someone starts with hearing them clearly.", xpEach:10,
+    {name:"Fix Griffin's Sentences", type:"mc", context:"Griffin tried to tell his story, but his irregular verbs are all wrong — 'I goed', 'Nobody seed', 'I thinked'. Fix his words gently. The Book says: understanding someone starts with hearing them clearly.", xpEach:15,
       items:[
         {prompt:"Griffin wrote: 'I goed to the back pages.'", answer:"I went to the back pages.", options:["I went to the back pages.","I goed to the back pages.","I going to the back pages.","I was goed."], hint:"go → went.", hintDe:"Ich ging zu den hinteren Seiten."},
         {prompt:"Griffin wrote: 'Nobody seed my letters.'", answer:"Nobody saw my letters.", options:["Nobody saw my letters.","Nobody seed my letters.","Nobody sawed my letters.","Nobody has seed."], hint:"see → saw.", hintDe:"Niemand sah meine Briefe."},
@@ -11998,7 +12013,7 @@ campaignLevels = [
         {prompt:"Griffin wrote: 'I maked everything disappear.'", answer:"I made everything disappear.", options:["I made everything disappear.","I maked everything disappear.","I was maked.","I making disappear."], hint:"make → made.", hintDe:"Ich liess alles verschwinden."},
         {prompt:"Griffin wrote: 'I didn't knew what to do.'", answer:"I didn't know what to do.", options:["I didn't know what to do.","I didn't knew what to do.","I not knew.","I didn't knowed."], hint:"didn't + base form.", hintDe:"Ich wusste nicht, was ich tun sollte."}
       ]},
-    {name:"What Griffin Didn't Erase",type:"reading",context:"Read about what survived in the Book and answer the questions.",xpEach:10,
+    {name:"What Griffin Didn't Erase",type:"reading",context:"Read about what survived in the Book and answer the questions.",xpEach:15,
       passage:"<strong>What Griffin Didn't Erase</strong><br><br>Mia made a list of everything Griffin erased and everything he kept. The pattern was surprising.<br><br>He erased grammar rules first. Verb endings, articles, prepositions — the small words that hold sentences together. Then he erased bigger structures: past tense forms, question patterns, negative sentences.<br><br>But he didn't erase everything. He didn't erase the jokes. On page 34, there was a funny story about a cat and a fish. Griffin left it completely untouched. He didn't erase the song lyrics on page 56 either. And he didn't erase the story about two friends on a camping trip — he even drew a small star next to it.<br><br>The things Griffin erased were the things that made him feel stupid. The things he kept were the things that made him feel something good. He didn't hate language. He hated feeling like he couldn't use it.<br><br>'He is not our enemy,' Mia wrote in her notebook. 'He is a reader who lost his confidence.'",
       questions:[
         {question:"What did Griffin erase first?", answer:"Grammar rules and small words", options:["Grammar rules and small words","Pictures and drawings","Jokes and funny stories","Names and titles"]},
@@ -12012,7 +12027,7 @@ campaignLevels = [
 // ============ L15 — "What Are We Going To Do?" ============
 {
   levelId:"L15", levelName:"What Are We Going To Do?", topic:"Future Plans", grammar:"going to (future)",
-  maxXP:170, starThresholds:{one:85, two:136, three:170},
+  maxXP:255, starThresholds:{one:128, two:204, three:255},
   sceneImages:{storyA:'campaign/img/ch15-scene-blank.jpg', storyB:'campaign/img/ch15-scene-pen.jpg'},
   readingImage:'campaign/img/ch15-reading-flip.jpg',
   comicPanels:['campaign/img/ch15-comic-01.jpg','campaign/img/ch15-comic-02.jpg','campaign/img/ch15-comic-03.jpg'],
@@ -12091,7 +12106,7 @@ campaignLevels = [
     {speaker:"book", text:"Open me again tomorrow, {NAME}. There is always more to learn. And I will always be here, waiting for you. Always."}
   ],
   tasks:[
-    {name:"Going To (Statements)", type:"mc", context:"The blank future page is waiting to be written! Each character has a plan — but they need the right form of 'going to' to make it real. Choose am/is/are going to and watch each dream appear on the page!", xpEach:10,
+    {name:"Going To (Statements)", type:"mc", context:"The blank future page is waiting to be written! Each character has a plan — but they need the right form of 'going to' to make it real. Choose am/is/are going to and watch each dream appear on the page!", xpEach:15,
       items:[
         {prompt:"I ___ visit my grandma this weekend.", answer:"am going to", options:["am going to","is going to","are going to","going to"], hint:"I + am going to.", hintDe:"werde"},
         {prompt:"She ___ study English tonight.", answer:"is going to", options:["is going to","am going to","are going to","going to"], hint:"She + is going to.", hintDe:"wird"},
@@ -12100,7 +12115,7 @@ campaignLevels = [
         {prompt:"We ___ have a party.", answer:"are going to", options:["are going to","is going to","am going to","going to"], hint:"We + are going to.", hintDe:"werden"},
         {prompt:"Griffin ___ help fix the book.", answer:"is going to", options:["is going to","am going to","are going to","going to"], hint:"Griffin = he + is going to.", hintDe:"wird"}
       ]},
-    {name:"Going To (Questions)", type:"mc", context:"Now the characters want to ASK about the future — Are you going to come? Is she going to help? Choose the correct question form. Every question you fix adds a new line to the future chapter!", xpEach:10,
+    {name:"Going To (Questions)", type:"mc", context:"Now the characters want to ASK about the future — Are you going to come? Is she going to help? Choose the correct question form. Every question you fix adds a new line to the future chapter!", xpEach:15,
       items:[
         {prompt:"___ you going to come to the party?", answer:"Are", options:["Are","Is","Am","Do"], hint:"You + are.", hintDe:"Wirst du"},
         {prompt:"___ she going to help us?", answer:"Is", options:["Is","Are","Am","Does"], hint:"She + is.", hintDe:"Wird sie"},
@@ -12109,7 +12124,7 @@ campaignLevels = [
         {prompt:"Where ___ we going to eat?", answer:"are", options:["are","is","am","do"], hint:"We + are.", hintDe:"Wo werden wir"},
         {prompt:"___ I going to pass the test?", answer:"Am", options:["Am","Is","Are","Do"], hint:"I + am.", hintDe:"Werde ich"}
       ]},
-    {name:"Holiday Plans", type:"reading", context:"The final reading passage! Three friends share their summer plans — the first new words written on the once-blank future page. Read their dreams carefully. This is the last task before the Book is whole again.", xpEach:10,
+    {name:"Holiday Plans", type:"reading", context:"The final reading passage! Three friends share their summer plans — the first new words written on the once-blank future page. Read their dreams carefully. This is the last task before the Book is whole again.", xpEach:15,
       passage:"<h4>Holiday Plans</h4><p>Summer is coming and three friends are excited because they all have big plans!</p><p><b>Bilal:</b> 'I am going to visit my cousins in Turkey. We are going to swim in the sea every day because the water is warm and blue. I am also going to learn Turkish cooking — my aunt is going to teach me how to make borek!'</p><p><b>Elisabeth:</b> 'I am going to stay at home, but it is going to be great! I am going to read 10 books and I am going to learn to play the guitar. My older brother has got a guitar, and he is going to give me lessons every afternoon.'</p><p><b>Paul:</b> 'My family and I are going to go camping near a beautiful lake in the mountains. We are going to sleep in a tent and cook on a campfire. I am going to try fishing for the first time! My dad says he is going to teach me, but I think the fish are going to be smarter than us.'</p>",
       questions:[
         {question:"Why is Bilal going to Turkey?", answer:"To visit his cousins", options:["To visit his cousins","To go fishing","To learn English","To go camping"]},
