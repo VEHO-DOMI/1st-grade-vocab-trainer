@@ -11438,6 +11438,15 @@ campaignLevels = [
     {speaker:"book", text:"But the fading... it is spreading to more pages now."}
   ],
   tasks:[
+    {name:"Name the Animals", type:"image-matching", context:"The wildlife park chapter is losing its colours! Animals are fading to grey shapes. Name each creature before it vanishes — only the right word can bring its colours back!", contextDe:"Das Wildpark-Kapitel verliert seine Farben! Die Tiere verblassen zu grauen Formen. Benenne jedes Tier, bevor es verschwindet — nur das richtige Wort kann seine Farben zurückbringen!", xpEach:5,
+      items:[
+        {prompt:"Very tall with a long neck and spots", answer:"giraffe", options:["giraffe","zebra","horse","camel"], icon:'<span style="font-size:2.5rem;">🦒</span>', hint:"The tallest animal.", hintDe:"Giraffe"},
+        {prompt:"Swings from trees, loves bananas", answer:"monkey", options:["monkey","bear","parrot","squirrel"], icon:'<span style="font-size:2.5rem;">🐒</span>', hint:"Lives in trees.", hintDe:"Affe"},
+        {prompt:"Black and white stripes all over", answer:"zebra", options:["zebra","horse","tiger","cow"], icon:'<span style="font-size:2.5rem;">🦓</span>', hint:"Striped like a horse.", hintDe:"Zebra"},
+        {prompt:"Green skin, hops, lives near water", answer:"frog", options:["frog","fish","turtle","snake"], icon:'<span style="font-size:2.5rem;">🐸</span>', hint:"It croaks.", hintDe:"Frosch"},
+        {prompt:"Black and white, waddles, loves the cold", answer:"penguin", options:["penguin","parrot","eagle","duck"], icon:'<span style="font-size:2.5rem;">🐧</span>', hint:"Cannot fly but swims.", hintDe:"Pinguin"},
+        {prompt:"Very big, grey, has a trunk and big ears", answer:"elephant", options:["elephant","hippo","rhino","bear"], icon:'<span style="font-size:2.5rem;">🐘</span>', hint:"The biggest land animal.", hintDe:"Elefant"}
+      ]},
     {name:"Where Do They Live?", type:"mc", context:"The animals are lost! Each one needs the right preposition — in, on, or at — to land back in its habitat. One wrong word and the giraffe ends up underwater!", contextDe:"Die Tiere haben sich verlaufen! Jedes braucht die richtige Pr\u00e4position \u2014 in, on oder at \u2014 um wieder in seinem Lebensraum zu landen. Ein falsches Wort und die Giraffe landet unter Wasser!", xpEach:10,
       items:[
         {prompt:"The giraffe lives ___ the grassland zone.", answer:"in", options:["in","on","at","under"], hint:"Inside an area.", hintDe:"in"},
@@ -11687,6 +11696,15 @@ campaignLevels = [
     {speaker:"mia", text:"I found The Fader's hiding spot. It is in the back of the book, between the blank pages.", emotion:"determined"}
   ],
   tasks:[
+    {name:"What Does a Detective Do?", type:"image-matching", context:"The detective’s case file is open but every action word is blank! Name what a detective does so his investigation can begin — the first clue about The Fader is hidden here.", contextDe:"Die Fallakte des Detektivs ist offen, aber jedes Tätigkeitswort ist leer! Benenne, was ein Detektiv tut, damit die Ermittlung beginnen kann — der erste Hinweis auf den Fader versteckt sich hier.", xpEach:8,
+      items:[
+        {prompt:"Using your eyes carefully to find clues", answer:"look", options:["look","listen","run","write"], icon:'<span style="font-size:2.5rem;">🔍</span>', hint:"You do this with your eyes.", hintDe:"schauen"},
+        {prompt:"Moving quickly on your feet", answer:"run", options:["run","walk","jump","sit"], icon:'<span style="font-size:2.5rem;">🏃</span>', hint:"Faster than walking.", hintDe:"laufen"},
+        {prompt:"Putting words on paper", answer:"write", options:["write","read","draw","type"], icon:'<span style="font-size:2.5rem;">✍️</span>', hint:"With a pen or pencil.", hintDe:"schreiben"},
+        {prompt:"Using your ears to hear sounds", answer:"listen", options:["listen","look","speak","think"], icon:'<span style="font-size:2.5rem;">👂</span>', hint:"You do this with your ears.", hintDe:"zuhören"},
+        {prompt:"Going from place to place on foot", answer:"walk", options:["walk","run","drive","fly"], icon:'<span style="font-size:2.5rem;">🚶</span>', hint:"Slower than running.", hintDe:"gehen"},
+        {prompt:"Using your brain to solve a problem", answer:"think", options:["think","talk","sleep","dream"], icon:'<span style="font-size:2.5rem;">🧠</span>', hint:"You do this in your head.", hintDe:"denken"}
+      ]},
     {name:"Third Person -s", type:"mc", context:"The detective is frozen because every 'he/she/it' verb has lost its -s ending! Choose the correct form to unfreeze each action. Every verb you fix lets the detective move one step closer to the clue!", contextDe:"Der Detektiv ist eingefroren, weil jedes \u2018he/she/it\u2019-Verb seine -s-Endung verloren hat! W\u00e4hle die richtige Form, um jede Aktion aufzutauen. Jedes Verb, das du reparierst, bringt den Detektiv einen Schritt n\u00e4her zum Hinweis!", xpEach:12,
       items:[
         {prompt:"She ___ at the clues carefully.", answer:"looks", options:["looks","look","lookes","looking"], hint:"She + verb + s.", hintDe:"schaut"},
@@ -11949,12 +11967,12 @@ campaignLevels = [
   tasks:[
     {name:"At the Shop", type:"image-matching", context:"The market stalls have lost their price tags AND their labels! Match each description to the right item so the shoppers can finally see what is for sale.", contextDe:"Die Marktst\u00e4nde haben ihre Preisschilder UND ihre Etiketten verloren! Ordne jede Beschreibung dem richtigen Artikel zu, damit die Eink\u00e4ufer endlich sehen k\u00f6nnen, was zum Verkauf steht.", xpEach:8,
       items:[
-        {prompt:"A casual top with a print on it", answer:"T-shirt", options:["T-shirt","dress","shirt","blouse"], icon:'<span style="font-size:2.5rem;">👕</span>', hint:"Casual top.", hintDe:"T-Shirt"},
-        {prompt:"Something you wear on your head", answer:"hat", options:["hat","cap","scarf","gloves"], icon:'<span style="font-size:2.5rem;">🎩</span>', hint:"On your head.", hintDe:"Hut"},
-        {prompt:"Blue denim trousers", answer:"jeans", options:["jeans","trousers","shorts","leggings"], icon:'<span style="font-size:2.5rem;">👖</span>', hint:"Denim.", hintDe:"Jeans"},
-        {prompt:"A small metal ring for your keys", answer:"key ring", options:["key ring","bracelet","ring","chain"], icon:'<span style="font-size:2.5rem;">🔑</span>', hint:"Holds keys together.", hintDe:"Schluesselanhaenger"},
-        {prompt:"You listen to music with these", answer:"headphones", options:["headphones","earrings","speakers","microphone"], icon:'<span style="font-size:2.5rem;">🎧</span>', hint:"On your ears for music.", hintDe:"Kopfhoerer"},
-        {prompt:"A device for calls, photos, and apps", answer:"phone", options:["phone","tablet","camera","radio"], icon:'<span style="font-size:2.5rem;">📱</span>', hint:"Everyone has one.", hintDe:"Handy"}
+        {prompt:"You play it on a screen with a controller", answer:"computer game", options:["computer game","board game","card game","puzzle"], icon:'<span style="font-size:2.5rem;">🎮</span>', hint:"A video game.", hintDe:"Computerspiel"},
+        {prompt:"A picture or image you hang on the wall", answer:"poster", options:["poster","painting","photo","map"], icon:'<span style="font-size:2.5rem;">🖼️</span>', hint:"Decorates your room.", hintDe:"Poster"},
+        {prompt:"A small metal ring for your keys", answer:"key ring", options:["key ring","bracelet","ring","chain"], icon:'<span style="font-size:2.5rem;">🔑</span>', hint:"Holds keys together.", hintDe:"Schlüsselanhänger"},
+        {prompt:"You wear it around your wrist as jewellery", answer:"bracelet", options:["bracelet","ring","watch","necklace"], icon:'<span style="font-size:2.5rem;">💿</span>', hint:"On your arm.", hintDe:"Armband"},
+        {prompt:"You listen to music with these", answer:"headphones", options:["headphones","earrings","speakers","microphone"], icon:'<span style="font-size:2.5rem;">🎧</span>', hint:"On your ears for music.", hintDe:"Kopfhörer"},
+        {prompt:"A small picture you stick on notebooks or phones", answer:"sticker", options:["sticker","stamp","badge","label"], icon:'<span style="font-size:2.5rem;">🏷️</span>', hint:"It sticks to things.", hintDe:"Sticker"}
       ]},
     {name:"This, That, These, Those", type:"mc", context:"Shoppers are pointing wildly but using the wrong words! Is it THIS (near, one) or THAT (far, one)? THESE (near, many) or THOSE (far, many)? Fix each one so the market comes back to life!", contextDe:"Eink\u00e4ufer zeigen wild, aber benutzen die falschen W\u00f6rter! Ist es THIS (nah, eins) oder THAT (fern, eins)? THESE (nah, viele) oder THOSE (fern, viele)? Korrigiere jedes, damit der Markt wieder zum Leben erwacht!", xpEach:12,
       items:[
@@ -12003,6 +12021,15 @@ campaignLevels = [
     {speaker:"mia", text:"I am getting closer to Griffin. I can hear him in the next chapter.", emotion:"determined"}
   ],
   tasks:[
+    {name:"What Are They Doing?", type:"image-matching", context:"The characters are frozen mid-action but nobody can remember what they were doing! Name each activity to unfreeze the scene — then we can use the present continuous to describe them.", contextDe:"Die Figuren sind mitten in einer Handlung eingefroren, aber niemand erinnert sich, was sie getan haben! Benenne jede Aktivität, um die Szene aufzutauen — dann können wir das Present Continuous verwenden.", xpEach:8,
+      items:[
+        {prompt:"Moving your body to music", answer:"dancing", options:["dancing","singing","running","jumping"], icon:'<span style="font-size:2.5rem;">💃</span>', hint:"You move to a beat.", hintDe:"tanzen"},
+        {prompt:"Preparing food in the kitchen", answer:"cooking", options:["cooking","eating","drinking","washing"], icon:'<span style="font-size:2.5rem;">🍳</span>', hint:"Using pots and pans.", hintDe:"kochen"},
+        {prompt:"Moving through water", answer:"swimming", options:["swimming","running","flying","diving"], icon:'<span style="font-size:2.5rem;">🏊</span>', hint:"You do this in a pool.", hintDe:"schwimmen"},
+        {prompt:"Looking at words on a page", answer:"reading", options:["reading","writing","drawing","sleeping"], icon:'<span style="font-size:2.5rem;">📖</span>', hint:"You need a book.", hintDe:"lesen"},
+        {prompt:"Kicking a ball with your feet", answer:"playing football", options:["playing football","playing tennis","running","jumping"], icon:'<span style="font-size:2.5rem;">⚽</span>', hint:"The world’s most popular sport.", hintDe:"Fußball spielen"},
+        {prompt:"Making a picture with colours", answer:"painting", options:["painting","writing","cutting","building"], icon:'<span style="font-size:2.5rem;">🎨</span>', hint:"Using a brush and paint.", hintDe:"malen"}
+      ]},
     {name:"Unfreeze the Characters!", type:"gap-fill-mc", context:"Every character is frozen mid-action! Complete each sentence with the correct form of the verb. Only the RIGHT form will unfreeze them!", contextDe:"Alle Figuren sind mitten in der Bewegung eingefroren! Erg\u00e4nze jeden Satz mit der richtigen Form des Verbs. Nur die RICHTIGE Form kann sie auftauen!", xpEach:15,
       items:[
         {prompt:"Right now, the girl ___ (reach) for a book.", sentence:"Right now, the girl ___ for a book.", answer:"is reaching", options:["is reaching","reaches","reached","is reach"], hint:"Right now = is + -ing.", hintDe:"greift gerade"},
@@ -12109,6 +12136,15 @@ campaignLevels = [
     {speaker:"mia", text:"Almost there. The next chapter is where we meet Griffin face to face.", emotion:"determined"}
   ],
   tasks:[
+    {name:"Emergency Words", type:"image-matching", context:"An emergency is unfolding in the Book! But the words for help are scattered — name each thing so the rescue team can do their job. Every second counts!", contextDe:"Ein Notfall passiert im Buch! Aber die Wörter für Hilfe sind verstreut — benenne jedes Ding, damit das Rettungsteam seine Arbeit tun kann. Jede Sekunde zählt!", xpEach:8,
+      items:[
+        {prompt:"A vehicle with flashing lights that takes sick people to hospital", answer:"ambulance", options:["ambulance","fire engine","police car","helicopter"], icon:'<span style="font-size:2.5rem;">🚑</span>', hint:"Takes people to hospital.", hintDe:"Krankenwagen"},
+        {prompt:"The building where doctors and nurses work", answer:"hospital", options:["hospital","school","library","station"], icon:'<span style="font-size:2.5rem;">🏥</span>', hint:"Where sick people go.", hintDe:"Krankenhaus"},
+        {prompt:"A person who helps sick people get better", answer:"doctor", options:["doctor","teacher","police officer","firefighter"], icon:'<span style="font-size:2.5rem;">👨‍⚕️</span>', hint:"Wears a white coat.", hintDe:"Arzt / Ärztin"},
+        {prompt:"A person who puts out fires", answer:"firefighter", options:["firefighter","police officer","doctor","pilot"], icon:'<span style="font-size:2.5rem;">👨‍🚒</span>', hint:"Uses water hoses.", hintDe:"Feuerwehrmann / -frau"},
+        {prompt:"Something bad that happens suddenly, like a car crash", answer:"accident", options:["accident","adventure","party","meeting"], icon:'<span style="font-size:2.5rem;">💥</span>', hint:"Nobody plans this.", hintDe:"Unfall"},
+        {prompt:"The number you call when you need help fast", answer:"emergency number", options:["emergency number","phone number","house number","bus number"], icon:'<span style="font-size:2.5rem;">📞</span>', hint:"In Austria it is 144 or 112.", hintDe:"Notrufnummer"}
+      ]},
     {name:"Past Simple -ed", type:"mc", context:"The emergency stories are frozen mid-action! A girl slipped but the word says 'slip'. An ambulance arrived but the page says 'arrive'. Choose the correct -ed form to complete each rescue!", contextDe:"Die Notfallgeschichten sind mitten in der Handlung eingefroren! Ein M\u00e4dchen ist ausgerutscht, aber das Wort sagt \u2018slip\u2019. Ein Krankenwagen kam an, aber die Seite sagt \u2018arrive\u2019. W\u00e4hle die richtige -ed-Form, um jede Rettung abzuschlie\u00dfen!", xpEach:15,
       items:[
         {prompt:"She ___ on the ice. (slip)", answer:"slipped", options:["slipped","sliped","slippped","slip"], hint:"Short vowel + consonant: double the last letter + -ed.", hintDe:"rutschte aus"},
@@ -12200,6 +12236,15 @@ campaignLevels = [
     {speaker:"mia", text:"You do now. Turn the page, Griffin. Let us begin.", emotion:"happy"}
   ],
   tasks:[
+    {name:"Broadcast Words", type:"image-matching", context:"The broadcast tower is sending signals across the Book — but the names of everything are scrambled! Name each one so Griffin’s story can finally be heard.", contextDe:"Der Sendemast schickt Signale durch das ganze Buch — aber die Namen von allem sind durcheinander! Benenne jedes Ding, damit Griffins Geschichte endlich gehört werden kann.", xpEach:8,
+      items:[
+        {prompt:"A story with pictures, like a superhero book", answer:"comic", options:["comic","novel","diary","newspaper"], icon:'<span style="font-size:2.5rem;">📚</span>', hint:"Has drawings and speech bubbles.", hintDe:"Comic"},
+        {prompt:"You watch films and shows on this screen", answer:"TV", options:["TV","radio","computer","phone"], icon:'<span style="font-size:2.5rem;">📺</span>', hint:"In the living room.", hintDe:"Fernseher"},
+        {prompt:"A song or piece of music you listen to", answer:"song", options:["song","film","book","game"], icon:'<span style="font-size:2.5rem;">🎵</span>', hint:"You can sing along.", hintDe:"Lied"},
+        {prompt:"A moving picture story you watch at the cinema", answer:"film", options:["film","photo","painting","poster"], icon:'<span style="font-size:2.5rem;">🎬</span>', hint:"Also called a movie.", hintDe:"Film"},
+        {prompt:"You take this with a camera", answer:"photo", options:["photo","film","painting","drawing"], icon:'<span style="font-size:2.5rem;">📷</span>', hint:"A picture of a real moment.", hintDe:"Foto"},
+        {prompt:"You hear voices and music from this, but no pictures", answer:"radio", options:["radio","TV","phone","speaker"], icon:'<span style="font-size:2.5rem;">📻</span>', hint:"Only sound, no screen.", hintDe:"Radio"}
+      ]},
     {name:"Irregular Verbs", type:"mc", context:"The broadcast tower is blasting wrong past tenses across the Book! 'Goed', 'thinked', 'eated' — these verbs do not follow the -ed rule. Choose the correct irregular form to shut down each broken broadcast!", contextDe:"Der Sendemast strahlt falsche Vergangenheitsformen \u00fcber das ganze Buch aus! \u2018Goed\u2019, \u2018thinked\u2019, \u2018eated\u2019 \u2014 diese Verben folgen nicht der -ed-Regel. W\u00e4hle die richtige unregelm\u00e4\u00dfige Form, um jede fehlerhafte Sendung abzuschalten!", xpEach:15,
       items:[
         {prompt:"go → ___", answer:"went", options:["went","goed","goned","wented"], hint:"Very common irregular verb.", hintDe:"ging"},
@@ -12330,6 +12375,15 @@ campaignLevels = [
     {speaker:"book", text:"Open me again tomorrow, {NAME}. There is always more to learn. And I will always be here, waiting for you. Always."}
   ],
   tasks:[
+    {name:"Holiday Words", type:"image-matching", context:"The blank future page is waiting to be filled with plans! But the travel words are missing — name each one so the characters can describe where they are going to go.", contextDe:"Die leere Zukunftsseite wartet darauf, mit Plänen gefüllt zu werden! Aber die Reisewörter fehlen — benenne jedes, damit die Figuren beschreiben können, wohin sie gehen werden.", xpEach:8,
+      items:[
+        {prompt:"A place with sand and waves where you swim", answer:"beach", options:["beach","park","pool","lake"], icon:'<span style="font-size:2.5rem;">🏖️</span>', hint:"Sand and sea.", hintDe:"Strand"},
+        {prompt:"A very high piece of land with snow on top", answer:"mountain", options:["mountain","hill","island","valley"], icon:'<span style="font-size:2.5rem;">⛰️</span>', hint:"You can climb it.", hintDe:"Berg"},
+        {prompt:"You sleep in this building on holiday", answer:"hotel", options:["hotel","hospital","school","office"], icon:'<span style="font-size:2.5rem;">🏨</span>', hint:"You book a room.", hintDe:"Hotel"},
+        {prompt:"You fly in this to travel far away", answer:"plane", options:["plane","train","bus","boat"], icon:'<span style="font-size:2.5rem;">✈️</span>', hint:"It has wings.", hintDe:"Flugzeug"},
+        {prompt:"A bag you carry on your back for a trip", answer:"rucksack", options:["rucksack","suitcase","handbag","basket"], icon:'<span style="font-size:2.5rem;">🎒</span>', hint:"On your shoulders.", hintDe:"Rucksack"},
+        {prompt:"A large area of water with trees around it", answer:"lake", options:["lake","sea","river","pool"], icon:'<span style="font-size:2.5rem;">🌊</span>', hint:"Smaller than the sea.", hintDe:"See"}
+      ]},
     {name:"Going To (Statements)", type:"mc", context:"The blank future page is waiting to be written! Each character has a plan — but they need the right form of 'going to' to make it real. Choose am/is/are going to and watch each dream appear on the page!", contextDe:"Die leere Zukunftsseite wartet darauf, geschrieben zu werden! Jede Figur hat einen Plan \u2014 aber sie brauchen die richtige Form von \u2018going to\u2019, um ihn wahr werden zu lassen. W\u00e4hle am/is/are going to und sieh zu, wie jeder Traum auf der Seite erscheint!", xpEach:15,
       items:[
         {prompt:"I ___ visit my grandma this weekend.", answer:"am going to", options:["am going to","is going to","are going to","going to"], hint:"I + am going to.", hintDe:"werde"},
