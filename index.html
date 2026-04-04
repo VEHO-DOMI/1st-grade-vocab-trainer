@@ -4986,7 +4986,7 @@ function showHomeScreen() {
   const classTag = document.getElementById('profile-class-tag');
   if (classTag) classTag.textContent = sectionLabel;
   const homeLv = getLevel(state.studentData?.xp || 0);
-  document.getElementById('welcome-xp').innerHTML = `⭐ ${(state.studentData?.xp || 0).toLocaleString()} XP · <span style="opacity:0.7;">${homeLv.name}</span>`;
+  document.getElementById('welcome-xp').innerHTML = `⭐ ${(state.studentData?.xp || 0).toLocaleString()} XP · <span style="opacity:0.7;">${homeLv.name}</span>${homeLv.vibe ? ' · <span style="opacity:0.5;font-style:italic;font-size:0.75rem;">' + homeLv.vibe + '</span>' : ''}`;
   updateAllAvatars();
 
   // Stats
@@ -8575,7 +8575,7 @@ showHomeScreen = function() {
     const pill = document.getElementById('mode-switch-pill');
     if (pill) {
       pill.className = 'mode-pill';
-      pill.textContent = '\uD83D\uDCDA Vocab Mode';
+      pill.innerHTML = '<span>Current: \uD83D\uDCDA Vocab</span> <span style="margin-left:8px;padding:2px 10px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:8px;font-size:0.7rem;cursor:pointer;">Switch Mode</span>';
       pill.onclick = function() { showModeSelectScreen(); };
     }
     // Restore today-card innerHTML (grammar mode replaces it with Rule of the Day)
@@ -8707,7 +8707,7 @@ function showGrammarHomeScreen() {
   const d = state.studentData || {};
   const gxp = d.grammarXp || 0;
   const glv = getLevel(gxp);
-  document.getElementById('welcome-xp').innerHTML = '⭐ ' + gxp.toLocaleString() + ' XP · <span style="opacity:0.7;">' + glv.name + '</span>';
+  document.getElementById('welcome-xp').innerHTML = '⭐ ' + gxp.toLocaleString() + ' XP · <span style="opacity:0.7;">' + glv.name + '</span>' + (glv.vibe ? ' · <span style="opacity:0.5;font-style:italic;font-size:0.75rem;">' + glv.vibe + '</span>' : '');
   updateAllAvatars();
   // Stats
   document.getElementById('stat-sessions').textContent = d.grammarSessions || 0;
@@ -8776,7 +8776,7 @@ function addModeSwitchPill() {
   }
   const isGrammar = state.mode === 'grammar';
   pill.className = 'mode-pill';
-  pill.textContent = isGrammar ? '\uD83E\uDDE0 Grammar Mode' : '\uD83D\uDCDA Vocab Mode';
+  pill.innerHTML = isGrammar ? '<span>Current: \uD83E\uDDE0 Grammar</span> <span style="margin-left:8px;padding:2px 10px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:8px;font-size:0.7rem;cursor:pointer;">Switch Mode</span>' : '<span>Current: \uD83D\uDCDA Vocab</span> <span style="margin-left:8px;padding:2px 10px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:8px;font-size:0.7rem;cursor:pointer;">Switch Mode</span>';
   pill.style.cssText = '';
   pill.onclick = function() { showModeSelectScreen(); };
 }
