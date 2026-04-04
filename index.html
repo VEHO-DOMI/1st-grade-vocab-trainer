@@ -11204,13 +11204,13 @@ function saveCampaignProgress(stars) {
     bestXP: isNewBest ? campaignState.levelXP : prevBest
   };
   var update = {};
-  // Split XP between vocab and grammar pools
-  if (campaignState.vocabXP > 0) {
-    update.xp = firebase.firestore.FieldValue.increment(campaignState.vocabXP);
+  // Split XP between vocab and grammar pools (reading XP goes to vocab)
+  var vocabPool = campaignState.vocabXP + campaignState.readingXP;
+  if (vocabPool > 0) {
+    update.xp = firebase.firestore.FieldValue.increment(vocabPool);
   }
-  var grammarPool = campaignState.grammarXP + campaignState.readingXP;
-  if (grammarPool > 0) {
-    update.grammarXp = firebase.firestore.FieldValue.increment(grammarPool);
+  if (campaignState.grammarXP > 0) {
+    update.grammarXp = firebase.firestore.FieldValue.increment(campaignState.grammarXP);
   }
   // Campaign XP total
   update.campaignXp = firebase.firestore.FieldValue.increment(campaignState.levelXP);
@@ -11224,8 +11224,8 @@ function saveCampaignProgress(stars) {
   ref.update(update).then(function() {
     if (!state.studentData.campaignProgress) state.studentData.campaignProgress = { levels:{} };
     state.studentData.campaignProgress.levels[lid] = levelData;
-    state.studentData.xp = (state.studentData.xp || 0) + campaignState.vocabXP;
-    state.studentData.grammarXp = (state.studentData.grammarXp || 0) + grammarPool;
+    state.studentData.xp = (state.studentData.xp || 0) + vocabPool;
+    state.studentData.grammarXp = (state.studentData.grammarXp || 0) + campaignState.grammarXP;
     state.studentData.campaignXp = (state.studentData.campaignXp || 0) + campaignState.levelXP;
     // Detect level-ups after XP increment and store for deferred display
     var newVocabLevel = getLevel(state.studentData.xp || 0, 'vocab').level;
