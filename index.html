@@ -10155,7 +10155,9 @@ function showCampaignMap() {
     '<div class="map-title">The Book That Knows Your Name</div>' +
     '<div class="map-subtitle">' + (state.studentName || 'friend') + '\'s Journey &mdash; ' + completedCount + '/' + levels.length + ' Chapters Restored</div>' +
     '<div class="map-stats"><span>&#11088; ' + totalStars + ' Stars</span><span>&#10024; ' + totalXP + ' XP</span></div>' +
-    '<div style="margin-top:0.3rem;"><button style="background:none;border:none;color:var(--muted);font-size:0.7rem;cursor:pointer;font-family:inherit;text-decoration:underline;" onclick="campaignState.prologueWatched=false;localStorage.removeItem(\'campaign-prologue-watched\');showPrologue();">&#128214; Watch Intro Again</button></div>' +
+    '<div style="margin-top:0.3rem;"><button style="background:none;border:none;color:var(--muted);font-size:0.7rem;cursor:pointer;font-family:inherit;text-decoration:underline;" onclick="campaignState.prologueWatched=false;localStorage.removeItem(\'campaign-prologue-watched\');showPrologue();">&#128214; Watch Intro Again</button>' +
+    (completedCount >= levels.length ? ' <button style="background:none;border:none;color:var(--muted);font-size:0.7rem;cursor:pointer;font-family:inherit;text-decoration:underline;margin-left:0.6rem;" onclick="showAllComics()">&#127910; Watch All Comics</button>' : '') +
+    '</div>' +
   '</div>';
   // Nodes
   var nodesHtml = '';
@@ -11086,6 +11088,87 @@ function closeComicPanels() {
 function showComicPanelsThenResults() {
   campaignState._comicAutoFlow = true;
   showComicPanels();
+}
+
+// --- WATCH ALL COMICS (unlocked after completing all 15 levels) ---
+function showAllComics() {
+  if (typeof campaignLevels === 'undefined') return;
+  // Build flat list of all comic panels with chapter labels
+  var allPanels = [];
+  for (var i = 0; i < campaignLevels.length; i++) {
+    var lv = campaignLevels[i];
+    if (lv.comicPanels && lv.comicPanels.length > 0) {
+      for (var p = 0; p < lv.comicPanels.length; p++) {
+        allPanels.push({
+          src: lv.comicPanels[p],
+          chapter: i + 1,
+          chapterName: lv.levelName || ('Chapter ' + (i + 1)),
+          panelIndex: p,
+          panelTotal: lv.comicPanels.length
+        });
+      }
+    }
+  }
+  if (allPanels.length === 0) return;
+  window._allComicsPanels = allPanels;
+  window._allComicsIndex = 0;
+  renderAllComicsPanel();
+}
+
+function renderAllComicsPanel() {
+  var panels = window._allComicsPanels;
+  var idx = window._allComicsIndex || 0;
+  var panel = panels[idx];
+  var overlay = document.getElementById('campaign-comic-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'campaign-comic-overlay';
+    overlay.className = 'campaign-comic-overlay';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;';
+    document.body.appendChild(overlay);
+  }
+  var isFirst = idx === 0;
+  var isLast = idx >= panels.length - 1;
+  // Check if this is first panel of a new chapter
+  var isNewChapter = idx === 0 || panels[idx - 1].chapter !== panel.chapter;
+  overlay.innerHTML =
+    '<div style="text-align:center;max-width:500px;width:100%;">' +
+      '<div style="color:#FFD54F;font-size:0.85rem;font-weight:700;margin-bottom:0.3rem;font-family:Fredoka,sans-serif;">Ch ' + panel.chapter + ': ' + panel.chapterName + '</div>' +
+      '<div style="color:#fff;font-size:0.72rem;margin-bottom:0.5rem;opacity:0.6;">' + (idx + 1) + ' / ' + panels.length + '</div>' +
+      '<img class="comic-panel-img" src="' + panel.src + '" style="width:100%;border-radius:14px;max-height:65vh;object-fit:contain;" onerror="this.alt=\'Image not found\'">' +
+      '<div style="display:flex;gap:0.6rem;margin-top:0.8rem;justify-content:center;">' +
+        (!isFirst ? '<button class="btn btn-secondary" onclick="prevAllComicsPanel()" style="padding:0.5rem 1.2rem;font-size:0.82rem;">&larr; Back</button>' : '') +
+        (isLast ?
+          '<button class="btn" onclick="closeAllComics()" style="padding:0.5rem 1.5rem;font-size:0.82rem;">&#10024; Finish</button>' :
+          '<button class="btn" onclick="nextAllComicsPanel()" style="padding:0.5rem 1.2rem;font-size:0.82rem;">Next &rarr;</button>') +
+      '</div>' +
+      '<div style="margin-top:0.6rem;"><button style="background:none;border:none;color:rgba(255,255,255,0.5);font-size:0.7rem;cursor:pointer;font-family:inherit;text-decoration:underline;" onclick="closeAllComics()">Close</button></div>' +
+    '</div>';
+  overlay.style.display = 'flex';
+}
+
+function nextAllComicsPanel() {
+  var panels = window._allComicsPanels;
+  window._allComicsIndex = (window._allComicsIndex || 0) + 1;
+  if (window._allComicsIndex >= panels.length) {
+    closeAllComics();
+  } else {
+    renderAllComicsPanel();
+  }
+}
+
+function prevAllComicsPanel() {
+  if ((window._allComicsIndex || 0) > 0) {
+    window._allComicsIndex--;
+    renderAllComicsPanel();
+  }
+}
+
+function closeAllComics() {
+  var overlay = document.getElementById('campaign-comic-overlay');
+  if (overlay) overlay.style.display = 'none';
+  window._allComicsPanels = null;
+  window._allComicsIndex = 0;
 }
 
 function showNextLevelOrMap() {
