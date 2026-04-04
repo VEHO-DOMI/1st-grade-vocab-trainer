@@ -11822,16 +11822,16 @@ campaignLevels = [
     {speaker:"mia", text:"I am getting closer to Griffin. I can hear him in the next chapter.", emotion:"determined"}
   ],
   tasks:[
-    {name:"What Are They Doing?", type:"mc", context:"Every character is frozen mid-action! Choose the correct -ing form to unfreeze each one. The girl is reach... reaching! The boy is walk... walking! Bring them back to life!", xpEach:15,
+    {name:"Unfreeze the Characters!", type:"gap-fill-mc", context:"Every character is frozen mid-action! Complete each sentence with the correct form of the verb. Only the RIGHT form will unfreeze them!", xpEach:15,
       items:[
-        {prompt:"The girl is reaching for a book on the shelf. She is ___.", answer:"reaching", options:["reaching","reached","reaches","reach"], hint:"-ing form for right now.", hintDe:"greift"},
-        {prompt:"The boy is walking to school. He is ___.", answer:"walking", options:["walking","walked","walks","walk"], hint:"Happening now = -ing.", hintDe:"geht"},
-        {prompt:"The dog is eating its food. It is ___.", answer:"eating", options:["eating","eats","ate","eat"], hint:"Right now = -ing.", hintDe:"frisst"},
-        {prompt:"The children are playing in the park. They are ___.", answer:"playing", options:["playing","played","plays","play"], hint:"Now = -ing.", hintDe:"spielen"},
-        {prompt:"Mum is cooking dinner. She is ___.", answer:"cooking", options:["cooking","cooks","cooked","cook"], hint:"Present continuous.", hintDe:"kocht"},
-        {prompt:"The teacher is writing on the board. She is ___.", answer:"writing", options:["writing","writes","wrote","write"], hint:"Drop -e, add -ing.", hintDe:"schreibt"},
-        {prompt:"The baby is sleeping. It is ___.", answer:"sleeping", options:["sleeping","sleeps","slept","sleep"], hint:"Now = -ing.", hintDe:"schlaeft"},
-        {prompt:"Dad is reading the newspaper. He is ___.", answer:"reading", options:["reading","reads","read","readed"], hint:"Now = -ing.", hintDe:"liest"}
+        {prompt:"Right now, the girl ___ (reach) for a book.", sentence:"Right now, the girl ___ for a book.", answer:"is reaching", options:["is reaching","reaches","reached","is reach"], hint:"Right now = is + -ing.", hintDe:"greift gerade"},
+        {prompt:"Look! The boy ___ (walk) to school.", sentence:"Look! The boy ___ to school.", answer:"is walking", options:["is walking","walks","walked","is walks"], hint:"Look! = happening now = is + -ing.", hintDe:"geht gerade"},
+        {prompt:"The dog ___ (eat) right now. Don't disturb it!", sentence:"The dog ___ right now. Don't disturb it!", answer:"is eating", options:["is eating","eats","ate","is eats"], hint:"Right now = is + -ing.", hintDe:"frisst gerade"},
+        {prompt:"Listen! The children ___ (play) in the garden.", sentence:"Listen! The children ___ in the garden.", answer:"are playing", options:["are playing","play","played","is playing"], hint:"More than one = are + -ing.", hintDe:"spielen gerade"},
+        {prompt:"Shh! Mum ___ (cook) dinner. It smells good!", sentence:"Shh! Mum ___ dinner. It smells good!", answer:"is cooking", options:["is cooking","cooks","cooked","are cooking"], hint:"One person = is + -ing.", hintDe:"kocht gerade"},
+        {prompt:"Be quiet! The teacher ___ (write) on the board.", sentence:"Be quiet! The teacher ___ on the board.", answer:"is writing", options:["is writing","writes","wrote","is writeing"], hint:"write → writing (drop e, add -ing).", hintDe:"schreibt gerade"},
+        {prompt:"Don't wake the baby! It ___ (sleep).", sentence:"Don't wake the baby! It ___.", answer:"is sleeping", options:["is sleeping","sleeps","slept","is sleepping"], hint:"sleep → sleeping.", hintDe:"schlaeft gerade"},
+        {prompt:"Where is Dad? He ___ (sit) in the garden.", sentence:"Where is Dad? He ___ in the garden.", answer:"is sitting", options:["is sitting","sits","sat","is siting"], hint:"sit → sitting (double t!).", hintDe:"sitzt gerade"}
       ]},
     {name:"What Time Is It?", type:"mc", context:"The clocks in the Book have stopped! Each one shows a time but the characters cannot read it. Tell them the correct time in words — when all the clocks are read, time starts moving again.", xpEach:15,
       items:[
