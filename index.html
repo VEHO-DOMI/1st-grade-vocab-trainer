@@ -10234,17 +10234,28 @@ function renderStoryBeat() {
   speakerArea.innerHTML = '<div class="campaign-char-avatar">' + avatarHtml + '</div>' +
     '<div class="campaign-speaker-name">' + speakerName + '</div>';
   var emotionClass = emotion ? ' ' + emotion : '';
-  // Scene image from level data
+  // Scene image logic:
+  // - When Book narrates: show the level's scene image for the current story phase
+  // - When a CHARACTER speaks (Mia, Syntax, Griffin): show that character's full portrait instead
+  // - During epilogue: show epilogue images matched to beat index
   var lv = campaignLevels[campaignState.currentLevel];
   var sceneImgSrc = '';
-  // Epilogue images: during completion phase, match image index to story beat index
   if (lv && lv.epilogueImages && campaignState.storyPhase === 'completion' && lv.epilogueImages[idx]) {
     sceneImgSrc = lv.epilogueImages[idx];
+  } else if (speaker !== 'book') {
+    // Character speaking — show their full portrait as the scene image
+    var charPortraitMap = {
+      mia: avatarMap.mia.img,
+      syntax: 'campaign/img/char-syntax-speaking.jpg',
+      griffin: avatarMap.griffin.img,
+      emre: avatarMap.griffin.img,
+      fader: 'campaign/img/char-griffin-shadow.jpg'
+    };
+    sceneImgSrc = charPortraitMap[speaker] || '';
   } else if (lv && lv.sceneImages && campaignState.storyPhase) {
-    // Show scene image for the current phase only — no fallback to storyA for completion/storyB
     sceneImgSrc = lv.sceneImages[campaignState.storyPhase] || '';
   }
-  var sceneImgHtml = sceneImgSrc ? '<img class="campaign-scene-img" src="' + sceneImgSrc + '" style="width:100%;border-radius:12px;margin-top:0.8rem;max-height:260px;object-fit:cover;" onerror="this.style.display=\'none\'">' : '';
+  var sceneImgHtml = sceneImgSrc ? '<img class="campaign-scene-img" src="' + sceneImgSrc + '" style="width:100%;border-radius:12px;margin-top:0.8rem;max-height:280px;object-fit:contain;background:var(--card);" onerror="this.style.display=\'none\'">' : '';
   // Wrap text paragraphs in story-paragraph divs for stagger animation
   var storyParagraphs = text.split(/\n+/).filter(function(p) { return p.trim(); });
   var wrappedText = storyParagraphs.length > 1 ? storyParagraphs.map(function(p) { return '<div class="story-paragraph">' + p + '</div>'; }).join('') : '<div class="story-paragraph">' + text + '</div>';
