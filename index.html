@@ -4684,7 +4684,7 @@ function renderBattleHistory() {
     return;
   }
   const modeLabels = {translation:'Translation',definition:'Definition',context:'Context'};
-  const resultEmoji = {win:'&#127942;',loss:'&#128170;',draw:'&#129309;'};
+  const resultEmoji = {win:'\uD83C\uDFC6',loss:'\uD83D\uDCAA',draw:'\uD83E\uDD1D'};
   const resultColor = {win:'var(--correct)',loss:'var(--wrong)',draw:'var(--muted)'};
   list.innerHTML = state.battleHistory.map(b => {
     const d = new Date(b.date);
@@ -4692,7 +4692,7 @@ function renderBattleHistory() {
     return '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.06);font-size:13px;">' +
       '<span style="font-size:18px;">' + (resultEmoji[b.result] || '') + '</span>' +
       '<div style="flex:1;"><div style="font-weight:600;">' + escapeHtml(b.opponent) + '</div><div style="font-size:11px;opacity:0.4;">' + (modeLabels[b.mode] || b.mode) + ' \u00B7 ' + dateStr + '</div></div>' +
-      '<div style="text-align:right;"><div style="font-weight:700;color:' + (resultColor[b.result] || '') + '">' + b.myScore + '–' + b.theirScore + '</div><div style="font-size:11px;opacity:0.5;">+' + b.xpEarned + ' XP</div></div>' +
+      '<div style="text-align:right;"><div style="font-weight:700;color:' + (resultColor[b.result] || '') + '">' + b.myScore + '\u2013' + b.theirScore + '</div><div style="font-size:11px;opacity:0.5;">+' + b.xpEarned + ' XP</div></div>' +
     '</div>';
   }).join('');
 }
@@ -5677,7 +5677,7 @@ async function saveFlashcardProgress(word) {
   const slug = slugify(word.source);
   try {
     const docRef = studentsRef.doc(state.studentId).collection('progress').doc(slug);
-    const key = 'words.' + word.w.replace(/\./g, '·') + '.lastSeen';
+    const key = 'words.' + word.w.replace(/\./g, '\u00b7') + '.lastSeen';
     await docRef.set({ [key]: new Date().toISOString() }, { merge: true });
   } catch(e) { console.error('Flashcard progress save error:', e); }
 }
@@ -6978,7 +6978,7 @@ function renderBattleResults(data) {
   xpEarned += myScore * 15;
   state.xp = (state.xp || 0) + xpEarned;
   const area = document.getElementById('battle-area');
-  if (area) area.innerHTML = '<div style="text-align:center;padding:20px;"><div style="font-size:48px;margin-bottom:12px;">' + (iWon ? '&#127942;' : isDraw ? '&#129309;' : '&#128170;') + '</div><div style="font-size:24px;font-weight:700;margin-bottom:4px;">' + (iWon ? 'Victory!' : isDraw ? 'Draw!' : escapeHtml(opName) + ' wins!') + '</div><div style="font-size:16px;opacity:0.7;margin-bottom:16px;">' + myScore + ' \u2013 ' + opScore + '</div><div style="font-size:14px;opacity:0.6;margin-bottom:24px;">+' + xpEarned + ' XP earned</div><button onclick="leaveBattle()" class="btn btn-primary" style="padding:10px 28px;">Back to Home</button></div>';
+  if (area) area.innerHTML = '<div style="text-align:center;padding:20px;"><div style="font-size:48px;margin-bottom:12px;">' + (iWon ? '\uD83C\uDFC6' : isDraw ? '\uD83E\uDD1D' : '\uD83D\uDCAA') + '</div><div style="font-size:24px;font-weight:700;margin-bottom:4px;">' + (iWon ? 'Victory!' : isDraw ? 'Draw!' : escapeHtml(opName) + ' wins!') + '</div><div style="font-size:16px;opacity:0.7;margin-bottom:16px;">' + myScore + ' \u2013 ' + opScore + '</div><div style="font-size:14px;opacity:0.6;margin-bottom:24px;">+' + xpEarned + ' XP earned</div><button onclick="leaveBattle()" class="btn btn-primary" style="padding:10px 28px;">Back to Home</button></div>';
   if (typeof SFX !== 'undefined') SFX.play(iWon ? 'levelup' : 'correct');
   saveBattleResults(data, xpEarned);
 }
@@ -8426,49 +8426,47 @@ async function loadBattleHistory(filter) {
 
   try {
     var slug = state.studentId;
-    if (!slug || !studentsRef) {
-      list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">Not logged in.</div>';
-      return;
-    }
-    var snap;
-    try {
-      snap = await studentsRef.doc(slug).collection('battleHistory').orderBy('date', 'desc').limit(50).get();
-    } catch(indexErr) {
-      snap = await studentsRef.doc(slug).collection('battleHistory').limit(50).get();
-    }
+    var snap = await studentsRef.doc(slug).collection('battleHistory').orderBy('date', 'desc').limit(50).get();
     var items = [];
     snap.forEach(function(doc) { items.push(doc.data()); });
 
-    if (filter === 'live') items = items.filter(function(i) { return !i.type || i.type === 'live' || i.type === 'none'; });
+    if (filter === 'live') items = items.filter(function(i) { return !i.type || i.type === 'live'; });
     if (filter === 'duel') items = items.filter(function(i) { return i.type === 'duel'; });
     if (filter === 'grammar-duel') items = items.filter(function(i) { return i.type === 'grammar-duel'; });
 
     if (items.length === 0) {
-      list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">No battles found.</div>';
+      list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">No battles yet.</div>';
       return;
     }
 
-    // Sort client-side if orderBy failed
-    items.sort(function(a, b) {
-      return (b.date || '').localeCompare(a.date || '');
-    });
-
     list.innerHTML = items.map(function(b) {
-      var icon = b.result === 'win' ? '&#127942;' : b.result === 'draw' ? '&#129309;' : '&#128170;';
+      var icon = b.result === 'win' ? '\u{1F3C6}' : b.result === 'draw' ? '\u{1F91D}' : '\u{1F4AA}';
       var color = b.result === 'win' ? 'var(--correct)' : b.result === 'loss' ? 'var(--wrong)' : 'var(--muted)';
       var date = b.date ? new Date(b.date).toLocaleDateString('en-GB', {day:'numeric',month:'short'}) : '';
-      var typeLabel = b.type === 'grammar-duel' ? 'Grammar Duel' : b.type === 'duel' ? 'Word Duel' : b.mode ? ({translation:'Translation',definition:'Definition',context:'Context'}[b.mode] || 'Battle') : 'Live Battle';
+      var typeLabel = b.type === 'grammar-duel' ? 'Grammar Duel' : b.type === 'duel' ? 'Word Duel' : b.mode ? ({translation:'Translation',definition:'Definition',context:'Context'}[b.mode] || 'Battle') : 'Battle';
       return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--card-border);">' +
         '<div><div style="font-weight:600;">' + icon + ' vs ' + escapeHtml(b.opponent || 'Unknown') + '</div>' +
-        '<div style="font-size:0.75rem;color:var(--muted);">' + typeLabel + ' \u00b7 ' + date + '</div></div>' +
-        '<div style="text-align:right;"><div style="font-weight:700;color:' + color + ';">' + (b.myScore || 0) + '–' + (b.theirScore || 0) + '</div>' +
+        '<div style="font-size:0.75rem;color:var(--muted);">' + typeLabel + ' \u00B7 ' + date + '</div></div>' +
+        '<div style="text-align:right;"><div style="font-weight:700;color:' + color + ';">' + (b.myScore || 0) + ' - ' + (b.theirScore || 0) + '</div>' +
         '<div style="font-size:0.7rem;color:var(--muted);">+' + (b.xpEarned || 0) + ' XP</div></div></div>';
     }).join('');
   } catch (e) {
     console.error('Load battle history error:', e);
-    list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">Error: ' + e.message + '</div>';
+    list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">Error loading history.</div>';
   }
 }
+
+// ============================================================
+// ===== GRAMMAR MODE ENGINE =====
+// ============================================================
+
+// --- Mode state ---
+if (!state.mode) state.mode = 'vocab';
+
+// --- Grammar data (minified) --- loaded dynamically below
+let grammarStructures = [];
+let grammarItems = [];
+let grammarDataLoaded = false;
 
 function loadGrammarData() {
   if (grammarDataLoaded) return;
