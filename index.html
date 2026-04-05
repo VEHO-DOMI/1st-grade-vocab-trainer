@@ -1757,7 +1757,7 @@ body.playing .header-container { display: none; }
 
 /* ===== MODE SELECT ===== */
 .mode-cards-row { display:flex; gap:12px; justify-content:center; }
-.mode-select-card { flex:1; min-width:0; background:var(--card); border:2px solid var(--card-border); border-radius:var(--radius-lg); padding:1.2rem 0.8rem; text-align:center; cursor:pointer; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:0.3rem; }
+.mode-select-card { flex:1; max-width:200px; background:var(--card); border:2px solid var(--card-border); border-radius:var(--radius-lg); padding:1.2rem 0.8rem; text-align:center; cursor:pointer; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:0.3rem; }
 .mode-select-card:hover, .mode-select-card:active { border-color:var(--accent); transform:translateY(-2px); box-shadow:var(--shadow-card); }
 .mode-select-card-grammar:hover, .mode-select-card-grammar:active { border-color:var(--accent); box-shadow:var(--shadow-card); }
 .mode-select-icon { font-size:2.2rem; line-height:1; }
@@ -1974,13 +1974,15 @@ body.playing .header-container { display: none; }
         <div class="mode-select-subtitle">Rules & Structures</div>
         <div class="mode-select-stats" id="mode-grammar-stats">Lv 1 · 0 XP</div>
       </button>
-      <button id="mode-campaign-card" class="mode-select-card mode-select-card-campaign" onclick="selectAppMode('campaign')" style="display:none;">
-        <div class="mode-select-icon">&#128214;</div>
+      
+    </div>
+      <button id="mode-campaign-card" class="mode-select-card mode-select-card-campaign" style="width:100%;max-width:100%;display:flex;flex-direction:row;align-items:center;gap:1rem;padding:0.8rem 1.2rem;text-align:left;" onclick="selectAppMode('campaign')" style="display:none;">
+        <div class="mode-select-icon" style="font-size:1.8rem;min-width:auto;">&#128214;</div>
         <div class="mode-select-title">Campaign</div>
         <div class="mode-select-subtitle">The Book That Knows Your Name</div>
         <div class="mode-select-stats" id="mode-campaign-stats">0/15 Chapters</div>
       </button>
-    </div>
+
     <div id="mode-leaderboards" style="margin-top:1rem;"></div>
   </div>
 </div>
