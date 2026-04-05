@@ -8426,54 +8426,49 @@ async function loadBattleHistory(filter) {
 
   try {
     var slug = state.studentId;
+    if (!slug || !studentsRef) {
+      list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">Not logged in.</div>';
+      return;
+    }
     var snap;
     try {
       snap = await studentsRef.doc(slug).collection('battleHistory').orderBy('date', 'desc').limit(50).get();
     } catch(indexErr) {
-      // Fallback without orderBy if Firestore index is missing
-      console.warn('Battle history orderBy failed, trying without sort:', indexErr);
       snap = await studentsRef.doc(slug).collection('battleHistory').limit(50).get();
     }
     var items = [];
     snap.forEach(function(doc) { items.push(doc.data()); });
 
-    if (filter === 'live') items = items.filter(function(i) { return !i.type || i.type === 'live'; });
+    if (filter === 'live') items = items.filter(function(i) { return !i.type || i.type === 'live' || i.type === 'none'; });
     if (filter === 'duel') items = items.filter(function(i) { return i.type === 'duel'; });
     if (filter === 'grammar-duel') items = items.filter(function(i) { return i.type === 'grammar-duel'; });
 
     if (items.length === 0) {
-      list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">No battles yet.</div>';
+      list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">No battles found.</div>';
       return;
     }
 
+    // Sort client-side if orderBy failed
+    items.sort(function(a, b) {
+      return (b.date || '').localeCompare(a.date || '');
+    });
+
     list.innerHTML = items.map(function(b) {
-      var icon = b.result === 'win' ? '\u{1F3C6}' : b.result === 'draw' ? '\u{1F91D}' : '\u{1F4AA}';
+      var icon = b.result === 'win' ? '\uD83C\uDFC6' : b.result === 'draw' ? '\uD83E\uDD1D' : '\uD83D\uDCAA';
       var color = b.result === 'win' ? 'var(--correct)' : b.result === 'loss' ? 'var(--wrong)' : 'var(--muted)';
       var date = b.date ? new Date(b.date).toLocaleDateString('en-GB', {day:'numeric',month:'short'}) : '';
-      var typeLabel = b.type === 'grammar-duel' ? 'Grammar Duel' : b.type === 'duel' ? 'Word Duel' : b.mode ? ({translation:'Translation',definition:'Definition',context:'Context'}[b.mode] || 'Battle') : 'Battle';
+      var typeLabel = b.type === 'grammar-duel' ? 'Grammar Duel' : b.type === 'duel' ? 'Word Duel' : b.mode ? ({translation:'Translation',definition:'Definition',context:'Context'}[b.mode] || 'Battle') : 'Live Battle';
       return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--card-border);">' +
         '<div><div style="font-weight:600;">' + icon + ' vs ' + escapeHtml(b.opponent || 'Unknown') + '</div>' +
-        '<div style="font-size:0.75rem;color:var(--muted);">' + typeLabel + ' \u00B7 ' + date + '</div></div>' +
-        '<div style="text-align:right;"><div style="font-weight:700;color:' + color + ';">' + (b.myScore || 0) + ' - ' + (b.theirScore || 0) + '</div>' +
+        '<div style="font-size:0.75rem;color:var(--muted);">' + typeLabel + ' \u00b7 ' + date + '</div></div>' +
+        '<div style="text-align:right;"><div style="font-weight:700;color:' + color + ';">' + (b.myScore || 0) + '\u2013' + (b.theirScore || 0) + '</div>' +
         '<div style="font-size:0.7rem;color:var(--muted);">+' + (b.xpEarned || 0) + ' XP</div></div></div>';
     }).join('');
   } catch (e) {
     console.error('Load battle history error:', e);
-    list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">Error loading history.</div>';
+    list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--muted);">Error: ' + e.message + '</div>';
   }
 }
-
-// ============================================================
-// ===== GRAMMAR MODE ENGINE =====
-// ============================================================
-
-// --- Mode state ---
-if (!state.mode) state.mode = 'vocab';
-
-// --- Grammar data (minified) --- loaded dynamically below
-let grammarStructures = [];
-let grammarItems = [];
-let grammarDataLoaded = false;
 
 function loadGrammarData() {
   if (grammarDataLoaded) return;
