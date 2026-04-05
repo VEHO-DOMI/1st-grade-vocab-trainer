@@ -81,7 +81,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: calc(env(safe-area-inset-top) + 0.5rem) 0 calc(env(safe-area-inset-bottom) + 2.5rem);
+  padding: calc(env(safe-area-inset-top) + 0.5rem) 0 calc(env(safe-area-inset-bottom) + 4rem);
   -webkit-font-smoothing: antialiased;
   line-height: 1.5;
 }
@@ -825,7 +825,7 @@ body.playing .header-container { display: none; }
 
 /* --- 1. CAMPAIGN MAP — Book Aesthetic --- */
 .campaign-map {
-  padding: 1rem 0.5rem 4rem;
+  padding: 1rem 0.5rem calc(env(safe-area-inset-bottom, 0px) + 6rem);
   background: linear-gradient(180deg, #FFFDE7 0%, #FFF8E1 50%, #FFECB3 100%);
 }
 [data-theme="dark"] .campaign-map {
@@ -1874,6 +1874,21 @@ body.playing .header-container { display: none; }
 .grammar-ref-card .rule-error { font-size:0.78rem; padding:0.4rem 0.6rem; background:var(--wrong-glow); border-radius:8px; margin:4px 0; line-height:1.4; }
 .grammar-ref-card .rule-error .wrong { color:var(--wrong); text-decoration:line-through; }
 .grammar-ref-card .rule-error .right { color:var(--correct); font-weight:600; }
+
+
+/* Extra bottom breathing room for mobile browser chrome */
+#campaign-story-screen .campaign-story-card,
+#campaign-task-screen #campaign-feedback-area,
+#campaign-reading-screen #campaign-reading-feedback,
+#campaign-results-screen .login-card {
+  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 3rem);
+}
+.campaign-story-btn {
+  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 3rem) !important;
+}
+.campaign-next-btn {
+  margin-bottom: 1rem;
+}
 </style>
 </head>
 <body>
