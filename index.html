@@ -1998,7 +1998,7 @@ body.playing .header-container { display: none; }
 <!-- CAMPAIGN MAP SCREEN -->
 <div id="campaign-map-screen" class="screen">
   <div class="progress-nav">
-    <button class="btn btn-secondary" onclick="showModeSelectScreen()">&#8592; Back</button>
+    <button class="btn btn-secondary" onclick="state.mode='vocab';localStorage.setItem(LS_KEY+'-mode','vocab');showModeSelectScreen()">&#8592; Back</button>
     <span class="nav-title">Campaign</span>
     <span style="width:60px;"></span>
   </div>
@@ -10112,6 +10112,7 @@ function quitCampaignToMap() {
 }
 
 function quitCampaignToHome() {
+  state.mode = 'vocab'; localStorage.setItem(LS_KEY + '-mode', 'vocab');
   if (campaignState._prologueTimer) clearTimeout(campaignState._prologueTimer);
   showModeSelectScreen();
 }
