@@ -5001,7 +5001,7 @@ function showHomeScreen() {
   const classTag = document.getElementById('profile-class-tag');
   if (classTag) classTag.textContent = sectionLabel;
   const homeLv = getLevel(state.studentData?.xp || 0);
-  document.getElementById('welcome-xp').innerHTML = `⭐ ${(state.studentData?.xp || 0).toLocaleString()} XP · <span style="opacity:0.7;">${homeLv.name}</span>${homeLv.vibe ? ' · <span style="opacity:0.5;font-style:italic;font-size:0.75rem;">' + homeLv.vibe + '</span>' : ''}`;
+  document.getElementById('welcome-xp').innerHTML = `⭐ ${(state.studentData?.xp || 0).toLocaleString()} XP · <span style="opacity:0.7;">${homeLv.name}</span>${homeLv.vibe ? '<br><span style="opacity:0.5;font-style:italic;font-size:0.75rem;">' + homeLv.vibe + '</span>' : ''}`;
   updateAllAvatars();
 
   // Stats
@@ -8722,7 +8722,7 @@ function showGrammarHomeScreen() {
   const d = state.studentData || {};
   const gxp = d.grammarXp || 0;
   const glv = getLevel(gxp);
-  document.getElementById('welcome-xp').innerHTML = '⭐ ' + gxp.toLocaleString() + ' XP · <span style="opacity:0.7;">' + glv.name + '</span>' + (glv.vibe ? ' · <span style="opacity:0.5;font-style:italic;font-size:0.75rem;">' + glv.vibe + '</span>' : '');
+  document.getElementById('welcome-xp').innerHTML = '⭐ ' + gxp.toLocaleString() + ' XP · <span style="opacity:0.7;">' + glv.name + '</span>' + (glv.vibe ? '<br><span style="opacity:0.5;font-style:italic;font-size:0.75rem;">' + glv.vibe + '</span>' : '');
   updateAllAvatars();
   // Stats
   document.getElementById('stat-sessions').textContent = d.grammarSessions || 0;
