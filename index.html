@@ -8426,7 +8426,14 @@ async function loadBattleHistory(filter) {
 
   try {
     var slug = state.studentId;
-    var snap = await studentsRef.doc(slug).collection('battleHistory').orderBy('date', 'desc').limit(50).get();
+    var snap;
+    try {
+      snap = await studentsRef.doc(slug).collection('battleHistory').orderBy('date', 'desc').limit(50).get();
+    } catch(indexErr) {
+      // Fallback without orderBy if Firestore index is missing
+      console.warn('Battle history orderBy failed, trying without sort:', indexErr);
+      snap = await studentsRef.doc(slug).collection('battleHistory').limit(50).get();
+    }
     var items = [];
     snap.forEach(function(doc) { items.push(doc.data()); });
 
