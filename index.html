@@ -5702,27 +5702,22 @@ async function endFlashcards() {
   showScreen('results-screen');
   const total = flashcardGotWords.size;
   const remaining = flashcardDeck.length;
-  const xpEarned = total;
 
   document.getElementById('final-score').textContent = total + ' studied';
   document.getElementById('final-label').textContent = remaining > 0
     ? total + ' cards completed \u00b7 ' + remaining + ' skipped'
     : 'All ' + total + ' cards completed!';
 
+  // Phase 5j: flashcards no longer award XP (exploit fix — students could spam 'Got it' for unlimited XP).
+  // The totalFlashcards counter is still incremented so the Flash Scholar badge (study 100 cards) still works.
   if (studentsRef && state.studentId && total > 0) {
-    try {
-      await studentsRef.doc(state.studentId).update({
-        xp: firebase.firestore.FieldValue.increment(xpEarned),
-        totalFlashcards: firebase.firestore.FieldValue.increment(total),
-        lastActive: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      const newXp = (state.studentData?.xp || 0) + xpEarned;
-      const newFlashcards = (state.studentData?.totalFlashcards || 0) + total;
-      state.studentData.xp = newXp;
-      state.studentData.totalFlashcards = newFlashcards;
-      state.xp = newXp;
-      document.getElementById('save-status').textContent = '+' + xpEarned + ' XP earned \u00b7 ' + newFlashcards + ' total flashcards studied';
-    } catch(e) { console.error('Flashcard save error:', e); }
+    ffWrite(studentsRef.doc(state.studentId).update({
+      totalFlashcards: firebase.firestore.FieldValue.increment(total),
+      lastActive: firebase.firestore.FieldValue.serverTimestamp()
+    }), 'flashcardStudied');
+    const newFlashcards = (state.studentData?.totalFlashcards || 0) + total;
+    state.studentData.totalFlashcards = newFlashcards;
+    document.getElementById('save-status').textContent = newFlashcards + ' flashcards studied \u00b7 Keep practising vocab sessions to earn XP!';
   }
 
   document.getElementById('results-list').innerHTML = '<div style="text-align:center;padding:1rem;color:var(--muted);font-size:0.85rem;">Flashcard sessions focus on studying \u2014 no right or wrong answers.</div>';
