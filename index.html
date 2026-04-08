@@ -4132,6 +4132,16 @@ async function handleNameSubmit() {
   document.getElementById('login-btn').textContent = 'Continue';
 }
 
+// Phase 5i: fire-and-forget helper for non-critical Firestore writes.
+// When the Firestore write quota is exhausted, .update() calls hang forever
+// in the SDK's retry loop. For writes that don't need to block the user
+// (lastActive timestamps, avatar assignment), we dispatch them without
+// awaiting — login proceeds immediately, the write resolves whenever it can.
+function ffWrite(promise, label) {
+  if (!promise || typeof promise.then !== 'function') return;
+  promise.catch(function(e) { console.warn('[ffWrite] ' + (label || 'write') + ' failed:', e && e.message); });
+}
+
 async function handlePinSubmit() {
   const pin = document.getElementById('login-pin').value.trim();
   if (!pin || pin.length !== 4 || !/^\d{4}$/.test(pin)) {
@@ -4154,10 +4164,12 @@ async function handlePinSubmit() {
     if (!data.avatarId) {
       const newAv = await getAvailableAvatar();
       state.avatarId = newAv; state.studentData.avatarId = newAv;
-      await studentsRef.doc(pendingLoginId).update({ lastActive: firebase.firestore.FieldValue.serverTimestamp(), avatarId: newAv });
+      // Fire-and-forget: lastActive + avatarId assignment doesn't block login
+      ffWrite(studentsRef.doc(pendingLoginId).update({ lastActive: firebase.firestore.FieldValue.serverTimestamp(), avatarId: newAv }), 'assignAvatar');
     } else {
       state.avatarId = data.avatarId;
-      await studentsRef.doc(pendingLoginId).update({ lastActive: firebase.firestore.FieldValue.serverTimestamp() });
+      // Fire-and-forget: lastActive timestamp doesn't block login
+      ffWrite(studentsRef.doc(pendingLoginId).update({ lastActive: firebase.firestore.FieldValue.serverTimestamp() }), 'lastActive');
     }
     state.studentId = pendingLoginId;
     state.studentName = pendingLoginName;
