@@ -3746,9 +3746,13 @@ function getDailyChallengeTypes() {
 function calculateSessionXP(results) {
   let xp = 0;
   for (const r of results) {
-    if (r.correct) xp += Math.round((XP_TABLE[r.type] || 5) * (r.comboMult || 1));
+    if (r.correct) {
+      const base = (XP_TABLE[r.type] || 5) * (r.comboMult || 1);
+      const factor = r.isClose ? 0.5 : 1;
+      xp += Math.max(1, Math.round(base * factor));
+    }
   }
-  if (results.length >= 5 && results.every(r => r.correct)) xp += 20;
+  if (results.length >= 5 && results.every(r => r.correct && !r.isClose)) xp += 20;
   const streak = Math.min(state.studentData?.streak || 0, 7);
   xp += streak * 5;
   return xp;
@@ -6063,6 +6067,227 @@ function normalizeAnswer(str) {
   return str.toLowerCase().trim().replace(/['']/g, "'").replace(/\s+/g, ' ').replace(/^to\s+/, '').replace(/^a\s+/, '').replace(/^an\s+/, '');
 }
 
+// =====================================================================
+// Phase 5h — Shared answer grader (single source of truth for all
+// vocab/grammar/campaign answer checking).
+// =====================================================================
+
+const CONTRACTION_PAIRS = [
+  ["isn't","is not"],["aren't","are not"],["wasn't","was not"],["weren't","were not"],
+  ["don't","do not"],["doesn't","does not"],["didn't","did not"],
+  ["haven't","have not"],["hasn't","has not"],["hadn't","had not"],
+  ["won't","will not"],["wouldn't","would not"],
+  ["can't","cannot"],["couldn't","could not"],
+  ["shouldn't","should not"],["mustn't","must not"],["mightn't","might not"],
+  ["needn't","need not"],["shan't","shall not"],
+  ["i'm","i am"],["you're","you are"],["he's","he is"],["she's","she is"],["it's","it is"],
+  ["we're","we are"],["they're","they are"],
+  ["i've","i have"],["you've","you have"],["we've","we have"],["they've","they have"],
+  ["i'll","i will"],["you'll","you will"],["he'll","he will"],["she'll","she will"],
+  ["it'll","it will"],["we'll","we will"],["they'll","they will"],
+  ["i'd","i would"],["you'd","you would"],["he'd","he would"],["she'd","she would"],
+  ["we'd","we would"],["they'd","they would"],
+  ["let's","let us"],["that's","that is"],["there's","there is"],["what's","what is"],
+  ["who's","who is"],["here's","here is"],["how's","how is"],["where's","where is"]
+];
+
+const BR_AM_SPELLING_PAIRS = [
+  ["colour","color"],["favourite","favorite"],["honour","honor"],["neighbour","neighbor"],
+  ["flavour","flavor"],["humour","humor"],["labour","labor"],["behaviour","behavior"],
+  ["centre","center"],["theatre","theater"],["litre","liter"],["metre","meter"],
+  ["organise","organize"],["realise","realize"],["recognise","recognize"],["analyse","analyze"],
+  ["practise","practice"],["licence","license"],
+  ["travelling","traveling"],["travelled","traveled"],["traveller","traveler"],
+  ["cancelled","canceled"],["modelling","modeling"],["jewellery","jewelry"],
+  ["grey","gray"],["mum","mom"],["mummy","mommy"],["maths","math"],
+  ["aeroplane","airplane"],["aluminium","aluminum"],["pyjamas","pajamas"],
+  ["tyre","tire"],["lift","elevator"],["biscuit","cookie"],
+  ["chips","fries"],["football","soccer"],["holiday","vacation"]
+];
+
+const PAREN_NOTE_RE = /\s*\(\s*(?:pl|sg|plural|singular|us|uk|ame|bre|amer|brit|am|br|formal|informal|coll|fig|lit|inf|esp\.?\s*\w+|spec\.?\s*\w+|usu\.?\s*\w+)\b[^)]*\)/gi;
+
+const ANSWER_PROFILES = {
+  vocab: {
+    stripParenNotes: true, stripArticles: true, expandSlashes: true, expandCommas: true,
+    expandAbbreviations: true, expandNumbers: true, expandContractions: true,
+    apostropheTolerant: true, brAmESpellings: true,
+    fuzzy: true, fuzzyMaxAbs: 2, fuzzyMaxPct: 0.20,
+    closeStatusAllowed: true, closeXpFactor: 0.5
+  },
+  grammar: {
+    stripParenNotes: false, stripArticles: false, expandSlashes: false, expandCommas: false,
+    expandAbbreviations: false, expandNumbers: false, expandContractions: true,
+    apostropheTolerant: true, brAmESpellings: true,
+    fuzzy: true, fuzzyMaxAbs: 2, fuzzyMaxPct: 0.15,
+    closeStatusAllowed: true, closeXpFactor: 0.5
+  },
+  campaign: {
+    stripParenNotes: false, stripArticles: false, expandSlashes: false, expandCommas: false,
+    expandAbbreviations: false, expandNumbers: false, expandContractions: true,
+    apostropheTolerant: true, brAmESpellings: true,
+    fuzzy: true, fuzzyMaxAbs: 2, fuzzyMaxPct: 0.15,
+    closeStatusAllowed: true, closeXpFactor: 0.5
+  },
+  strict: {
+    stripParenNotes: false, stripArticles: false, expandSlashes: false, expandCommas: false,
+    expandAbbreviations: false, expandNumbers: false, expandContractions: false,
+    apostropheTolerant: false, brAmESpellings: false,
+    fuzzy: false, closeStatusAllowed: false
+  }
+};
+
+function expandContractionForms(s) {
+  const out = new Set([s]);
+  for (const [a, b] of CONTRACTION_PAIRS) {
+    const ra = new RegExp("\\b" + a.replace(/'/g, "['\u2019]?") + "\\b", "gi");
+    const rb = new RegExp("\\b" + b + "\\b", "gi");
+    if (ra.test(s)) { ra.lastIndex = 0; out.add(s.replace(ra, b)); }
+    if (rb.test(s)) { rb.lastIndex = 0; out.add(s.replace(rb, a)); }
+  }
+  return [...out];
+}
+
+function expandSpellingForms(s) {
+  const out = new Set([s]);
+  for (const [br, am] of BR_AM_SPELLING_PAIRS) {
+    const rbr = new RegExp("\\b" + br + "\\b", "gi");
+    const ram = new RegExp("\\b" + am + "\\b", "gi");
+    if (rbr.test(s)) { rbr.lastIndex = 0; out.add(s.replace(rbr, am)); }
+    if (ram.test(s)) { ram.lastIndex = 0; out.add(s.replace(ram, br)); }
+  }
+  return [...out];
+}
+
+function canonicalizeAnswer(s, profile) {
+  let out = (s || '').toLowerCase().trim()
+    .replace(/['\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/\s+/g, ' ');
+  if (profile.stripArticles) {
+    out = out.replace(/^(?:to|a|an|the)\s+/i, '');
+  }
+  out = out.replace(/^[.,!?;:"'`]+|[.,!?;:"'`]+$/g, '');
+  return out;
+}
+
+function expandExpectedForms(expected, profile, extraAlts) {
+  let bag = new Set();
+  const seeds = [expected];
+  if (extraAlts && extraAlts.length) extraAlts.forEach(a => { if (a) seeds.push(a); });
+  seeds.forEach(s => bag.add(s));
+
+  if (profile.stripParenNotes) {
+    for (const e of [...bag]) {
+      const plMatch = e.match(/\(\s*(?:pl|plural)\s+([^)]+)\)/i);
+      if (plMatch) bag.add(plMatch[1].trim());
+      bag.add(e.replace(PAREN_NOTE_RE, ''));
+    }
+  }
+  if (profile.expandSlashes) {
+    for (const e of [...bag]) {
+      if (e.includes('/')) e.split(/\s*\/\s*/).forEach(p => { if (p.trim()) bag.add(p); });
+    }
+  }
+  if (profile.expandCommas) {
+    for (const e of [...bag]) {
+      if (e.includes(',')) e.split(/\s*,\s*/).forEach(p => { if (p.trim()) bag.add(p); });
+    }
+  }
+  if (profile.expandAbbreviations && typeof expandAbbreviations === 'function') {
+    for (const e of [...bag]) for (const x of expandAbbreviations(e)) bag.add(x);
+  }
+  if (profile.expandNumbers && typeof expandNumbers === 'function') {
+    for (const e of [...bag]) for (const x of expandNumbers(e)) bag.add(x);
+  }
+  if (profile.expandContractions) {
+    for (const e of [...bag]) for (const x of expandContractionForms(e)) bag.add(x);
+  }
+  if (profile.brAmESpellings) {
+    for (const e of [...bag]) for (const x of expandSpellingForms(e)) bag.add(x);
+  }
+
+  const result = new Set();
+  for (const s of bag) {
+    const c = canonicalizeAnswer(s, profile);
+    if (c) result.add(c);
+  }
+  return [...result];
+}
+
+function expandUserForms(input, profile) {
+  let bag = new Set([input]);
+  if (profile.apostropheTolerant) {
+    for (const u of [...bag]) {
+      const fixed = u.replace(/\b(do|does|did|is|are|was|were|has|have|had|will|would|could|should|must|might|need|shall|can|wo)nt\b/gi, "$1n't");
+      if (fixed !== u) bag.add(fixed);
+      const proPat = /\b(im|youre|hes|shes|its|were|theyre|ive|youve|weve|theyve|ill|youll|hell|shell|theyll|id|youd|hed|shed|wed|theyd)\b/gi;
+      const proMap = {im:"i'm",youre:"you're",hes:"he's",shes:"she's",its:"it's",were:"we're",theyre:"they're",ive:"i've",youve:"you've",weve:"we've",theyve:"they've",ill:"i'll",youll:"you'll",hell:"he'll",shell:"she'll",theyll:"they'll",id:"i'd",youd:"you'd",hed:"he'd",shed:"she'd",wed:"we'd",theyd:"they'd"};
+      const fixed2 = u.replace(proPat, m => proMap[m.toLowerCase()] || m);
+      if (fixed2 !== u) bag.add(fixed2);
+    }
+  }
+  if (profile.expandContractions) {
+    for (const u of [...bag]) for (const x of expandContractionForms(u)) bag.add(x);
+  }
+  if (profile.brAmESpellings) {
+    for (const u of [...bag]) for (const x of expandSpellingForms(u)) bag.add(x);
+  }
+  if (profile.expandAbbreviations && typeof expandAbbreviations === 'function') {
+    for (const u of [...bag]) for (const x of expandAbbreviations(u)) bag.add(x);
+  }
+  if (profile.expandNumbers && typeof expandNumbers === 'function') {
+    for (const u of [...bag]) for (const x of expandNumbers(u)) bag.add(x);
+  }
+
+  const result = new Set();
+  for (const s of bag) {
+    const c = canonicalizeAnswer(s, profile);
+    if (c) result.add(c);
+  }
+  return [...result];
+}
+
+function _gradeFuzzyMaxDist(targetForm, profile) {
+  if (!targetForm) return profile.fuzzyMaxAbs;
+  const lenBudget = Math.floor(targetForm.length * profile.fuzzyMaxPct);
+  const minBudget = targetForm.length >= 4 ? 2 : 1;
+  return Math.min(profile.fuzzyMaxAbs, Math.max(minBudget, lenBudget));
+}
+
+function gradeAnswer(userInput, expected, profile, extraAlts) {
+  if (!profile) profile = ANSWER_PROFILES.vocab;
+  if (userInput == null || expected == null) return { status: 'wrong', distance: Infinity };
+  const trimmedInput = String(userInput).trim();
+  if (!trimmedInput) return { status: 'wrong', distance: Infinity };
+
+  const expectedForms = expandExpectedForms(String(expected), profile, extraAlts);
+  const userForms = expandUserForms(trimmedInput, profile);
+
+  for (const u of userForms) {
+    for (const e of expectedForms) {
+      if (u === e) return { status: 'correct', distance: 0, matchedAgainst: e };
+    }
+  }
+
+  if (profile.fuzzy && profile.closeStatusAllowed && typeof levenshtein === 'function') {
+    let bestDist = Infinity, bestForm = null;
+    for (const u of userForms) {
+      for (const e of expectedForms) {
+        const d = levenshtein(u, e);
+        if (d < bestDist) { bestDist = d; bestForm = e; }
+      }
+    }
+    const maxDist = _gradeFuzzyMaxDist(bestForm, profile);
+    if (bestDist > 0 && bestDist <= maxDist) {
+      return { status: 'close', distance: bestDist, matchedAgainst: bestForm };
+    }
+  }
+
+  return { status: 'wrong', distance: Infinity };
+}
+
+
 function checkAnswer() {
   if (state.answered) { nextWord(); return; }
   const input = document.getElementById('answer-input');
@@ -6070,7 +6295,9 @@ function checkAnswer() {
   if (!userAnswer) return;
 
   const word = state.words[state.currentIdx];
-  const correct = isCorrect(userAnswer, word);
+  const grade = gradeWord(userAnswer, word);
+  const correct = grade.status === 'correct' || grade.status === 'close';
+  const isClose = grade.status === 'close';
   state.answered = true;
 
   const feedback = document.getElementById('feedback');
@@ -6079,15 +6306,22 @@ function checkAnswer() {
     SFX.play('correct');
     if (qc) { qc.classList.remove('flash-wrong'); qc.classList.add('flash-correct'); setTimeout(() => qc.classList.remove('flash-correct'), 600); }
     state.score++;
-    state.comboStreak++;
-    if (state.comboStreak > state.comboMax) state.comboMax = state.comboStreak;
-    state.comboMult = getComboTier(state.comboStreak).mult;
-    updateComboBadge();
-    input.className = 'answer-input correct';
-    feedback.className = 'feedback correct';
-    feedback.innerHTML = 'Correct!';
+    if (isClose) {
+      if (state.comboStreak >= 3) showComboLost();
+      state.comboStreak = 0; state.comboMult = 1; updateComboBadge();
+    } else {
+      state.comboStreak++;
+      if (state.comboStreak > state.comboMax) state.comboMax = state.comboStreak;
+      state.comboMult = getComboTier(state.comboStreak).mult;
+      updateComboBadge();
+    }
+    input.className = 'answer-input ' + (isClose ? 'close' : 'correct');
+    feedback.className = 'feedback ' + (isClose ? 'close' : 'correct');
+    feedback.innerHTML = isClose
+      ? '\uD83D\uDD0D Almost! The answer is: <span class="correct-answer">' + escapeHtml(word.w) + '</span> <span style="opacity:0.7;font-size:0.85em;">(\u00BD XP)</span>'
+      : 'Correct!';
     if (state.isSpeedRound) {
-      state.results.push({ word, correct: true, userAnswer, type: state.currentType, comboMult: state.comboMult });
+      state.results.push({ word, correct: true, isClose, userAnswer, type: state.currentType, comboMult: state.comboMult });
       showXPFloat(); setTimeout(nextWord, 400); return;
     }
   } else {
@@ -6113,7 +6347,7 @@ function checkAnswer() {
     }
   }
 
-  state.results.push({ word, correct, userAnswer, type: state.currentType, comboMult: state.comboMult });
+  state.results.push({ word, correct, isClose, userAnswer, type: state.currentType, comboMult: state.comboMult });
 
   input.disabled = true;
   document.getElementById('check-btn').textContent = 'Next';
@@ -6201,7 +6435,7 @@ function expandNumbers(s) {
   return [...result];
 }
 
-function isCorrect(userAnswer, word) {
+function isCorrectLegacy(userAnswer, word) {
   const norm = normalizeAnswer(userAnswer);
   const expected = normalizeAnswer(word.w);
   const cf = normalizeAnswer(getContextForm(word));
@@ -6241,6 +6475,26 @@ function isCorrect(userAnswer, word) {
     for (const u of allUserStrip) { if (u === sc) return true; }
   }
   return false;
+}
+
+// Phase 5h: gradeWord wraps the shared grader for vocab tasks.
+function gradeWord(userAnswer, word) {
+  if (!word) return { status: 'wrong', distance: Infinity };
+  const alts = [];
+  if (word.cf) alts.push(word.cf);
+  else if (typeof getContextForm === 'function') alts.push(getContextForm(word));
+  if (Array.isArray(word.a)) word.a.forEach(a => alts.push(a));
+  const result = gradeAnswer(userAnswer, word.w, ANSWER_PROFILES.vocab, alts);
+  if (result.status === 'correct' || result.status === 'close') return result;
+  if (isCorrectLegacy(userAnswer, word)) {
+    return { status: 'correct', distance: 0, matchedAgainst: word.w, viaLegacy: true };
+  }
+  return { status: 'wrong', distance: Infinity };
+}
+
+function isCorrect(userAnswer, word) {
+  const r = gradeWord(userAnswer, word);
+  return r.status === 'correct' || r.status === 'close';
 }
 
 function skipWord() {
@@ -9448,21 +9702,19 @@ function checkSentenceBuilding() {
 
 // --- Answer Handling ---
 function selectGrammarOption(btn, answer) {
-  // Disable all options
   document.querySelectorAll('#grammar-options .grammar-option-btn').forEach(b => { b.disabled = true; });
   const item = grammarSession.items[grammarSession.index];
-  const normalize = s => s.toLowerCase().trim();
-  const isCorrect = normalize(answer) === normalize(item.c) || item.a.some(a => normalize(a) === normalize(answer));
+  const profile = item.strict ? ANSWER_PROFILES.strict : ANSWER_PROFILES.grammar;
+  const grade = gradeAnswer(answer, item.c, profile, item.a || []);
+  const isCorrect = grade.status === 'correct' || grade.status === 'close';
   btn.classList.add(isCorrect ? 'correct' : 'wrong');
-  // Highlight correct if wrong
   if (!isCorrect) {
     document.querySelectorAll('#grammar-options .grammar-option-btn').forEach(b => {
-      if (normalize(b.textContent) === normalize(item.c) || item.a.some(a => normalize(a) === normalize(b.textContent))) {
-        b.classList.add('correct');
-      }
+      const r = gradeAnswer(b.textContent, item.c, profile, item.a || []);
+      if (r.status === 'correct') b.classList.add('correct');
     });
   }
-  processGrammarAnswer(item, answer, isCorrect);
+  processGrammarAnswer(item, answer, isCorrect, false);
 }
 
 function checkGrammarTyped() {
@@ -9472,75 +9724,22 @@ function checkGrammarTyped() {
   if (!answer) return;
   input.disabled = true;
   const item = grammarSession.items[grammarSession.index];
-  const norm = s => s.replace(/[.!?,;:'"()]/g, '').replace(/\s+/g, ' ').toLowerCase().trim();
-  const allAccepted = [item.c, ...(item.a || [])];
-
-  // 1. Exact match (normalized)
-  let isCorrect = allAccepted.some(a => norm(a) === norm(answer));
-
-  // 2. For error-correction: accept just the corrected word(s) OR alternative valid corrections
-  if (!isCorrect && item.t === 'error-correction') {
-    // Accept if the student's answer is contained in any accepted full sentence
-    isCorrect = allAccepted.some(a => norm(a).includes(norm(answer)) && norm(answer).length >= 2);
-    // Also accept semantically equivalent corrections (e.g. "lots of" for "a lot of")
-    if (!isCorrect) {
-      const equivPairs = [['a lot of','lots of'],['lots of','a lot of'],["don't","do not"],["do not","don't"],["doesn't","does not"],["does not","doesn't"],["isn't","is not"],["is not","isn't"],["aren't","are not"],["are not","aren't"],["wasn't","was not"],["was not","wasn't"],["weren't","were not"],["were not","weren't"],["didn't","did not"],["did not","didn't"],["can't","cannot"],["cannot","can't"]];
-      for (const [from, to] of equivPairs) {
-        const altAnswer = norm(answer).replace(from, to);
-        if (allAccepted.some(a => norm(a) === altAnswer || norm(a).includes(altAnswer))) { isCorrect = true; break; }
-      }
-    }
-  }
-
-  // 3. Partial answer matching: accept key part when full sentence expected, or vice versa
-  if (!isCorrect && ['transformation', 'free-form', 'translation', 'question-formation', 'gap-fill'].includes(item.t)) {
+  const profile = item.strict ? ANSWER_PROFILES.strict : ANSWER_PROFILES.grammar;
+  const grade = gradeAnswer(answer, item.c, profile, item.a || []);
+  let isCorrect = grade.status === 'correct';
+  let isClose = grade.status === 'close';
+  if (!isCorrect && !isClose && ['transformation','free-form','translation','question-formation','gap-fill','error-correction'].includes(item.t)) {
+    const norm = s => s.replace(/[.!?,;:'"()]/g, '').replace(/\s+/g, ' ').toLowerCase().trim();
     const normAnswer = norm(answer);
-    const answerWords = normAnswer.split(' ').length;
-    if (answerWords >= 2) {
-      isCorrect = allAccepted.some(a => {
-        const normA = norm(a);
-        // Student typed the key part (substring of full correct answer) — must be >= 40% of correct
-        if (normA.includes(normAnswer) && normAnswer.length >= normA.length * 0.4) return true;
-        // Student typed full sentence when only key part was expected — must be >= 40% overlap
-        if (normAnswer.includes(normA) && normA.length >= normAnswer.length * 0.4) return true;
-        return false;
-      });
-    }
-  }
-
-  // 4. Synonym matching for translations
-  if (!isCorrect && item.t === 'translation') {
-    const synonyms = {children:'kids',kids:'children',mum:'mom',mom:'mum',mummy:'mom',
-      favourite:'favorite',favorite:'favourite',colour:'color',color:'colour',
-      grey:'gray',gray:'grey',centre:'center',center:'centre',
-      'do not':'don\u2019t','does not':'doesn\u2019t','is not':'isn\u2019t','are not':'aren\u2019t',
-      'was not':'wasn\u2019t','were not':'weren\u2019t','did not':'didn\u2019t','cannot':'can\u2019t',
-      "don't":'do not',"doesn't":'does not',"isn't":'is not',"aren't":'are not',
-      "wasn't":'was not',"weren't":'were not',"didn't":'did not',"can't":'cannot'};
-    let normAnswer = norm(answer);
-    for (const [from, to] of Object.entries(synonyms)) {
-      normAnswer = normAnswer.replace(new RegExp('\\b' + from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi'), to);
-    }
-    isCorrect = allAccepted.some(a => {
-      let normA = norm(a);
-      for (const [from, to] of Object.entries(synonyms)) {
-        normA = normA.replace(new RegExp('\\b' + from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi'), to);
-      }
-      return normA === normAnswer;
+    const allAccepted = [item.c, ...(item.a || [])];
+    const partial = allAccepted.some(a => {
+      const normA = norm(a);
+      if (normA.includes(normAnswer) && normAnswer.length >= normA.length * 0.4 && normAnswer.split(' ').length >= 2) return true;
+      if (normAnswer.includes(normA) && normA.length >= normAnswer.length * 0.4 && normA.split(' ').length >= 2) return true;
+      return false;
     });
+    if (partial) isCorrect = true;
   }
-
-  // 5. Fuzzy match (Levenshtein)
-  let isClose = false;
-  if (!isCorrect) {
-    const bestDist = Math.min(...allAccepted.map(a => levenshtein(norm(answer), norm(a))));
-    if (bestDist <= 2) isClose = true;
-    // Also check if student answer is very close to any accepted answer proportionally
-    if (!isClose && norm(answer).length > 10) {
-      if (bestDist <= Math.ceil(norm(answer).length * 0.15)) isClose = true;
-    }
-  }
-
   processGrammarAnswer(item, answer, isCorrect, isClose);
 }
 
@@ -9576,8 +9775,8 @@ function processGrammarAnswer(item, answer, isCorrect, isClose) {
     '</div>';
   } else if (isClose) {
     grammarSession.combo = 0;
-    xp = 7;
-    if (grammarSession.hintUsed) xp = 4;
+    xp = Math.max(1, Math.round(10 * 0.5));
+    if (grammarSession.hintUsed) xp = Math.max(1, Math.round(xp * 0.5));
     grammarSession.xpEarned += xp;
     const deExpl2 = (showDe && item.ed) ? '<br><span style="color:var(--muted);font-style:italic;">\uD83C\uDDE9\uD83C\uDDEA ' + item.ed + '</span>' : '';
     feedbackArea.innerHTML = '<div class="grammar-feedback correct">' +
@@ -10522,8 +10721,8 @@ function submitVocabAnswer() {
   var task = lv.tasks[campaignState.currentTaskIndex];
   var item = task.items[campaignState.currentItemIndex];
   var answer = selected.getAttribute('data-val');
-  var result = checkCampaignAnswer(answer, item.answer, item.alts, 'mc');
-  var xp = applyCampaignComboXP(task.xpEach || 5, result.isCorrect);
+  var result = checkCampaignAnswer(answer, item.answer, item.alts, 'mc', item);
+  var xp = applyCampaignComboXP(task.xpEach || 5, result.isCorrect, result.isClose);
   campaignState.vocabXP += xp;
   campaignState.levelXP += xp;
   var chips = document.querySelectorAll('.campaign-vocab-chip');
@@ -10535,7 +10734,7 @@ function submitVocabAnswer() {
   }
   showCampaignFeedback(result, item.answer, xp);
   document.getElementById('campaign-vocab-submit').style.display = 'none';
-  campaignState.taskResults.push({ correct: result.isCorrect, xp: xp });
+  campaignState.taskResults.push({ correct: result.isCorrect || result.isClose, isClose: result.isClose, xp: xp });
 }
 
 // --- MC TASK ---
@@ -10564,8 +10763,8 @@ function submitMCAnswer(btn, answer) {
   var lv = campaignLevels[campaignState.currentLevel];
   var task = lv.tasks[campaignState.currentTaskIndex];
   var item = task.items[campaignState.currentItemIndex];
-  var result = checkCampaignAnswer(answer, item.answer, item.alts, 'mc');
-  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect);
+  var result = checkCampaignAnswer(answer, item.answer, item.alts, 'mc', item);
+  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect, result.isClose);
   if (task.type === 'image-matching') campaignState.vocabXP += xp;
   else campaignState.grammarXP += xp;
   campaignState.levelXP += xp;
@@ -10577,7 +10776,7 @@ function submitMCAnswer(btn, answer) {
   });
   if (!result.isCorrect) btn.classList.add('wrong');
   showCampaignFeedback(result, item.answer, xp);
-  campaignState.taskResults.push({ correct: result.isCorrect, xp: xp });
+  campaignState.taskResults.push({ correct: result.isCorrect || result.isClose, isClose: result.isClose, xp: xp });
 }
 
 // --- GAP-FILL MC ---
@@ -10608,8 +10807,8 @@ function submitGapFill(btn, answer) {
   var lv = campaignLevels[campaignState.currentLevel];
   var task = lv.tasks[campaignState.currentTaskIndex];
   var item = task.items[campaignState.currentItemIndex];
-  var result = checkCampaignAnswer(answer, item.answer, item.alts, 'gap-fill');
-  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect);
+  var result = checkCampaignAnswer(answer, item.answer, item.alts, 'gap-fill', item);
+  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect, result.isClose);
   campaignState.grammarXP += xp;
   campaignState.levelXP += xp;
   var btns = document.querySelectorAll('.campaign-mc-btn');
@@ -10622,7 +10821,7 @@ function submitGapFill(btn, answer) {
   var blank = document.getElementById('campaign-gap-blank');
   if (blank) blank.textContent = item.answer;
   showCampaignFeedback(result, item.answer, xp);
-  campaignState.taskResults.push({ correct: result.isCorrect, xp: xp });
+  campaignState.taskResults.push({ correct: result.isCorrect || result.isClose, isClose: result.isClose, xp: xp });
 }
 
 // --- GAP-FILL TYPED ---
@@ -10656,8 +10855,8 @@ function submitTypedAnswer() {
   var task = lv.tasks[campaignState.currentTaskIndex];
   var item = task.items[campaignState.currentItemIndex];
   var userAnswer = input.value.trim();
-  var result = checkCampaignAnswer(userAnswer, item.answer, item.alts, 'typed');
-  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect);
+  var result = checkCampaignAnswer(userAnswer, item.answer, item.alts, 'typed', item);
+  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect, result.isClose);
   campaignState.grammarXP += xp;
   campaignState.levelXP += xp;
   input.disabled = true;
@@ -10666,7 +10865,7 @@ function submitTypedAnswer() {
   var blank = document.getElementById('campaign-gap-blank');
   if (blank) blank.textContent = item.answer;
   showCampaignFeedback(result, item.answer, xp);
-  campaignState.taskResults.push({ correct: result.isCorrect, xp: xp });
+  campaignState.taskResults.push({ correct: result.isCorrect || result.isClose, isClose: result.isClose, xp: xp });
 }
 
 // --- TRUE/FALSE ---
@@ -10695,8 +10894,8 @@ function submitTFAnswer(btn, answer) {
   var lv = campaignLevels[campaignState.currentLevel];
   var task = lv.tasks[campaignState.currentTaskIndex];
   var item = task.items[campaignState.currentItemIndex];
-  var result = checkCampaignAnswer(answer, item.answer, item.alts, 'tf');
-  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect);
+  var result = checkCampaignAnswer(answer, item.answer, item.alts, 'tf', item);
+  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect, result.isClose);
   campaignState.grammarXP += xp;
   campaignState.levelXP += xp;
   var btns = document.querySelectorAll('.campaign-tf-btn');
@@ -10707,7 +10906,7 @@ function submitTFAnswer(btn, answer) {
   });
   if (!result.isCorrect) btn.classList.add('wrong');
   showCampaignFeedback(result, item.answer, xp);
-  campaignState.taskResults.push({ correct: result.isCorrect, xp: xp });
+  campaignState.taskResults.push({ correct: result.isCorrect || result.isClose, isClose: result.isClose, xp: xp });
 }
 
 // --- READING COMPREHENSION (now a task type) ---
@@ -10770,8 +10969,8 @@ function submitReadingAnswer(btn, answer) {
   var task = lv.tasks[campaignState.currentTaskIndex];
   var questions = task.questions || task.items || [];
   var q = questions[campaignState.readingQuestionIndex];
-  var result = checkCampaignAnswer(answer, q.answer, q.alts, 'reading');
-  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect);
+  var result = checkCampaignAnswer(answer, q.answer, q.alts, 'reading', q);
+  var xp = applyCampaignComboXP(task.xpEach || 10, result.isCorrect, result.isClose);
   campaignState.readingXP += xp;
   campaignState.levelXP += xp;
   var btns = document.querySelectorAll('#campaign-question-area .campaign-mc-btn');
@@ -10783,7 +10982,7 @@ function submitReadingAnswer(btn, answer) {
   if (!result.isCorrect) btn.classList.add('wrong');
   document.getElementById('campaign-reading-xp').textContent = campaignState.levelXP + ' XP';
   showReadingFeedback(result, q.answer, xp);
-  campaignState.taskResults.push({ correct: result.isCorrect, xp: xp });
+  campaignState.taskResults.push({ correct: result.isCorrect || result.isClose, isClose: result.isClose, xp: xp });
 }
 
 function showReadingFeedback(result, correctAnswer, xp) {
@@ -10901,23 +11100,17 @@ function normCampaign(s) {
   return s.toLowerCase().trim().replace(/['']/g, "'").replace(/\s+/g, ' ');
 }
 
-function checkCampaignAnswer(userAnswer, correctAnswer, acceptedAlts, exerciseType) {
-  var u = normCampaign(userAnswer);
-  var c = normCampaign(correctAnswer);
-  if (u === c) return { isCorrect:true, isClose:false };
-  if (acceptedAlts && acceptedAlts.length) {
-    for (var i = 0; i < acceptedAlts.length; i++) {
-      if (u === normCampaign(acceptedAlts[i])) return { isCorrect:true, isClose:false };
-    }
+function checkCampaignAnswer(userAnswer, correctAnswer, acceptedAlts, exerciseType, item) {
+  var profile = (item && item.strict) ? ANSWER_PROFILES.strict : ANSWER_PROFILES.campaign;
+  if (exerciseType !== 'typed' && exerciseType !== 'reading' && exerciseType !== 'translation' && exerciseType !== 'transform') {
+    profile = Object.assign({}, profile, { fuzzy: false, closeStatusAllowed: false });
   }
-  // Close check for typed answers
-  if (exerciseType === 'typed' || exerciseType === 'reading') {
-    var maxDist = c.length <= 6 ? 1 : 2;
-    if (levenshteinDist(u, c) <= maxDist) return { isCorrect:false, isClose:true };
-  }
-  // Punctuation-only difference
-  if (u.replace(/[.,!?;:'"]/g, '') === c.replace(/[.,!?;:'"]/g, '')) return { isCorrect:true, isClose:false };
-  return { isCorrect:false, isClose:false };
+  var grade = gradeAnswer(userAnswer, correctAnswer, profile, acceptedAlts || []);
+  return {
+    isCorrect: grade.status === 'correct',
+    isClose: grade.status === 'close',
+    matchedAgainst: grade.matchedAgainst
+  };
 }
 
 function levenshteinDist(a, b) {
@@ -10944,8 +11137,12 @@ function getCampaignComboMult() {
   return {mult:1, label:''};
 }
 
-function applyCampaignComboXP(baseXP, isCorrect) {
-  if (!isCorrect) { campaignCombo = 0; return 0; }
+function applyCampaignComboXP(baseXP, isCorrect, isClose) {
+  if (!isCorrect && !isClose) { campaignCombo = 0; return 0; }
+  if (isClose) {
+    campaignCombo = 0;
+    return Math.max(1, Math.round(baseXP * 0.5));
+  }
   campaignCombo++;
   var tier = getCampaignComboMult();
   return Math.round(baseXP * tier.mult);
