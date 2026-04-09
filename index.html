@@ -892,6 +892,57 @@ h1 { display: none; }
 .home-action-label { font-size: 0.75rem; font-weight: 700; color: var(--text); font-family: 'Fredoka', sans-serif; text-align: center; line-height: 1.2; }
 [data-theme="light"] .home-action-card { background: #fff; }
 
+/* Smart Review hint (below Start Practice) */
+.home-smart-review-hint {
+  display: flex; align-items: center; gap: 8px; width: 100%; padding: 0.6rem 1rem;
+  margin-top: 6px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 600;
+  color: var(--accent); background: var(--accent-glow); border: 1px solid rgba(22,163,74,0.15);
+  transition: all 0.15s; box-sizing: border-box;
+}
+.home-smart-review-hint:hover { border-color: var(--accent); }
+.home-smart-review-hint:active { transform: scale(0.98); }
+.home-smart-review-desc {
+  font-size: 0.68rem; color: var(--muted); text-align: center; margin-top: 4px;
+  font-style: italic; display: none;
+}
+
+/* Mode switch link */
+.home-mode-switch-link {
+  display: block; width: 100%; text-align: center; margin-top: 8px;
+  padding: 0.5rem; background: none; border: none; cursor: pointer;
+  font-size: 0.78rem; font-weight: 600; color: var(--muted); font-family: inherit;
+  transition: color 0.15s;
+}
+.home-mode-switch-link:hover { color: var(--accent); }
+
+/* Full-width action card (Words/Rules, Battle Arena) */
+.home-fullwidth-card {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 0.9rem 1rem;
+  border-radius: var(--radius); border: 1.5px solid var(--card-border);
+  background: var(--card); cursor: pointer; transition: all 0.15s;
+  box-shadow: var(--shadow-card); text-align: left; box-sizing: border-box;
+}
+.home-fullwidth-card:hover { border-color: var(--accent); background: var(--card-hover); transform: translateY(-1px); }
+.home-fullwidth-card:active { transform: scale(0.98); }
+.home-fullwidth-icon { font-size: 1.5rem; flex-shrink: 0; width: 36px; text-align: center; }
+.home-fullwidth-info { flex: 1; min-width: 0; }
+.home-fullwidth-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.92rem; color: var(--text); display: block; }
+.home-fullwidth-subtitle { font-size: 0.72rem; color: var(--muted); display: block; margin-top: 1px; }
+.home-fullwidth-arrow { color: var(--muted); font-size: 0.9rem; flex-shrink: 0; }
+[data-theme="light"] .home-fullwidth-card { background: #fff; }
+
+/* Class Level Card */
+.home-class-level-card {
+  background: var(--card); border: 1.5px solid var(--card-border); border-radius: var(--radius);
+  padding: 0.8rem 1rem; margin-bottom: 0.6rem; box-shadow: var(--shadow-card); width: 100%;
+}
+.class-level-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.class-level-title { font-weight: 800; font-size: 0.82rem; color: var(--accent); }
+.class-level-name { font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); }
+.class-level-bar { height: 8px; background: var(--card-border); border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
+.class-level-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); border-radius: 4px; transition: width 0.6s ease; }
+.class-level-text { font-size: 0.68rem; color: var(--muted); text-align: center; }
+
 /* Fixed Bottom Navigation */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 8000;
@@ -2537,55 +2588,60 @@ body.playing .header-container { display: none; }
       <div class="profile-xp-track"><div class="profile-xp-fill" id="rank-progress-fill"></div></div>
       <div class="profile-xp-labels"><span id="rank-current-label"></span><span id="rank-xp-to-next"></span><span id="rank-next-label"></span></div>
     </div>
+    <div class="profile-badges-row" id="badge-row"></div>
     <div class="profile-logout-row">
-      <button class="logout-btn" onclick="showModeSelectScreen()">🔄 Modus wechseln</button>
       <button class="logout-btn" onclick="logout()">Log Out</button>
     </div>
   </div>
 
-  <!-- Hidden: stats kept for JS, badges kept for JS -->
-  <div id="badge-row" style="display:none;"></div>
+  <!-- Hidden: stats kept for JS -->
   <div class="stats-bar" style="display:none;">
     <div class="stat-card"><div class="stat-value" id="stat-sessions">0</div><div class="stat-label">Sessions</div></div>
     <div class="stat-card"><div class="stat-value" id="stat-accuracy">–</div><div class="stat-label">Accuracy</div></div>
     <div class="stat-card"><div class="stat-value" id="stat-mastered">0</div><div class="stat-label">Mastered</div></div>
     <div class="stat-card"><div class="stat-value" id="stat-streak">0</div><div class="stat-label">Streak</div></div>
   </div>
+  <div id="review-btn" style="display:none;"></div>
 
-  <!-- Primary Action -->
+  <!-- Start Practice + Smart Review hint + Mode Switch -->
   <div class="home-section">
     <button class="btn btn-primary btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
+    <div id="smart-review-hint" class="home-smart-review-hint" style="display:none;" onclick="startSmartReview()">
+      <span>🔄</span>
+      <span id="smart-review-hint-text">20 Wörter zur Wiederholung</span>
+      <span style="font-size:0.65rem;color:var(--muted);margin-left:auto;">Starten →</span>
+    </div>
+    <div class="home-smart-review-desc" id="smart-review-desc">Übt automatisch Wörter, die du falsch hattest</div>
+    <button class="home-mode-switch-link" id="home-mode-switch" onclick="showModeSelectScreen()">🔄 Zu Grammatik oder Story Mode wechseln</button>
   </div>
 
-  <!-- Action Grid (2x2, equal width) -->
+  <!-- Words/Rules — full width card -->
+  <div class="home-section">
+    <button class="home-fullwidth-card" id="home-words-btn" onclick="showWordReference()">
+      <span class="home-fullwidth-icon">📖</span>
+      <div class="home-fullwidth-info">
+        <span class="home-fullwidth-title" id="home-words-title">Wörterbuch</span>
+        <span class="home-fullwidth-subtitle" id="home-words-subtitle">Deine gesamte Vokabel-Bibliothek durchsuchen</span>
+      </div>
+      <span class="home-fullwidth-arrow">→</span>
+    </button>
+  </div>
+
+  <!-- Battle Arena — full width card -->
+  <div class="home-section">
+    <button class="home-fullwidth-card" id="btn-battle" onclick="openBattleLobby()" style="display:none;">
+      <span class="home-fullwidth-icon">⚔️</span>
+      <div class="home-fullwidth-info">
+        <span class="home-fullwidth-title">Battle Arena</span>
+        <span class="home-fullwidth-subtitle" id="battle-arena-subtitle">Duell, Klassenquiz & Kampfverlauf</span>
+      </div>
+      <span class="home-fullwidth-arrow">→</span>
+    </button>
+  </div>
+
+  <!-- Nav Row: Fortschritt + Bestenliste (2-col) -->
   <div class="home-section">
     <div class="home-action-grid">
-      <button class="home-action-card" id="review-btn" style="display:none;" onclick="startSmartReview()">
-        <span class="home-action-icon">🔄</span>
-        <span class="home-action-label" id="review-btn-label">Wiederholung</span>
-      </button>
-      <button class="home-action-card" id="home-words-btn" onclick="showWordReference()">
-        <span class="home-action-icon">📖</span>
-        <span class="home-action-label">Wörter</span>
-      </button>
-      <button class="home-action-card" onclick="openClassQuizJoin()">
-        <span class="home-action-icon">🎓</span>
-        <span class="home-action-label">Klassenquiz</span>
-      </button>
-      <button class="home-action-card" id="btn-battle" onclick="openBattleLobby()" style="display:none;">
-        <span class="home-action-icon">⚔️</span>
-        <span class="home-action-label">Battle Arena</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Nav Row (same grid) -->
-  <div class="home-section">
-    <div class="home-action-grid home-nav-3col">
-      <button class="home-action-card" onclick="state.mode==='grammar'?showGrammarMap():showProgressMap()">
-        <span class="home-action-icon">🗺️</span>
-        <span class="home-action-label">Karte</span>
-      </button>
       <button class="home-action-card" onclick="showProgressScreen()">
         <span class="home-action-icon">📊</span>
         <span class="home-action-label">Fortschritt</span>
@@ -2621,16 +2677,16 @@ body.playing .header-container { display: none; }
     </div>
   </div>
 
-  <div id="weekly-goal-card" style="display:none;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:12px;">
-      <span style="font-weight:800;font-size:0.85rem;color:var(--accent);white-space:nowrap;">🎯 Weekly Class Goal</span>
-      <span id="weekly-goal-label" style="font-size:0.68rem;color:var(--muted);white-space:nowrap;"></span>
+  <!-- Class Level Card (replaces Weekly Goal) -->
+  <div id="class-level-card" class="home-class-level-card" style="display:none;">
+    <div class="class-level-header">
+      <span class="class-level-title" id="class-level-title">🏫 Klasse 1A</span>
+      <span class="class-level-name" id="class-level-name">Study Group</span>
     </div>
-    <div style="height:10px;background:var(--card-border);border-radius:5px;overflow:hidden;margin-bottom:4px;">
-      <div id="weekly-goal-fill" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-light));border-radius:5px;transition:width 0.6s ease;width:0%;"></div>
-    </div>
-    <div id="weekly-goal-text" style="font-size:0.75rem;color:var(--text-secondary);text-align:center;"></div>
+    <div class="class-level-bar"><div class="class-level-fill" id="class-level-fill" style="width:0%"></div></div>
+    <div class="class-level-text" id="class-level-text">0 XP · Level 1</div>
   </div>
+  <div id="weekly-goal-card" style="display:none;"></div>
 
   <!-- Toggles -->
   <div class="home-nav-footer">
@@ -3169,9 +3225,9 @@ function t(key) { return (UI_TEXT[uiLang] || UI_TEXT.de)[key] || (UI_TEXT.en[key
 function setUiLang(lang) {
   uiLang = lang;
   localStorage.setItem('ui-lang', lang);
-  // Update settings drawer label
-  var langLabel = document.getElementById('settings-lang-label');
-  if (langLabel) langLabel.textContent = lang === 'de' ? 'Deutsch' : 'English';
+  // Update button immediately
+  var langBtn = document.getElementById('lang-toggle-btn');
+  if (langBtn) langBtn.textContent = lang === 'de' ? '🇩🇪 Deutsch' : '🇬🇧 English';
   // Refresh current screen
   if (state.mode === 'grammar') showGrammarHomeScreen();
   else if (state.mode === 'campaign') return;
@@ -4183,23 +4239,23 @@ let state = {
 const LEVELS = [
   {level:1,xp:0,name:'Wordling',zone:'bronze',vibe:'just spawned in'},
   {level:2,xp:50,name:'Word Scout',zone:'bronze',vibe:'exploring the map'},
-  {level:3,xp:120,name:'Spell Rookie',zone:'bronze',vibe:'learning the controls'},
-  {level:4,xp:220,name:'Letter Looter',zone:'bronze',vibe:'grabbing the first loot'},
-  {level:5,xp:350,name:'Vocab Raider',zone:'bronze',vibe:'raiding the word vault'},
-  {level:6,xp:500,name:'Word Crafter',zone:'silver',vibe:'crafting with words now'},
-  {level:7,xp:700,name:'Phrase Builder',zone:'silver',vibe:'building something real'},
-  {level:8,xp:950,name:'Syntax Striker',zone:'silver',vibe:'landing clean hits'},
-  {level:9,xp:1250,name:'Word Warrior',zone:'silver',vibe:'battle-tested'},
-  {level:10,xp:1600,name:'Vocab Veteran',zone:'silver',vibe:'seen some things'},
-  {level:11,xp:2000,name:'Language Ninja',zone:'gold',vibe:'silent but deadly accurate'},
-  {level:12,xp:2700,name:'Word Wizard',zone:'gold',vibe:'spells are getting real'},
-  {level:13,xp:3500,name:'Grammar Ghost',zone:'gold',vibe:'moves through units unseen'},
-  {level:14,xp:5000,name:'Vocab Viking',zone:'gold',vibe:'conquering word by word'},
-  {level:15,xp:6500,name:'Lexicon Legend',zone:'gold',vibe:'people know your name'},
-  {level:16,xp:8000,name:'Word Warden',zone:'diamond',vibe:'guarding the language'},
-  {level:17,xp:11000,name:'Sentence Sovereign',zone:'diamond',vibe:'ruling the syntax realm'},
-  {level:18,xp:15000,name:'Vocab Titan',zone:'diamond',vibe:'final boss energy'},
-  {level:19,xp:20000,name:'Language Overlord',zone:'diamond',vibe:'nothing left to prove'},
+  {level:3,xp:120,name:'Spelling Bee',zone:'bronze',vibe:'letter by letter'},
+  {level:4,xp:220,name:'Vocab Hunter',zone:'bronze',vibe:'on the hunt'},
+  {level:5,xp:350,name:'Word Collector',zone:'bronze',vibe:'collecting words'},
+  {level:6,xp:500,name:'Dictionary Diver',zone:'silver',vibe:'diving deep'},
+  {level:7,xp:700,name:'Phrase Finder',zone:'silver',vibe:'finding the right words'},
+  {level:8,xp:950,name:'Word Warrior',zone:'silver',vibe:'battle-tested'},
+  {level:9,xp:1250,name:'Vocab Viking',zone:'silver',vibe:'conquering word by word'},
+  {level:10,xp:1600,name:'Language Explorer',zone:'silver',vibe:'exploring new worlds'},
+  {level:11,xp:2000,name:'Word Wizard',zone:'gold',vibe:'casting word spells'},
+  {level:12,xp:2700,name:'Vocab Champion',zone:'gold',vibe:'unbeatable'},
+  {level:13,xp:3500,name:'Word Master',zone:'gold',vibe:'mastering words'},
+  {level:14,xp:5000,name:'Lexicon Legend',zone:'gold',vibe:'a living legend'},
+  {level:15,xp:6500,name:'Vocab Virtuoso',zone:'gold',vibe:'top-tier performance'},
+  {level:16,xp:8000,name:'Word Titan',zone:'diamond',vibe:'a titan of words'},
+  {level:17,xp:11000,name:'Language Lord',zone:'diamond',vibe:'ruling the language'},
+  {level:18,xp:15000,name:'Vocab Sovereign',zone:'diamond',vibe:'sovereign in all situations'},
+  {level:19,xp:20000,name:'Word Emperor',zone:'diamond',vibe:'nothing left to prove'},
   {level:20,xp:30000,name:'Grandmaster',zone:'diamond',vibe:'GG'},
   {level:21,xp:30000,name:'Grandmaster',zone:'prestige',prestige:1,vibe:'prestige unlocked'},
   {level:22,xp:45000,name:'Grandmaster',zone:'prestige',prestige:2,vibe:'rising legend'},
@@ -4208,7 +4264,7 @@ const LEVELS = [
   {level:25,xp:120000,name:'Grandmaster',zone:'prestige',prestige:5,vibe:'ultimate master'},
 ];
 const GRAMMAR_LEVELS = [
-  {level:1,xp:0,name:'Rule Noob',zone:'bronze',vibe:'just spawned in'},
+  {level:1,xp:0,name:'Rule Rookie',zone:'bronze',vibe:'first rule learned'},
   {level:2,xp:50,name:'Comma Kid',zone:'bronze',vibe:'finding the basics'},
   {level:3,xp:120,name:'Tense Cadet',zone:'bronze',vibe:'past, present, future...'},
   {level:4,xp:220,name:'Sentence Slicer',zone:'bronze',vibe:'chopping up sentences'},
@@ -4234,6 +4290,30 @@ const GRAMMAR_LEVELS = [
   {level:24,xp:90000,name:'Grammar God',zone:'prestige',prestige:4,vibe:'mythic tier'},
   {level:25,xp:120000,name:'Grammar God',zone:'prestige',prestige:5,vibe:'ultimate master'},
 ];
+const OVERALL_LEVELS = [
+  {level:1,xp:0,name:'First Steps',zone:'bronze',vibe:'every journey starts here'},
+  {level:2,xp:300,name:'Listener',zone:'bronze',vibe:'tuning in to English'},
+  {level:3,xp:1000,name:'Communicator',zone:'silver',vibe:'starting to get your point across'},
+  {level:4,xp:3000,name:'Storyteller',zone:'silver',vibe:'finding your voice in English'},
+  {level:5,xp:6000,name:'Translator',zone:'gold',vibe:'bridging two languages'},
+  {level:6,xp:12000,name:'Globetrotter',zone:'gold',vibe:'English takes you places'},
+  {level:7,xp:20000,name:'Polyglot',zone:'gold',vibe:'fluency is within reach'},
+  {level:8,xp:35000,name:'Native Speaker',zone:'diamond',vibe:'sounds like you grew up with it'},
+  {level:9,xp:55000,name:'Language Architect',zone:'diamond',vibe:'building English like a pro'},
+  {level:10,xp:80000,name:'English GOAT',zone:'diamond',vibe:'greatest English learner of all time'},
+];
+const CLASS_LEVELS = [
+  {level:1,xp:0,name:'Study Group',vibe:'just getting started together'},
+  {level:2,xp:2000,name:'Book Club',vibe:'reading the same page'},
+  {level:3,xp:8000,name:'Think Tank',vibe:'brains working together'},
+  {level:4,xp:20000,name:'Dream Team',vibe:'unstoppable together'},
+  {level:5,xp:40000,name:'Brain Squad',vibe:'collective genius'},
+  {level:6,xp:70000,name:'Power Crew',vibe:'no challenge too big'},
+  {level:7,xp:110000,name:'Super Class',vibe:'above and beyond'},
+  {level:8,xp:160000,name:'Legend League',vibe:'the stuff of legends'},
+  {level:9,xp:220000,name:'Hall of Famers',vibe:'every name remembered'},
+  {level:10,xp:300000,name:'World Class',vibe:'the best class on the planet'},
+];
 function getLevelsForMode(mode) { return mode === 'grammar' ? GRAMMAR_LEVELS : LEVELS; }
 function getLevel(xp, mode) {
   const levels = mode ? getLevelsForMode(mode) : (state.mode === 'grammar' ? GRAMMAR_LEVELS : LEVELS);
@@ -4242,6 +4322,20 @@ function getLevel(xp, mode) {
   const next = levels[lvl.level] || null;
   const progress = next ? (xp - lvl.xp) / (next.xp - lvl.xp) : 1;
   return { ...lvl, next, progress, currentXp: xp, prestige: lvl.prestige || 0 };
+}
+function getOverallLevel(totalXp) {
+  let lvl = OVERALL_LEVELS[0];
+  for (let i = OVERALL_LEVELS.length - 1; i >= 0; i--) { if (totalXp >= OVERALL_LEVELS[i].xp) { lvl = OVERALL_LEVELS[i]; break; } }
+  const next = OVERALL_LEVELS[lvl.level] || null;
+  const progress = next ? (totalXp - lvl.xp) / (next.xp - lvl.xp) : 1;
+  return { ...lvl, next, progress, currentXp: totalXp };
+}
+function getClassLevel(classXp) {
+  let lvl = CLASS_LEVELS[0];
+  for (let i = CLASS_LEVELS.length - 1; i >= 0; i--) { if (classXp >= CLASS_LEVELS[i].xp) { lvl = CLASS_LEVELS[i]; break; } }
+  const next = CLASS_LEVELS[lvl.level] || null;
+  const progress = next ? (classXp - lvl.xp) / (next.xp - lvl.xp) : 1;
+  return { ...lvl, next, progress, currentXp: classXp };
 }
 const ZONE_COLORS = {
   bronze:{bg:'#92572a',light:'#f5c4a1',text:'#4a1b0c',accent:'#d4874a'},
@@ -7726,8 +7820,19 @@ function showBattleLobby(players) {
   });
   const modal = document.createElement('div');
   modal.className = 'battle-modal-bg battle-modal';
-  var duelLabel = state.mode === 'grammar' ? '\uD83E\uDDE0 Grammar Duel' : '\uD83C\uDFC6 Word Duel';
-  modal.innerHTML = '<div style="text-align:center;margin-bottom:16px;"><div style="font-size:18px;font-weight:600;">\u2694\uFE0F Choose your opponent</div><div style="font-size:13px;opacity:0.5;margin-top:4px;">' + players.length + ' classmate' + (players.length > 1 ? 's' : '') + ' online</div></div><div>' + listHtml + '</div><div style="border-top:1px solid var(--card-border,rgba(255,255,255,0.1));margin-top:12px;padding-top:12px;"><button onclick="document.getElementById(\'battle-lobby-overlay\').remove();openDuelHub();" style="width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--accent-glow,rgba(59,130,246,0.15));border:1px solid var(--accent,#3b82f6);color:var(--accent,#3b82f6);">' + duelLabel + '</button><button onclick="document.getElementById(\'battle-lobby-overlay\').remove();showBattleHistory();" style="width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--card);border:1px solid var(--card-border);color:var(--text);margin-top:8px;">\uD83D\uDCDC Battle History</button></div><div style="text-align:center;margin-top:12px;"><button onclick="document.getElementById(\'battle-lobby-overlay\').remove()" class="battle-modal-close">Cancel</button></div>';
+  var duelLabel = state.mode === 'grammar' ? '🧠 ' + (uiLang==='de'?'Grammatik-Duell':'Grammar Duel') : '🏆 ' + (uiLang==='de'?'Wort-Duell':'Word Duel');
+  var titleText = uiLang==='de' ? '⚔️ Battle Arena' : '⚔️ Battle Arena';
+  var onlineText = players.length + ' ' + (uiLang==='de' ? (players.length===1?'Mitschüler':'Mitschüler') + ' online' : 'classmate' + (players.length>1?'s':'') + ' online');
+  var classQuizLabel = uiLang==='de' ? '🎓 Klassenquiz beitreten' : '🎓 Join Class Quiz';
+  var historyLabel = uiLang==='de' ? '📋 Kampfverlauf' : '📋 Battle History';
+  var cancelLabel = uiLang==='de' ? 'Schließen' : 'Cancel';
+  modal.innerHTML = '<div style="text-align:center;margin-bottom:16px;"><div style="font-size:18px;font-weight:700;">' + titleText + '</div><div style="font-size:13px;opacity:0.5;margin-top:4px;">' + onlineText + '</div></div>' +
+    '<button onclick="document.getElementById(\'battle-lobby-overlay\').remove();openClassQuizJoin();" style="width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--accent-light),var(--accent));border:none;color:#fff;margin-bottom:10px;">' + classQuizLabel + '</button>' +
+    '<div>' + listHtml + '</div>' +
+    '<div style="border-top:1px solid var(--card-border);margin-top:12px;padding-top:12px;">' +
+    '<button onclick="document.getElementById(\'battle-lobby-overlay\').remove();openDuelHub();" style="width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--accent-glow);border:1px solid var(--accent);color:var(--accent);">' + duelLabel + '</button>' +
+    '<button onclick="document.getElementById(\'battle-lobby-overlay\').remove();showBattleHistory();" style="width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--card);border:1px solid var(--card-border);color:var(--text);margin-top:8px;">' + historyLabel + '</button>' +
+    '</div><div style="text-align:center;margin-top:12px;"><button onclick="document.getElementById(\'battle-lobby-overlay\').remove()" class="battle-modal-close">' + cancelLabel + '</button></div>';
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
 }
@@ -9641,30 +9746,37 @@ showHomeScreen = function() {
   } else if (state.mode === 'grammar') {
     showGrammarHomeScreen();
   } else {
-    // Restore vocab UI elements before showing
-    const practiceBtn = document.querySelector('.btn-start-practice');
-    if (practiceBtn) {
-      practiceBtn.textContent = '🎯 ' + t('startVocabPractice');
-      practiceBtn.onclick = openPracticeSetup;
-    }
-    // Restore Words button (was Rules in grammar mode)
-    const wordsBtn = document.getElementById('home-words-btn');
+    // Restore vocab UI elements
+    var practiceBtn = document.querySelector('.btn-start-practice');
+    if (practiceBtn) { practiceBtn.textContent = '🎯 ' + t('startVocabPractice'); practiceBtn.onclick = openPracticeSetup; }
+    // Words card
+    var wordsBtn = document.getElementById('home-words-btn');
     if (wordsBtn) {
-      var wIcon = wordsBtn.querySelector('.home-action-icon');
-      var wLabel = wordsBtn.querySelector('.home-action-label');
-      if (wIcon) wIcon.textContent = '📖';
-      if (wLabel) wLabel.textContent = t('words');
+      var wIcon = wordsBtn.querySelector('.home-fullwidth-icon'); if (wIcon) wIcon.textContent = '📖';
+      var wTitle = document.getElementById('home-words-title'); if (wTitle) wTitle.textContent = uiLang==='de' ? 'Wörterbuch' : 'Dictionary';
+      var wSub = document.getElementById('home-words-subtitle'); if (wSub) wSub.textContent = uiLang==='de' ? 'Deine gesamte Vokabel-Bibliothek durchsuchen' : 'Browse your full vocabulary library';
       wordsBtn.onclick = function() { showWordReference(); };
     }
-    // Restore nav grid
-    const navGrid = document.querySelector('.home-nav-grid');
-    if (navGrid) {
-      navGrid.innerHTML = '<button class="btn btn-secondary btn-small" onclick="showProgressMap()">🗺️<span>' + t('map') + '</span></button>' +
-        '<button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>' + t('progress') + '</span></button>' +
-        '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>' + t('leaderboard') + '</span></button>';
+    // Smart review hint
+    var srHint = document.getElementById('smart-review-hint');
+    var reviewWords = getSmartReviewWords();
+    if (srHint) {
+      if (reviewWords.length > 0) {
+        srHint.style.display = 'flex';
+        document.getElementById('smart-review-hint-text').textContent = reviewWords.length + ' ' + (uiLang==='de' ? 'Wörter zur Wiederholung' : 'words to review');
+        srHint.onclick = function() { startSmartReview(); };
+      } else { srHint.style.display = 'none'; }
     }
-    // Restore today-card innerHTML (grammar mode replaces it with Rule of the Day)
-    const todayCard = document.getElementById('today-card');
+    var srDesc = document.getElementById('smart-review-desc');
+    if (srDesc) srDesc.textContent = uiLang==='de' ? 'Übt automatisch Wörter, die du falsch hattest' : 'Automatically reviews words you got wrong';
+    // Mode switch link
+    var modeLink = document.getElementById('home-mode-switch');
+    if (modeLink) modeLink.textContent = uiLang==='de' ? '🔄 Zu Grammatik oder Story Mode wechseln' : '🔄 Switch to Grammar or Story Mode';
+    // Battle arena subtitle
+    var bSub = document.getElementById('battle-arena-subtitle');
+    if (bSub) bSub.textContent = uiLang==='de' ? 'Duell, Klassenquiz & Kampfverlauf' : 'Duel, Class Quiz & Battle History';
+    // Restore today-card
+    var todayCard = document.getElementById('today-card');
     if (todayCard) {
       todayCard.style.display = 'none';
       todayCard.innerHTML =
@@ -9672,11 +9784,10 @@ showHomeScreen = function() {
         '<div class="today-divider"></div>' +
         '<div class="today-section"><div class="today-header"><span class="today-label">⚡ ' + t('dailyChallenge') + '</span><span class="today-date" id="daily-date"></span></div><div class="today-daily-desc">10 ' + t('words').toLowerCase() + ' · ' + (uiLang==='de' ? 'gleich für alle heute' : 'same for everyone today') + '</div><div id="daily-action"></div></div>';
     }
-    // Restore weekly goal card visibility (grammar mode hides it)
-    const weeklyCard = document.getElementById('weekly-goal-card');
-    if (weeklyCard) weeklyCard.style.display = '';
+    // Class level
+    loadClassLevel();
     _origShowHomeScreen();
-    addModeSwitchPill();
+    renderBadgeRow();
   }
   // Show deferred campaign level-ups
   if (window._campaignLevelUps && window._campaignLevelUps.length > 0) {
@@ -9795,75 +9906,76 @@ function showGrammarHomeScreen() {
   document.getElementById('welcome-xp').innerHTML = '⭐ ' + gxp.toLocaleString() + ' XP · <span style="opacity:0.7;">' + glv.name + '</span>' + (glv.vibe ? '<br><span style="opacity:0.5;font-style:italic;font-size:0.75rem;">' + glv.vibe + '</span>' : '');
   updateAllAvatars();
   updateRankDisplay();
+  renderBadgeRow();
   // Stats (hidden but kept for data)
   document.getElementById('stat-sessions').textContent = d.grammarSessions || 0;
   const gAns = d.grammarAnswered || 0;
   const gCorr = d.grammarCorrect || 0;
   const acc = gAns > 0 ? Math.round((gCorr / gAns) * 100) + '%' : '–';
   document.getElementById('stat-accuracy').textContent = acc;
-  const mastered = getGrammarMasteredCount();
-  document.getElementById('stat-mastered').textContent = mastered;
+  document.getElementById('stat-mastered').textContent = getGrammarMasteredCount();
   document.getElementById('stat-streak').textContent = d.grammarStreak || 0;
-  // Show grammar daily card (Rule of the Day + Daily Grammar Challenge)
+  // Daily card
   renderGrammarDailyCard();
-  const weeklyCard = document.getElementById('weekly-goal-card');
+  var weeklyCard = document.getElementById('weekly-goal-card');
   if (weeklyCard) weeklyCard.style.display = 'none';
-  // Update practice button
-  const practiceBtn = document.querySelector('.btn-start-practice');
-  if (practiceBtn) {
-    practiceBtn.textContent = '🧠 ' + t('startGrammarPractice');
-    practiceBtn.onclick = openGrammarPractice;
+  // Practice button
+  var practiceBtn = document.querySelector('.btn-start-practice');
+  if (practiceBtn) { practiceBtn.textContent = '🧠 ' + t('startGrammarPractice'); practiceBtn.onclick = openGrammarPractice; }
+  // Smart review hint
+  var srHint = document.getElementById('smart-review-hint');
+  var srDesc = document.getElementById('smart-review-desc');
+  var weakStructures = getGrammarWeakStructures();
+  if (srHint) {
+    if (weakStructures.length > 0) {
+      srHint.style.display = 'flex';
+      document.getElementById('smart-review-hint-text').textContent = weakStructures.length + ' ' + t('topics') + ' ' + (uiLang==='de' ? 'zur Wiederholung' : 'to review');
+      srHint.onclick = function() { startGrammarSmartReview(weakStructures); };
+    } else { srHint.style.display = 'none'; }
   }
-  // Swap Words → Rules in action grid
-  const wordsBtn = document.getElementById('home-words-btn');
+  if (srDesc) srDesc.textContent = uiLang==='de' ? 'Übt automatisch Themen, die du falsch hattest' : 'Automatically reviews topics you got wrong';
+  // Mode switch link
+  var modeLink = document.getElementById('home-mode-switch');
+  if (modeLink) modeLink.textContent = uiLang==='de' ? '🔄 Zu Vokabel oder Story Mode wechseln' : '🔄 Switch to Vocab or Story Mode';
+  // Words → Rules card
+  var wordsBtn = document.getElementById('home-words-btn');
   if (wordsBtn) {
-    var wIcon = wordsBtn.querySelector('.home-action-icon');
-    var wLabel = wordsBtn.querySelector('.home-action-label');
-    if (wIcon) wIcon.textContent = '📝';
-    if (wLabel) wLabel.textContent = t('rules');
+    var wIcon = wordsBtn.querySelector('.home-fullwidth-icon'); if (wIcon) wIcon.textContent = '📝';
+    var wTitle = document.getElementById('home-words-title'); if (wTitle) wTitle.textContent = uiLang==='de' ? 'Regelübersicht' : 'Grammar Rules';
+    var wSub = document.getElementById('home-words-subtitle'); if (wSub) wSub.textContent = uiLang==='de' ? 'Alle Grammatik-Regeln nachschlagen' : 'Browse all grammar rules';
     wordsBtn.onclick = function() { showGrammarReference(); };
   }
-  // Smart review for grammar
-  const reviewBtn = document.getElementById('review-btn');
-  if (reviewBtn) {
-    const weakStructures = getGrammarWeakStructures();
-    if (weakStructures.length > 0) {
-      reviewBtn.style.display = '';
-      var rLabel = reviewBtn.querySelector('.home-action-label');
-      if (rLabel) rLabel.textContent = t('smartReview') + ' (' + weakStructures.length + ')';
-      reviewBtn.onclick = function() { startGrammarSmartReview(weakStructures); };
-    } else {
-      reviewBtn.style.display = 'none';
-    }
-  }
-  // Update nav buttons
-  const navGrid = document.querySelector('.home-nav-grid');
-  if (navGrid) {
-    navGrid.innerHTML = '<button class="btn btn-secondary btn-small" onclick="showGrammarMap()">🗺️<span>' + t('map') + '</span></button>' +
-      '<button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>' + t('progress') + '</span></button>' +
-      '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>' + t('leaderboard') + '</span></button>';
-  }
-  addModeSwitchPill();
+  // Battle arena subtitle
+  var bSub = document.getElementById('battle-arena-subtitle');
+  if (bSub) bSub.textContent = uiLang==='de' ? 'Duell, Klassenquiz & Kampfverlauf' : 'Duel, Class Quiz & Battle History';
+  // Class level
+  loadClassLevel();
   showScreen('home-screen');
   setupPresence();
-  const battleBtn = document.getElementById('btn-battle');
+  var battleBtn = document.getElementById('btn-battle');
   if (battleBtn) battleBtn.style.display = '';
 }
 
-function addModeSwitchPill() {
-  // Legacy — mode switching now handled by settings drawer
-}
+function addModeSwitchPill() { /* legacy — removed */ }
 
-function updateBottomNavLabels() {
-  var nav = document.getElementById('bottom-nav');
-  if (!nav) return;
-  var labels = nav.querySelectorAll('.bottom-nav-label');
-  if (labels.length >= 4) {
-    labels[0].textContent = 'Start';
-    labels[1].textContent = t('map');
-    labels[2].textContent = t('progress');
-    labels[3].textContent = t('leaderboard');
-  }
+/* Class Level System */
+async function loadClassLevel() {
+  var card = document.getElementById('class-level-card');
+  if (!card || !db || !CLASS_ID) return;
+  try {
+    var snap = await db.collection('classes').doc(CLASS_ID).collection('students').get();
+    var totalXp = 0;
+    snap.forEach(function(doc) { var d = doc.data(); totalXp += (d.xp || 0) + (d.grammarXp || 0); });
+    var cl = getClassLevel(totalXp);
+    var sectionLabel = SECTIONS.find(function(s) { return s.id === CLASS_ID; });
+    var label = sectionLabel ? sectionLabel.label : CLASS_ID;
+    document.getElementById('class-level-title').textContent = '🏫 ' + (uiLang==='de' ? 'Klasse ' : 'Class ') + label;
+    document.getElementById('class-level-name').textContent = cl.name;
+    document.getElementById('class-level-text').textContent = totalXp.toLocaleString() + ' XP · Level ' + cl.level + (cl.next ? ' → ' + cl.next.name : '');
+    var pct = Math.round(cl.progress * 100);
+    document.getElementById('class-level-fill').style.width = pct + '%';
+    card.style.display = '';
+  } catch(e) { card.style.display = 'none'; }
 }
 
 // --- Grammar Practice Flow ---
@@ -12384,7 +12496,7 @@ function escapeHtml(str) {
 <!-- DUEL HUB SCREEN -->
 <div id="duel-hub-screen" class="screen">
   <div class="progress-nav">
-    <button class="btn btn-secondary" onclick="goHome()">← Back</button>
+    <button class="btn btn-secondary" onclick="openBattleLobby()">← Back</button>
     <h2 id="duel-hub-title" style="flex:1;text-align:center;margin:0;">Word Duel</h2>
     <div style="width:60px;"></div>
   </div>
