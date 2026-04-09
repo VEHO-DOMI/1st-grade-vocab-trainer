@@ -718,6 +718,75 @@ h1 { display: none; }
 .flashcard-swipe-indicator.left { left: 1rem; color: var(--wrong); border: 3px solid var(--wrong); background: rgba(220,38,38,0.1); }
 .flashcard-swipe-indicator.right { right: 1rem; color: var(--correct); border: 3px solid var(--correct); background: rgba(22,163,74,0.1); }
 
+/* Battle / Duel System */
+.battle-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7); z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+.battle-modal {
+  max-width: 380px; width: 90%; border-radius: 16px; padding: 24px; text-align: center;
+}
+.battle-modal-bg { background: var(--card-solid, #fff); color: var(--text); border-radius: 16px; }
+.battle-modal-sm { max-width: 320px; width: 85%; }
+.battle-modal-close {
+  margin-top: 4px; padding: 8px 20px; border-radius: 10px;
+  font-size: 13px; cursor: pointer; background: transparent;
+  border: 1px solid var(--card-border); color: inherit;
+}
+
+/* Duel Play Screen */
+#duel-play-screen { padding: 0 1rem !important; }
+.duel-play-header { text-align: center; padding: 1rem 0; }
+.duel-round-label { font-size: 1.1rem; font-weight: 700; }
+.duel-question-num { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+.duel-timer-bar { height: 6px; background: var(--card-border); border-radius: 3px; overflow: hidden; margin-bottom: 1rem; position: relative; z-index: 1; }
+.duel-timer-fill { height: 100%; background: linear-gradient(90deg, #ef4444, var(--accent)); border-radius: 3px; transition: width 0.1s linear; width: 100%; }
+.duel-prompt { font-size: 1.2rem; font-weight: 600; text-align: center; padding: 1.5rem; margin-bottom: 1rem; }
+.duel-options { display: flex; flex-direction: column; gap: 0.6rem; }
+.duel-option {
+  padding: 1rem 1.2rem; border-radius: var(--radius); border: 1.5px solid var(--card-border);
+  background: var(--card); cursor: pointer; font-size: 1rem; font-weight: 600;
+  text-align: left; width: 100%; color: var(--text); transition: all 0.15s; min-height: 48px;
+}
+.duel-option:active { transform: scale(0.98); }
+.duel-option.correct { border-color: var(--correct); background: rgba(22,163,74,0.12); }
+.duel-option.wrong { border-color: var(--wrong); background: rgba(220,38,38,0.12); }
+.duel-option.disabled { pointer-events: none; opacity: 0.6; }
+
+/* Duel Scoreboard */
+.duel-scoreboard-header { text-align: center; padding: 1.2rem 0; }
+.duel-scoreboard-names { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.duel-scoreboard-player { text-align: center; font-weight: 600; font-size: 0.85rem; }
+.duel-scoreboard-vs { font-size: 2rem; font-weight: 800; }
+.duel-scoreboard-score { font-size: 0.75rem; color: var(--muted); }
+.duel-round-row { display: flex; align-items: center; padding: 0.6rem 0; border-top: 1px solid var(--card-border); gap: 0.3rem; }
+.duel-round-info { flex: 1; text-align: center; font-size: 0.7rem; font-weight: 600; color: var(--muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.duel-round-blocks { display: flex; gap: 3px; min-width: 65px; flex-shrink: 0; }
+.duel-block { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; }
+.duel-block.correct { background: #22c55e; }
+.duel-block.wrong { background: #ef4444; }
+.duel-block.hidden { background: var(--card-border); opacity: 0.4; }
+.duel-block.empty { background: var(--card-border); opacity: 0.15; }
+.duel-round-status { font-size: 0.7rem; font-weight: 700; color: var(--accent); text-transform: uppercase; }
+
+/* Duel Cards (Hub) */
+.duel-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 1rem; margin-bottom: 0.6rem; cursor: pointer; transition: background 0.15s; }
+.duel-card:active { background: var(--card-hover); }
+.duel-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.duel-card-opponent { font-weight: 700; font-size: 1rem; }
+.duel-card-status { font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 8px; }
+.duel-card-status.your-turn { background: rgba(239,68,68,0.15); color: #ef4444; }
+.duel-card-status.waiting { background: var(--card-border); color: var(--muted); }
+.duel-card-status.done { color: var(--correct); }
+.duel-card-mini-rounds { display: flex; gap: 6px; }
+.duel-card-mini-round { display: flex; gap: 2px; }
+.duel-mini-block { width: 8px; height: 8px; border-radius: 2px; }
+.duel-mini-block.correct { background: #22c55e; }
+.duel-mini-block.wrong { background: #ef4444; }
+.duel-mini-block.pending { background: var(--card-border); opacity: 0.3; }
+
 /* ===== NAIVE TYPOGRAPHY & POLISH ===== */
 .profile-name, .nav-title, h2, .card h3, .grammar-topic-name,
 .login-card h2, .lb-name, .grammar-ref-card h3 {
@@ -7653,8 +7722,8 @@ function renderBattleResults(data) {
   const iWon = data.winner === myRole;
   const isDraw = data.winner === 'draw';
   const opName = data.playerNames[opRole] || 'Opponent';
-  let xpEarned = iWon ? 120 : isDraw ? 60 : 30;
-  xpEarned += myScore * 15;
+  let xpEarned = iWon ? 200 : isDraw ? 100 : 50;
+  xpEarned += myScore * 25;
   state.xp = (state.xp || 0) + xpEarned;
   const area = document.getElementById('battle-area');
   if (area) area.innerHTML = '<div style="text-align:center;padding:20px;"><div style="font-size:48px;margin-bottom:12px;">' + (iWon ? '\uD83C\uDFC6' : isDraw ? '\uD83E\uDD1D' : '\uD83D\uDCAA') + '</div><div style="font-size:24px;font-weight:700;margin-bottom:4px;">' + (iWon ? 'Victory!' : isDraw ? 'Draw!' : escapeHtml(opName) + ' wins!') + '</div><div style="font-size:16px;opacity:0.7;margin-bottom:16px;">' + myScore + ' \u2013 ' + opScore + '</div><div style="font-size:14px;opacity:0.6;margin-bottom:24px;">+' + xpEarned + ' XP earned</div><button onclick="leaveBattle()" class="btn btn-primary" style="padding:10px 28px;">Back to Home</button></div>';
@@ -8900,8 +8969,8 @@ async function finishDuelTurn() {
       var opTotal = myRole === 'p1' ? p2Total : p1Total;
       var iWon = myTotal > opTotal;
       var isDraw = myTotal === opTotal;
-      var xpEarned = iWon ? 100 : isDraw ? 50 : 25;
-      xpEarned += myTotal * 8;
+      var xpEarned = iWon ? 200 : isDraw ? 100 : 50;
+      xpEarned += myTotal * 20;
       var isGrammarDuel = (duelState.mode === 'grammar') || (freshData.mode === 'grammar');
       var xpField = isGrammarDuel ? 'grammarXp' : 'xp';
       var historyType = isGrammarDuel ? 'grammar-duel' : 'duel';
