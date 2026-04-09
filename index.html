@@ -787,6 +787,104 @@ h1 { display: none; }
 .duel-mini-block.wrong { background: #ef4444; }
 .duel-mini-block.pending { background: var(--card-border); opacity: 0.3; }
 
+/* ===== PHASE 3: REDESIGNED HOME SCREEN ===== */
+
+/* Compact Profile Bar */
+.home-profile-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.7rem 1rem; background: var(--card); border: 1.5px solid var(--card-border);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-card); margin-bottom: 0.8rem;
+}
+.home-profile-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.avatar-md { width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--accent); flex-shrink: 0; }
+.home-profile-info { flex: 1; min-width: 0; }
+.home-profile-name { font-family: 'Fredoka', sans-serif; font-weight: 800; font-size: 1rem; display: flex; align-items: center; gap: 6px; }
+.home-profile-xp { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.home-settings-btn {
+  width: 40px; height: 40px; border-radius: 12px; border: 1.5px solid var(--card-border);
+  background: var(--card); cursor: pointer; font-size: 1.2rem; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s;
+}
+.home-settings-btn:hover { background: var(--card-hover); border-color: var(--accent); }
+
+/* Primary Action Button */
+.home-primary-action { margin-bottom: 0.8rem; }
+.home-primary-action .btn-start-practice { width: 100%; }
+
+/* Action Grid (2x2) */
+.home-action-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 0.8rem;
+}
+.home-action-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  padding: 1rem 0.5rem; border-radius: var(--radius); border: 1.5px solid var(--card-border);
+  background: var(--card); cursor: pointer; transition: all 0.15s; min-height: 72px;
+}
+.home-action-card:hover { border-color: var(--accent); background: var(--card-hover); transform: translateY(-1px); }
+.home-action-card:active { transform: scale(0.97); }
+.home-action-icon { font-size: 1.3rem; line-height: 1; }
+.home-action-label { font-size: 0.72rem; font-weight: 700; color: var(--text); font-family: 'Fredoka', sans-serif; text-align: center; }
+[data-theme="light"] .home-action-card { background: rgba(0,0,0,0.02); }
+
+/* Fixed Bottom Navigation */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 8000;
+  display: flex; justify-content: space-around; align-items: stretch;
+  background: var(--card-solid, var(--card)); border-top: 1px solid var(--card-border);
+  padding: 0.4rem 0 calc(env(safe-area-inset-bottom, 0px) + 0.3rem);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+}
+.bottom-nav-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 0.4rem 0.2rem; background: none; border: none; cursor: pointer;
+  color: var(--muted); transition: color 0.15s; font-family: inherit;
+}
+.bottom-nav-item:active { transform: scale(0.93); }
+.bottom-nav-item.active { color: var(--accent); }
+.bottom-nav-icon { font-size: 1.2rem; line-height: 1; }
+.bottom-nav-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.02em; }
+[data-theme="dark"] .bottom-nav { background: rgba(10,15,16,0.92); }
+
+/* Settings Drawer */
+.settings-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0); z-index: 8500;
+  pointer-events: none; transition: background 0.3s;
+}
+.settings-overlay.open { background: rgba(0,0,0,0.5); pointer-events: auto; }
+.settings-drawer {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 8600;
+  background: var(--card-solid, #fff); border-radius: 20px 20px 0 0;
+  padding: 0 1.2rem calc(env(safe-area-inset-bottom, 0px) + 1rem);
+  transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.12);
+  max-height: 70vh; overflow-y: auto;
+}
+.settings-drawer.open { transform: translateY(0); }
+.settings-handle {
+  width: 36px; height: 4px; background: var(--card-border); border-radius: 2px;
+  margin: 10px auto 8px;
+}
+.settings-title {
+  font-family: 'Fredoka', sans-serif; font-weight: 800; font-size: 1.1rem;
+  text-align: center; margin-bottom: 0.8rem; color: var(--text);
+}
+.settings-items { display: flex; flex-direction: column; gap: 4px; }
+.settings-item {
+  display: flex; align-items: center; gap: 12px; padding: 0.85rem 0.8rem;
+  border-radius: 12px; background: none; border: none; cursor: pointer;
+  font-size: 0.9rem; font-weight: 600; color: var(--text); width: 100%;
+  text-align: left; transition: background 0.15s; font-family: inherit;
+}
+.settings-item:hover { background: var(--card-hover, rgba(0,0,0,0.04)); }
+.settings-item:active { background: var(--card-border); }
+.settings-item span:first-child { font-size: 1.2rem; width: 28px; text-align: center; flex-shrink: 0; }
+.settings-item span:nth-child(2) { flex: 1; }
+.settings-item-value { font-size: 0.78rem; color: var(--muted); font-weight: 500; }
+.settings-item-danger { color: var(--wrong); }
+.settings-item-danger:hover { background: rgba(220,38,38,0.06); }
+[data-theme="dark"] .settings-drawer { background: var(--bg2, #101a14); }
+
 /* ===== NAIVE TYPOGRAPHY & POLISH ===== */
 .profile-name, .nav-title, h2, .card h3, .grammar-topic-name,
 .login-card h2, .lb-name, .grammar-ref-card h3 {
@@ -2299,57 +2397,58 @@ body.playing .header-container { display: none; }
 
 <!-- HOME SCREEN -->
 <div id="home-screen" class="screen">
-  <div class="profile-card" id="profile-card">
-    <div class="profile-top">
-      <img id="home-avatar" class="avatar avatar-lg" src="" alt="" style="display:none;cursor:pointer;" onclick="openAvatarPicker()">
-      <div class="profile-info">
-        <div class="profile-name">
-          <span id="welcome-name">Welcome</span>
-          <span class="class-tag" id="profile-class-tag">1A</span>
-        </div>
-        <div class="profile-xp-row">
-          <span class="profile-xp" id="welcome-xp">0 XP</span>
-        </div>
-        <div class="profile-rank-row">
-          <span class="profile-rank-pill" id="rank-badge"></span>
-        </div>
+  <!-- Compact Profile Bar -->
+  <div class="home-profile-bar" id="profile-card">
+    <div class="home-profile-left" onclick="openAvatarPicker()" style="cursor:pointer;">
+      <img id="home-avatar" class="avatar avatar-md" src="" alt="" style="display:none;">
+      <div class="home-profile-info">
+        <div class="home-profile-name"><span id="welcome-name">Welcome</span> <span class="class-tag" id="profile-class-tag">1A</span></div>
+        <div class="home-profile-xp" id="welcome-xp">0 XP</div>
       </div>
     </div>
-    <div class="profile-xp-bar" id="rank-display" style="display:none;">
-      <div class="profile-xp-track"><div class="profile-xp-fill" id="rank-progress-fill"></div></div>
-      <div class="profile-xp-labels"><span id="rank-current-label"></span><span id="rank-xp-to-next"></span><span id="rank-next-label"></span></div>
-    </div>
-    <div class="profile-badges-row" id="badge-row"></div>
-    <div class="profile-logout-row">
-      <button class="logout-btn" onclick="logout()">Log Out</button>
-    </div>
+    <button class="home-settings-btn" onclick="toggleSettingsDrawer()" aria-label="Einstellungen">⚙️</button>
   </div>
 
-  <div class="stats-bar">
+  <!-- Hidden elements kept for JS compatibility -->
+  <div id="rank-display" style="display:none;">
+    <div class="profile-xp-track"><div class="profile-xp-fill" id="rank-progress-fill"></div></div>
+    <div class="profile-xp-labels"><span id="rank-current-label"></span><span id="rank-xp-to-next"></span><span id="rank-next-label"></span></div>
+  </div>
+  <span id="rank-badge" style="display:none;"></span>
+  <div id="badge-row" style="display:none;"></div>
+  <div class="stats-bar" style="display:none;">
     <div class="stat-card"><div class="stat-value" id="stat-sessions">0</div><div class="stat-label">Sessions</div></div>
     <div class="stat-card"><div class="stat-value" id="stat-accuracy">–</div><div class="stat-label">Accuracy</div></div>
     <div class="stat-card"><div class="stat-value" id="stat-mastered">0</div><div class="stat-label">Mastered</div></div>
-    <div class="stat-card"><div class="stat-value" id="stat-streak">0</div><div class="stat-label">Streak 🔥</div></div>
+    <div class="stat-card"><div class="stat-value" id="stat-streak">0</div><div class="stat-label">Streak</div></div>
   </div>
 
-  <div class="home-actions-area">
+  <!-- Primary Action -->
+  <div class="home-primary-action">
     <button class="btn btn-primary btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
-    <div class="home-actions-row">
-      <button class="btn btn-review" id="review-btn" style="display:none;" onclick="startSmartReview()">🔄 Smart Review</button>
-      <button class="btn btn-secondary" id="home-words-btn" onclick="showWordReference()">📖 Words</button>
-    </div>
-    <div class="home-actions-row">
-      <button class="btn-battle" onclick="openClassQuizJoin()" style="background:linear-gradient(135deg,var(--accent-light),var(--accent));">🎓 Class Quiz</button>
-      <button id="btn-battle" class="btn-battle" onclick="openBattleLobby()" style="display:none;">⚔️ Battle Arena</button>
-    </div>
   </div>
 
-  <div class="home-nav-grid">
-    <button class="btn btn-secondary btn-small" onclick="showProgressMap()">🗺️<span>Map</span></button>
-    <button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>Progress</span></button>
-    <button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>Leaderboard</span></button>
+  <!-- Action Grid (2x2) -->
+  <div class="home-action-grid">
+    <button class="home-action-card" id="review-btn" style="display:none;" onclick="startSmartReview()">
+      <span class="home-action-icon">🔄</span>
+      <span class="home-action-label" id="review-btn-label">Wiederholung</span>
+    </button>
+    <button class="home-action-card" id="home-words-btn" onclick="showWordReference()">
+      <span class="home-action-icon">📖</span>
+      <span class="home-action-label">Wörter</span>
+    </button>
+    <button class="home-action-card" onclick="openClassQuizJoin()">
+      <span class="home-action-icon">🎓</span>
+      <span class="home-action-label">Klassenquiz</span>
+    </button>
+    <button class="home-action-card" id="btn-battle" onclick="openBattleLobby()" style="display:none;">
+      <span class="home-action-icon">⚔️</span>
+      <span class="home-action-label">Battle Arena</span>
+    </button>
   </div>
 
+  <!-- Daily Content Card -->
   <div class="today-card" id="today-card" style="display:none;">
     <div class="today-section">
       <div class="today-header">
@@ -2384,10 +2483,51 @@ body.playing .header-container { display: none; }
     <div id="weekly-goal-text" style="font-size:0.75rem;color:var(--text-secondary);text-align:center;"></div>
   </div>
 
-  <div class="home-nav-footer">
-    <button id="theme-toggle-btn" onclick="toggleTheme()" class="btn btn-secondary btn-small">☀️ Light</button>
-    <button id="sfx-toggle-btn" onclick="toggleSfx()" class="btn btn-secondary btn-small">🔊 Sound: ON</button>
-    <button id="lang-toggle-btn" onclick="setUiLang(uiLang==='de'?'en':'de')" class="btn btn-secondary btn-small">🇩🇪 Deutsch</button>
+  <!-- Spacer for bottom nav -->
+  <div style="height:70px;"></div>
+
+  <!-- Fixed Bottom Navigation -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="bottom-nav-item active" onclick="goHome()">
+      <span class="bottom-nav-icon">🏠</span>
+      <span class="bottom-nav-label">Start</span>
+    </button>
+    <button class="bottom-nav-item" onclick="state.mode==='grammar'?showGrammarMap():showProgressMap()">
+      <span class="bottom-nav-icon">🗺️</span>
+      <span class="bottom-nav-label">Karte</span>
+    </button>
+    <button class="bottom-nav-item" onclick="showProgressScreen()">
+      <span class="bottom-nav-icon">📊</span>
+      <span class="bottom-nav-label">Fortschritt</span>
+    </button>
+    <button class="bottom-nav-item" onclick="showLeaderboard()">
+      <span class="bottom-nav-icon">🏆</span>
+      <span class="bottom-nav-label">Rangliste</span>
+    </button>
+  </nav>
+
+  <!-- Settings Drawer -->
+  <div class="settings-overlay" id="settings-overlay" onclick="if(event.target===this)toggleSettingsDrawer()"></div>
+  <div class="settings-drawer" id="settings-drawer">
+    <div class="settings-handle"></div>
+    <div class="settings-title">⚙️ Einstellungen</div>
+    <div class="settings-items">
+      <button class="settings-item" onclick="toggleSettingsDrawer();showModeSelectScreen();">
+        <span>🔄</span><span>Modus wechseln</span><span class="settings-item-value" id="settings-mode-label">Grammatik</span>
+      </button>
+      <button class="settings-item" onclick="setUiLang(uiLang==='de'?'en':'de')">
+        <span>🌐</span><span>Sprache</span><span class="settings-item-value" id="settings-lang-label">Deutsch</span>
+      </button>
+      <button class="settings-item" onclick="toggleTheme()">
+        <span id="settings-theme-icon">☀️</span><span>Erscheinungsbild</span><span class="settings-item-value" id="settings-theme-label">Hell</span>
+      </button>
+      <button class="settings-item" onclick="toggleSfx()">
+        <span id="settings-sound-icon">🔊</span><span>Sound</span><span class="settings-item-value" id="settings-sound-label">An</span>
+      </button>
+      <button class="settings-item settings-item-danger" onclick="toggleSettingsDrawer();logout();">
+        <span>🚪</span><span>Abmelden</span><span></span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -2920,12 +3060,41 @@ function t(key) { return (UI_TEXT[uiLang] || UI_TEXT.de)[key] || (UI_TEXT.en[key
 function setUiLang(lang) {
   uiLang = lang;
   localStorage.setItem('ui-lang', lang);
-  const btn = document.getElementById('lang-toggle-btn');
-  if (btn) btn.textContent = lang === 'de' ? '🇩🇪 Deutsch' : '🇬🇧 English';
+  // Update settings drawer label
+  var langLabel = document.getElementById('settings-lang-label');
+  if (langLabel) langLabel.textContent = lang === 'de' ? 'Deutsch' : 'English';
   // Refresh current screen
   if (state.mode === 'grammar') showGrammarHomeScreen();
   else if (state.mode === 'campaign') return;
   else showHomeScreen();
+}
+/* ===== Settings Drawer ===== */
+function toggleSettingsDrawer() {
+  var drawer = document.getElementById('settings-drawer');
+  var overlay = document.getElementById('settings-overlay');
+  if (!drawer || !overlay) return;
+  var isOpen = drawer.classList.contains('open');
+  if (isOpen) {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+  } else {
+    // Update labels before opening
+    var modeLabel = document.getElementById('settings-mode-label');
+    if (modeLabel) modeLabel.textContent = state.mode === 'grammar' ? t('grammar') : t('vocab');
+    var langLabel = document.getElementById('settings-lang-label');
+    if (langLabel) langLabel.textContent = uiLang === 'de' ? 'Deutsch' : 'English';
+    var themeLabel = document.getElementById('settings-theme-label');
+    var themeIcon = document.getElementById('settings-theme-icon');
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (themeLabel) themeLabel.textContent = isDark ? t('dark') : t('light');
+    if (themeIcon) themeIcon.textContent = isDark ? '🌙' : '☀️';
+    var soundLabel = document.getElementById('settings-sound-label');
+    var soundIcon = document.getElementById('settings-sound-icon');
+    if (soundLabel) soundLabel.textContent = SFX.enabled ? 'An' : 'Aus';
+    if (soundIcon) soundIcon.textContent = SFX.enabled ? '🔊' : '🔇';
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+  }
 }
 /* ===== END UI LANGUAGE SYSTEM ===== */
 
@@ -4111,6 +4280,11 @@ function toggleSfx() {
   localStorage.setItem('sfx-enabled', SFX.enabled);
   const btn = document.getElementById('sfx-toggle-btn');
   if (btn) btn.textContent = SFX.enabled ? '🔊 Sound: ON' : '🔇 Sound: OFF';
+  // Update settings drawer
+  var sl = document.getElementById('settings-sound-label');
+  var si = document.getElementById('settings-sound-icon');
+  if (sl) sl.textContent = SFX.enabled ? 'An' : 'Aus';
+  if (si) si.textContent = SFX.enabled ? '🔊' : '🔇';
   SFX.play('click');
 }
 
@@ -4119,8 +4293,13 @@ function toggleTheme() {
   const newTheme = isDark ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', newTheme);
   const btn = document.getElementById('theme-toggle-btn');
-  if (btn) btn.textContent = newTheme === 'dark' ? '\uD83C\uDF19 Dark' : '\u2600\uFE0F Light';
+  if (btn) btn.textContent = newTheme === 'dark' ? '🌙 Dark' : '☀️ Light';
   localStorage.setItem('theme-mode', newTheme);
+  // Update settings drawer
+  var tl = document.getElementById('settings-theme-label');
+  var ti = document.getElementById('settings-theme-icon');
+  if (tl) tl.textContent = newTheme === 'dark' ? t('dark') : t('light');
+  if (ti) ti.textContent = newTheme === 'dark' ? '🌙' : '☀️';
 }
 
 function initTheme() {
@@ -9345,23 +9524,11 @@ showHomeScreen = function() {
     // Restore Words button (was Rules in grammar mode)
     const wordsBtn = document.getElementById('home-words-btn');
     if (wordsBtn) {
-      wordsBtn.textContent = '📖 ' + t('words');
+      var wLabel = wordsBtn.querySelector('.home-action-label');
+      if (wLabel) { wLabel.textContent = t('words'); }
+      else { wordsBtn.textContent = '📖 ' + t('words'); }
       wordsBtn.onclick = function() { showWordReference(); };
     }
-    // Update stat labels
-    document.querySelectorAll('.stat-label').forEach(function(el) {
-      if (el.textContent.match(/Sessions|Sitzungen/i)) el.textContent = t('sessions');
-      if (el.textContent.match(/Accuracy|Genauigkeit/i)) el.textContent = t('accuracy');
-      if (el.textContent.match(/Mastered|Gemeistert/i)) el.textContent = t('mastered');
-      if (el.textContent.match(/Streak|Serie/i)) el.textContent = t('streak');
-    });
-    const navGrid = document.querySelector('.home-nav-grid');
-    if (navGrid) {
-      navGrid.innerHTML = '<button class="btn btn-secondary btn-small" onclick="showProgressMap()">🗺️<span>' + t('map') + '</span></button>' +
-        '<button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>' + t('progress') + '</span></button>' +
-        '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>' + t('leaderboard') + '</span></button>';
-    }
-    // Update mode pill if present (handled by addModeSwitchPill below)
     // Restore today-card innerHTML (grammar mode replaces it with Rule of the Day)
     const todayCard = document.getElementById('today-card');
     if (todayCard) {
@@ -9374,8 +9541,9 @@ showHomeScreen = function() {
     // Restore weekly goal card visibility (grammar mode hides it)
     const weeklyCard = document.getElementById('weekly-goal-card');
     if (weeklyCard) weeklyCard.style.display = '';
+    // Update bottom nav labels
+    updateBottomNavLabels();
     _origShowHomeScreen();
-    addModeSwitchPill();
   }
   // Show deferred campaign level-ups
   if (window._campaignLevelUps && window._campaignLevelUps.length > 0) {
@@ -9491,9 +9659,11 @@ function showGrammarHomeScreen() {
   const d = state.studentData || {};
   const gxp = d.grammarXp || 0;
   const glv = getLevel(gxp);
-  document.getElementById('welcome-xp').innerHTML = '⭐ ' + gxp.toLocaleString() + ' XP · <span style="opacity:0.7;">' + glv.name + '</span>' + (glv.vibe ? '<br><span style="opacity:0.5;font-style:italic;font-size:0.75rem;">' + glv.vibe + '</span>' : '');
+  // Update compact profile XP line
+  var xpEl = document.getElementById('welcome-xp');
+  if (xpEl) xpEl.innerHTML = '⭐ ' + gxp.toLocaleString() + ' XP · ' + glv.name;
   updateAllAvatars();
-  // Stats
+  // Stats (hidden but kept for data)
   document.getElementById('stat-sessions').textContent = d.grammarSessions || 0;
   const gAns = d.grammarAnswered || 0;
   const gCorr = d.grammarCorrect || 0;
@@ -9502,30 +9672,23 @@ function showGrammarHomeScreen() {
   const mastered = getGrammarMasteredCount();
   document.getElementById('stat-mastered').textContent = mastered;
   document.getElementById('stat-streak').textContent = d.grammarStreak || 0;
-  updateRankDisplay();
-  renderBadgeRow();
   // Show grammar daily card (Rule of the Day + Daily Grammar Challenge)
   renderGrammarDailyCard();
   const weeklyCard = document.getElementById('weekly-goal-card');
   if (weeklyCard) weeklyCard.style.display = 'none';
-  // Update stat labels
-  var lblSessions = document.querySelector('#stat-sessions + .stat-label, [data-stat="sessions"] .stat-label');
-  document.querySelectorAll('.stat-label').forEach(function(el) {
-    if (el.textContent.match(/Sessions|Sitzungen/i)) el.textContent = t('sessions');
-    if (el.textContent.match(/Accuracy|Genauigkeit/i)) el.textContent = t('accuracy');
-    if (el.textContent.match(/Mastered|Gemeistert/i)) el.textContent = t('mastered');
-    if (el.textContent.match(/Streak|Serie/i)) el.textContent = t('streak');
-  });
   // Update practice button
   const practiceBtn = document.querySelector('.btn-start-practice');
   if (practiceBtn) {
     practiceBtn.textContent = '🧠 ' + t('startGrammarPractice');
     practiceBtn.onclick = openGrammarPractice;
   }
-  // Swap Words → Rules in action area
+  // Swap Words → Rules in action grid
   const wordsBtn = document.getElementById('home-words-btn');
   if (wordsBtn) {
-    wordsBtn.textContent = '📝 ' + t('rules');
+    var wIcon = wordsBtn.querySelector('.home-action-icon');
+    var wLabel = wordsBtn.querySelector('.home-action-label');
+    if (wIcon) wIcon.textContent = '📝';
+    if (wLabel) wLabel.textContent = t('rules');
     wordsBtn.onclick = function() { showGrammarReference(); };
   }
   // Smart review for grammar
@@ -9534,21 +9697,15 @@ function showGrammarHomeScreen() {
     const weakStructures = getGrammarWeakStructures();
     if (weakStructures.length > 0) {
       reviewBtn.style.display = '';
-      reviewBtn.textContent = '🔄 ' + t('smartReview') + ' (' + weakStructures.length + ' ' + t('topics') + ')';
+      var rLabel = reviewBtn.querySelector('.home-action-label');
+      if (rLabel) rLabel.textContent = t('smartReview') + ' (' + weakStructures.length + ')';
       reviewBtn.onclick = function() { startGrammarSmartReview(weakStructures); };
     } else {
       reviewBtn.style.display = 'none';
     }
   }
-  // Update nav buttons
-  const navGrid = document.querySelector('.home-nav-grid');
-  if (navGrid) {
-    navGrid.innerHTML = '<button class="btn btn-secondary btn-small" onclick="showGrammarMap()">🗺️<span>' + t('map') + '</span></button>' +
-      '<button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>' + t('progress') + '</span></button>' +
-      '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>' + t('leaderboard') + '</span></button>';
-  }
-  // Add mode switch pill
-  addModeSwitchPill();
+  // Update bottom nav labels
+  updateBottomNavLabels();
   showScreen('home-screen');
   setupPresence();
   const battleBtn = document.getElementById('btn-battle');
@@ -9556,21 +9713,19 @@ function showGrammarHomeScreen() {
 }
 
 function addModeSwitchPill() {
-  let pill = document.getElementById('mode-switch-pill');
-  if (!pill) {
-    pill = document.createElement('div');
-    pill.id = 'mode-switch-pill';
-    const profileCard = document.getElementById('profile-card');
-    if (profileCard) {
-      const logoutRow = profileCard.querySelector('.profile-logout-row');
-      if (logoutRow) logoutRow.insertAdjacentElement('afterbegin', pill);
-    }
+  // Legacy — mode switching now handled by settings drawer
+}
+
+function updateBottomNavLabels() {
+  var nav = document.getElementById('bottom-nav');
+  if (!nav) return;
+  var labels = nav.querySelectorAll('.bottom-nav-label');
+  if (labels.length >= 4) {
+    labels[0].textContent = 'Start';
+    labels[1].textContent = t('map');
+    labels[2].textContent = t('progress');
+    labels[3].textContent = t('leaderboard');
   }
-  const isGrammar = state.mode === 'grammar';
-  pill.className = 'mode-pill';
-  pill.innerHTML = isGrammar ? '<span>' + t('current') + ': 🧠 ' + t('grammar') + '</span> <span style="margin-left:8px;padding:2px 10px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:8px;font-size:0.7rem;cursor:pointer;">' + t('switchMode') + '</span>' : '<span>' + t('current') + ': 📚 ' + t('vocab') + '</span> <span style="margin-left:8px;padding:2px 10px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:8px;font-size:0.7rem;cursor:pointer;">' + t('switchMode') + '</span>';
-  pill.style.cssText = '';
-  pill.onclick = function() { showModeSelectScreen(); };
 }
 
 // --- Grammar Practice Flow ---
