@@ -2571,7 +2571,7 @@ body.playing .header-container { display: none; }
   <div class="profile-card" id="profile-card">
     <div class="profile-top">
       <img id="home-avatar" class="avatar avatar-lg" src="" alt="" style="display:none;cursor:pointer;" onclick="openAvatarPicker()">
-      <div class="profile-info">
+      <div class="profile-info" onclick="showProgressScreen()" style="cursor:pointer;">
         <div class="profile-name">
           <span id="welcome-name">Welcome</span>
           <span class="class-tag" id="profile-class-tag">1A</span>
@@ -2582,19 +2582,20 @@ body.playing .header-container { display: none; }
         <div class="profile-rank-row">
           <span class="profile-rank-pill" id="rank-badge"></span>
         </div>
+        <div class="profile-overall-level" id="overall-level-display" style="margin-top:3px;font-size:0.68rem;color:var(--muted);font-weight:600;"></div>
       </div>
     </div>
     <div class="profile-xp-bar" id="rank-display" style="display:none;">
       <div class="profile-xp-track"><div class="profile-xp-fill" id="rank-progress-fill"></div></div>
       <div class="profile-xp-labels"><span id="rank-current-label"></span><span id="rank-xp-to-next"></span><span id="rank-next-label"></span></div>
     </div>
-    <div class="profile-badges-row" id="badge-row"></div>
     <div class="profile-logout-row">
       <button class="logout-btn" onclick="logout()">Log Out</button>
     </div>
   </div>
 
-  <!-- Hidden: stats kept for JS -->
+  <!-- Hidden: stats + badges kept for JS -->
+  <div id="badge-row" style="display:none;"></div>
   <div class="stats-bar" style="display:none;">
     <div class="stat-card"><div class="stat-value" id="stat-sessions">0</div><div class="stat-label">Sessions</div></div>
     <div class="stat-card"><div class="stat-value" id="stat-accuracy">–</div><div class="stat-label">Accuracy</div></div>
@@ -7658,6 +7659,8 @@ async function contributeToWeeklyGoal(sessionXp) {
 function renderWeeklyGoal() {
   const card = document.getElementById('weekly-goal-card');
   if (!card) return;
+  // Replaced by class level card — keep hidden
+  if (document.getElementById('class-level-card')) { card.style.display = 'none'; return; }
   card.style.display = '';
   const current = weeklyGoalData.xp || 0;
   const pct = Math.min(100, Math.round((current / WEEKLY_GOAL_TARGET) * 100));
@@ -9800,10 +9803,20 @@ showHomeScreen = function() {
         '<div class="today-divider"></div>' +
         '<div class="today-section"><div class="today-header"><span class="today-label">⚡ ' + t('dailyChallenge') + '</span><span class="today-date" id="daily-date"></span></div><div class="today-daily-desc">10 ' + t('words').toLowerCase() + ' · ' + (uiLang==='de' ? 'gleich für alle heute' : 'same for everyone today') + '</div><div id="daily-action"></div></div>';
     }
+    // Overall level display
+    var olDisplay = document.getElementById('overall-level-display');
+    if (olDisplay) {
+      var d2 = state.studentData || {};
+      var totalXp = (d2.xp || 0) + (d2.grammarXp || 0);
+      var ol = getOverallLevel(totalXp);
+      olDisplay.textContent = '🌍 ' + ol.name + ' · ' + totalXp.toLocaleString() + ' ' + (uiLang==='de' ? 'Gesamt-XP' : 'Total XP');
+    }
     // Class level
     loadClassLevel();
+    // Hide weekly goal (replaced by class level)
+    var wgc = document.getElementById('weekly-goal-card');
+    if (wgc) wgc.style.display = 'none';
     _origShowHomeScreen();
-    renderBadgeRow();
   }
   // Show deferred campaign level-ups
   if (window._campaignLevelUps && window._campaignLevelUps.length > 0) {
@@ -9964,6 +9977,13 @@ function showGrammarHomeScreen() {
   // Battle arena subtitle
   var bSub = document.getElementById('battle-arena-subtitle');
   if (bSub) bSub.textContent = uiLang==='de' ? 'Duell, Klassenquiz & Kampfverlauf' : 'Duel, Class Quiz & Battle History';
+  // Overall level display
+  var olDisplay = document.getElementById('overall-level-display');
+  if (olDisplay) {
+    var totalXp = (d.xp || 0) + (d.grammarXp || 0);
+    var ol = getOverallLevel(totalXp);
+    olDisplay.textContent = '🌍 ' + ol.name + ' · ' + totalXp.toLocaleString() + ' ' + (uiLang==='de' ? 'Gesamt-XP' : 'Total XP');
+  }
   // Class level
   loadClassLevel();
   showScreen('home-screen');
