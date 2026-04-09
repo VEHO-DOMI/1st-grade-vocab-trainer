@@ -787,6 +787,88 @@ h1 { display: none; }
 .duel-mini-block.wrong { background: #ef4444; }
 .duel-mini-block.pending { background: var(--card-border); opacity: 0.3; }
 
+/* ===== ONBOARDING ===== */
+.onboarding-overlay {
+  position: fixed; inset: 0; z-index: 20000; background: var(--bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 2rem 1.5rem; overflow: hidden;
+}
+.onboarding-skip {
+  position: absolute; top: 1rem; right: 1rem; background: none; border: none;
+  color: var(--muted); font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  padding: 6px 12px; border-radius: 8px; font-family: inherit;
+}
+.onboarding-skip:hover { background: var(--card-hover); color: var(--text); }
+.onboarding-slides { position: relative; width: 100%; max-width: 380px; flex: 1; display: flex; align-items: center; }
+.onboarding-slide {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  opacity: 0; transform: translateX(60px); transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+.onboarding-slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+.onboarding-slide.exit { opacity: 0; transform: translateX(-60px); }
+.onboarding-logo { font-size: 4rem; margin-bottom: 1rem; animation: obBounce 0.6s ease 0.2s both; }
+@keyframes obBounce { 0%{transform:scale(0.3);opacity:0} 50%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+.onboarding-title { font-family: 'Fredoka', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--text); margin-bottom: 0.5rem; }
+.onboarding-subtitle { font-family: 'Fredoka', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 1.2rem; }
+.onboarding-text { font-size: 1rem; color: var(--text-secondary); line-height: 1.5; max-width: 300px; }
+.onboarding-modes { display: flex; flex-direction: column; gap: 0.7rem; width: 100%; }
+.onboarding-mode-card {
+  display: flex; align-items: center; gap: 12px; padding: 0.9rem 1rem;
+  background: var(--card); border: 1.5px solid var(--card-border); border-radius: var(--radius);
+  text-align: left; opacity: 0; transform: translateY(20px);
+  animation: obSlideIn 0.4s ease forwards;
+}
+.ob-delay-1 { animation-delay: 0.15s; }
+.ob-delay-2 { animation-delay: 0.3s; }
+.ob-delay-3 { animation-delay: 0.45s; }
+@keyframes obSlideIn { to { opacity: 1; transform: translateY(0); } }
+.onboarding-mode-icon { font-size: 1.6rem; flex-shrink: 0; }
+.onboarding-mode-desc { font-size: 0.78rem; color: var(--muted); }
+.onboarding-cta {
+  margin-top: 1.5rem; padding: 1rem 3rem; font-size: 1.1rem;
+  animation: obPulse 2s ease-in-out infinite;
+}
+@keyframes obPulse { 0%,100%{box-shadow:0 4px 20px var(--accent-glow)} 50%{box-shadow:0 6px 30px var(--accent-glow),0 0 40px var(--accent-glow)} }
+.onboarding-dots { display: flex; gap: 8px; margin: 1.5rem 0 1rem; }
+.onboarding-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--card-border);
+  cursor: pointer; transition: all 0.3s;
+}
+.onboarding-dot.active { background: var(--accent); width: 24px; border-radius: 4px; }
+.onboarding-next-btn {
+  padding: 0.7rem 2rem; border-radius: var(--radius); border: none;
+  background: var(--accent); color: #fff; font-weight: 700; font-size: 0.9rem;
+  cursor: pointer; font-family: inherit; transition: all 0.15s;
+}
+.onboarding-next-btn:hover { filter: brightness(1.1); }
+
+/* Story Mode standout card */
+.mode-campaign-card-v2 {
+  width: 100%; margin-top: 0.7rem; padding: 0; border: none; cursor: pointer;
+  border-radius: var(--radius-lg); overflow: hidden; position: relative;
+  background: linear-gradient(135deg, #15803d, #0d9488, #065f46);
+  box-shadow: 0 4px 20px rgba(13,148,136,0.25); transition: transform 0.15s, box-shadow 0.15s;
+  text-align: left;
+}
+.mode-campaign-card-v2:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(13,148,136,0.35); }
+.mode-campaign-card-v2:active { transform: scale(0.98); }
+.campaign-card-bg {
+  position: absolute; inset: 0; opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='80'%3E%3Ctext x='10' y='35' font-size='28' fill='white' opacity='0.5'%3E📖✨🗺️🔮📜%3C/text%3E%3C/svg%3E");
+  background-size: 200px;
+}
+.campaign-card-content { position: relative; display: flex; align-items: center; gap: 0.8rem; padding: 1rem 1.2rem; }
+.campaign-card-icon { font-size: 2rem; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+.campaign-card-info { flex: 1; min-width: 0; }
+.campaign-card-title { font-family: 'Fredoka', sans-serif; font-weight: 800; font-size: 1.05rem; color: #fff; }
+.campaign-card-subtitle { font-size: 0.72rem; color: rgba(255,255,255,0.7); margin-top: 1px; }
+.campaign-card-progress { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.campaign-card-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; overflow: hidden; }
+.campaign-card-fill { height: 100%; background: #4ade80; border-radius: 3px; transition: width 0.6s ease; }
+.campaign-card-progress .mode-select-stats { background: rgba(255,255,255,0.2); color: #fff; font-size: 0.65rem; padding: 2px 8px; }
+
 /* ===== PHASE 3: REDESIGNED HOME SCREEN ===== */
 
 /* Compact Profile Bar */
@@ -2263,37 +2345,92 @@ body.playing .header-container { display: none; }
 </div>
 
 <!-- MODE SELECT SCREEN -->
-<div id="mode-select-screen" class="screen">
-  <div class="login-card" style="max-width:400px;">
-    <div style="text-align:center;margin-bottom:0.5rem;">
-      <img id="mode-avatar" class="avatar avatar-lg" src="" alt="" style="display:none;width:64px;height:64px;border-radius:50%;margin:0 auto 0.5rem;">
-      <h2 style="margin:0;">Hey, <span id="mode-welcome-name">there</span>!</h2>
-      <p style="color:var(--text-secondary);margin:0.3rem 0 1rem;">What do you want to practice?</p>
+<!-- ONBOARDING OVERLAY -->
+<div id="onboarding-overlay" class="onboarding-overlay" style="display:none;">
+  <button class="onboarding-skip" onclick="finishOnboarding()">Überspringen</button>
+  <div class="onboarding-slides" id="onboarding-slides">
+    <!-- Slide 1 -->
+    <div class="onboarding-slide active" data-slide="0">
+      <div class="onboarding-logo">🎓</div>
+      <h1 class="onboarding-title">Willkommen bei DomiGo!</h1>
+      <p class="onboarding-text">Dein persönlicher Englisch-Trainer für Vokabel, Grammatik und mehr.</p>
     </div>
+    <!-- Slide 2 -->
+    <div class="onboarding-slide" data-slide="1">
+      <h2 class="onboarding-subtitle">Drei Bereiche warten auf dich:</h2>
+      <div class="onboarding-modes">
+        <div class="onboarding-mode-card ob-delay-1">
+          <span class="onboarding-mode-icon">📚</span>
+          <div><strong>Vokabel</strong><br><span class="onboarding-mode-desc">Lerne neue Wörter mit verschiedenen Aufgabentypen</span></div>
+        </div>
+        <div class="onboarding-mode-card ob-delay-2">
+          <span class="onboarding-mode-icon">🧠</span>
+          <div><strong>Grammatik</strong><br><span class="onboarding-mode-desc">Übe Regeln und Strukturen aus dem MORE!-Buch</span></div>
+        </div>
+        <div class="onboarding-mode-card ob-delay-3">
+          <span class="onboarding-mode-icon">📖</span>
+          <div><strong>Story Mode</strong><br><span class="onboarding-mode-desc">Erlebe ein Abenteuer und lerne dabei Englisch</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- Slide 3 -->
+    <div class="onboarding-slide" data-slide="2">
+      <div class="onboarding-logo">🚀</div>
+      <h1 class="onboarding-title">Los geht's!</h1>
+      <p class="onboarding-text">Sammle XP, steige Level auf und fordere deine Klasse heraus.</p>
+      <button class="btn btn-primary onboarding-cta" onclick="finishOnboarding()">Starten</button>
+    </div>
+  </div>
+  <div class="onboarding-dots">
+    <span class="onboarding-dot active" onclick="goToOnboardingSlide(0)"></span>
+    <span class="onboarding-dot" onclick="goToOnboardingSlide(1)"></span>
+    <span class="onboarding-dot" onclick="goToOnboardingSlide(2)"></span>
+  </div>
+  <button class="onboarding-next-btn" id="onboarding-next-btn" onclick="nextOnboardingSlide()">Weiter →</button>
+</div>
+
+<!-- MODE SELECT SCREEN (redesigned) -->
+<div id="mode-select-screen" class="screen">
+  <div class="login-card" style="max-width:420px;">
+    <div style="text-align:center;margin-bottom:0.8rem;">
+      <img id="mode-avatar" class="avatar avatar-lg" src="" alt="" style="display:none;width:64px;height:64px;border-radius:50%;margin:0 auto 0.5rem;">
+      <h2 style="margin:0;" id="mode-greeting">Hallo, <span id="mode-welcome-name">there</span>!</h2>
+      <p style="color:var(--text-secondary);margin:0.3rem 0 0.8rem;" id="mode-subtitle">Was möchtest du üben?</p>
+    </div>
+
+    <!-- Vocab + Grammar cards -->
     <div class="mode-cards-row">
       <button class="mode-select-card" onclick="selectAppMode('vocab')">
         <div class="mode-select-icon">📚</div>
-        <div class="mode-select-title">Vocab</div>
-        <div class="mode-select-subtitle">Words & Definitions</div>
+        <div class="mode-select-title" id="mode-vocab-title">Vokabel</div>
+        <div class="mode-select-subtitle" id="mode-vocab-sub">Wörter & Bedeutungen</div>
         <div class="mode-select-stats" id="mode-vocab-stats">Lv 1 · 0 XP</div>
       </button>
       <button class="mode-select-card mode-select-card-grammar" onclick="selectAppMode('grammar')">
         <div class="mode-select-icon">🧠</div>
-        <div class="mode-select-title">Grammar</div>
-        <div class="mode-select-subtitle">Rules & Structures</div>
+        <div class="mode-select-title" id="mode-grammar-title">Grammatik</div>
+        <div class="mode-select-subtitle" id="mode-grammar-sub">Regeln & Strukturen</div>
         <div class="mode-select-stats" id="mode-grammar-stats">Lv 1 · 0 XP</div>
       </button>
-      
     </div>
-      <button id="mode-campaign-card" class="mode-select-card mode-select-card-campaign" onclick="selectAppMode('campaign')" style="width:100%;max-width:100%;display:flex;flex-direction:row;align-items:center;gap:0.8rem;padding:0.7rem 1rem;text-align:left;margin-top:0.5rem;display:none;">
-        <div style="font-size:1.5rem;flex-shrink:0;">&#128218;</div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-weight:800;font-size:0.95rem;">Story Mode</div>
-          <div style="font-size:0.72rem;color:var(--muted);margin-top:1px;">Campaign: The Book That Knows Your Name</div>
-        </div>
-        <div class="mode-select-stats" id="mode-campaign-stats" style="flex-shrink:0;font-size:0.7rem;white-space:nowrap;" style="flex-shrink:0;font-size:0.7rem;white-space:nowrap;">0/15 Chapters</div>
-      </button>
 
+    <!-- Story Mode — distinct standout card -->
+    <button id="mode-campaign-card" class="mode-campaign-card-v2" onclick="selectAppMode('campaign')" style="display:none;">
+      <div class="campaign-card-bg"></div>
+      <div class="campaign-card-content">
+        <div class="campaign-card-icon">📖</div>
+        <div class="campaign-card-info">
+          <div class="campaign-card-title">Story Mode</div>
+          <div class="campaign-card-subtitle">The Book That Knows Your Name</div>
+          <div class="campaign-card-progress">
+            <div class="campaign-card-bar"><div class="campaign-card-fill" id="campaign-progress-fill" style="width:0%"></div></div>
+            <span class="mode-select-stats" id="mode-campaign-stats">0/15</span>
+          </div>
+        </div>
+      </div>
+    </button>
+
+    <!-- Combined Leaderboard -->
     <div id="mode-leaderboards" style="margin-top:1rem;"></div>
   </div>
 </div>
@@ -3044,6 +3181,37 @@ function setUiLang(lang) {
   else if (state.mode === 'campaign') return;
   else showHomeScreen();
 }
+/* ===== Onboarding ===== */
+var _onboardingSlide = 0;
+function showOnboarding() {
+  if (localStorage.getItem(LS_KEY + '-onboarding-done')) return;
+  var overlay = document.getElementById('onboarding-overlay');
+  if (overlay) { overlay.style.display = 'flex'; _onboardingSlide = 0; updateOnboardingSlide(); }
+}
+function nextOnboardingSlide() {
+  if (_onboardingSlide >= 2) { finishOnboarding(); return; }
+  _onboardingSlide++;
+  updateOnboardingSlide();
+}
+function goToOnboardingSlide(n) { _onboardingSlide = n; updateOnboardingSlide(); }
+function updateOnboardingSlide() {
+  var slides = document.querySelectorAll('.onboarding-slide');
+  var dots = document.querySelectorAll('.onboarding-dot');
+  var nextBtn = document.getElementById('onboarding-next-btn');
+  slides.forEach(function(s, i) {
+    s.classList.remove('active', 'exit');
+    if (i === _onboardingSlide) s.classList.add('active');
+    else if (i < _onboardingSlide) s.classList.add('exit');
+  });
+  dots.forEach(function(d, i) { d.classList.toggle('active', i === _onboardingSlide); });
+  if (nextBtn) nextBtn.style.display = _onboardingSlide >= 2 ? 'none' : '';
+}
+function finishOnboarding() {
+  localStorage.setItem(LS_KEY + '-onboarding-done', '1');
+  var overlay = document.getElementById('onboarding-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
 /* ===== Settings Drawer ===== */
 function toggleSettingsDrawer() {
   var drawer = document.getElementById('settings-drawer');
@@ -9384,28 +9552,19 @@ function loadGrammarData() {
 // --- Mode Select Screen ---
 function showModeSelectScreen() {
   const d = state.studentData || {};
-  document.getElementById('mode-welcome-name').textContent = state.studentName || 'there';
-  // Update language-dependent labels
-  var greetEl = document.querySelector('#mode-select-screen h2');
+  // Update language labels
+  var greetEl = document.getElementById('mode-greeting');
   if (greetEl) greetEl.innerHTML = t('greeting') + ' <span id="mode-welcome-name">' + escapeHtml(state.studentName || 'there') + '</span>!';
-  var subtitleEl = document.querySelector('#mode-select-screen h2 + p');
+  var subtitleEl = document.getElementById('mode-subtitle');
   if (subtitleEl) subtitleEl.textContent = t('whatToPractice');
-  var vocabTitle = document.querySelector('#mode-select-screen .mode-select-card:first-child .mode-select-title');
-  if (vocabTitle) vocabTitle.textContent = t('vocab');
-  var vocabSub = document.querySelector('#mode-select-screen .mode-select-card:first-child .mode-select-subtitle');
-  if (vocabSub) vocabSub.textContent = t('wordsAndDefs');
-  var gramTitle = document.querySelector('#mode-select-screen .mode-select-card-grammar .mode-select-title');
-  if (gramTitle) gramTitle.textContent = t('grammar');
-  var gramSub = document.querySelector('#mode-select-screen .mode-select-card-grammar .mode-select-subtitle');
-  if (gramSub) gramSub.textContent = t('rulesAndStructures');
-  // Lang toggle init
+  var vt = document.getElementById('mode-vocab-title'); if (vt) vt.textContent = t('vocab');
+  var vs = document.getElementById('mode-vocab-sub'); if (vs) vs.textContent = t('wordsAndDefs');
+  var gt = document.getElementById('mode-grammar-title'); if (gt) gt.textContent = t('grammar');
+  var gs = document.getElementById('mode-grammar-sub'); if (gs) gs.textContent = t('rulesAndStructures');
   var langBtn = document.getElementById('lang-toggle-btn');
   if (langBtn) langBtn.textContent = uiLang === 'de' ? '🇩🇪 Deutsch' : '🇬🇧 English';
   const modeAv = document.getElementById('mode-avatar');
-  if (modeAv && state.avatarId) {
-    modeAv.src = avatarSrc(state.avatarId);
-    modeAv.style.display = '';
-  }
+  if (modeAv && state.avatarId) { modeAv.src = avatarSrc(state.avatarId); modeAv.style.display = ''; }
   // Vocab stats
   const vxp = d.xp || 0;
   const vlv = getLevel(vxp, 'vocab');
@@ -9414,20 +9573,24 @@ function showModeSelectScreen() {
   const gxp = d.grammarXp || 0;
   const glv = getLevel(gxp, 'grammar');
   document.getElementById('mode-grammar-stats').textContent = 'Lv ' + glv.level + ' · ' + gxp.toLocaleString() + ' XP';
-  // Campaign stats (M1 only)
+  // Campaign card with progress bar
   var campaignCard = document.getElementById('mode-campaign-card');
   if (campaignCard) {
     if (typeof campaignLevels !== 'undefined' && campaignLevels.length > 0) {
       campaignCard.style.display = '';
       var cp = d.campaignProgress || {};
       var cLevels = (cp.levels ? Object.keys(cp.levels).filter(function(k) { return cp.levels[k].completed; }).length : 0);
-      document.getElementById('mode-campaign-stats').textContent = cLevels + '/15 Chapters';
+      document.getElementById('mode-campaign-stats').textContent = cLevels + '/15';
+      var fill = document.getElementById('campaign-progress-fill');
+      if (fill) fill.style.width = Math.round((cLevels / 15) * 100) + '%';
     } else {
       campaignCard.style.display = 'none';
     }
   }
   showScreen('mode-select-screen');
-  // Load top 3 leaderboards for both modes
+  // Show onboarding on first visit
+  showOnboarding();
+  // Load combined leaderboard
   loadModeSelectLeaderboards();
 }
 
@@ -9440,35 +9603,26 @@ async function loadModeSelectLeaderboards() {
     const students = [];
     snap.forEach(doc => {
       const d = doc.data();
-      students.push({ id: doc.id, name: d.name, vxp: d.xp || 0, gxp: d.grammarXp || 0, avatarId: d.avatarId || 1 });
+      students.push({ id: doc.id, name: d.name, vxp: d.xp || 0, gxp: d.grammarXp || 0, totalXp: (d.xp || 0) + (d.grammarXp || 0), avatarId: d.avatarId || 1 });
     });
-    const medals = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
-    const renderTop3 = (list, mode) => {
-      if (list.length === 0) return '<div style="color:var(--muted);font-size:0.72rem;text-align:center;">No students yet</div>';
-      return list.slice(0, 3).map((s, i) => {
-        const isMe = s.id === state.studentId;
-        const xp = mode === 'vocab' ? s.vxp : s.gxp;
-        return '<div style="display:flex;align-items:center;gap:6px;padding:4px 0;font-size:0.78rem;' + (isMe ? 'font-weight:700;color:var(--accent);' : '') + '">' +
-          '<span style="width:22px;text-align:center;">' + medals[i] + '</span>' +
-          '<img src="avatars/avatar (' + s.avatarId + ').png" style="width:20px;height:20px;border-radius:50%;" onerror="this.style.display=\'none\'">' +
-          '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (s.name || 'Student') + (isMe ? ' \u2190' : '') + '</span>' +
-          '<span style="font-weight:600;font-size:0.72rem;color:var(--muted);">' + xp.toLocaleString() + '</span>' +
-        '</div>';
-      }).join('');
-    };
-    const vocabSorted = [...students].sort((a, b) => b.vxp - a.vxp);
-    const grammarSorted = [...students].sort((a, b) => b.gxp - a.gxp);
-    container.innerHTML =
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;min-width:0;">' +
-        '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius);padding:0.6rem 0.8rem;overflow:hidden;min-width:0;">' +
-          '<div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;">\uD83D\uDCDA Vocab Top 3</div>' +
-          renderTop3(vocabSorted, 'vocab') +
-        '</div>' +
-        '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius);padding:0.6rem 0.8rem;overflow:hidden;min-width:0;">' +
-          '<div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;">\uD83E\uDDE0 Grammar Top 3</div>' +
-          renderTop3(grammarSorted, 'grammar') +
-        '</div>' +
+    const medals = ['🥇', '🥈', '🥉'];
+    // Combined leaderboard sorted by total XP
+    const sorted = [...students].sort((a, b) => b.totalXp - a.totalXp);
+    if (sorted.length === 0) { container.innerHTML = ''; return; }
+    var lbTitle = uiLang === 'de' ? '🏆 Klassen-Bestenliste' : '🏆 Class Leaderboard';
+    var html = '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius);padding:0.7rem 0.9rem;">';
+    html += '<div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.5rem;">' + lbTitle + '</div>';
+    sorted.slice(0, 3).forEach(function(s, i) {
+      var isMe = s.id === state.studentId;
+      html += '<div style="display:flex;align-items:center;gap:6px;padding:5px 0;font-size:0.8rem;' + (isMe ? 'font-weight:700;color:var(--accent);' : '') + '">' +
+        '<span style="width:22px;text-align:center;">' + medals[i] + '</span>' +
+        '<img src="avatars/avatar (' + s.avatarId + ').png" style="width:22px;height:22px;border-radius:50%;" onerror="this.style.display=\'none\'">' +
+        '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(s.name || 'Student') + (isMe ? ' ←' : '') + '</span>' +
+        '<span style="font-weight:600;font-size:0.72rem;color:var(--muted);">' + s.totalXp.toLocaleString() + ' XP</span>' +
       '</div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
   } catch (e) {
     container.innerHTML = '';
   }
