@@ -2579,10 +2579,14 @@ body.playing .header-container { display: none; }
         <div class="profile-xp-row">
           <span class="profile-xp" id="welcome-xp">0 XP</span>
         </div>
-        <div class="profile-rank-row">
+        <div class="profile-rank-row" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
           <span class="profile-rank-pill" id="rank-badge"></span>
+          <span class="profile-rank-label" id="rank-mode-label" style="font-size:0.58rem;color:var(--muted);font-weight:600;"></span>
         </div>
-        <div class="profile-overall-level" id="overall-level-display" style="margin-top:3px;font-size:0.68rem;color:var(--muted);font-weight:600;"></div>
+        <div class="profile-overall-row" id="overall-level-display" style="margin-top:4px;display:flex;gap:6px;align-items:center;">
+          <span class="profile-rank-pill zone-overall" id="overall-badge" style="background:linear-gradient(135deg,#0d9488,#14b8a6);color:#fff;font-size:0.65rem;padding:3px 10px;"></span>
+          <span style="font-size:0.58rem;color:var(--muted);font-weight:600;" id="overall-label"></span>
+        </div>
       </div>
     </div>
     <div class="profile-xp-bar" id="rank-display" style="display:none;">
@@ -2612,7 +2616,7 @@ body.playing .header-container { display: none; }
       <span id="smart-review-hint-text">20 Wörter zur Wiederholung</span>
       <span style="font-size:0.65rem;color:var(--muted);margin-left:auto;">Starten →</span>
     </div>
-    <div class="home-smart-review-desc" id="smart-review-desc">Übt automatisch Wörter, die du falsch hattest</div>
+    <div class="home-smart-review-desc" id="smart-review-desc" style="display:none;"></div>
     <button class="home-mode-switch-link" id="home-mode-switch" onclick="showModeSelectScreen()">🔄 Zu Grammatik oder Story Mode wechseln</button>
   </div>
 
@@ -2814,13 +2818,27 @@ body.playing .header-container { display: none; }
 <div id="reference-screen" class="screen">
   <div class="progress-nav">
     <button class="btn btn-secondary" onclick="goHome()">← Back</button>
+    <span class="nav-title" id="ref-screen-title">📖 Wörterbuch</span>
+    <span style="width:60px;"></span>
+  </div>
+
+  <!-- Flashcard button -->
+  <div style="margin-bottom:0.6rem;">
+    <button class="home-fullwidth-card" onclick="startFlashcardsFromRef()" style="padding:0.7rem 1rem;">
+      <span class="home-fullwidth-icon">📇</span>
+      <div class="home-fullwidth-info">
+        <span class="home-fullwidth-title" id="ref-flashcard-title">Karteikarten</span>
+        <span class="home-fullwidth-subtitle" id="ref-flashcard-subtitle">Alle Vokabel als Lernkarten durchgehen</span>
+      </div>
+      <span class="home-fullwidth-arrow">→</span>
+    </button>
   </div>
 
   <div class="card" style="margin-bottom:0.8rem;">
     <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
-      <input type="text" class="answer-input" id="ref-search" placeholder="Search words..." oninput="filterReference()" style="flex:1; min-width:150px; margin:0;">
+      <input type="text" class="answer-input" id="ref-search" placeholder="Wörter suchen..." oninput="filterReference()" style="flex:1; min-width:150px; margin:0;">
       <select id="ref-source-filter" class="ref-select" onchange="filterReference()">
-        <option value="all">All Sources</option>
+        <option value="all">Alle Units</option>
       </select>
     </div>
     <div id="ref-count" style="font-size:0.72rem; color:var(--muted); margin-top:0.5rem;"></div>
@@ -6421,6 +6439,19 @@ let flashcardGotWords = new Set();
 let fcFlipped = false;
 let fcDirection = 'en-de'; // 'en-de' or 'de-en'
 
+function startFlashcardsFromRef() {
+  // Start flashcards from the Wörterbuch with the current filter
+  var sourceFilter = document.getElementById('ref-source-filter');
+  var selectedSource = sourceFilter ? sourceFilter.value : 'all';
+  state.selectedSources.clear();
+  if (selectedSource === 'all') {
+    Object.keys(vocabData).forEach(function(k) { state.selectedSources.add(k); });
+  } else {
+    state.selectedSources.add(selectedSource);
+  }
+  startFlashcards();
+}
+
 function startFlashcards() {
   // Show direction picker overlay
   const old = document.getElementById('fc-direction-overlay');
@@ -6831,7 +6862,7 @@ function getTaskType() {
     return easyTypes[Math.floor(Math.random() * easyTypes.length)];
   }
   const sel = state.exerciseType;
-  const pool = Array.isArray(sel) ? sel : sel === 'mix' ? ['context', 'context-hard', 'definition', 'definition-hard', 'translation', 'mc-collocation'] : sel === 'collocation' ? ['mc-collocation'] : [sel];
+  const pool = Array.isArray(sel) ? sel : sel === 'mix' ? ['context', 'definition', 'translation', 'mc-collocation'] : sel === 'collocation' ? ['mc-collocation'] : [sel];
   const expanded = [];
   for (const t of pool) {
     if (t === 'multiple-choice') expanded.push('mc-context', 'mc-definition', 'mc-translation', 'mc-collocation');
@@ -6914,13 +6945,15 @@ function showWord() {
   label.textContent = isCol ? 'Word Partners' : isMC ? 'Choose the answer' : isContext ? 'Complete the sentence' : isDef ? 'Guess the word' : 'Translate to English';
 
   const prompt = document.getElementById('quiz-prompt');
+  // German hint line for context/definition modes
+  var germanHintHtml = '<div style="margin-top:8px;padding:6px 10px;border-radius:8px;background:rgba(13,148,136,0.06);border:1px solid rgba(13,148,136,0.12);font-size:0.78rem;color:var(--trans-color);">🇩🇪 ' + escapeHtml(word.g) + '</div>';
   if (isContext) {
     if (isMC) {
-      prompt.innerHTML = word.s.replace('_____', '<span class="gap">_____</span>');
+      prompt.innerHTML = word.s.replace('_____', '<span class="gap">_____</span>') + germanHintHtml;
     } else if (type === 'context') {
       const contextForm = getContextForm(word);
       const hint = getFirstLetterHint(contextForm, true);
-      prompt.innerHTML = word.s.replace('_____', `<span class="gap">${hint}</span>`);
+      prompt.innerHTML = word.s.replace('_____', '<span class="gap">' + hint + '</span>') + germanHintHtml;
     } else {
       const contextForm = getContextForm(word);
       const parts = contextForm.trim().split(/(\s+|-)/);
@@ -6928,11 +6961,11 @@ function showWord() {
       const allWords = parts.filter(x => !/^[\s-]+$/.test(x));
       const firstContent = allWords.find(p => !small.has(p.toLowerCase())) || allWords[0];
       const letter = firstContent[0];
-      prompt.innerHTML = word.s.replace('_____', `<span class="gap gap-hard">${letter}<span class="gap-line"></span></span>`);
+      prompt.innerHTML = word.s.replace('_____', '<span class="gap gap-hard">' + letter + '<span class="gap-line"></span></span>') + germanHintHtml;
     }
   } else if (isDef) {
     if (isMC) {
-      prompt.innerHTML = `<em>${word.d}</em>`;
+      prompt.innerHTML = '<em>' + word.d + '</em>' + germanHintHtml;
     } else if (type === 'definition') {
       // Easy mode: show first letter pattern + word count
       const cleaned = word.w.replace(/^to\s+/, '').replace(/\(.*?\)/g, '').replace(/\bsth\.?\s*/g, '').replace(/\bsb\.?\s*/g, '').replace(/[.!?]+$/g, '').trim().replace(/\s+/g, ' ');
@@ -6943,14 +6976,14 @@ function showWord() {
         if (small.has(w.toLowerCase()) && answerWords.length > 1) return w;
         return w[0] + '_'.repeat(Math.max(w.length - 1, 1));
       }).join(' ');
-      const countLabel = wordCount === 1 ? '1 word' : `${wordCount} words`;
-      prompt.innerHTML = `<em>${word.d}</em><div class="def-hint"><span class="def-hint-letter">${hintParts}</span><span class="def-hint-count">${countLabel}</span></div>`;
+      const countLabel = wordCount === 1 ? '1 word' : wordCount + ' words';
+      prompt.innerHTML = '<em>' + word.d + '</em><div class="def-hint"><span class="def-hint-letter">' + hintParts + '</span><span class="def-hint-count">' + countLabel + '</span></div>' + germanHintHtml;
     } else {
-      // Hard mode: just the definition, no hints
-      prompt.innerHTML = `<em>${word.d}</em>`;
+      // Hard mode: definition + German hint but no letter hints
+      prompt.innerHTML = '<em>' + word.d + '</em>' + germanHintHtml;
     }
   } else if (!isCol) {
-    prompt.innerHTML = `<span class="german-word">${word.g}</span>`;
+    prompt.innerHTML = '<span class="german-word">' + word.g + '</span>';
   }
 
   document.getElementById('source-tag').textContent = word.source;
@@ -9803,14 +9836,17 @@ showHomeScreen = function() {
         '<div class="today-divider"></div>' +
         '<div class="today-section"><div class="today-header"><span class="today-label">⚡ ' + t('dailyChallenge') + '</span><span class="today-date" id="daily-date"></span></div><div class="today-daily-desc">10 ' + t('words').toLowerCase() + ' · ' + (uiLang==='de' ? 'gleich für alle heute' : 'same for everyone today') + '</div><div id="daily-action"></div></div>';
     }
-    // Overall level display
-    var olDisplay = document.getElementById('overall-level-display');
-    if (olDisplay) {
-      var d2 = state.studentData || {};
-      var totalXp = (d2.xp || 0) + (d2.grammarXp || 0);
-      var ol = getOverallLevel(totalXp);
-      olDisplay.textContent = '🌍 ' + ol.name + ' · ' + totalXp.toLocaleString() + ' ' + (uiLang==='de' ? 'Gesamt-XP' : 'Total XP');
-    }
+    // Mode-specific rank label
+    var rankLabel = document.getElementById('rank-mode-label');
+    if (rankLabel) rankLabel.textContent = uiLang==='de' ? 'Vokabel' : 'Vocab';
+    // Overall level badge
+    var d2 = state.studentData || {};
+    var totalXp = (d2.xp || 0) + (d2.grammarXp || 0);
+    var ol = getOverallLevel(totalXp);
+    var olBadge = document.getElementById('overall-badge');
+    if (olBadge) olBadge.textContent = 'Lv ' + ol.level + ' · ' + ol.name;
+    var olLabel = document.getElementById('overall-label');
+    if (olLabel) olLabel.textContent = (uiLang==='de' ? 'Englisch gesamt' : 'English overall') + ' · ' + totalXp.toLocaleString() + ' XP';
     // Class level
     loadClassLevel();
     // Hide weekly goal (replaced by class level)
@@ -9977,13 +10013,16 @@ function showGrammarHomeScreen() {
   // Battle arena subtitle
   var bSub = document.getElementById('battle-arena-subtitle');
   if (bSub) bSub.textContent = uiLang==='de' ? 'Duell, Klassenquiz & Kampfverlauf' : 'Duel, Class Quiz & Battle History';
-  // Overall level display
-  var olDisplay = document.getElementById('overall-level-display');
-  if (olDisplay) {
-    var totalXp = (d.xp || 0) + (d.grammarXp || 0);
-    var ol = getOverallLevel(totalXp);
-    olDisplay.textContent = '🌍 ' + ol.name + ' · ' + totalXp.toLocaleString() + ' ' + (uiLang==='de' ? 'Gesamt-XP' : 'Total XP');
-  }
+  // Mode-specific rank label
+  var rankLabel = document.getElementById('rank-mode-label');
+  if (rankLabel) rankLabel.textContent = uiLang==='de' ? 'Grammatik' : 'Grammar';
+  // Overall level badge
+  var totalXp = (d.xp || 0) + (d.grammarXp || 0);
+  var ol = getOverallLevel(totalXp);
+  var olBadge = document.getElementById('overall-badge');
+  if (olBadge) olBadge.textContent = 'Lv ' + ol.level + ' · ' + ol.name;
+  var olLabel = document.getElementById('overall-label');
+  if (olLabel) olLabel.textContent = (uiLang==='de' ? 'Englisch gesamt' : 'English overall') + ' · ' + totalXp.toLocaleString() + ' XP';
   // Class level
   loadClassLevel();
   showScreen('home-screen');
