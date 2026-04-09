@@ -871,43 +871,26 @@ h1 { display: none; }
 
 /* ===== PHASE 3: REDESIGNED HOME SCREEN ===== */
 
-/* Compact Profile Bar */
-.home-profile-bar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0.7rem 1rem; background: var(--card); border: 1.5px solid var(--card-border);
-  border-radius: var(--radius-lg); box-shadow: var(--shadow-card); margin-bottom: 0.8rem;
-}
-.home-profile-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-.avatar-md { width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--accent); flex-shrink: 0; }
-.home-profile-info { flex: 1; min-width: 0; }
-.home-profile-name { font-family: 'Fredoka', sans-serif; font-weight: 800; font-size: 1rem; display: flex; align-items: center; gap: 6px; }
-.home-profile-xp { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.home-settings-btn {
-  width: 40px; height: 40px; border-radius: 12px; border: 1.5px solid var(--card-border);
-  background: var(--card); cursor: pointer; font-size: 1.2rem; display: flex;
-  align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s;
-}
-.home-settings-btn:hover { background: var(--card-hover); border-color: var(--accent); }
+/* Section wrapper for consistent spacing */
+.home-section { width: 100%; margin-bottom: 0.6rem; }
+.home-section .btn-start-practice { width: 100%; }
 
-/* Primary Action Button */
-.home-primary-action { margin-bottom: 0.8rem; }
-.home-primary-action .btn-start-practice { width: 100%; }
-
-/* Action Grid (2x2) */
+/* Action Grid (2x2 default, 3-col for nav) */
 .home-action-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; margin-bottom: 0.8rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%;
 }
+.home-nav-3col { grid-template-columns: 1fr 1fr 1fr; }
 .home-action-card {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-  padding: 1rem 0.5rem; border-radius: var(--radius); border: 1.5px solid var(--card-border);
-  background: var(--card); cursor: pointer; transition: all 0.15s; min-height: 72px;
-  width: 100%; box-sizing: border-box;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  padding: 0.9rem 0.5rem; border-radius: var(--radius); border: 1.5px solid var(--card-border);
+  background: var(--card); cursor: pointer; transition: all 0.15s; min-height: 68px;
+  width: 100%; box-sizing: border-box; box-shadow: var(--shadow-card);
 }
 .home-action-card:hover { border-color: var(--accent); background: var(--card-hover); transform: translateY(-1px); }
 .home-action-card:active { transform: scale(0.97); }
-.home-action-icon { font-size: 1.3rem; line-height: 1; }
-.home-action-label { font-size: 0.72rem; font-weight: 700; color: var(--text); font-family: 'Fredoka', sans-serif; text-align: center; }
-[data-theme="light"] .home-action-card { background: rgba(0,0,0,0.02); }
+.home-action-icon { font-size: 1.4rem; line-height: 1; }
+.home-action-label { font-size: 0.75rem; font-weight: 700; color: var(--text); font-family: 'Fredoka', sans-serif; text-align: center; line-height: 1.2; }
+[data-theme="light"] .home-action-card { background: #fff; }
 
 /* Fixed Bottom Navigation */
 .bottom-nav {
@@ -1083,12 +1066,10 @@ body::before {
 .home-actions-area .btn-start-practice { width: 100%; }
 .home-actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .home-actions-row .btn, .home-actions-row .btn-battle, .home-actions-row .btn-review { width: 100%; font-size: 0.85rem; padding: 0.8rem 0.6rem; font-family: 'Fredoka', sans-serif; border-radius: var(--radius); }
-.home-nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin-top: 0.5rem; margin-bottom: 0.8rem; }
-.home-nav-grid .btn { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.7rem; padding: 0.6rem 0.3rem; font-family: 'Fredoka', sans-serif; border-radius: var(--radius); background: var(--card); border: 1.5px solid var(--card-border); box-shadow: var(--shadow-card); color: var(--text); font-weight: 600; }
-.home-nav-grid .btn:hover { border-color: var(--accent); background: var(--accent-glow); color: var(--accent); }
-.home-nav-grid .btn span { font-size: 0.68rem; font-family: 'Inter', sans-serif; font-weight: 600; opacity: 0.7; }
-.home-nav-footer { display: flex; justify-content: center; margin-top: 0.8rem; margin-bottom: 1.5rem; gap: 0.5rem; }
-.home-nav-footer .btn { font-size: 0.72rem; padding: 0.5rem 1.2rem; }
+/* legacy nav grid — replaced by home-action-grid.home-nav-3col */
+.home-nav-grid { display: none; }
+.home-nav-footer { display: flex; justify-content: center; margin-top: 0.6rem; margin-bottom: 1rem; gap: 0.5rem; width: 100%; }
+.home-nav-footer .btn { font-size: 0.68rem; padding: 0.45rem 0.8rem; flex: 1; text-align: center; white-space: nowrap; }
 .mode-row { display: flex; gap: 0.5rem; }
 .mode-row .btn { flex: 1; }
 .btn-start-practice { font-size: 1.1rem !important; padding: 1rem !important; font-weight: 800 !important; letter-spacing: 0.5px; }
@@ -2572,33 +2553,48 @@ body.playing .header-container { display: none; }
   </div>
 
   <!-- Primary Action -->
-  <button class="btn btn-primary btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
-
-  <!-- Action Grid (2x2, equal width) -->
-  <div class="home-action-grid">
-    <button class="home-action-card" id="review-btn" style="display:none;" onclick="startSmartReview()">
-      <span class="home-action-icon">🔄</span>
-      <span class="home-action-label" id="review-btn-label">Wiederholung</span>
-    </button>
-    <button class="home-action-card" id="home-words-btn" onclick="showWordReference()">
-      <span class="home-action-icon">📖</span>
-      <span class="home-action-label">Wörter</span>
-    </button>
-    <button class="home-action-card" onclick="openClassQuizJoin()">
-      <span class="home-action-icon">🎓</span>
-      <span class="home-action-label">Klassenquiz</span>
-    </button>
-    <button class="home-action-card" id="btn-battle" onclick="openBattleLobby()" style="display:none;">
-      <span class="home-action-icon">⚔️</span>
-      <span class="home-action-label">Battle Arena</span>
-    </button>
+  <div class="home-section">
+    <button class="btn btn-primary btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
   </div>
 
-  <!-- Nav Row -->
-  <div class="home-nav-grid">
-    <button class="btn btn-secondary btn-small" onclick="state.mode==='grammar'?showGrammarMap():showProgressMap()">🗺️<span>Karte</span></button>
-    <button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>Fortschritt</span></button>
-    <button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>Bestenliste</span></button>
+  <!-- Action Grid (2x2, equal width) -->
+  <div class="home-section">
+    <div class="home-action-grid">
+      <button class="home-action-card" id="review-btn" style="display:none;" onclick="startSmartReview()">
+        <span class="home-action-icon">🔄</span>
+        <span class="home-action-label" id="review-btn-label">Wiederholung</span>
+      </button>
+      <button class="home-action-card" id="home-words-btn" onclick="showWordReference()">
+        <span class="home-action-icon">📖</span>
+        <span class="home-action-label">Wörter</span>
+      </button>
+      <button class="home-action-card" onclick="openClassQuizJoin()">
+        <span class="home-action-icon">🎓</span>
+        <span class="home-action-label">Klassenquiz</span>
+      </button>
+      <button class="home-action-card" id="btn-battle" onclick="openBattleLobby()" style="display:none;">
+        <span class="home-action-icon">⚔️</span>
+        <span class="home-action-label">Battle Arena</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Nav Row (same grid) -->
+  <div class="home-section">
+    <div class="home-action-grid home-nav-3col">
+      <button class="home-action-card" onclick="state.mode==='grammar'?showGrammarMap():showProgressMap()">
+        <span class="home-action-icon">🗺️</span>
+        <span class="home-action-label">Karte</span>
+      </button>
+      <button class="home-action-card" onclick="showProgressScreen()">
+        <span class="home-action-icon">📊</span>
+        <span class="home-action-label">Fortschritt</span>
+      </button>
+      <button class="home-action-card" onclick="showLeaderboard()">
+        <span class="home-action-icon">🏆</span>
+        <span class="home-action-label">Bestenliste</span>
+      </button>
+    </div>
   </div>
 
   <!-- Daily Content Card -->
