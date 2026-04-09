@@ -231,10 +231,10 @@ h1 { display: none; }
   font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s;
   text-align: center; position: relative; overflow: hidden;
 }
-.source-btn:hover { background: var(--card-hover); border-color: rgba(200,50,30,0.18); transform: translateY(-1px); }
+.source-btn:hover { background: var(--card-hover); border-color: rgba(22,163,74,0.18); transform: translateY(-1px); }
 .source-btn.selected {
-  background: rgba(214,48,48,0.1); border-color: rgba(214,48,48,0.45);
-  color: var(--text); box-shadow: 0 0 20px rgba(214,48,48,0.08), inset 0 0 20px rgba(214,48,48,0.04);
+  background: rgba(22,163,74,0.1); border-color: rgba(22,163,74,0.45);
+  color: var(--text); box-shadow: 0 0 20px rgba(22,163,74,0.08), inset 0 0 20px rgba(22,163,74,0.04);
 }
 .source-btn .count { display: block; font-size: 0.64rem; color: var(--muted); font-weight: 400; margin-top: 0.2rem; }
 .source-btn .progress-indicator {
@@ -243,11 +243,11 @@ h1 { display: none; }
 }
 .quick-btns { display: flex; gap: 0.4rem; margin-top: 0.7rem; }
 .quick-btn {
-  flex: 1; padding: 0.45rem; border-radius: 8px; border: 1.5px dashed rgba(200,50,30,0.15);
+  flex: 1; padding: 0.45rem; border-radius: 8px; border: 1.5px dashed rgba(22,163,74,0.15);
   background: transparent; color: var(--muted); font-size: 0.7rem; font-weight: 600;
   cursor: pointer; font-family: inherit; transition: all 0.2s; letter-spacing: -0.01em;
 }
-.quick-btn:hover { border-color: rgba(214,48,48,0.4); color: var(--accent-light); background: rgba(214,48,48,0.05); }
+.quick-btn:hover { border-color: rgba(22,163,74,0.4); color: var(--accent-light); background: rgba(22,163,74,0.05); }
 
 /* Type Selection */
 .type-grid { display: flex; gap: 0.4rem; flex-wrap: wrap; }
@@ -260,8 +260,8 @@ h1 { display: none; }
 }
 .type-btn:hover { background: var(--card-hover); transform: translateY(-1px); }
 .type-btn.selected {
-  background: rgba(214,48,48,0.1); border-color: rgba(214,48,48,0.45); color: var(--text);
-  box-shadow: 0 0 16px rgba(214,48,48,0.08);
+  background: rgba(22,163,74,0.1); border-color: rgba(22,163,74,0.45); color: var(--text);
+  box-shadow: 0 0 16px rgba(22,163,74,0.08);
 }
 .type-btn.selected[data-type="context"] { background: rgba(37,99,235,0.08); border-color: rgba(37,99,235,0.35); box-shadow: 0 0 16px rgba(37,99,235,0.06); }
 .type-btn.selected[data-type="context-hard"] { background: rgba(37,99,235,0.10); border-color: rgba(37,99,235,0.4); box-shadow: 0 0 16px rgba(37,99,235,0.08); }
@@ -334,7 +334,7 @@ h1 { display: none; }
   color: white; box-shadow: 0 4px 20px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.15);
   text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
-.btn-primary:hover { box-shadow: 0 6px 28px rgba(214,48,48,0.35), inset 0 1px 0 rgba(255,255,255,0.15); }
+.btn-primary:hover { box-shadow: 0 6px 28px rgba(22,163,74,0.35), inset 0 1px 0 rgba(255,255,255,0.15); }
 .btn-primary:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; transform: none; }
 .btn-secondary {
   background: var(--card); color: var(--text-secondary);
@@ -355,7 +355,7 @@ h1 { display: none; }
 
 .word-count-display {
   text-align: center; margin: 0.6rem 0; font-size: 0.82rem; color: var(--text-secondary);
-  padding: 0.5rem; border-radius: 8px; background: rgba(200,50,30,0.03);
+  padding: 0.5rem; border-radius: 8px; background: rgba(22,163,74,0.03);
 }
 .word-count-display strong { color: var(--text); font-weight: 800; }
 
@@ -392,7 +392,7 @@ h1 { display: none; }
 .badge-modal-overlay.show { display: flex; }
 .badge-modal { background: var(--bg2); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 1.5rem; max-width: 400px; width: 100%; max-height: 80vh; overflow-y: auto; }
 .badge-modal h3 { margin-bottom: 1rem; }
-.badge-item { display: flex; align-items: center; gap: 0.8rem; padding: 0.6rem 0; border-bottom: 1px solid rgba(200,50,30,0.08); }
+.badge-item { display: flex; align-items: center; gap: 0.8rem; padding: 0.6rem 0; border-bottom: 1px solid rgba(22,163,74,0.08); }
 .badge-item:last-child { border-bottom: none; }
 .badge-item-icon { font-size: 1.6rem; min-width: 2rem; text-align: center; }
 .badge-item.locked .badge-item-icon { filter: grayscale(1); opacity: 0.3; }
@@ -418,16 +418,16 @@ h1 { display: none; }
 #leaderboard-screen .progress-nav { margin-bottom: 1rem; }
 .lb-section-title { font-weight: 800; font-size: 0.85rem; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.08em; margin: 1.2rem 0 0.6rem; }
 .lb-row { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.8rem; border-radius: 10px; margin-bottom: 0.3rem; background: var(--card); border: 1px solid var(--card-border); }
-.lb-row.me { border-color: rgba(214,48,48,0.3); background: rgba(214,48,48,0.06); }
+.lb-row.me { border-color: rgba(22,163,74,0.3); background: rgba(22,163,74,0.06); }
 .lb-rank { font-weight: 800; min-width: 1.8rem; text-align: center; font-size: 0.9rem; }
 .lb-name { flex: 1; font-weight: 600; font-size: 0.9rem; }
 .lb-xp { font-weight: 800; color: var(--accent2); font-size: 0.9rem; }
 .lb-score { font-weight: 700; color: var(--correct); font-size: 0.85rem; }
-.lb-divider { border: none; border-top: 1px solid rgba(200,50,30,0.10); margin: 1rem 0 0.5rem; }
+.lb-divider { border: none; border-top: 1px solid rgba(22,163,74,0.10); margin: 1rem 0 0.5rem; }
 
 /* Progress bar (in-quiz) */
 .progress-wrap { width: 100%; margin-bottom: 1.2rem; }
-.progress-bar-bg { width: 100%; height: 5px; background: rgba(200,50,30,0.08); border-radius: 3px; overflow: hidden; }
+.progress-bar-bg { width: 100%; height: 5px; background: rgba(22,163,74,0.08); border-radius: 3px; overflow: hidden; }
 .progress-bar-fill {
   height: 100%; border-radius: 3px; transition: width 0.4s cubic-bezier(0.22,1,0.36,1);
   background: linear-gradient(90deg, var(--accent), var(--accent-light));
@@ -457,7 +457,7 @@ h1 { display: none; }
 .quiz-prompt .gap {
   display: inline-block; min-width: 5em; font-weight: 700; color: transparent; letter-spacing: 0.04em;
   border-bottom: 2.5px solid var(--accent); padding: 0.05em 0.3em;
-  background: rgba(214,48,48,0.05); border-radius: 4px 4px 0 0;
+  background: rgba(22,163,74,0.05); border-radius: 4px 4px 0 0;
   vertical-align: baseline; text-align: center;
 }
 .quiz-prompt .gap.gap-hard {
@@ -504,7 +504,7 @@ h1 { display: none; }
 .source-tag {
   display: inline-block; margin-top: 1rem; padding: 0.25rem 0.65rem; border-radius: 6px;
   font-size: 0.62rem; font-weight: 600; color: var(--muted); letter-spacing: 0.02em;
-  background: rgba(200,50,30,0.04); border: 1px solid rgba(200,50,30,0.08);
+  background: rgba(22,163,74,0.04); border: 1px solid rgba(22,163,74,0.08);
 }
 
 /* Results */
@@ -520,13 +520,13 @@ h1 { display: none; }
 .results-list { width: 100%; margin-bottom: 1.2rem; max-height: 55vh; overflow-y: auto; }
 .results-list::-webkit-scrollbar { width: 4px; }
 .results-list::-webkit-scrollbar-track { background: transparent; }
-.results-list::-webkit-scrollbar-thumb { background: rgba(200,50,30,0.12); border-radius: 2px; }
+.results-list::-webkit-scrollbar-thumb { background: rgba(22,163,74,0.12); border-radius: 2px; }
 .result-item {
   display: flex; align-items: center; gap: 0.8rem; padding: 0.75rem 0.4rem;
-  border-bottom: 1px solid rgba(200,50,30,0.06); font-size: 0.85rem;
+  border-bottom: 1px solid rgba(22,163,74,0.06); font-size: 0.85rem;
   border-radius: 8px; transition: background 0.15s;
 }
-.result-item:hover { background: rgba(200,50,30,0.03); }
+.result-item:hover { background: rgba(22,163,74,0.03); }
 .result-item:last-child { border-bottom: none; }
 .result-icon { font-size: 0.9rem; flex-shrink: 0; }
 .result-word { font-weight: 600; flex: 1; }
@@ -541,7 +541,7 @@ h1 { display: none; }
 .loading { text-align: center; padding: 2rem; color: var(--muted); }
 .spinner {
   display: inline-block; width: 28px; height: 28px;
-  border: 3px solid rgba(214,48,48,0.15); border-top-color: var(--accent);
+  border: 3px solid rgba(22,163,74,0.15); border-top-color: var(--accent);
   border-radius: 50%; animation: spin 0.7s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -568,7 +568,8 @@ h1 { display: none; }
 [data-theme="light"] .mc-option { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); color: var(--text); }
 [data-theme="light"] #avatar-picker-modal { background: white; color: var(--text); }
 [data-theme="light"] .battle-modal-bg { background: white; color: var(--text); }
-[data-theme="light"] .practice-setup-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 9000; overflow-y: auto; -webkit-overflow-scrolling: touch; animation: fadeIn 0.2s ease; }
+/* Practice Setup Overlay */
+.practice-setup-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 9000; overflow-y: auto; -webkit-overflow-scrolling: touch; animation: fadeIn 0.2s ease; }
 .setup-step { max-width: 520px; margin: 0 auto; padding: 0 1rem; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; background: var(--bg); }
 .setup-header { position: sticky; top: 0; background: var(--bg); padding: 1rem 0 0.8rem; z-index: 10; text-align: center; }
 .setup-header h2 { font-size: 1.3rem; font-weight: 800; margin: 0; }
@@ -577,6 +578,110 @@ h1 { display: none; }
 .setup-close:hover, .setup-back:hover { background: var(--card-hover); }
 .setup-body { flex: 1; padding: 0.5rem 0; }
 .setup-footer { position: sticky; bottom: 0; background: var(--bg); padding: 1rem 0 calc(env(safe-area-inset-bottom) + 1rem); }
+
+/* Mode cards (vocab practice setup) */
+.mode-select { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.2rem; }
+.mode-card { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.2rem; border-radius: var(--radius); border: 1.5px solid var(--card-border); background: var(--card); cursor: pointer; transition: all 0.15s ease; text-align: left; width: 100%; color: var(--text); }
+.mode-card:hover:not(.disabled) { background: var(--card-hover); border-color: var(--accent); }
+.mode-card.selected { border-color: var(--accent); background: var(--accent-glow); box-shadow: 0 0 0 1px var(--accent); }
+.mode-card.disabled { opacity: 0.4; cursor: not-allowed; }
+.mode-icon { font-size: 1.6rem; width: 40px; text-align: center; flex-shrink: 0; }
+.mode-info { flex: 1; }
+.mode-name { font-weight: 700; font-size: 1rem; margin-bottom: 2px; }
+.mode-desc { font-size: 0.78rem; color: var(--muted); }
+
+/* Type cards (exercise type selection) */
+.type-select-wrap { margin-top: 0.5rem; }
+.type-select-label { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem; }
+.type-select-list { display: flex; flex-direction: column; gap: 0.4rem; }
+.type-card { display: flex; flex-direction: column; align-items: flex-start; padding: 0.7rem 1rem; border-radius: var(--radius); border: 1.5px solid var(--card-border); background: var(--card); cursor: pointer; transition: all 0.15s ease; text-align: left; width: 100%; color: var(--text); }
+.type-card:hover { background: var(--card-hover); }
+.type-card.selected { border-color: var(--accent); background: var(--accent-glow); box-shadow: 0 0 0 1px var(--accent); }
+.type-card-name { font-weight: 700; font-size: 0.88rem; }
+.type-card-desc { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+[data-theme="light"] .type-card { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); }
+[data-theme="light"] .type-card.selected { background: rgba(22,163,74,0.08); border-color: var(--accent); }
+
+/* Progress Screen */
+.progress-overall { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; width: 100%; margin-bottom: 1rem; }
+.progress-overall .stat-card { padding: 0.8rem 0.5rem; }
+.progress-overall .stat-card.wide { grid-column: 1 / -1; }
+.progress-overall .stat-sub { font-size: 0.65rem; color: var(--muted); margin-top: 0.15rem; }
+.progress-ring-wrap { text-align: center; margin-bottom: 1.2rem; }
+.progress-ring-wrap svg { transform: rotate(-90deg); filter: drop-shadow(0 0 12px rgba(22,163,74,0.15)); }
+.progress-ring-label { font-size: 0.75rem; color: var(--muted); margin-top: 0.4rem; }
+.progress-legend { display: flex; gap: 0.8rem; justify-content: center; margin-bottom: 1rem; font-size: 0.68rem; color: var(--muted); font-weight: 500; }
+.progress-legend span { display: flex; align-items: center; gap: 0.3rem; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.legend-dot.mastered { background: var(--correct); box-shadow: 0 0 6px var(--correct-glow); }
+.legend-dot.practiced { background: var(--accent); box-shadow: 0 0 6px var(--accent-glow); }
+.legend-dot.weak { background: var(--wrong); box-shadow: 0 0 6px var(--wrong-glow); }
+.legend-dot.unseen { background: rgba(22,163,74,0.12); }
+
+/* Source progress (in progress screen) */
+.source-progress-list { width: 100%; }
+.source-progress-item { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 0.9rem 1rem; margin-bottom: 0.45rem; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-card); }
+.source-progress-item:hover { border-color: rgba(22,163,74,0.25); background: var(--card-hover); transform: translateY(-1px); }
+.source-progress-item.expanded { border-color: rgba(22,163,74,0.4); box-shadow: var(--shadow-elevated); }
+.source-progress-header { display: flex; justify-content: space-between; align-items: center; }
+.source-progress-name { font-weight: 700; font-size: 0.9rem; }
+.source-progress-stats { display: flex; gap: 0.6rem; font-size: 0.7rem; color: var(--muted); }
+.source-progress-stats .mastered-count { color: var(--correct); font-weight: 700; }
+.source-progress-stats .weak-count { color: var(--wrong); font-weight: 700; }
+.source-progress-stats .not-seen-count { color: var(--muted); font-weight: 600; }
+.source-progress-bar { width: 100%; height: 5px; background: rgba(22,163,74,0.08); border-radius: 3px; margin-top: 0.6rem; overflow: hidden; display: flex; }
+.source-progress-bar .bar-mastered { background: linear-gradient(90deg, var(--correct), #4ade80); height: 100%; transition: width 0.4s; }
+.source-progress-bar .bar-practiced { background: linear-gradient(90deg, var(--accent), var(--accent-light)); height: 100%; transition: width 0.4s; }
+.source-progress-bar .bar-weak { background: linear-gradient(90deg, var(--wrong), #f87171); height: 100%; transition: width 0.4s; }
+.word-detail-list { margin-top: 0.8rem; display: none; border-top: 1px solid rgba(22,163,74,0.10); padding-top: 0.5rem; max-height: 300px; overflow-y: auto; }
+.word-detail-list::-webkit-scrollbar { width: 3px; }
+.word-detail-list::-webkit-scrollbar-thumb { background: rgba(22,163,74,0.12); border-radius: 2px; }
+.source-progress-item.expanded .word-detail-list { display: block; }
+.word-detail-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.2rem; border-bottom: 1px solid rgba(22,163,74,0.06); font-size: 0.8rem; border-radius: 4px; transition: background 0.1s; }
+.word-detail-row:hover { background: rgba(22,163,74,0.03); }
+.word-detail-row:last-child { border-bottom: none; }
+.word-detail-status { width: 20px; text-align: center; flex-shrink: 0; font-size: 0.8rem; }
+.word-detail-name { flex: 1; font-weight: 500; color: var(--text); }
+.word-detail-counts { display: flex; gap: 0.4rem; font-size: 0.72rem; flex-shrink: 0; }
+.word-detail-counts .correct-count { color: var(--correct); font-weight: 700; }
+.word-detail-counts .wrong-count { color: var(--wrong); font-weight: 700; }
+.word-detail-row.mastered .word-detail-name { color: var(--correct); }
+.word-detail-row.weak .word-detail-name { color: var(--wrong); }
+.word-detail-row.unseen .word-detail-name { color: var(--muted); font-style: italic; }
+
+/* Word Reference */
+.ref-select { padding: 0.55rem 0.8rem; border-radius: 10px; border: 1.5px solid var(--card-border); background: var(--card); color: var(--text); font-size: 0.82rem; font-family: inherit; cursor: pointer; appearance: auto; transition: border-color 0.2s; }
+.ref-select:focus { border-color: var(--accent); outline: none; }
+.ref-list { width: 100%; }
+.ref-source-group { margin-bottom: 1.2rem; }
+.ref-source-title { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-light); margin-bottom: 0.5rem; padding: 0.35rem 0; border-bottom: 1px solid rgba(22,163,74,0.15); }
+.ref-word-item { background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 0.8rem 1rem; margin-bottom: 0.35rem; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-card); }
+.ref-word-item:hover { border-color: rgba(22,163,74,0.25); background: var(--card-hover); transform: translateY(-1px); }
+.ref-word-item.expanded { border-color: rgba(22,163,74,0.4); box-shadow: var(--shadow-elevated); transform: none; }
+.ref-word-header { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+.ref-word-en { font-weight: 700; font-size: 0.88rem; color: var(--text); }
+.ref-word-de { font-size: 0.78rem; color: var(--trans-color); font-style: italic; flex-shrink: 0; }
+.ref-word-details { display: none; margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px solid rgba(22,163,74,0.08); font-size: 0.82rem; line-height: 1.6; }
+.ref-word-item.expanded .ref-word-details { display: block; animation: fadeDetail 0.2s ease-out; }
+@keyframes fadeDetail { from { opacity: 0; } to { opacity: 1; } }
+.ref-detail-label { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-top: 0.5rem; margin-bottom: 0.15rem; }
+.ref-detail-label:first-child { margin-top: 0; }
+.ref-detail-text { color: var(--text-secondary); }
+
+/* Level roadmap */
+.roadmap-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(22,163,74,0.05); }
+.roadmap-item:last-child { border-bottom: none; }
+.roadmap-lvl { width: 32px; text-align: center; font-weight: 800; font-size: 13px; flex-shrink: 0; }
+.roadmap-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.roadmap-info { flex: 1; min-width: 0; }
+.roadmap-name { font-weight: 700; font-size: 13px; }
+.roadmap-vibe { font-size: 11px; opacity: 0.5; font-style: italic; }
+.roadmap-xp { font-size: 11px; opacity: 0.6; text-align: right; flex-shrink: 0; }
+.roadmap-item.current { background: rgba(22,163,74,0.05); border-radius: 10px; padding: 10px 8px; margin: 2px -8px; }
+.roadmap-item.current .roadmap-name { color: var(--accent); }
+.roadmap-item.locked { opacity: 0.45; }
+.roadmap-item.locked .roadmap-name { letter-spacing: 1px; }
+.roadmap-check { color: var(--correct); font-size: 14px; }
 
 /* ===== NAIVE TYPOGRAPHY & POLISH ===== */
 .profile-name, .nav-title, h2, .card h3, .grammar-topic-name,
@@ -2178,6 +2283,7 @@ body.playing .header-container { display: none; }
   <div class="home-nav-footer">
     <button id="theme-toggle-btn" onclick="toggleTheme()" class="btn btn-secondary btn-small">☀️ Light</button>
     <button id="sfx-toggle-btn" onclick="toggleSfx()" class="btn btn-secondary btn-small">🔊 Sound: ON</button>
+    <button id="lang-toggle-btn" onclick="setUiLang(uiLang==='de'?'en':'de')" class="btn btn-secondary btn-small">🇩🇪 Deutsch</button>
   </div>
 </div>
 
@@ -2219,9 +2325,9 @@ body.playing .header-container { display: none; }
         stroke-dasharray="226.2" stroke-dashoffset="226.2" stroke-linecap="round"/>
       <!-- Center text -->
       <text x="80" y="76" text-anchor="middle" fill="var(--text)" font-size="22" font-weight="800"
-        style="transform:rotate(90deg);transform-origin:80px 80px" id="ring-pct">0%</text>
+        style="transform:rotate(90deg);transform-origin:80px 80px;dominant-baseline:central" id="ring-pct">0%</text>
       <text x="80" y="92" text-anchor="middle" fill="var(--muted)" font-size="10" font-weight="500"
-        style="transform:rotate(90deg);transform-origin:80px 80px">mastered</text>
+        style="transform:rotate(90deg);transform-origin:80px 80px;dominant-baseline:central">mastered</text>
     </svg>
   </div>
 
@@ -2451,6 +2557,273 @@ const SECTIONS = [
 const GRADE_LABEL = '1st Grade';
 const LS_KEY = '1st-grade-vocab-student';
 const TEACHER_PIN = '1304';
+
+/* ===== UI LANGUAGE SYSTEM ===== */
+let uiLang = localStorage.getItem('ui-lang') || 'de';
+const UI_TEXT = {
+  de: {
+    // Mode select
+    greeting: 'Hallo,',
+    whatToPractice: 'Was möchtest du üben?',
+    vocab: 'Vokabel',
+    grammar: 'Grammatik',
+    storyMode: 'Story Mode',
+    wordsAndDefs: 'Wörter & Bedeutungen',
+    rulesAndStructures: 'Regeln & Strukturen',
+    overallLeaderboard: 'Gesamt-Bestenliste',
+    // Home screen
+    startPractice: 'Übung starten',
+    startGrammarPractice: 'Grammatik üben',
+    startVocabPractice: 'Vokabel üben',
+    smartReview: 'Wiederholung',
+    rules: 'Regeln',
+    words: 'Wörter',
+    classQuiz: 'Klassenquiz',
+    battleArena: 'Battle Arena',
+    map: 'Karte',
+    progress: 'Fortschritt',
+    leaderboard: 'Bestenliste',
+    ruleOfTheDay: 'Regel des Tages',
+    wordOfTheDay: 'Wort des Tages',
+    dailyChallenge: 'Tägliche Herausforderung',
+    dailyGrammarChallenge: 'Tägliche Grammatik-Challenge',
+    // Stats
+    sessions: 'Sitzungen',
+    accuracy: 'Genauigkeit',
+    mastered: 'Gemeistert',
+    streak: 'Serie',
+    // Navigation
+    switchMode: 'Modus wechseln',
+    current: 'Aktuell',
+    back: 'Zurück',
+    logOut: 'Abmelden',
+    settings: 'Einstellungen',
+    language: 'Sprache',
+    theme: 'Erscheinungsbild',
+    sound: 'Sound',
+    light: 'Hell',
+    dark: 'Dunkel',
+    soundOn: 'Sound: AN',
+    soundOff: 'Sound: AUS',
+    // Grammar practice
+    practiceGrammar: 'Grammatik üben',
+    byTopic: 'Nach Thema',
+    byTask: 'Nach Aufgabe',
+    topics: 'Themen',
+    started: 'begonnen',
+    sprint: 'Sprint',
+    sprintDesc: 'Gemischte Aufgaben, schnelle Runde',
+    focusPractice: 'Gezieltes Üben',
+    selectTypeToStart: 'Wähle eine Aufgabe zum Starten',
+    items: 'Aufgaben',
+    // Vocab practice
+    selectUnits: 'Units auswählen',
+    chooseMode: 'Modus wählen',
+    step1of2: 'Schritt 1 von 2',
+    step2of2: 'Schritt 2 von 2',
+    selectAll: 'Alle auswählen',
+    clear: 'Zurücksetzen',
+    next: 'Weiter',
+    go: 'Los!',
+    fullRun: 'Komplett',
+    fullRunDesc: 'Alle gewählten Wörter, gemischte Aufgaben',
+    sprintMode: 'Sprint',
+    sprintModeDesc: '10 zufällige Wörter, schnelle Runde',
+    speedRound: 'Speed-Runde',
+    speedRoundDesc: '60 Sekunden, antworte schnell!',
+    multipleChoice: 'Multiple Choice',
+    multipleChoiceDesc: 'Wähle aus 4 Möglichkeiten',
+    flashcards: 'Karteikarten',
+    flashcardsDesc: 'Lernmodus, kein Druck',
+    exerciseType: 'Aufgabentyp',
+    mix: 'Mix',
+    mixDesc: 'Zufälliger Mix aller Typen',
+    contextEasy: 'Kontext (leicht)',
+    contextEasyDesc: 'Lücke ausfüllen — Anfangsbuchstabe + Buchstabenzahl',
+    contextHard: 'Kontext (schwer)',
+    contextHardDesc: 'Lücke ausfüllen — nur Anfangsbuchstabe',
+    definitionEasy: 'Definition (leicht)',
+    definitionEasyDesc: 'Definition lesen — Wortzahl + Anfangsbuchstaben',
+    definitionHard: 'Definition (schwer)',
+    definitionHardDesc: 'Definition lesen — keine Hinweise',
+    translation: 'Übersetzung',
+    translationDesc: 'Deutsches Wort sehen, Englisch tippen',
+    wordPartners: 'Wort-Partner',
+    wordPartnersDesc: 'Welches Wort passt nicht & Wort-Partner',
+    // Quiz
+    skip: 'Überspringen',
+    check: 'Prüfen',
+    correct: 'Richtig!',
+    correctAnswerIs: 'Die richtige Antwort ist:',
+    endPractice: 'Übung beenden',
+    chooseOpponent: 'Gegner wählen',
+    classmatOnline: 'Mitschüler online',
+    wordDuel: 'Wort-Duell',
+    grammarDuel: 'Grammatik-Duell',
+    battleHistory: 'Kampf-Verlauf',
+    cancel: 'Abbrechen',
+    challenge: 'Herausfordern',
+    // Results
+    ofCorrect: 'richtig',
+    progressSaved: 'Fortschritt gespeichert!',
+    results: 'Ergebnisse',
+    tryAgain: 'Nochmal',
+    home: 'Startseite',
+    // Progress
+    totalWords: 'Alle Wörter',
+    practiced: 'Geübt',
+    weak: 'Schwach',
+    notYetPracticed: 'Noch nicht geübt',
+    levelRoadmap: 'Level-Übersicht',
+    battleStats: 'Kampf-Statistiken',
+    played: 'Gespielt',
+    won: 'Gewonnen',
+    winRate: 'Siegquote',
+    battleXP: 'Kampf-XP',
+    recentBattles: 'Letzte Kämpfe',
+    bySource: 'Nach Unit',
+    // Words reference
+    searchWords: 'Wörter suchen...',
+    allSources: 'Alle Units',
+    showing: 'Zeige',
+    word: 'Wort',
+    definition: 'Definition',
+    example: 'Beispiel',
+    due: 'Fällig',
+  },
+  en: {
+    greeting: 'Hey,',
+    whatToPractice: 'What do you want to practice?',
+    vocab: 'Vocab',
+    grammar: 'Grammar',
+    storyMode: 'Story Mode',
+    wordsAndDefs: 'Words & Definitions',
+    rulesAndStructures: 'Rules & Structures',
+    overallLeaderboard: 'Overall Leaderboard',
+    startPractice: 'Start Practice',
+    startGrammarPractice: 'Start Grammar Practice',
+    startVocabPractice: 'Start Practice',
+    smartReview: 'Smart Review',
+    rules: 'Rules',
+    words: 'Words',
+    classQuiz: 'Class Quiz',
+    battleArena: 'Battle Arena',
+    map: 'Map',
+    progress: 'Progress',
+    leaderboard: 'Leaderboard',
+    ruleOfTheDay: 'Rule of the Day',
+    wordOfTheDay: 'Word of the Day',
+    dailyChallenge: 'Daily Challenge',
+    dailyGrammarChallenge: 'Daily Grammar Challenge',
+    sessions: 'Sessions',
+    accuracy: 'Accuracy',
+    mastered: 'Mastered',
+    streak: 'Streak',
+    switchMode: 'Switch Mode',
+    current: 'Current',
+    back: 'Back',
+    logOut: 'Log Out',
+    settings: 'Settings',
+    language: 'Language',
+    theme: 'Theme',
+    sound: 'Sound',
+    light: 'Light',
+    dark: 'Dark',
+    soundOn: 'Sound: ON',
+    soundOff: 'Sound: OFF',
+    practiceGrammar: 'Practice Grammar',
+    byTopic: 'By Topic',
+    byTask: 'By Task',
+    topics: 'topics',
+    started: 'started',
+    sprint: 'Sprint',
+    sprintDesc: 'Mixed types, quick round',
+    focusPractice: 'Focus Practice',
+    selectTypeToStart: 'Select a type to start',
+    items: 'items',
+    selectUnits: 'Select Units',
+    chooseMode: 'Choose Mode',
+    step1of2: 'Step 1 of 2',
+    step2of2: 'Step 2 of 2',
+    selectAll: 'Select All',
+    clear: 'Clear',
+    next: 'Next',
+    go: 'Go!',
+    fullRun: 'Full Run',
+    fullRunDesc: 'All selected words, mixed types',
+    sprintMode: 'Sprint',
+    sprintModeDesc: '10 random words, quick round',
+    speedRound: 'Speed Round',
+    speedRoundDesc: '60 seconds, answer fast!',
+    multipleChoice: 'Multiple Choice',
+    multipleChoiceDesc: 'Choose from 4 options',
+    flashcards: 'Flashcards',
+    flashcardsDesc: 'Study mode, no pressure',
+    exerciseType: 'Exercise Type',
+    mix: 'Mix',
+    mixDesc: 'Random mix of all types',
+    contextEasy: 'Context (easy)',
+    contextEasyDesc: 'Fill the blank — first letter + letter count shown',
+    contextHard: 'Context (hard)',
+    contextHardDesc: 'Fill the blank — only first letter, no count',
+    definitionEasy: 'Definition (easy)',
+    definitionEasyDesc: 'Read a definition — word count + first letters shown',
+    definitionHard: 'Definition (hard)',
+    definitionHardDesc: 'Read a definition — no hints',
+    translation: 'Translation',
+    translationDesc: 'See the German word, type the English',
+    wordPartners: 'Word Partners',
+    wordPartnersDesc: 'Odd one out & word partners',
+    skip: 'Skip',
+    check: 'Check',
+    correct: 'Correct!',
+    correctAnswerIs: 'The correct answer is:',
+    endPractice: 'End Practice',
+    chooseOpponent: 'Choose your opponent',
+    classmatOnline: 'classmate online',
+    wordDuel: 'Word Duel',
+    grammarDuel: 'Grammar Duel',
+    battleHistory: 'Battle History',
+    cancel: 'Cancel',
+    challenge: 'Challenge',
+    ofCorrect: 'correct',
+    progressSaved: 'Progress saved!',
+    results: 'Results',
+    tryAgain: 'Try Again',
+    home: 'Home',
+    totalWords: 'Total Words',
+    practiced: 'Practiced',
+    weak: 'Weak',
+    notYetPracticed: 'Not Yet Practiced',
+    levelRoadmap: 'Level Roadmap',
+    battleStats: 'Battle Stats',
+    played: 'Played',
+    won: 'Won',
+    winRate: 'Win Rate',
+    battleXP: 'Battle XP',
+    recentBattles: 'Recent battles',
+    bySource: 'By Source',
+    searchWords: 'Search words...',
+    allSources: 'All Sources',
+    showing: 'Showing',
+    word: 'word',
+    definition: 'Definition',
+    example: 'Example',
+    due: 'Due',
+  }
+};
+function t(key) { return (UI_TEXT[uiLang] || UI_TEXT.de)[key] || (UI_TEXT.en[key] || key); }
+function setUiLang(lang) {
+  uiLang = lang;
+  localStorage.setItem('ui-lang', lang);
+  const btn = document.getElementById('lang-toggle-btn');
+  if (btn) btn.textContent = lang === 'de' ? '🇩🇪 Deutsch' : '🇬🇧 English';
+  // Refresh current screen
+  if (state.mode === 'grammar') showGrammarHomeScreen();
+  else if (state.mode === 'campaign') return;
+  else showHomeScreen();
+}
+/* ===== END UI LANGUAGE SYSTEM ===== */
 
 let CLASS_ID = null;
 let classRef = null;
@@ -5143,19 +5516,19 @@ function openPracticeSetup() {
   step1.innerHTML = `
     <div class="setup-header">
       <button class="setup-close" onclick="closePracticeSetup()">✕</button>
-      <h2>Select Units</h2>
-      <div class="setup-step-indicator">Step 1 of 2</div>
+      <h2>${t('selectUnits')}</h2>
+      <div class="setup-step-indicator">${t('step1of2')}</div>
     </div>
     <div class="setup-body">
       <div class="source-grid" id="setup-source-grid"></div>
       <div class="quick-btns">
-        <button class="quick-btn" onclick="setupSelectAll('all')">Select All</button>
-        <button class="quick-btn" onclick="setupSelectAll('none')">Clear</button>
+        <button class="quick-btn" onclick="setupSelectAll('all')">${t('selectAll')}</button>
+        <button class="quick-btn" onclick="setupSelectAll('none')">${t('clear')}</button>
       </div>
-      <div class="word-count-display" id="setup-word-count">Select units to begin</div>
+      <div class="word-count-display" id="setup-word-count">${uiLang==='de' ? 'Wähle Units zum Starten' : 'Select units to begin'}</div>
     </div>
     <div class="setup-footer">
-      <button class="btn btn-primary btn-block" id="setup-next-btn" disabled onclick="practiceSetupNext()">Next →</button>
+      <button class="btn btn-primary btn-block" id="setup-next-btn" disabled onclick="practiceSetupNext()">${t('next')} →</button>
     </div>
   `;
 
@@ -5166,69 +5539,69 @@ function openPracticeSetup() {
   step2.style.display = 'none';
   step2.innerHTML = `
     <div class="setup-header">
-      <button class="setup-back" onclick="practiceSetupBack()">← Back</button>
-      <h2>Choose Mode</h2>
-      <div class="setup-step-indicator">Step 2 of 2</div>
+      <button class="setup-back" onclick="practiceSetupBack()">← ${t('back')}</button>
+      <h2>${t('chooseMode')}</h2>
+      <div class="setup-step-indicator">${t('step2of2')}</div>
     </div>
     <div class="setup-body">
       <div class="mode-select" id="mode-select">
         <button class="mode-card selected" data-mode="full" onclick="selectMode(this)">
           <span class="mode-icon">📚</span>
-          <div class="mode-info"><div class="mode-name">Full Run</div><div class="mode-desc">All selected words, mixed types</div></div>
+          <div class="mode-info"><div class="mode-name">${t('fullRun')}</div><div class="mode-desc">${t('fullRunDesc')}</div></div>
         </button>
         <button class="mode-card" data-mode="sprint" onclick="selectMode(this)">
           <span class="mode-icon">🏃</span>
-          <div class="mode-info"><div class="mode-name">Sprint</div><div class="mode-desc">10 random words, quick round</div></div>
+          <div class="mode-info"><div class="mode-name">${t('sprintMode')}</div><div class="mode-desc">${t('sprintModeDesc')}</div></div>
         </button>
         <button class="mode-card" data-mode="speed" onclick="selectMode(this)">
           <span class="mode-icon">⚡</span>
-          <div class="mode-info"><div class="mode-name">Speed Round</div><div class="mode-desc">60 seconds, answer fast!</div></div>
+          <div class="mode-info"><div class="mode-name">${t('speedRound')}</div><div class="mode-desc">${t('speedRoundDesc')}</div></div>
         </button>
         <button class="mode-card" data-mode="mc" onclick="selectMode(this)">
           <span class="mode-icon">🎯</span>
-          <div class="mode-info"><div class="mode-name">Multiple Choice</div><div class="mode-desc">Choose from 4 options</div></div>
+          <div class="mode-info"><div class="mode-name">${t('multipleChoice')}</div><div class="mode-desc">${t('multipleChoiceDesc')}</div></div>
         </button>
         <button class="mode-card" data-mode="flashcards" onclick="selectMode(this)">
           <span class="mode-icon">📇</span>
-          <div class="mode-info"><div class="mode-name">Flashcards</div><div class="mode-desc">Study mode, no pressure</div></div>
+          <div class="mode-info"><div class="mode-name">${t('flashcards')}</div><div class="mode-desc">${t('flashcardsDesc')}</div></div>
         </button>
       </div>
       <div id="type-select-wrap" class="type-select-wrap">
-        <div class="type-select-label">Exercise Type</div>
+        <div class="type-select-label">${t('exerciseType')}</div>
         <div class="type-select-list" id="setup-type-grid">
           <button class="type-card selected" data-type="mix" onclick="selectType(this)">
-            <span class="type-card-name">&#128256; Mix</span>
-            <span class="type-card-desc">Random mix of all types</span>
+            <span class="type-card-name">🔀 ${t('mix')}</span>
+            <span class="type-card-desc">${t('mixDesc')}</span>
           </button>
           <button class="type-card" data-type="context" onclick="selectType(this)">
-            <span class="type-card-name">&#128221; Context (easy)</span>
-            <span class="type-card-desc">Fill the blank &mdash; first letter + letter count shown</span>
+            <span class="type-card-name">📝 ${t('contextEasy')}</span>
+            <span class="type-card-desc">${t('contextEasyDesc')}</span>
           </button>
           <button class="type-card" data-type="context-hard" onclick="selectType(this)">
-            <span class="type-card-name">&#128221; Context (hard)</span>
-            <span class="type-card-desc">Fill the blank &mdash; only first letter, no count</span>
+            <span class="type-card-name">📝 ${t('contextHard')}</span>
+            <span class="type-card-desc">${t('contextHardDesc')}</span>
           </button>
           <button class="type-card" data-type="definition" onclick="selectType(this)">
-            <span class="type-card-name">&#128214; Definition (easy)</span>
-            <span class="type-card-desc">Read a definition &mdash; word count + first letters shown</span>
+            <span class="type-card-name">📖 ${t('definitionEasy')}</span>
+            <span class="type-card-desc">${t('definitionEasyDesc')}</span>
           </button>
           <button class="type-card" data-type="definition-hard" onclick="selectType(this)">
-            <span class="type-card-name">&#128214; Definition (hard)</span>
-            <span class="type-card-desc">Read a definition &mdash; no hints</span>
+            <span class="type-card-name">📖 ${t('definitionHard')}</span>
+            <span class="type-card-desc">${t('definitionHardDesc')}</span>
           </button>
           <button class="type-card" data-type="translation" onclick="selectType(this)">
-            <span class="type-card-name">&#127757; Translation</span>
-            <span class="type-card-desc">See the German word, type the English</span>
+            <span class="type-card-name">🌍 ${t('translation')}</span>
+            <span class="type-card-desc">${t('translationDesc')}</span>
           </button>
           <button class="type-card" data-type="collocation" onclick="selectType(this)">
-            <span class="type-card-name">🤝 Word Partners</span>
-            <span class="type-card-desc">Odd one out &amp; word partners</span>
+            <span class="type-card-name">🤝 ${t('wordPartners')}</span>
+            <span class="type-card-desc">${t('wordPartnersDesc')}</span>
           </button>
         </div>
       </div>
     </div>
     <div class="setup-footer">
-      <button class="btn btn-primary btn-block" onclick="practiceSetupGo()">Go! 🚀</button>
+      <button class="btn btn-primary btn-block" onclick="practiceSetupGo()">${t('go')} 🚀</button>
     </div>
   `;
 
@@ -6897,6 +7270,10 @@ function pickBattleWords(count) {
 }
 
 function openBattleLobby() {
+  const existing = document.getElementById('battle-lobby-overlay');
+  if (existing) existing.remove();
+  const btn = document.getElementById('btn-battle');
+  if (btn) btn.disabled = true;
   presenceRef.once('value', (snap) => {
     const mySlug = state.studentName.toLowerCase().replace(/\s+/g, '-');
     const players = [];
@@ -6905,10 +7282,13 @@ function openBattleLobby() {
       if (child.key !== mySlug && d.online === true) players.push({ slug: child.key, name: d.name, avatarId: d.avatarId || 1 });
     });
     showBattleLobby(players);
-  });
+    if (btn) btn.disabled = false;
+  }).catch(() => { if (btn) btn.disabled = false; });
 }
 
 function showBattleLobby(players) {
+  const old = document.getElementById('battle-lobby-overlay');
+  if (old) old.remove();
   const overlay = document.createElement('div');
   overlay.id = 'battle-lobby-overlay';
   overlay.className = 'battle-overlay';
@@ -6930,6 +7310,8 @@ function showBattleLobby(players) {
 }
 
 function showBattleModeSelect(slug, name) {
+  const old = document.getElementById('battle-mode-overlay');
+  if (old) old.remove();
   const overlay = document.createElement('div');
   overlay.id = 'battle-mode-overlay';
   overlay.className = 'battle-overlay';
@@ -8744,6 +9126,22 @@ function loadGrammarData() {
 function showModeSelectScreen() {
   const d = state.studentData || {};
   document.getElementById('mode-welcome-name').textContent = state.studentName || 'there';
+  // Update language-dependent labels
+  var greetEl = document.querySelector('#mode-select-screen h2');
+  if (greetEl) greetEl.innerHTML = t('greeting') + ' <span id="mode-welcome-name">' + escapeHtml(state.studentName || 'there') + '</span>!';
+  var subtitleEl = document.querySelector('#mode-select-screen h2 + p');
+  if (subtitleEl) subtitleEl.textContent = t('whatToPractice');
+  var vocabTitle = document.querySelector('#mode-select-screen .mode-select-card:first-child .mode-select-title');
+  if (vocabTitle) vocabTitle.textContent = t('vocab');
+  var vocabSub = document.querySelector('#mode-select-screen .mode-select-card:first-child .mode-select-subtitle');
+  if (vocabSub) vocabSub.textContent = t('wordsAndDefs');
+  var gramTitle = document.querySelector('#mode-select-screen .mode-select-card-grammar .mode-select-title');
+  if (gramTitle) gramTitle.textContent = t('grammar');
+  var gramSub = document.querySelector('#mode-select-screen .mode-select-card-grammar .mode-select-subtitle');
+  if (gramSub) gramSub.textContent = t('rulesAndStructures');
+  // Lang toggle init
+  var langBtn = document.getElementById('lang-toggle-btn');
+  if (langBtn) langBtn.textContent = uiLang === 'de' ? '🇩🇪 Deutsch' : '🇬🇧 English';
   const modeAv = document.getElementById('mode-avatar');
   if (modeAv && state.avatarId) {
     modeAv.src = avatarSrc(state.avatarId);
@@ -8837,36 +9235,37 @@ showHomeScreen = function() {
     // Restore vocab UI elements before showing
     const practiceBtn = document.querySelector('.btn-start-practice');
     if (practiceBtn) {
-      practiceBtn.textContent = '\uD83C\uDFAF Start Practice';
+      practiceBtn.textContent = '🎯 ' + t('startVocabPractice');
       practiceBtn.onclick = openPracticeSetup;
     }
     // Restore Words button (was Rules in grammar mode)
     const wordsBtn = document.getElementById('home-words-btn');
     if (wordsBtn) {
-      wordsBtn.textContent = '\uD83D\uDCD6 Words';
+      wordsBtn.textContent = '📖 ' + t('words');
       wordsBtn.onclick = function() { showWordReference(); };
     }
+    // Update stat labels
+    document.querySelectorAll('.stat-label').forEach(function(el) {
+      if (el.textContent.match(/Sessions|Sitzungen/i)) el.textContent = t('sessions');
+      if (el.textContent.match(/Accuracy|Genauigkeit/i)) el.textContent = t('accuracy');
+      if (el.textContent.match(/Mastered|Gemeistert/i)) el.textContent = t('mastered');
+      if (el.textContent.match(/Streak|Serie/i)) el.textContent = t('streak');
+    });
     const navGrid = document.querySelector('.home-nav-grid');
     if (navGrid) {
-      navGrid.innerHTML = '<button class="btn btn-secondary btn-small" onclick="showProgressMap()">\uD83D\uDDFA\uFE0F<span>Map</span></button>' +
-        '<button class="btn btn-secondary btn-small" onclick="showProgressScreen()">\uD83D\uDCCA<span>Progress</span></button>' +
-        '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">\uD83C\uDFC6<span>Leaderboard</span></button>';
+      navGrid.innerHTML = '<button class="btn btn-secondary btn-small" onclick="showProgressMap()">🗺️<span>' + t('map') + '</span></button>' +
+        '<button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>' + t('progress') + '</span></button>' +
+        '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>' + t('leaderboard') + '</span></button>';
     }
-    // Update mode pill if present
-    const pill = document.getElementById('mode-switch-pill');
-    if (pill) {
-      pill.className = 'mode-pill';
-      pill.innerHTML = '<span>Current: \uD83D\uDCDA Vocab</span> <span style="margin-left:8px;padding:2px 10px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:8px;font-size:0.7rem;cursor:pointer;">Switch Mode</span>';
-      pill.onclick = function() { showModeSelectScreen(); };
-    }
+    // Update mode pill if present (handled by addModeSwitchPill below)
     // Restore today-card innerHTML (grammar mode replaces it with Rule of the Day)
     const todayCard = document.getElementById('today-card');
     if (todayCard) {
       todayCard.style.display = 'none';
       todayCard.innerHTML =
-        '<div class="today-section"><div class="today-header"><span class="today-label">\uD83D\uDCDD Word of the Day</span><span class="today-source" id="wotd-source"></span></div><div class="today-wotd"><span class="today-word" id="wotd-word"></span><span class="today-german" id="wotd-german"></span></div><div class="today-def" id="wotd-def"></div></div>' +
+        '<div class="today-section"><div class="today-header"><span class="today-label">📝 ' + t('wordOfTheDay') + '</span><span class="today-source" id="wotd-source"></span></div><div class="today-wotd"><span class="today-word" id="wotd-word"></span><span class="today-german" id="wotd-german"></span></div><div class="today-def" id="wotd-def"></div></div>' +
         '<div class="today-divider"></div>' +
-        '<div class="today-section"><div class="today-header"><span class="today-label">\u26A1 Daily Challenge</span><span class="today-date" id="daily-date"></span></div><div class="today-daily-desc">10 words \u00B7 same for everyone today</div><div id="daily-action"></div></div>';
+        '<div class="today-section"><div class="today-header"><span class="today-label">⚡ ' + t('dailyChallenge') + '</span><span class="today-date" id="daily-date"></span></div><div class="today-daily-desc">10 ' + t('words').toLowerCase() + ' · ' + (uiLang==='de' ? 'gleich für alle heute' : 'same for everyone today') + '</div><div id="daily-action"></div></div>';
     }
     // Restore weekly goal card visibility (grammar mode hides it)
     const weeklyCard = document.getElementById('weekly-goal-card');
@@ -9005,16 +9404,24 @@ function showGrammarHomeScreen() {
   renderGrammarDailyCard();
   const weeklyCard = document.getElementById('weekly-goal-card');
   if (weeklyCard) weeklyCard.style.display = 'none';
+  // Update stat labels
+  var lblSessions = document.querySelector('#stat-sessions + .stat-label, [data-stat="sessions"] .stat-label');
+  document.querySelectorAll('.stat-label').forEach(function(el) {
+    if (el.textContent.match(/Sessions|Sitzungen/i)) el.textContent = t('sessions');
+    if (el.textContent.match(/Accuracy|Genauigkeit/i)) el.textContent = t('accuracy');
+    if (el.textContent.match(/Mastered|Gemeistert/i)) el.textContent = t('mastered');
+    if (el.textContent.match(/Streak|Serie/i)) el.textContent = t('streak');
+  });
   // Update practice button
   const practiceBtn = document.querySelector('.btn-start-practice');
   if (practiceBtn) {
-    practiceBtn.textContent = '\uD83E\uDDE0 Start Grammar Practice';
+    practiceBtn.textContent = '🧠 ' + t('startGrammarPractice');
     practiceBtn.onclick = openGrammarPractice;
   }
   // Swap Words → Rules in action area
   const wordsBtn = document.getElementById('home-words-btn');
   if (wordsBtn) {
-    wordsBtn.textContent = '\uD83D\uDCDD Rules';
+    wordsBtn.textContent = '📝 ' + t('rules');
     wordsBtn.onclick = function() { showGrammarReference(); };
   }
   // Smart review for grammar
@@ -9023,7 +9430,7 @@ function showGrammarHomeScreen() {
     const weakStructures = getGrammarWeakStructures();
     if (weakStructures.length > 0) {
       reviewBtn.style.display = '';
-      reviewBtn.textContent = '🔄 Smart Review (' + weakStructures.length + ' topics)';
+      reviewBtn.textContent = '🔄 ' + t('smartReview') + ' (' + weakStructures.length + ' ' + t('topics') + ')';
       reviewBtn.onclick = function() { startGrammarSmartReview(weakStructures); };
     } else {
       reviewBtn.style.display = 'none';
@@ -9032,9 +9439,9 @@ function showGrammarHomeScreen() {
   // Update nav buttons
   const navGrid = document.querySelector('.home-nav-grid');
   if (navGrid) {
-    navGrid.innerHTML = '<button class="btn btn-secondary btn-small" onclick="showGrammarMap()">\uD83D\uDDFA\uFE0F<span>Map</span></button>' +
-      '<button class="btn btn-secondary btn-small" onclick="showProgressScreen()">\uD83D\uDCCA<span>Progress</span></button>' +
-      '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">\uD83C\uDFC6<span>Leaderboard</span></button>';
+    navGrid.innerHTML = '<button class="btn btn-secondary btn-small" onclick="showGrammarMap()">🗺️<span>' + t('map') + '</span></button>' +
+      '<button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>' + t('progress') + '</span></button>' +
+      '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>' + t('leaderboard') + '</span></button>';
   }
   // Add mode switch pill
   addModeSwitchPill();
@@ -9057,7 +9464,7 @@ function addModeSwitchPill() {
   }
   const isGrammar = state.mode === 'grammar';
   pill.className = 'mode-pill';
-  pill.innerHTML = isGrammar ? '<span>Current: \uD83E\uDDE0 Grammar</span> <span style="margin-left:8px;padding:2px 10px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:8px;font-size:0.7rem;cursor:pointer;">Switch Mode</span>' : '<span>Current: \uD83D\uDCDA Vocab</span> <span style="margin-left:8px;padding:2px 10px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:8px;font-size:0.7rem;cursor:pointer;">Switch Mode</span>';
+  pill.innerHTML = isGrammar ? '<span>' + t('current') + ': 🧠 ' + t('grammar') + '</span> <span style="margin-left:8px;padding:2px 10px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:8px;font-size:0.7rem;cursor:pointer;">' + t('switchMode') + '</span>' : '<span>' + t('current') + ': 📚 ' + t('vocab') + '</span> <span style="margin-left:8px;padding:2px 10px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:8px;font-size:0.7rem;cursor:pointer;">' + t('switchMode') + '</span>';
   pill.style.cssText = '';
   pill.onclick = function() { showModeSelectScreen(); };
 }
@@ -9078,26 +9485,30 @@ function renderGrammarPracticeTabs(activeTab) {
   const topicActive = activeTab === 'topics' ? 'background:var(--accent);color:#fff;border-color:var(--accent);' : '';
   const taskActive = activeTab === 'tasks' ? 'background:var(--accent);color:#fff;border-color:var(--accent);' : '';
   return '<div style="display:flex;gap:6px;justify-content:center;margin-bottom:0.8rem;">' +
-    '<button style="flex:1;max-width:150px;padding:8px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;border:2px solid var(--card-border);background:var(--card);color:var(--text);cursor:pointer;transition:all 0.15s;' + topicActive + '" onclick="grammarPracticeTab=\'topics\';renderGrammarUnits()">📋 By Topic</button>' +
-    '<button style="flex:1;max-width:150px;padding:8px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;border:2px solid var(--card-border);background:var(--card);color:var(--text);cursor:pointer;transition:all 0.15s;' + taskActive + '" onclick="grammarPracticeTab=\'tasks\';renderGrammarTypeCards()">🎯 By Task</button>' +
+    '<button style="flex:1;max-width:150px;padding:8px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;border:2px solid var(--card-border);background:var(--card);color:var(--text);cursor:pointer;transition:all 0.15s;' + topicActive + '" onclick="grammarPracticeTab=\'topics\';renderGrammarUnits()">📋 ' + t('byTopic') + '</button>' +
+    '<button style="flex:1;max-width:150px;padding:8px 16px;border-radius:20px;font-size:0.78rem;font-weight:700;border:2px solid var(--card-border);background:var(--card);color:var(--text);cursor:pointer;transition:all 0.15s;' + taskActive + '" onclick="grammarPracticeTab=\'tasks\';renderGrammarTypeCards()">🎯 ' + t('byTask') + '</button>' +
   '</div>';
 }
 
-function renderGrammarTypeCards() {
-  const typeInfo = {
-    'gap-fill': { icon: '📝', name: 'Gap Fill', desc: 'Fill in the missing word' },
-    'multiple-choice': { icon: '🔘', name: 'Multiple Choice', desc: 'Pick the correct option' },
-    'error-correction': { icon: '🔍', name: 'Error Hunt', desc: 'Find and fix mistakes' },
-    'transformation': { icon: '🔄', name: 'Transform', desc: 'Change the sentence form' },
-    'translation': { icon: '🌍', name: 'Translation', desc: 'Translate to English' },
-    'sentence-building': { icon: '🧩', name: 'Sentence Builder', desc: 'Tap words in order' },
-    'matching': { icon: '🔗', name: 'Matching', desc: 'Match items together' },
-    'question-formation': { icon: '❓', name: 'Questions', desc: 'Form questions correctly' },
-    'tense-id': { icon: '⏰', name: 'Tense Check', desc: 'Identify the grammar form' },
-    'context-picker': { icon: '🎯', name: 'Context Picker', desc: 'Pick the sentence that fits' },
+function getGrammarTypeInfo() {
+  return {
+    'gap-fill': { icon: '📝', name: uiLang==='de' ? 'Lückentext' : 'Gap Fill', nameEn: 'Gap Fill', desc: uiLang==='de' ? 'Fülle die Lücke im Satz mit dem richtigen Wort.' : 'Fill in the missing word in the sentence.' },
+    'multiple-choice': { icon: '🔘', name: 'Multiple Choice', nameEn: 'Multiple Choice', desc: uiLang==='de' ? 'Wähle die richtige Antwort aus vier Möglichkeiten.' : 'Pick the correct option from four choices.' },
+    'error-correction': { icon: '🔍', name: uiLang==='de' ? 'Fehlersuche' : 'Error Hunt', nameEn: 'Error Hunt', desc: uiLang==='de' ? 'Finde den Fehler im Satz und korrigiere ihn.' : 'Find the mistake and correct it.' },
+    'transformation': { icon: '🔄', name: uiLang==='de' ? 'Umformung' : 'Transform', nameEn: 'Transform', desc: uiLang==='de' ? 'Forme den Satz um – z.B. Verneinung oder Frage.' : 'Change the sentence form – e.g. negation or question.' },
+    'translation': { icon: '🌍', name: uiLang==='de' ? 'Übersetzung' : 'Translation', nameEn: 'Translation', desc: uiLang==='de' ? 'Übersetze den deutschen Satz ins Englische.' : 'Translate the German sentence into English.' },
+    'sentence-building': { icon: '🧩', name: uiLang==='de' ? 'Satzbau' : 'Sentence Builder', nameEn: 'Sentence Builder', desc: uiLang==='de' ? 'Tippe die Wörter in der richtigen Reihenfolge.' : 'Tap the words in the correct order.' },
+    'matching': { icon: '🔗', name: uiLang==='de' ? 'Zuordnung' : 'Matching', nameEn: 'Matching', desc: uiLang==='de' ? 'Verbinde die zusammengehörenden Paare.' : 'Match the items that belong together.' },
+    'question-formation': { icon: '❓', name: uiLang==='de' ? 'Fragebildung' : 'Questions', nameEn: 'Questions', desc: uiLang==='de' ? 'Bilde aus dem Satz die richtige Frage.' : 'Form the correct question from the statement.' },
+    'tense-id': { icon: '⏰', name: uiLang==='de' ? 'Zeitform erkennen' : 'Tense Check', nameEn: 'Tense Check', desc: uiLang==='de' ? 'Erkenne welche Zeitform im Satz verwendet wird.' : 'Identify which tense is used in the sentence.' },
+    'context-picker': { icon: '🎯', name: uiLang==='de' ? 'Kontext wählen' : 'Context Picker', nameEn: 'Context Picker', desc: uiLang==='de' ? 'Wähle den Satz der am besten passt.' : 'Pick the sentence that fits best.' },
   };
+}
 
-  let html = '<div class="progress-nav"><button class="btn btn-secondary" onclick="goHome()">← Back</button><span class="nav-title">Practice Grammar</span></div>';
+function renderGrammarTypeCards() {
+  const typeInfo = getGrammarTypeInfo();
+
+  let html = '<div class="progress-nav"><button class="btn btn-secondary" onclick="goHome()">← ' + t('back') + '</button><span class="nav-title">' + t('practiceGrammar') + '</span></div>';
   html += renderGrammarPracticeTabs('tasks');
   html += '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:0.3rem 0;">';
 
@@ -9111,7 +9522,8 @@ function renderGrammarTypeCards() {
     html += '<button class="grammar-topic-card" style="flex-direction:column;text-align:center;padding:1rem 0.6rem;gap:0.3rem;" onclick="startGrammarByType(\'' + type + '\')">' +
       '<div style="font-size:1.5rem;">' + info.icon + '</div>' +
       '<div class="grammar-topic-name" style="font-size:0.82rem;">' + info.name + '</div>' +
-      '<div class="grammar-topic-desc">' + count + ' items</div>' +
+      '<div class="grammar-topic-desc" style="font-size:0.68rem;color:var(--muted);line-height:1.3;margin-top:2px;">' + info.desc + '</div>' +
+      '<div class="grammar-topic-desc" style="margin-top:4px;">' + count + ' ' + t('items') + '</div>' +
     '</button>';
   }
   html += '</div>';
@@ -9240,7 +9652,7 @@ function renderGrammarUnits() {
   const gProgress = d.grammarProgress || {};
 
   // Build unit list with tabs
-  let html = '<div class="progress-nav"><button class="btn btn-secondary" onclick="goHome()">← Back</button><span class="nav-title">Practice Grammar</span></div>';
+  let html = '<div class="progress-nav"><button class="btn btn-secondary" onclick="goHome()">← ' + t('back') + '</button><span class="nav-title">' + t('practiceGrammar') + '</span></div>';
   html += renderGrammarPracticeTabs('topics');
   html += '<div style="display:flex;flex-direction:column;gap:8px;padding:0.3rem 0;">';
   const unitNames = {
@@ -9256,11 +9668,14 @@ function renderGrammarUnits() {
       return p && p.accuracy >= 0.9 && p.total >= 15;
     }).length;
     const attemptedCount = structs.filter(s => gProgress[s.id]?.total > 0).length;
+    // Get structure names for preview
+    const structNames = structs.map(s => s.structureName || s.name || s.id.split('-').slice(2).join(' ')).join(' · ');
     html += '<button class="grammar-topic-card" onclick="showGrammarTopics(' + u + ')" style="width:100%;">' +
       '<div style="min-width:36px;text-align:center;"><span style="font-size:1.2rem;font-weight:800;color:var(--accent);">' + u + '</span></div>' +
       '<div class="grammar-topic-info">' +
         '<div class="grammar-topic-name">Unit ' + u + ': ' + (unitNames[u] || '') + '</div>' +
-        '<div class="grammar-topic-desc">' + structs.length + ' topics · ' + attemptedCount + ' started · ' + masteredCount + ' mastered</div>' +
+        '<div class="grammar-topic-desc">' + structs.length + ' ' + t('topics') + ' · ' + attemptedCount + ' ' + t('started') + ' · ' + masteredCount + ' ' + t('mastered') + '</div>' +
+        '<div style="font-size:0.68rem;color:var(--muted);margin-top:2px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">' + structNames + '</div>' +
       '</div>' +
       '<div style="color:var(--text-secondary);font-size:0.8rem;">→</div>' +
     '</button>';
