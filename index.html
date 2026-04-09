@@ -2700,14 +2700,16 @@ body.playing .header-container { display: none; }
 <div id="leaderboard-screen" class="screen">
   <div class="progress-nav">
     <button class="btn btn-secondary" onclick="goHome()">← Back</button>
+    <span class="nav-title">🏆 Bestenliste</span>
+    <span style="width:60px;"></span>
   </div>
-  <h2 style="margin-bottom:0.5rem;">🏆 Class Leaderboard</h2>
   <div id="lb-main"></div>
+  <div id="lb-classes" style="margin-top:0.8rem;"></div>
   <hr class="lb-divider">
-  <div class="lb-section-title">⚡ Today's Challenge</div>
+  <div class="lb-section-title">⚡ Daily Challenge</div>
   <div id="lb-daily"></div>
   <hr class="lb-divider">
-  <div class="lb-section-title">⚔️ Battle Leaderboard</div>
+  <div class="lb-section-title">⚔️ Battle</div>
   <div id="lb-battles"></div>
 </div>
 
@@ -4773,76 +4775,90 @@ async function saveDailyChallengeResult() {
 
 async function showLeaderboard() {
   showScreen('leaderboard-screen');
-  const mySection = SECTIONS.find(s => s.id === CLASS_ID);
-  const myLabel = mySection ? mySection.label : CLASS_ID;
-  const isGrammar = state.mode === 'grammar';
-  const xpField = isGrammar ? 'grammarXp' : 'xp';
-  const modeLabel = isGrammar ? '🧠 Grammar' : '📚 Vocab';
+  var mySection = SECTIONS.find(function(s) { return s.id === CLASS_ID; });
+  var myLabel = mySection ? mySection.label : CLASS_ID;
+  var medals = ['🥇', '🥈', '🥉'];
 
-  // Load all sections for cross-class leaderboard
-  const allStudents = [];
-  for (const sec of SECTIONS) {
+  // Load all sections
+  var allStudents = [];
+  var classTotals = {};
+  for (var si = 0; si < SECTIONS.length; si++) {
+    var sec = SECTIONS[si];
+    classTotals[sec.id] = { label: sec.label, totalXp: 0, count: 0 };
     try {
-      const snap = await db.collection('classes').doc(sec.id).collection('students').get();
-      snap.forEach(doc => {
-        const d = doc.data();
-        allStudents.push({ id: doc.id, name: d.name, xp: d[xpField] || 0, daily: d.dailyChallengeLog || {}, section: sec.label, sectionId: sec.id, avatarId: d.avatarId || 1 });
+      var snap = await db.collection('classes').doc(sec.id).collection('students').get();
+      snap.forEach(function(doc) {
+        var d = doc.data();
+        var totalXp = (d.xp || 0) + (d.grammarXp || 0);
+        allStudents.push({ id: doc.id, name: d.name, totalXp: totalXp, vxp: d.xp || 0, gxp: d.grammarXp || 0, daily: d.dailyChallengeLog || {}, section: sec.label, sectionId: sec.id, avatarId: d.avatarId || 1, battlesWon: d.battlesWon || 0, battlesPlayed: d.battlesPlayed || 0 });
+        classTotals[sec.id].totalXp += totalXp;
+        classTotals[sec.id].count++;
       });
-    } catch (e) { /* section may not exist yet */ }
+    } catch (e) { /* section may not exist */ }
   }
 
-  // My class leaderboard
-  const myStudents = allStudents.filter(s => s.sectionId === CLASS_ID);
-  myStudents.sort((a, b) => b.xp - a.xp);
-  const medals = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
-  const renderRows = (list, showSection) => list.map((s, i) => {
-    const isMe = s.id === state.studentId && s.sectionId === CLASS_ID;
-    const rank = i < 3 ? medals[i] : `${i + 1}.`;
-    const tag = showSection ? ` <span class="section-tag section-tag-${s.section.toLowerCase()}">${s.section}</span>` : '';
-    const av = `<img src="${avatarSrc(s.avatarId)}" class="avatar avatar-sm" style="vertical-align:middle;margin-right:6px;">`;
-    const sLv = getLevel(s.xp, state.mode);
-    const prestigeStars = sLv.prestige ? '\u2B50'.repeat(sLv.prestige) + ' ' : '';
-    const rankPill = `<span class="rank-pill zone-${sLv.zone}" style="font-size:10px;padding:2px 8px;border-radius:10px;margin-left:6px;font-weight:600;">${prestigeStars}${sLv.name}</span>`;
-    return `<div class="lb-row ${isMe ? 'me' : ''}"><span class="lb-rank">${rank}</span><span class="lb-name">${av}${s.name}${rankPill}${tag}${isMe ? ' \u2190 you' : ''}</span><span class="lb-xp">${s.xp.toLocaleString()} XP</span></div>`;
-  }).join('') || '<p style="color:var(--muted);text-align:center;padding:1rem;">No students yet</p>';
+  // Render row helper (uses total XP + overall level)
+  function renderRows(list, showSection) {
+    if (list.length === 0) return '<p style="color:var(--muted);text-align:center;padding:0.8rem;font-size:0.82rem;">' + (uiLang==='de' ? 'Noch keine Schüler' : 'No students yet') + '</p>';
+    return list.map(function(s, i) {
+      var isMe = s.id === state.studentId && s.sectionId === CLASS_ID;
+      var rank = i < 3 ? medals[i] : (i + 1) + '.';
+      var tag = showSection ? ' <span class="section-tag section-tag-' + s.section.toLowerCase() + '">' + s.section + '</span>' : '';
+      var av = '<img src="' + avatarSrc(s.avatarId) + '" class="avatar avatar-sm" style="vertical-align:middle;margin-right:6px;">';
+      var oLv = getOverallLevel(s.totalXp);
+      var rankPill = '<span class="rank-pill zone-' + oLv.zone + '" style="font-size:10px;padding:2px 8px;border-radius:10px;margin-left:6px;font-weight:600;">' + oLv.name + '</span>';
+      return '<div class="lb-row ' + (isMe ? 'me' : '') + '"><span class="lb-rank">' + rank + '</span><span class="lb-name">' + av + escapeHtml(s.name) + rankPill + tag + (isMe ? ' ←' : '') + '</span><span class="lb-xp">' + s.totalXp.toLocaleString() + ' XP</span></div>';
+    }).join('');
+  }
 
+  // Section 1: My Class + All Classes (by total XP)
+  var myStudents = allStudents.filter(function(s) { return s.sectionId === CLASS_ID; });
+  myStudents.sort(function(a, b) { return b.totalXp - a.totalXp; });
+  var allSorted = allStudents.slice().sort(function(a, b) { return b.totalXp - a.totalXp; });
+
+  var myClassTitle = uiLang==='de' ? '🏫 Meine Klasse (' + myLabel + ')' : '🏫 My Class (' + myLabel + ')';
+  var allClassTitle = uiLang==='de' ? '🌍 Alle Klassen' : '🌍 All Classes';
   document.getElementById('lb-main').innerHTML =
-    `<div style="font-size:0.75rem;font-weight:700;color:var(--accent-light);margin-bottom:0.5rem;text-transform:uppercase;">${modeLabel} \u00B7 My Class (${myLabel})</div>` +
+    '<div class="lb-section-title">' + myClassTitle + '</div>' +
     renderRows(myStudents, false) +
-    `<div style="font-size:0.75rem;font-weight:700;color:var(--accent-light);margin:1rem 0 0.5rem;text-transform:uppercase;border-top:1px solid var(--card-border);padding-top:0.8rem;">${modeLabel} \u00B7 All Classes</div>` +
-    renderRows([...allStudents].sort((a, b) => b.xp - a.xp), true);
+    '<div class="lb-section-title" style="margin-top:1rem;border-top:1px solid var(--card-border);padding-top:0.8rem;">' + allClassTitle + '</div>' +
+    renderRows(allSorted, true);
 
-  // Daily challenge leaderboard (my class only)
-  const today = getTodayStr();
-  const dailyStudents = myStudents.filter(s => s.daily[today]).map(s => ({ ...s, ...s.daily[today] })).sort((a, b) => b.score - a.score);
-  document.getElementById('lb-daily').innerHTML = dailyStudents.map((s, i) => {
-    const isMe = s.id === state.studentId;
-    return `<div class="lb-row ${isMe ? 'me' : ''}"><span class="lb-rank">${i + 1}.</span><span class="lb-name">${s.name}</span><span class="lb-score">${s.score}/${s.total}</span></div>`;
-  }).join('') || "<p style=\"color:var(--muted);text-align:center;padding:0.5rem;font-size:0.85rem;\">No one has done today's challenge yet</p>";
+  // Section 2: Class vs Class
+  var classArr = Object.keys(classTotals).map(function(k) { return classTotals[k]; }).filter(function(c) { return c.count > 0; });
+  classArr.sort(function(a, b) { return b.totalXp - a.totalXp; });
+  var classTitle = uiLang==='de' ? '🏆 Klasse gegen Klasse' : '🏆 Class vs Class';
+  var classHtml = '<div class="lb-section-title">' + classTitle + '</div>';
+  classArr.forEach(function(c, i) {
+    var cl = getClassLevel(c.totalXp);
+    var isMyClass = c.label === myLabel;
+    classHtml += '<div class="lb-row ' + (isMyClass ? 'me' : '') + '">' +
+      '<span class="lb-rank">' + (i < 3 ? medals[i] : (i+1) + '.') + '</span>' +
+      '<span class="lb-name" style="font-weight:700;">' + c.label + ' <span style="font-size:0.72rem;font-weight:500;color:var(--muted);margin-left:6px;">' + cl.name + '</span>' + (isMyClass ? ' ←' : '') + '</span>' +
+      '<span class="lb-xp">' + c.totalXp.toLocaleString() + ' XP</span></div>';
+  });
+  document.getElementById('lb-classes').innerHTML = classHtml;
 
-  // Battle leaderboard
-  const battleStudents = allStudents.filter(s => (s.battlesWon || 0) > 0 || (s.battlesPlayed || 0) > 0);
-  // Re-read with battle fields
-  const battleData = [];
-  for (const sec of SECTIONS) {
-    try {
-      const snap = await db.collection('classes').doc(sec.id).collection('students').get();
-      snap.forEach(doc => {
-        const d = doc.data();
-        if ((d.battlesWon || 0) > 0 || (d.battlesPlayed || 0) > 0) {
-          battleData.push({ id: doc.id, name: d.name, avatarId: d.avatarId || 1, battlesWon: d.battlesWon || 0, battlesPlayed: d.battlesPlayed || 0, sectionId: sec.id });
-        }
-      });
-    } catch (e) { /* skip */ }
-  }
-  battleData.sort((a, b) => b.battlesWon - a.battlesWon);
-  document.getElementById('lb-battles').innerHTML = battleData.length > 0 ? battleData.map((s, i) => {
-    const isMe = s.id === state.studentId && s.sectionId === CLASS_ID;
-    const rank = i < 3 ? medals[i] : `${i + 1}.`;
-    const av = `<img src="${avatarSrc(s.avatarId)}" class="avatar avatar-sm" style="vertical-align:middle;margin-right:6px;">`;
-    const winRate = s.battlesPlayed > 0 ? Math.round((s.battlesWon / s.battlesPlayed) * 100) : 0;
-    return `<div class="lb-row ${isMe ? 'me' : ''}"><span class="lb-rank">${rank}</span><span class="lb-name">${av}${s.name}</span><span class="lb-xp">${s.battlesWon}W \u00B7 ${winRate}%</span></div>`;
-  }).join('') : '<p style="color:var(--muted);text-align:center;padding:0.5rem;font-size:0.85rem;">No battles played yet</p>';
+  // Daily challenge (my class)
+  var today = getTodayStr();
+  var dailyStudents = myStudents.filter(function(s) { return s.daily[today]; }).map(function(s) { return Object.assign({}, s, s.daily[today]); }).sort(function(a, b) { return b.score - a.score; });
+  var noDaily = uiLang==='de' ? 'Noch niemand hat die heutige Challenge gemacht' : "No one has done today's challenge yet";
+  document.getElementById('lb-daily').innerHTML = dailyStudents.length > 0 ? dailyStudents.map(function(s, i) {
+    var isMe = s.id === state.studentId;
+    return '<div class="lb-row ' + (isMe ? 'me' : '') + '"><span class="lb-rank">' + (i+1) + '.</span><span class="lb-name">' + escapeHtml(s.name) + '</span><span class="lb-score">' + s.score + '/' + s.total + '</span></div>';
+  }).join('') : '<p style="color:var(--muted);text-align:center;padding:0.5rem;font-size:0.82rem;">' + noDaily + '</p>';
+
+  // Battle leaderboard (all classes, no re-read needed — data already loaded)
+  var battleData = allStudents.filter(function(s) { return s.battlesWon > 0 || s.battlesPlayed > 0; });
+  battleData.sort(function(a, b) { return b.battlesWon - a.battlesWon; });
+  var noBattles = uiLang==='de' ? 'Noch keine Kämpfe' : 'No battles played yet';
+  document.getElementById('lb-battles').innerHTML = battleData.length > 0 ? battleData.map(function(s, i) {
+    var isMe = s.id === state.studentId && s.sectionId === CLASS_ID;
+    var rank = i < 3 ? medals[i] : (i+1) + '.';
+    var av = '<img src="' + avatarSrc(s.avatarId) + '" class="avatar avatar-sm" style="vertical-align:middle;margin-right:6px;">';
+    var winRate = s.battlesPlayed > 0 ? Math.round((s.battlesWon / s.battlesPlayed) * 100) : 0;
+    return '<div class="lb-row ' + (isMe ? 'me' : '') + '"><span class="lb-rank">' + rank + '</span><span class="lb-name">' + av + escapeHtml(s.name) + '</span><span class="lb-xp">' + s.battlesWon + 'W · ' + winRate + '%</span></div>';
+  }).join('') : '<p style="color:var(--muted);text-align:center;padding:0.5rem;font-size:0.82rem;">' + noBattles + '</p>';
 }
 
 function getSmartReviewWords(limit = 20) {
