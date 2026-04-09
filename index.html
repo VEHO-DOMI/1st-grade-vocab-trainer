@@ -813,12 +813,13 @@ h1 { display: none; }
 
 /* Action Grid (2x2) */
 .home-action-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 0.8rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; margin-bottom: 0.8rem;
 }
 .home-action-card {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
   padding: 1rem 0.5rem; border-radius: var(--radius); border: 1.5px solid var(--card-border);
   background: var(--card); cursor: pointer; transition: all 0.15s; min-height: 72px;
+  width: 100%; box-sizing: border-box;
 }
 .home-action-card:hover { border-color: var(--accent); background: var(--card-hover); transform: translateY(-1px); }
 .home-action-card:active { transform: scale(0.97); }
@@ -2397,24 +2398,34 @@ body.playing .header-container { display: none; }
 
 <!-- HOME SCREEN -->
 <div id="home-screen" class="screen">
-  <!-- Compact Profile Bar -->
-  <div class="home-profile-bar" id="profile-card">
-    <div class="home-profile-left" onclick="openAvatarPicker()" style="cursor:pointer;">
-      <img id="home-avatar" class="avatar avatar-md" src="" alt="" style="display:none;">
-      <div class="home-profile-info">
-        <div class="home-profile-name"><span id="welcome-name">Welcome</span> <span class="class-tag" id="profile-class-tag">1A</span></div>
-        <div class="home-profile-xp" id="welcome-xp">0 XP</div>
+  <!-- Player Card (restored) -->
+  <div class="profile-card" id="profile-card">
+    <div class="profile-top">
+      <img id="home-avatar" class="avatar avatar-lg" src="" alt="" style="display:none;cursor:pointer;" onclick="openAvatarPicker()">
+      <div class="profile-info">
+        <div class="profile-name">
+          <span id="welcome-name">Welcome</span>
+          <span class="class-tag" id="profile-class-tag">1A</span>
+        </div>
+        <div class="profile-xp-row">
+          <span class="profile-xp" id="welcome-xp">0 XP</span>
+        </div>
+        <div class="profile-rank-row">
+          <span class="profile-rank-pill" id="rank-badge"></span>
+        </div>
       </div>
     </div>
-    <button class="home-settings-btn" onclick="toggleSettingsDrawer()" aria-label="Einstellungen">⚙️</button>
+    <div class="profile-xp-bar" id="rank-display" style="display:none;">
+      <div class="profile-xp-track"><div class="profile-xp-fill" id="rank-progress-fill"></div></div>
+      <div class="profile-xp-labels"><span id="rank-current-label"></span><span id="rank-xp-to-next"></span><span id="rank-next-label"></span></div>
+    </div>
+    <div class="profile-logout-row">
+      <button class="logout-btn" onclick="showModeSelectScreen()">🔄 Modus wechseln</button>
+      <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
   </div>
 
-  <!-- Hidden elements kept for JS compatibility -->
-  <div id="rank-display" style="display:none;">
-    <div class="profile-xp-track"><div class="profile-xp-fill" id="rank-progress-fill"></div></div>
-    <div class="profile-xp-labels"><span id="rank-current-label"></span><span id="rank-xp-to-next"></span><span id="rank-next-label"></span></div>
-  </div>
-  <span id="rank-badge" style="display:none;"></span>
+  <!-- Hidden: stats kept for JS, badges kept for JS -->
   <div id="badge-row" style="display:none;"></div>
   <div class="stats-bar" style="display:none;">
     <div class="stat-card"><div class="stat-value" id="stat-sessions">0</div><div class="stat-label">Sessions</div></div>
@@ -2424,11 +2435,9 @@ body.playing .header-container { display: none; }
   </div>
 
   <!-- Primary Action -->
-  <div class="home-primary-action">
-    <button class="btn btn-primary btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
-  </div>
+  <button class="btn btn-primary btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
 
-  <!-- Action Grid (2x2) -->
+  <!-- Action Grid (2x2, equal width) -->
   <div class="home-action-grid">
     <button class="home-action-card" id="review-btn" style="display:none;" onclick="startSmartReview()">
       <span class="home-action-icon">🔄</span>
@@ -2446,6 +2455,13 @@ body.playing .header-container { display: none; }
       <span class="home-action-icon">⚔️</span>
       <span class="home-action-label">Battle Arena</span>
     </button>
+  </div>
+
+  <!-- Nav Row -->
+  <div class="home-nav-grid">
+    <button class="btn btn-secondary btn-small" onclick="state.mode==='grammar'?showGrammarMap():showProgressMap()">🗺️<span>Karte</span></button>
+    <button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>Fortschritt</span></button>
+    <button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>Bestenliste</span></button>
   </div>
 
   <!-- Daily Content Card -->
@@ -2483,51 +2499,11 @@ body.playing .header-container { display: none; }
     <div id="weekly-goal-text" style="font-size:0.75rem;color:var(--text-secondary);text-align:center;"></div>
   </div>
 
-  <!-- Spacer for bottom nav -->
-  <div style="height:70px;"></div>
-
-  <!-- Fixed Bottom Navigation -->
-  <nav class="bottom-nav" id="bottom-nav">
-    <button class="bottom-nav-item active" onclick="goHome()">
-      <span class="bottom-nav-icon">🏠</span>
-      <span class="bottom-nav-label">Start</span>
-    </button>
-    <button class="bottom-nav-item" onclick="state.mode==='grammar'?showGrammarMap():showProgressMap()">
-      <span class="bottom-nav-icon">🗺️</span>
-      <span class="bottom-nav-label">Karte</span>
-    </button>
-    <button class="bottom-nav-item" onclick="showProgressScreen()">
-      <span class="bottom-nav-icon">📊</span>
-      <span class="bottom-nav-label">Fortschritt</span>
-    </button>
-    <button class="bottom-nav-item" onclick="showLeaderboard()">
-      <span class="bottom-nav-icon">🏆</span>
-      <span class="bottom-nav-label">Rangliste</span>
-    </button>
-  </nav>
-
-  <!-- Settings Drawer -->
-  <div class="settings-overlay" id="settings-overlay" onclick="if(event.target===this)toggleSettingsDrawer()"></div>
-  <div class="settings-drawer" id="settings-drawer">
-    <div class="settings-handle"></div>
-    <div class="settings-title">⚙️ Einstellungen</div>
-    <div class="settings-items">
-      <button class="settings-item" onclick="toggleSettingsDrawer();showModeSelectScreen();">
-        <span>🔄</span><span>Modus wechseln</span><span class="settings-item-value" id="settings-mode-label">Grammatik</span>
-      </button>
-      <button class="settings-item" onclick="setUiLang(uiLang==='de'?'en':'de')">
-        <span>🌐</span><span>Sprache</span><span class="settings-item-value" id="settings-lang-label">Deutsch</span>
-      </button>
-      <button class="settings-item" onclick="toggleTheme()">
-        <span id="settings-theme-icon">☀️</span><span>Erscheinungsbild</span><span class="settings-item-value" id="settings-theme-label">Hell</span>
-      </button>
-      <button class="settings-item" onclick="toggleSfx()">
-        <span id="settings-sound-icon">🔊</span><span>Sound</span><span class="settings-item-value" id="settings-sound-label">An</span>
-      </button>
-      <button class="settings-item settings-item-danger" onclick="toggleSettingsDrawer();logout();">
-        <span>🚪</span><span>Abmelden</span><span></span>
-      </button>
-    </div>
+  <!-- Toggles -->
+  <div class="home-nav-footer">
+    <button id="theme-toggle-btn" onclick="toggleTheme()" class="btn btn-secondary btn-small">☀️ Light</button>
+    <button id="sfx-toggle-btn" onclick="toggleSfx()" class="btn btn-secondary btn-small">🔊 Sound: ON</button>
+    <button id="lang-toggle-btn" onclick="setUiLang(uiLang==='de'?'en':'de')" class="btn btn-secondary btn-small">🇩🇪 Deutsch</button>
   </div>
 </div>
 
@@ -9524,10 +9500,18 @@ showHomeScreen = function() {
     // Restore Words button (was Rules in grammar mode)
     const wordsBtn = document.getElementById('home-words-btn');
     if (wordsBtn) {
+      var wIcon = wordsBtn.querySelector('.home-action-icon');
       var wLabel = wordsBtn.querySelector('.home-action-label');
-      if (wLabel) { wLabel.textContent = t('words'); }
-      else { wordsBtn.textContent = '📖 ' + t('words'); }
+      if (wIcon) wIcon.textContent = '📖';
+      if (wLabel) wLabel.textContent = t('words');
       wordsBtn.onclick = function() { showWordReference(); };
+    }
+    // Restore nav grid
+    const navGrid = document.querySelector('.home-nav-grid');
+    if (navGrid) {
+      navGrid.innerHTML = '<button class="btn btn-secondary btn-small" onclick="showProgressMap()">🗺️<span>' + t('map') + '</span></button>' +
+        '<button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>' + t('progress') + '</span></button>' +
+        '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>' + t('leaderboard') + '</span></button>';
     }
     // Restore today-card innerHTML (grammar mode replaces it with Rule of the Day)
     const todayCard = document.getElementById('today-card');
@@ -9541,9 +9525,8 @@ showHomeScreen = function() {
     // Restore weekly goal card visibility (grammar mode hides it)
     const weeklyCard = document.getElementById('weekly-goal-card');
     if (weeklyCard) weeklyCard.style.display = '';
-    // Update bottom nav labels
-    updateBottomNavLabels();
     _origShowHomeScreen();
+    addModeSwitchPill();
   }
   // Show deferred campaign level-ups
   if (window._campaignLevelUps && window._campaignLevelUps.length > 0) {
@@ -9659,10 +9642,9 @@ function showGrammarHomeScreen() {
   const d = state.studentData || {};
   const gxp = d.grammarXp || 0;
   const glv = getLevel(gxp);
-  // Update compact profile XP line
-  var xpEl = document.getElementById('welcome-xp');
-  if (xpEl) xpEl.innerHTML = '⭐ ' + gxp.toLocaleString() + ' XP · ' + glv.name;
+  document.getElementById('welcome-xp').innerHTML = '⭐ ' + gxp.toLocaleString() + ' XP · <span style="opacity:0.7;">' + glv.name + '</span>' + (glv.vibe ? '<br><span style="opacity:0.5;font-style:italic;font-size:0.75rem;">' + glv.vibe + '</span>' : '');
   updateAllAvatars();
+  updateRankDisplay();
   // Stats (hidden but kept for data)
   document.getElementById('stat-sessions').textContent = d.grammarSessions || 0;
   const gAns = d.grammarAnswered || 0;
@@ -9704,8 +9686,14 @@ function showGrammarHomeScreen() {
       reviewBtn.style.display = 'none';
     }
   }
-  // Update bottom nav labels
-  updateBottomNavLabels();
+  // Update nav buttons
+  const navGrid = document.querySelector('.home-nav-grid');
+  if (navGrid) {
+    navGrid.innerHTML = '<button class="btn btn-secondary btn-small" onclick="showGrammarMap()">🗺️<span>' + t('map') + '</span></button>' +
+      '<button class="btn btn-secondary btn-small" onclick="showProgressScreen()">📊<span>' + t('progress') + '</span></button>' +
+      '<button class="btn btn-secondary btn-small" onclick="showLeaderboard()">🏆<span>' + t('leaderboard') + '</span></button>';
+  }
+  addModeSwitchPill();
   showScreen('home-screen');
   setupPresence();
   const battleBtn = document.getElementById('btn-battle');
