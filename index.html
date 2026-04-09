@@ -2567,7 +2567,7 @@ body.playing .header-container { display: none; }
 
 <!-- HOME SCREEN -->
 <div id="home-screen" class="screen">
-  <!-- Player Card (restored) -->
+  <!-- Player Card -->
   <div class="profile-card" id="profile-card">
     <div class="profile-top">
       <img id="home-avatar" class="avatar avatar-lg" src="" alt="" style="display:none;cursor:pointer;" onclick="openAvatarPicker()">
@@ -2575,28 +2575,32 @@ body.playing .header-container { display: none; }
         <div class="profile-name">
           <span id="welcome-name">Welcome</span>
           <span class="class-tag" id="profile-class-tag">1A</span>
+          <span class="profile-rank-pill" id="rank-badge" style="margin-left:auto;font-size:0.6rem;padding:2px 8px;"></span>
         </div>
         <div class="profile-xp-row">
           <span class="profile-xp" id="welcome-xp">0 XP</span>
         </div>
-        <div class="profile-rank-row" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
-          <span class="profile-rank-pill" id="rank-badge"></span>
-          <span class="profile-rank-label" id="rank-mode-label" style="font-size:0.58rem;color:var(--muted);font-weight:600;"></span>
-        </div>
-        <div class="profile-overall-row" id="overall-level-display" style="margin-top:4px;display:flex;gap:6px;align-items:center;">
-          <span class="profile-rank-pill zone-overall" id="overall-badge" style="background:linear-gradient(135deg,#0d9488,#14b8a6);color:#fff;font-size:0.65rem;padding:3px 10px;"></span>
-          <span style="font-size:0.58rem;color:var(--muted);font-weight:600;" id="overall-label"></span>
-        </div>
       </div>
     </div>
+    <!-- Mode-specific XP bar -->
     <div class="profile-xp-bar" id="rank-display" style="display:none;">
       <div class="profile-xp-track"><div class="profile-xp-fill" id="rank-progress-fill"></div></div>
       <div class="profile-xp-labels"><span id="rank-current-label"></span><span id="rank-xp-to-next"></span><span id="rank-next-label"></span></div>
+    </div>
+    <!-- Overall English level bar -->
+    <div class="profile-overall-bar" id="overall-level-display" onclick="showProgressScreen()" style="cursor:pointer;margin-top:6px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+        <span style="font-size:0.7rem;font-weight:700;color:var(--trans-color);" id="overall-badge">🌍 Lv 7 · Polyglot</span>
+        <span style="font-size:0.6rem;color:var(--muted);font-weight:600;" id="overall-label">27.045 XP</span>
+      </div>
+      <div class="profile-xp-track" style="height:6px;"><div class="profile-xp-fill" id="overall-progress-fill" style="width:0%;background:linear-gradient(90deg,#0d9488,#14b8a6);"></div></div>
     </div>
     <div class="profile-logout-row">
       <button class="logout-btn" onclick="logout()">Log Out</button>
     </div>
   </div>
+  <!-- Hidden rank labels for JS compat -->
+  <span id="rank-mode-label" style="display:none;"></span>
 
   <!-- Hidden: stats + badges kept for JS -->
   <div id="badge-row" style="display:none;"></div>
@@ -5960,17 +5964,9 @@ function showHomeScreen() {
   renderWeeklyGoal();
   renderDailyCard();
 
-  // Smart review button (replaces old weak words)
-  const reviewWords2 = getSmartReviewWords();
+  // Smart review — merged into start practice hint, keep button hidden
   const reviewBtn2 = document.getElementById('review-btn');
-  if (reviewBtn2) {
-    if (reviewWords2.length > 0) {
-      reviewBtn2.style.display = '';
-      reviewBtn2.textContent = `🔄 Smart Review (${reviewWords2.length} words)`;
-    } else {
-      reviewBtn2.style.display = 'none';
-    }
-  }
+  if (reviewBtn2) reviewBtn2.style.display = 'none';
 
   showScreen('home-screen');
   setupPresence();
@@ -6440,15 +6436,33 @@ let fcFlipped = false;
 let fcDirection = 'en-de'; // 'en-de' or 'de-en'
 
 function startFlashcardsFromRef() {
-  // Start flashcards from the Wörterbuch with the current filter
-  var sourceFilter = document.getElementById('ref-source-filter');
-  var selectedSource = sourceFilter ? sourceFilter.value : 'all';
+  // Show unit picker overlay before starting flashcards
+  var old = document.getElementById('fc-unit-picker');
+  if (old) old.remove();
+  var ov = document.createElement('div');
+  ov.id = 'fc-unit-picker';
+  ov.className = 'practice-setup-overlay';
+  var units = Object.keys(vocabData);
+  var unitBtns = units.map(function(key) {
+    var count = vocabData[key].length;
+    return '<button class="source-btn fc-unit-btn" data-source="' + key + '" onclick="toggleFcUnit(this)" style="text-align:center;">' + key + '<span class="count">' + count + ' ' + (uiLang==='de'?'Wörter':'words') + '</span></button>';
+  }).join('');
+  ov.innerHTML = '<div class="setup-step"><div class="setup-header"><button class="setup-close" onclick="document.getElementById(\'fc-unit-picker\').remove()">✕</button><h2>' + (uiLang==='de'?'Karteikarten — Units wählen':'Flashcards — Select Units') + '</h2></div>' +
+    '<div class="setup-body"><div class="source-grid">' + unitBtns + '</div>' +
+    '<div class="quick-btns"><button class="quick-btn" onclick="document.querySelectorAll(\'.fc-unit-btn\').forEach(function(b){b.classList.add(\'selected\')})">' + (uiLang==='de'?'Alle':'All') + '</button><button class="quick-btn" onclick="document.querySelectorAll(\'.fc-unit-btn\').forEach(function(b){b.classList.remove(\'selected\')})">' + (uiLang==='de'?'Keine':'None') + '</button></div></div>' +
+    '<div class="setup-footer"><button class="btn btn-primary btn-block" onclick="launchFlashcardsFromPicker()">' + (uiLang==='de'?'Starten':'Start') + ' 📇</button></div></div>';
+  document.body.appendChild(ov);
+  // Select all by default
+  ov.querySelectorAll('.fc-unit-btn').forEach(function(b) { b.classList.add('selected'); });
+}
+function toggleFcUnit(btn) { btn.classList.toggle('selected'); }
+function launchFlashcardsFromPicker() {
+  var selected = document.querySelectorAll('.fc-unit-btn.selected');
+  if (selected.length === 0) return;
   state.selectedSources.clear();
-  if (selectedSource === 'all') {
-    Object.keys(vocabData).forEach(function(k) { state.selectedSources.add(k); });
-  } else {
-    state.selectedSources.add(selectedSource);
-  }
+  selected.forEach(function(b) { state.selectedSources.add(b.dataset.source); });
+  var ov = document.getElementById('fc-unit-picker');
+  if (ov) ov.remove();
   startFlashcards();
 }
 
@@ -9836,17 +9850,16 @@ showHomeScreen = function() {
         '<div class="today-divider"></div>' +
         '<div class="today-section"><div class="today-header"><span class="today-label">⚡ ' + t('dailyChallenge') + '</span><span class="today-date" id="daily-date"></span></div><div class="today-daily-desc">10 ' + t('words').toLowerCase() + ' · ' + (uiLang==='de' ? 'gleich für alle heute' : 'same for everyone today') + '</div><div id="daily-action"></div></div>';
     }
-    // Mode-specific rank label
-    var rankLabel = document.getElementById('rank-mode-label');
-    if (rankLabel) rankLabel.textContent = uiLang==='de' ? 'Vokabel' : 'Vocab';
-    // Overall level badge
+    // Overall level bar
     var d2 = state.studentData || {};
     var totalXp = (d2.xp || 0) + (d2.grammarXp || 0);
     var ol = getOverallLevel(totalXp);
     var olBadge = document.getElementById('overall-badge');
-    if (olBadge) olBadge.textContent = 'Lv ' + ol.level + ' · ' + ol.name;
+    if (olBadge) olBadge.textContent = '🌍 Lv ' + ol.level + ' · ' + ol.name;
     var olLabel = document.getElementById('overall-label');
-    if (olLabel) olLabel.textContent = (uiLang==='de' ? 'Englisch gesamt' : 'English overall') + ' · ' + totalXp.toLocaleString() + ' XP';
+    if (olLabel) olLabel.textContent = totalXp.toLocaleString() + ' XP';
+    var olFill = document.getElementById('overall-progress-fill');
+    if (olFill) olFill.style.width = Math.round(ol.progress * 100) + '%';
     // Class level
     loadClassLevel();
     // Hide weekly goal (replaced by class level)
@@ -10013,16 +10026,15 @@ function showGrammarHomeScreen() {
   // Battle arena subtitle
   var bSub = document.getElementById('battle-arena-subtitle');
   if (bSub) bSub.textContent = uiLang==='de' ? 'Duell, Klassenquiz & Kampfverlauf' : 'Duel, Class Quiz & Battle History';
-  // Mode-specific rank label
-  var rankLabel = document.getElementById('rank-mode-label');
-  if (rankLabel) rankLabel.textContent = uiLang==='de' ? 'Grammatik' : 'Grammar';
-  // Overall level badge
+  // Overall level bar
   var totalXp = (d.xp || 0) + (d.grammarXp || 0);
   var ol = getOverallLevel(totalXp);
   var olBadge = document.getElementById('overall-badge');
-  if (olBadge) olBadge.textContent = 'Lv ' + ol.level + ' · ' + ol.name;
+  if (olBadge) olBadge.textContent = '🌍 Lv ' + ol.level + ' · ' + ol.name;
   var olLabel = document.getElementById('overall-label');
-  if (olLabel) olLabel.textContent = (uiLang==='de' ? 'Englisch gesamt' : 'English overall') + ' · ' + totalXp.toLocaleString() + ' XP';
+  if (olLabel) olLabel.textContent = totalXp.toLocaleString() + ' XP';
+  var olFill = document.getElementById('overall-progress-fill');
+  if (olFill) olFill.style.width = Math.round(ol.progress * 100) + '%';
   // Class level
   loadClassLevel();
   showScreen('home-screen');
@@ -10032,6 +10044,41 @@ function showGrammarHomeScreen() {
 }
 
 function addModeSwitchPill() { /* legacy — removed */ }
+
+/* ===== KEYBOARD SHORTCUTS ===== */
+document.addEventListener('keydown', function(e) {
+  // Enter key — confirm/submit/next
+  if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey) {
+    // Check for active overlays/modals first
+    var battleOverlay = document.getElementById('battle-lobby-overlay');
+    if (battleOverlay) return; // don't interfere with battle modal
+    var practiceOverlay = document.getElementById('practice-setup-overlay');
+    if (practiceOverlay) {
+      var nextBtn = document.getElementById('setup-next-btn');
+      if (nextBtn && !nextBtn.disabled && nextBtn.offsetParent !== null) { e.preventDefault(); nextBtn.click(); return; }
+      var goBtn = practiceOverlay.querySelector('.setup-footer .btn-primary');
+      if (goBtn && goBtn.offsetParent !== null) { e.preventDefault(); goBtn.click(); return; }
+    }
+    // Quiz screen — check/next
+    var checkBtn = document.getElementById('check-btn');
+    if (checkBtn && checkBtn.offsetParent !== null) { e.preventDefault(); checkBtn.click(); return; }
+    var nextBtn2 = document.getElementById('next-btn');
+    if (nextBtn2 && nextBtn2.offsetParent !== null) { e.preventDefault(); nextBtn2.click(); return; }
+  }
+  // Escape key — go back/close
+  if (e.key === 'Escape') {
+    var battleOverlay = document.getElementById('battle-lobby-overlay');
+    if (battleOverlay) { battleOverlay.remove(); return; }
+    var battleMode = document.getElementById('battle-mode-overlay');
+    if (battleMode) { battleMode.remove(); return; }
+    var practiceOverlay = document.getElementById('practice-setup-overlay');
+    if (practiceOverlay) { e.preventDefault(); closePracticeSetup(); return; }
+    var fcOverlay = document.getElementById('fc-direction-overlay');
+    if (fcOverlay) { fcOverlay.remove(); return; }
+    var onboarding = document.getElementById('onboarding-overlay');
+    if (onboarding && onboarding.style.display !== 'none') { finishOnboarding(); return; }
+  }
+});
 
 /* Class Level System */
 async function loadClassLevel() {
