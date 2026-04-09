@@ -455,13 +455,14 @@ h1 { display: none; }
   font-weight: 400;
 }
 .quiz-prompt .gap {
-  display: inline; font-weight: 700; color: var(--accent-light); letter-spacing: 0.04em;
-  border-bottom: 2px dashed rgba(214,48,48,0.35); padding: 0.05em 0.2em;
-  background: rgba(214,48,48,0.06); border-radius: 4px 4px 0 0;
+  display: inline-block; min-width: 5em; font-weight: 700; color: transparent; letter-spacing: 0.04em;
+  border-bottom: 2.5px solid var(--accent); padding: 0.05em 0.3em;
+  background: rgba(214,48,48,0.05); border-radius: 4px 4px 0 0;
+  vertical-align: baseline; text-align: center;
 }
 .quiz-prompt .gap.gap-hard {
   letter-spacing: 0; border-bottom: none; background: none; padding: 0;
-  text-decoration: none;
+  text-decoration: none; color: var(--accent-light); display: inline; min-width: 0;
 }
 .quiz-prompt .gap.gap-hard .gap-line {
   display: inline-block; width: 8em; border-bottom: 2.5px solid var(--accent-light);
