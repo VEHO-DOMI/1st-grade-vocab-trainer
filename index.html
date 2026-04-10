@@ -569,7 +569,8 @@ h1 { display: none; }
 [data-theme="light"] #avatar-picker-modal { background: white; color: var(--text); }
 [data-theme="light"] .battle-modal-bg { background: white; color: var(--text); }
 /* Practice Setup Overlay */
-.practice-setup-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 9000; overflow-y: auto; -webkit-overflow-scrolling: touch; animation: fadeIn 0.2s ease; }
+.practice-setup-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg); z-index: 9000; overflow-y: auto; -webkit-overflow-scrolling: touch; animation: fadeIn 0.2s ease; overscroll-behavior: contain; }
+body.overlay-open { overflow: hidden !important; position: fixed; width: 100%; }
 .setup-step { max-width: 520px; margin: 0 auto; padding: 0 1rem; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; background: var(--bg); }
 .setup-header { position: sticky; top: 0; background: var(--bg); padding: 1rem 0 0.8rem; z-index: 10; text-align: center; }
 .setup-header h2 { font-size: 1.3rem; font-weight: 800; margin: 0; }
@@ -1124,7 +1125,8 @@ body::before {
 .home-nav-footer .btn { font-size: 0.68rem; padding: 0.45rem 0.8rem; flex: 1; text-align: center; white-space: nowrap; }
 .mode-row { display: flex; gap: 0.5rem; }
 .mode-row .btn { flex: 1; }
-.btn-start-practice { font-size: 1.1rem !important; padding: 1rem !important; font-weight: 800 !important; letter-spacing: 0.5px; }
+.btn-start-practice { font-size: 1.1rem !important; padding: 1rem !important; font-weight: 800 !important; letter-spacing: 0.5px; display: flex !important; flex-direction: column; align-items: center; gap: 2px; }
+.practice-btn-sub { font-size: 0.65rem; font-weight: 500; opacity: 0.8; letter-spacing: 0; }
 
 /* Word of the Day card */
 #wotd-card { background: rgba(200,60,40,0.06); border: 1px solid rgba(200,60,40,0.12); color: #4a3520; border-radius: var(--radius); padding: 1rem 1.2rem; margin-bottom: 0.8rem; }
@@ -1147,6 +1149,8 @@ body::before {
   padding: 0;
   margin-bottom: 0.8rem;
   overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 .today-section { padding: 1rem 1.2rem; }
 .today-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
@@ -2613,17 +2617,19 @@ body.playing .header-container { display: none; }
   </div>
   <div id="review-btn" style="display:none;"></div>
 
-  <!-- Start Practice + subtitle + Smart Review hint + Mode Switch -->
+  <!-- Start Practice + Smart Review hint + Mode Switch -->
   <div class="home-section">
-    <button class="btn btn-primary btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
-    <div id="practice-subtitle" style="text-align:center;font-size:0.68rem;color:var(--muted);margin-top:4px;">Units und Übungsformat auswählbar</div>
+    <button class="btn btn-primary btn-start-practice" onclick="openPracticeSetup()">
+      <span id="practice-btn-label">🎯 Start Practice</span>
+      <span class="practice-btn-sub" id="practice-subtitle">Units und Übungsformat auswählbar</span>
+    </button>
     <div id="smart-review-hint" class="home-smart-review-hint" style="display:none;" onclick="startSmartReview()">
-      <span>🔄</span>
+      <span>📝</span>
       <span id="smart-review-hint-text">20 Wörter zur Wiederholung</span>
       <span style="font-size:0.65rem;color:var(--muted);margin-left:auto;">Starten →</span>
     </div>
     <div class="home-smart-review-desc" id="smart-review-desc" style="display:none;"></div>
-    <button class="home-mode-switch-btn" id="home-mode-switch" onclick="showModeSelectScreen()">🔄 Zu Grammatik oder Story Mode wechseln</button>
+    <button class="home-mode-switch-btn" id="home-mode-switch" onclick="showModeSelectScreen()">↩️ Zu Grammatik oder Story Mode wechseln</button>
   </div>
 
   <!-- Words/Rules — full width card -->
@@ -5949,7 +5955,9 @@ function showHomeScreen() {
   const classTag = document.getElementById('profile-class-tag');
   if (classTag) classTag.textContent = sectionLabel;
   const homeLv = getLevel(state.studentData?.xp || 0);
-  document.getElementById('welcome-xp').innerHTML = `⭐ ${(state.studentData?.xp || 0).toLocaleString()} XP · <span style="opacity:0.7;">${homeLv.name}</span>${homeLv.vibe ? '<br><span style="opacity:0.5;font-style:italic;font-size:0.75rem;">' + homeLv.vibe + '</span>' : ''}`;
+  document.getElementById('welcome-xp').innerHTML = '⭐ ' + (state.studentData?.xp || 0).toLocaleString() + ' XP';
+  var vibeEl = document.getElementById('welcome-vibe');
+  if (vibeEl) vibeEl.textContent = homeLv.vibe || '';
   updateAllAvatars();
 
   // Stats
@@ -6449,7 +6457,8 @@ function startFlashcardsFromRef() {
     var count = vocabData[key].length;
     return '<button class="source-btn fc-unit-btn" data-source="' + key + '" onclick="toggleFcUnit(this)" style="text-align:center;">' + key + '<span class="count">' + count + ' ' + (uiLang==='de'?'Wörter':'words') + '</span></button>';
   }).join('');
-  ov.innerHTML = '<div class="setup-step"><div class="setup-header"><button class="setup-close" onclick="document.getElementById(\'fc-unit-picker\').remove()">✕</button><h2>' + (uiLang==='de'?'Karteikarten — Units wählen':'Flashcards — Select Units') + '</h2></div>' +
+  document.body.classList.add('overlay-open');
+  ov.innerHTML = '<div class="setup-step"><div class="setup-header"><button class="setup-close" onclick="document.getElementById(\'fc-unit-picker\').remove();document.body.classList.remove(\'overlay-open\')">✕</button><h2>' + (uiLang==='de'?'Karteikarten — Units wählen':'Flashcards — Select Units') + '</h2></div>' +
     '<div class="setup-body"><div class="source-grid">' + unitBtns + '</div>' +
     '<div class="quick-btns"><button class="quick-btn" onclick="document.querySelectorAll(\'.fc-unit-btn\').forEach(function(b){b.classList.add(\'selected\')})">' + (uiLang==='de'?'Alle':'All') + '</button><button class="quick-btn" onclick="document.querySelectorAll(\'.fc-unit-btn\').forEach(function(b){b.classList.remove(\'selected\')})">' + (uiLang==='de'?'Keine':'None') + '</button></div></div>' +
     '<div class="setup-footer"><button class="btn btn-primary btn-block" onclick="launchFlashcardsFromPicker()">' + (uiLang==='de'?'Starten':'Start') + ' 📇</button></div></div>';
@@ -6465,6 +6474,7 @@ function launchFlashcardsFromPicker() {
   selected.forEach(function(b) { state.selectedSources.add(b.dataset.source); });
   var ov = document.getElementById('fc-unit-picker');
   if (ov) ov.remove();
+  document.body.classList.remove('overlay-open');
   startFlashcards();
 }
 
@@ -9819,7 +9829,12 @@ showHomeScreen = function() {
   } else {
     // Restore vocab UI elements
     var practiceBtn = document.querySelector('.btn-start-practice');
-    if (practiceBtn) { practiceBtn.textContent = '🎯 ' + t('startVocabPractice'); practiceBtn.onclick = openPracticeSetup; }
+    if (practiceBtn) {
+      var pLabel = document.getElementById('practice-btn-label');
+      if (pLabel) pLabel.textContent = '🎯 ' + t('startVocabPractice');
+      else practiceBtn.textContent = '🎯 ' + t('startVocabPractice');
+      practiceBtn.onclick = openPracticeSetup;
+    }
     var practiceSub = document.getElementById('practice-subtitle');
     if (practiceSub) practiceSub.textContent = uiLang==='de' ? 'Units und Übungsformat auswählbar' : 'Choose units and exercise type';
     // Words card
@@ -10008,7 +10023,12 @@ function showGrammarHomeScreen() {
   if (weeklyCard) weeklyCard.style.display = 'none';
   // Practice button + subtitle
   var practiceBtn = document.querySelector('.btn-start-practice');
-  if (practiceBtn) { practiceBtn.textContent = '🧠 ' + t('startGrammarPractice'); practiceBtn.onclick = openGrammarPractice; }
+  if (practiceBtn) {
+    var pLabel = document.getElementById('practice-btn-label');
+    if (pLabel) pLabel.textContent = '🧠 ' + t('startGrammarPractice');
+    else practiceBtn.textContent = '🧠 ' + t('startGrammarPractice');
+    practiceBtn.onclick = openGrammarPractice;
+  }
   var practiceSub = document.getElementById('practice-subtitle');
   if (practiceSub) practiceSub.textContent = uiLang==='de' ? 'Themen und Aufgabentyp auswählbar' : 'Choose topics and exercise type';
   // Smart review hint
@@ -10061,7 +10081,7 @@ function showOverallLevelProgression() {
   var d = state.studentData || {};
   var totalXp = (d.xp || 0) + (d.grammarXp || 0);
   var ol = getOverallLevel(totalXp);
-  var html = '<div class="progress-nav"><button class="btn btn-secondary" onclick="goHome()">← ' + t('back') + '</button><span class="nav-title">🌍 ' + (uiLang==='de'?'Englisch-Level':'English Level') + '</span><span style="width:60px;"></span></div>';
+  var html = '<div class="progress-nav"><button class="btn btn-secondary" onclick="showHomeScreen()">← ' + t('back') + '</button><span class="nav-title">🌍 ' + (uiLang==='de'?'Englisch-Level':'English Level') + '</span><span style="width:60px;"></span></div>';
   // Current level card
   html += '<div style="background:linear-gradient(135deg,#0d9488,#14b8a6);border-radius:var(--radius-lg);padding:1.2rem;margin-bottom:1rem;color:#fff;text-align:center;">';
   html += '<div style="font-size:2.5rem;font-weight:900;font-family:Fredoka,sans-serif;">Lv ' + ol.level + '</div>';
@@ -10096,7 +10116,7 @@ function showOverallLevelProgression() {
 }
 
 function showClassLevelProgression() {
-  var html = '<div class="progress-nav"><button class="btn btn-secondary" onclick="goHome()">← ' + t('back') + '</button><span class="nav-title">🏫 ' + (uiLang==='de'?'Klassen-Level':'Class Level') + '</span><span style="width:60px;"></span></div>';
+  var html = '<div class="progress-nav"><button class="btn btn-secondary" onclick="showHomeScreen()">← ' + t('back') + '</button><span class="nav-title">🏫 ' + (uiLang==='de'?'Klassen-Level':'Class Level') + '</span><span style="width:60px;"></span></div>';
   html += '<div id="class-level-roadmap-content" style="text-align:center;color:var(--muted);padding:2rem;">' + (uiLang==='de'?'Lade...':'Loading...') + '</div>';
   var ps = document.getElementById('practice-screen');
   ps.innerHTML = html;
