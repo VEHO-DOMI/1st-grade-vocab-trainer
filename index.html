@@ -906,14 +906,15 @@ h1 { display: none; }
   font-style: italic; display: none;
 }
 
-/* Mode switch link */
-.home-mode-switch-link {
+/* Mode switch button (prominent) */
+.home-mode-switch-btn {
   display: block; width: 100%; text-align: center; margin-top: 8px;
-  padding: 0.5rem; background: none; border: none; cursor: pointer;
-  font-size: 0.78rem; font-weight: 600; color: var(--muted); font-family: inherit;
-  transition: color 0.15s;
+  padding: 0.6rem 1rem; background: var(--card); border: 1.5px dashed var(--card-border);
+  border-radius: var(--radius); cursor: pointer; font-size: 0.78rem; font-weight: 600;
+  color: var(--accent); font-family: inherit; transition: all 0.15s; box-sizing: border-box;
 }
-.home-mode-switch-link:hover { color: var(--accent); }
+.home-mode-switch-btn:hover { border-color: var(--accent); background: var(--accent-glow); }
+.home-mode-switch-btn:active { transform: scale(0.98); }
 
 /* Full-width action card (Words/Rules, Battle Arena) */
 .home-fullwidth-card {
@@ -2575,11 +2576,12 @@ body.playing .header-container { display: none; }
         <div class="profile-name">
           <span id="welcome-name">Welcome</span>
           <span class="class-tag" id="profile-class-tag">1A</span>
-          <span class="profile-rank-pill" id="rank-badge" style="margin-left:auto;font-size:0.6rem;padding:2px 8px;"></span>
+          <span class="profile-rank-pill" id="rank-badge" style="font-size:0.58rem;padding:2px 8px;margin-left:4px;"></span>
         </div>
         <div class="profile-xp-row">
           <span class="profile-xp" id="welcome-xp">0 XP</span>
         </div>
+        <div id="welcome-vibe" style="font-size:0.72rem;color:var(--muted);font-style:italic;margin-top:1px;"></div>
       </div>
     </div>
     <!-- Mode-specific XP bar -->
@@ -2588,7 +2590,7 @@ body.playing .header-container { display: none; }
       <div class="profile-xp-labels"><span id="rank-current-label"></span><span id="rank-xp-to-next"></span><span id="rank-next-label"></span></div>
     </div>
     <!-- Overall English level bar -->
-    <div class="profile-overall-bar" id="overall-level-display" onclick="showProgressScreen()" style="cursor:pointer;margin-top:6px;">
+    <div class="profile-overall-bar" id="overall-level-display" onclick="showOverallLevelProgression()" style="cursor:pointer;margin-top:6px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
         <span style="font-size:0.7rem;font-weight:700;color:var(--trans-color);" id="overall-badge">🌍 Lv 7 · Polyglot</span>
         <span style="font-size:0.6rem;color:var(--muted);font-weight:600;" id="overall-label">27.045 XP</span>
@@ -2599,7 +2601,6 @@ body.playing .header-container { display: none; }
       <button class="logout-btn" onclick="logout()">Log Out</button>
     </div>
   </div>
-  <!-- Hidden rank labels for JS compat -->
   <span id="rank-mode-label" style="display:none;"></span>
 
   <!-- Hidden: stats + badges kept for JS -->
@@ -2612,16 +2613,17 @@ body.playing .header-container { display: none; }
   </div>
   <div id="review-btn" style="display:none;"></div>
 
-  <!-- Start Practice + Smart Review hint + Mode Switch -->
+  <!-- Start Practice + subtitle + Smart Review hint + Mode Switch -->
   <div class="home-section">
     <button class="btn btn-primary btn-start-practice" onclick="openPracticeSetup()">🎯 Start Practice</button>
+    <div id="practice-subtitle" style="text-align:center;font-size:0.68rem;color:var(--muted);margin-top:4px;">Units und Übungsformat auswählbar</div>
     <div id="smart-review-hint" class="home-smart-review-hint" style="display:none;" onclick="startSmartReview()">
       <span>🔄</span>
       <span id="smart-review-hint-text">20 Wörter zur Wiederholung</span>
       <span style="font-size:0.65rem;color:var(--muted);margin-left:auto;">Starten →</span>
     </div>
     <div class="home-smart-review-desc" id="smart-review-desc" style="display:none;"></div>
-    <button class="home-mode-switch-link" id="home-mode-switch" onclick="showModeSelectScreen()">🔄 Zu Grammatik oder Story Mode wechseln</button>
+    <button class="home-mode-switch-btn" id="home-mode-switch" onclick="showModeSelectScreen()">🔄 Zu Grammatik oder Story Mode wechseln</button>
   </div>
 
   <!-- Words/Rules — full width card -->
@@ -2687,7 +2689,7 @@ body.playing .header-container { display: none; }
   </div>
 
   <!-- Class Level Card (replaces Weekly Goal) -->
-  <div id="class-level-card" class="home-class-level-card" style="display:none;">
+  <div id="class-level-card" class="home-class-level-card" style="display:none;cursor:pointer;" onclick="showClassLevelProgression()">
     <div class="class-level-header">
       <span class="class-level-title" id="class-level-title">🏫 Klasse 1A</span>
       <span class="class-level-name" id="class-level-name">Study Group</span>
@@ -3019,7 +3021,7 @@ const UI_TEXT = {
     leaderboard: 'Bestenliste',
     ruleOfTheDay: 'Regel des Tages',
     wordOfTheDay: 'Wort des Tages',
-    dailyChallenge: 'Tägliche Herausforderung',
+    dailyChallenge: 'Tägliche Challenge',
     dailyGrammarChallenge: 'Tägliche Grammatik-Challenge',
     // Stats
     sessions: 'Sitzungen',
@@ -9762,32 +9764,35 @@ function showModeSelectScreen() {
 }
 
 async function loadModeSelectLeaderboards() {
-  const container = document.getElementById('mode-leaderboards');
+  var container = document.getElementById('mode-leaderboards');
   if (!container || !db || !CLASS_ID) return;
-  container.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:0.75rem;padding:0.5rem;">Loading leaderboards...</div>';
+  container.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:0.75rem;padding:0.5rem;">' + (uiLang==='de'?'Lade...':'Loading...') + '</div>';
   try {
-    const snap = await db.collection('classes').doc(CLASS_ID).collection('students').get();
-    const students = [];
-    snap.forEach(doc => {
-      const d = doc.data();
+    var snap = await db.collection('classes').doc(CLASS_ID).collection('students').get();
+    var students = [];
+    snap.forEach(function(doc) {
+      var d = doc.data();
       students.push({ id: doc.id, name: d.name, vxp: d.xp || 0, gxp: d.grammarXp || 0, totalXp: (d.xp || 0) + (d.grammarXp || 0), avatarId: d.avatarId || 1 });
     });
-    const medals = ['🥇', '🥈', '🥉'];
-    // Combined leaderboard sorted by total XP
-    const sorted = [...students].sort((a, b) => b.totalXp - a.totalXp);
-    if (sorted.length === 0) { container.innerHTML = ''; return; }
-    var lbTitle = uiLang === 'de' ? '🏆 Klassen-Bestenliste' : '🏆 Class Leaderboard';
-    var html = '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius);padding:0.7rem 0.9rem;">';
-    html += '<div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:0.5rem;">' + lbTitle + '</div>';
-    sorted.slice(0, 3).forEach(function(s, i) {
-      var isMe = s.id === state.studentId;
-      html += '<div style="display:flex;align-items:center;gap:6px;padding:5px 0;font-size:0.8rem;' + (isMe ? 'font-weight:700;color:var(--accent);' : '') + '">' +
-        '<span style="width:22px;text-align:center;">' + medals[i] + '</span>' +
-        '<img src="avatars/avatar (' + s.avatarId + ').png" style="width:22px;height:22px;border-radius:50%;" onerror="this.style.display=\'none\'">' +
-        '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(s.name || 'Student') + (isMe ? ' ←' : '') + '</span>' +
-        '<span style="font-weight:600;font-size:0.72rem;color:var(--muted);">' + s.totalXp.toLocaleString() + ' XP</span>' +
-      '</div>';
-    });
+    if (students.length === 0) { container.innerHTML = ''; return; }
+    var medals = ['🥇', '🥈', '🥉'];
+    function renderMiniTop3(list, xpKey, title) {
+      var sorted = list.slice().sort(function(a, b) { return (b[xpKey] || 0) - (a[xpKey] || 0); });
+      var h = '<div style="font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;cursor:pointer;" onclick="showLeaderboard()">' + title + ' →</div>';
+      sorted.slice(0, 3).forEach(function(s, i) {
+        var isMe = s.id === state.studentId;
+        var xp = s[xpKey] || 0;
+        h += '<div style="display:flex;align-items:center;gap:5px;padding:3px 0;font-size:0.75rem;' + (isMe ? 'font-weight:700;color:var(--accent);' : '') + '">' +
+          '<span style="width:18px;text-align:center;font-size:0.7rem;">' + medals[i] + '</span>' +
+          '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escapeHtml(s.name || 'Student') + '</span>' +
+          '<span style="font-size:0.65rem;color:var(--muted);font-weight:600;">' + xp.toLocaleString() + '</span></div>';
+      });
+      return h;
+    }
+    var html = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">';
+    html += '<div style="background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:0.5rem 0.6rem;overflow:hidden;">' + renderMiniTop3(students, 'vxp', '📚 ' + t('vocab')) + '</div>';
+    html += '<div style="background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:0.5rem 0.6rem;overflow:hidden;">' + renderMiniTop3(students, 'gxp', '🧠 ' + t('grammar')) + '</div>';
+    html += '<div style="background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:0.5rem 0.6rem;overflow:hidden;">' + renderMiniTop3(students, 'totalXp', '🌍 Gesamt') + '</div>';
     html += '</div>';
     container.innerHTML = html;
   } catch (e) {
@@ -9815,6 +9820,8 @@ showHomeScreen = function() {
     // Restore vocab UI elements
     var practiceBtn = document.querySelector('.btn-start-practice');
     if (practiceBtn) { practiceBtn.textContent = '🎯 ' + t('startVocabPractice'); practiceBtn.onclick = openPracticeSetup; }
+    var practiceSub = document.getElementById('practice-subtitle');
+    if (practiceSub) practiceSub.textContent = uiLang==='de' ? 'Units und Übungsformat auswählbar' : 'Choose units and exercise type';
     // Words card
     var wordsBtn = document.getElementById('home-words-btn');
     if (wordsBtn) {
@@ -9981,7 +9988,9 @@ function showGrammarHomeScreen() {
   const d = state.studentData || {};
   const gxp = d.grammarXp || 0;
   const glv = getLevel(gxp);
-  document.getElementById('welcome-xp').innerHTML = '⭐ ' + gxp.toLocaleString() + ' XP · <span style="opacity:0.7;">' + glv.name + '</span>' + (glv.vibe ? '<br><span style="opacity:0.5;font-style:italic;font-size:0.75rem;">' + glv.vibe + '</span>' : '');
+  document.getElementById('welcome-xp').innerHTML = '⭐ ' + gxp.toLocaleString() + ' XP';
+  var vibeEl = document.getElementById('welcome-vibe');
+  if (vibeEl) vibeEl.textContent = glv.vibe || '';
   updateAllAvatars();
   updateRankDisplay();
   renderBadgeRow();
@@ -9997,9 +10006,11 @@ function showGrammarHomeScreen() {
   renderGrammarDailyCard();
   var weeklyCard = document.getElementById('weekly-goal-card');
   if (weeklyCard) weeklyCard.style.display = 'none';
-  // Practice button
+  // Practice button + subtitle
   var practiceBtn = document.querySelector('.btn-start-practice');
   if (practiceBtn) { practiceBtn.textContent = '🧠 ' + t('startGrammarPractice'); practiceBtn.onclick = openGrammarPractice; }
+  var practiceSub = document.getElementById('practice-subtitle');
+  if (practiceSub) practiceSub.textContent = uiLang==='de' ? 'Themen und Aufgabentyp auswählbar' : 'Choose topics and exercise type';
   // Smart review hint
   var srHint = document.getElementById('smart-review-hint');
   var srDesc = document.getElementById('smart-review-desc');
@@ -10044,6 +10055,99 @@ function showGrammarHomeScreen() {
 }
 
 function addModeSwitchPill() { /* legacy — removed */ }
+
+/* ===== LEVEL PROGRESSION VIEWS ===== */
+function showOverallLevelProgression() {
+  var d = state.studentData || {};
+  var totalXp = (d.xp || 0) + (d.grammarXp || 0);
+  var ol = getOverallLevel(totalXp);
+  var html = '<div class="progress-nav"><button class="btn btn-secondary" onclick="goHome()">← ' + t('back') + '</button><span class="nav-title">🌍 ' + (uiLang==='de'?'Englisch-Level':'English Level') + '</span><span style="width:60px;"></span></div>';
+  // Current level card
+  html += '<div style="background:linear-gradient(135deg,#0d9488,#14b8a6);border-radius:var(--radius-lg);padding:1.2rem;margin-bottom:1rem;color:#fff;text-align:center;">';
+  html += '<div style="font-size:2.5rem;font-weight:900;font-family:Fredoka,sans-serif;">Lv ' + ol.level + '</div>';
+  html += '<div style="font-size:1.1rem;font-weight:700;margin-top:4px;">' + ol.name + '</div>';
+  if (ol.vibe) html += '<div style="font-size:0.78rem;opacity:0.8;font-style:italic;margin-top:2px;">' + ol.vibe + '</div>';
+  html += '<div style="margin-top:10px;font-size:0.82rem;opacity:0.9;">' + totalXp.toLocaleString() + ' XP (' + (uiLang==='de'?'Vokabel + Grammatik':'Vocab + Grammar') + ')</div>';
+  if (ol.next) {
+    var pct = Math.round(ol.progress * 100);
+    html += '<div style="height:8px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden;margin-top:8px;"><div style="width:' + pct + '%;height:100%;background:#fff;border-radius:4px;"></div></div>';
+    html += '<div style="font-size:0.7rem;opacity:0.7;margin-top:4px;">' + (ol.next.xp - totalXp).toLocaleString() + ' XP ' + (uiLang==='de'?'bis':'to') + ' ' + ol.next.name + '</div>';
+  }
+  html += '</div>';
+  // Roadmap
+  html += '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius-lg);padding:0.8rem;">';
+  OVERALL_LEVELS.forEach(function(lv) {
+    var done = totalXp >= lv.xp && lv.level < ol.level;
+    var isCurrent = lv.level === ol.level;
+    var locked = lv.level > ol.level;
+    var bg = isCurrent ? 'background:rgba(13,148,136,0.1);border-radius:10px;padding:10px 8px;margin:2px -8px;' : '';
+    html += '<div class="roadmap-item" style="' + (locked?'opacity:0.4;':'') + bg + '">';
+    html += '<div class="roadmap-lvl" style="color:#0d9488;">' + lv.level + '</div>';
+    html += '<div class="roadmap-icon" style="background:rgba(13,148,136,0.1);">' + (done ? '<span class="roadmap-check">✓</span>' : '🌍') + '</div>';
+    html += '<div class="roadmap-info"><div class="roadmap-name"' + (isCurrent?' style="color:#0d9488;font-weight:800;"':'') + '>' + (locked ? '?? ??' : lv.name) + '</div>';
+    if (!locked && lv.vibe) html += '<div class="roadmap-vibe">' + lv.vibe + '</div>';
+    html += '</div>';
+    html += '<div class="roadmap-xp">' + (isCurrent ? '<strong style="color:#0d9488;">YOU</strong>' : (lv.xp === 0 ? 'Start' : lv.xp.toLocaleString() + ' XP')) + '</div></div>';
+  });
+  html += '</div>';
+  var ps = document.getElementById('practice-screen');
+  ps.innerHTML = html;
+  showScreen('practice-screen');
+}
+
+function showClassLevelProgression() {
+  var html = '<div class="progress-nav"><button class="btn btn-secondary" onclick="goHome()">← ' + t('back') + '</button><span class="nav-title">🏫 ' + (uiLang==='de'?'Klassen-Level':'Class Level') + '</span><span style="width:60px;"></span></div>';
+  html += '<div id="class-level-roadmap-content" style="text-align:center;color:var(--muted);padding:2rem;">' + (uiLang==='de'?'Lade...':'Loading...') + '</div>';
+  var ps = document.getElementById('practice-screen');
+  ps.innerHTML = html;
+  showScreen('practice-screen');
+  // Load class data
+  loadClassLevelRoadmap();
+}
+
+async function loadClassLevelRoadmap() {
+  var container = document.getElementById('class-level-roadmap-content');
+  if (!container || !db || !CLASS_ID) return;
+  try {
+    var snap = await db.collection('classes').doc(CLASS_ID).collection('students').get();
+    var totalXp = 0, count = 0;
+    snap.forEach(function(doc) { var d = doc.data(); totalXp += (d.xp || 0) + (d.grammarXp || 0); count++; });
+    var cl = getClassLevel(totalXp);
+    var sectionLabel = SECTIONS.find(function(s) { return s.id === CLASS_ID; });
+    var label = sectionLabel ? sectionLabel.label : CLASS_ID;
+    var html = '';
+    // Current class level card
+    html += '<div style="background:linear-gradient(135deg,var(--accent-deep),var(--accent));border-radius:var(--radius-lg);padding:1.2rem;margin-bottom:1rem;color:#fff;text-align:center;">';
+    html += '<div style="font-size:1rem;opacity:0.8;margin-bottom:4px;">' + (uiLang==='de'?'Klasse':'Class') + ' ' + label + ' · ' + count + ' ' + (uiLang==='de'?'Schüler':'students') + '</div>';
+    html += '<div style="font-size:2.2rem;font-weight:900;font-family:Fredoka,sans-serif;">Lv ' + cl.level + '</div>';
+    html += '<div style="font-size:1rem;font-weight:700;margin-top:4px;">' + cl.name + '</div>';
+    if (cl.vibe) html += '<div style="font-size:0.78rem;opacity:0.8;font-style:italic;margin-top:2px;">' + cl.vibe + '</div>';
+    html += '<div style="margin-top:8px;font-size:0.82rem;opacity:0.9;">' + totalXp.toLocaleString() + ' XP ' + (uiLang==='de'?'gesamt':'total') + '</div>';
+    if (cl.next) {
+      var pct = Math.round(cl.progress * 100);
+      html += '<div style="height:8px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden;margin-top:8px;"><div style="width:' + pct + '%;height:100%;background:#fff;border-radius:4px;"></div></div>';
+      html += '<div style="font-size:0.7rem;opacity:0.7;margin-top:4px;">' + (cl.next.xp - totalXp).toLocaleString() + ' XP ' + (uiLang==='de'?'bis':'to') + ' ' + cl.next.name + '</div>';
+    }
+    html += '</div>';
+    // Roadmap
+    html += '<div style="background:var(--card);border:1.5px solid var(--card-border);border-radius:var(--radius-lg);padding:0.8rem;">';
+    CLASS_LEVELS.forEach(function(lv) {
+      var done = totalXp >= lv.xp && lv.level < cl.level;
+      var isCurrent = lv.level === cl.level;
+      var locked = lv.level > cl.level;
+      var bg = isCurrent ? 'background:var(--accent-glow);border-radius:10px;padding:10px 8px;margin:2px -8px;' : '';
+      html += '<div class="roadmap-item" style="' + (locked?'opacity:0.4;':'') + bg + '">';
+      html += '<div class="roadmap-lvl" style="color:var(--accent);">' + lv.level + '</div>';
+      html += '<div class="roadmap-icon" style="background:var(--accent-glow);">' + (done ? '<span class="roadmap-check">✓</span>' : '🏫') + '</div>';
+      html += '<div class="roadmap-info"><div class="roadmap-name"' + (isCurrent?' style="color:var(--accent);font-weight:800;"':'') + '>' + (locked ? '?? ??' : lv.name) + '</div>';
+      if (!locked && lv.vibe) html += '<div class="roadmap-vibe">' + lv.vibe + '</div>';
+      html += '</div>';
+      html += '<div class="roadmap-xp">' + (isCurrent ? '<strong style="color:var(--accent);">YOU</strong>' : (lv.xp === 0 ? 'Start' : lv.xp.toLocaleString() + ' XP')) + '</div></div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  } catch(e) { container.innerHTML = '<p style="color:var(--muted);">Error loading class data</p>'; }
+}
 
 /* ===== KEYBOARD SHORTCUTS ===== */
 document.addEventListener('keydown', function(e) {
