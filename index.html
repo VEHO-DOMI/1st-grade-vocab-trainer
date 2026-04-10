@@ -2716,7 +2716,7 @@ body.playing .header-container { display: none; }
 <!-- LEADERBOARD SCREEN -->
 <div id="leaderboard-screen" class="screen">
   <div class="progress-nav">
-    <button class="btn btn-secondary" onclick="goHome()">← Back</button>
+    <button class="btn btn-secondary" onclick="showHomeScreen()">← Back</button>
     <span class="nav-title">🏆 Bestenliste</span>
     <span style="width:60px;"></span>
   </div>
@@ -2733,7 +2733,7 @@ body.playing .header-container { display: none; }
 <!-- PROGRESS SCREEN -->
 <div id="progress-screen" class="screen">
   <div class="progress-nav">
-    <button class="btn btn-secondary" onclick="goHome()">← Back</button>
+    <button class="btn btn-secondary" onclick="showHomeScreen()">← Back</button>
   </div>
 
   <!-- Overall ring + stats -->
@@ -4842,15 +4842,38 @@ async function showLeaderboard() {
     }).join('');
   }
 
+  // Section 0: Current mode ranking (vocab or grammar specific)
+  var isGrammar = state.mode === 'grammar';
+  var modeXpKey = isGrammar ? 'gxp' : 'vxp';
+  var modeIcon = isGrammar ? '🧠' : '📚';
+  var modeLabel = isGrammar ? t('grammar') : t('vocab');
+  var myModeStudents = allStudents.filter(function(s) { return s.sectionId === CLASS_ID; }).slice();
+  myModeStudents.sort(function(a, b) { return (b[modeXpKey] || 0) - (a[modeXpKey] || 0); });
+  function renderModeRows(list) {
+    if (list.length === 0) return '<p style="color:var(--muted);text-align:center;padding:0.5rem;font-size:0.82rem;">—</p>';
+    return list.map(function(s, i) {
+      var isMe = s.id === state.studentId && s.sectionId === CLASS_ID;
+      var rank = i < 3 ? medals[i] : (i+1) + '.';
+      var av = '<img src="' + avatarSrc(s.avatarId) + '" class="avatar avatar-sm" style="vertical-align:middle;margin-right:6px;">';
+      var mxp = s[modeXpKey] || 0;
+      var lv = getLevel(mxp, isGrammar ? 'grammar' : 'vocab');
+      var pill = '<span class="rank-pill zone-' + lv.zone + '" style="font-size:10px;padding:2px 8px;border-radius:10px;margin-left:6px;font-weight:600;">' + lv.name + '</span>';
+      return '<div class="lb-row ' + (isMe ? 'me' : '') + '"><span class="lb-rank">' + rank + '</span><span class="lb-name">' + av + escapeHtml(s.name) + pill + (isMe ? ' ←' : '') + '</span><span class="lb-xp">' + mxp.toLocaleString() + ' XP</span></div>';
+    }).join('');
+  }
+
   // Section 1: My Class + All Classes (by total XP)
   var myStudents = allStudents.filter(function(s) { return s.sectionId === CLASS_ID; });
   myStudents.sort(function(a, b) { return b.totalXp - a.totalXp; });
   var allSorted = allStudents.slice().sort(function(a, b) { return b.totalXp - a.totalXp; });
 
-  var myClassTitle = uiLang==='de' ? '🏫 Meine Klasse (' + myLabel + ')' : '🏫 My Class (' + myLabel + ')';
+  var modeTitle = modeIcon + ' ' + modeLabel + ' (' + myLabel + ')';
+  var myClassTitle = uiLang==='de' ? '🌍 Gesamt (' + myLabel + ')' : '🌍 Overall (' + myLabel + ')';
   var allClassTitle = uiLang==='de' ? '🌍 Alle Klassen' : '🌍 All Classes';
   document.getElementById('lb-main').innerHTML =
-    '<div class="lb-section-title">' + myClassTitle + '</div>' +
+    '<div class="lb-section-title">' + modeTitle + '</div>' +
+    renderModeRows(myModeStudents) +
+    '<div class="lb-section-title" style="margin-top:1rem;border-top:1px solid var(--card-border);padding-top:0.8rem;">' + myClassTitle + '</div>' +
     renderRows(myStudents, false) +
     '<div class="lb-section-title" style="margin-top:1rem;border-top:1px solid var(--card-border);padding-top:0.8rem;">' + allClassTitle + '</div>' +
     renderRows(allSorted, true);
@@ -9799,10 +9822,10 @@ async function loadModeSelectLeaderboards() {
       });
       return h;
     }
-    var html = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">';
-    html += '<div style="background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:0.5rem 0.6rem;overflow:hidden;">' + renderMiniTop3(students, 'vxp', '📚 ' + t('vocab')) + '</div>';
-    html += '<div style="background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:0.5rem 0.6rem;overflow:hidden;">' + renderMiniTop3(students, 'gxp', '🧠 ' + t('grammar')) + '</div>';
-    html += '<div style="background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:0.5rem 0.6rem;overflow:hidden;">' + renderMiniTop3(students, 'totalXp', '🌍 Gesamt') + '</div>';
+    var html = '<div style="display:flex;flex-direction:column;gap:8px;">';
+    html += '<div style="background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:0.6rem 0.8rem;">' + renderMiniTop3(students, 'vxp', '📚 ' + t('vocab')) + '</div>';
+    html += '<div style="background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:0.6rem 0.8rem;">' + renderMiniTop3(students, 'gxp', '🧠 ' + t('grammar')) + '</div>';
+    html += '<div style="background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:0.6rem 0.8rem;">' + renderMiniTop3(students, 'totalXp', '🌍 ' + (uiLang==='de'?'Gesamt':'Overall')) + '</div>';
     html += '</div>';
     container.innerHTML = html;
   } catch (e) {
