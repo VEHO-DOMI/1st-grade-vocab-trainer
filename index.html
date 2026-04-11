@@ -7040,15 +7040,14 @@ function showWord() {
   label.textContent = isCol ? 'Word Partners' : isMC ? 'Choose the answer' : isContext ? 'Complete the sentence' : isDef ? 'Guess the word' : 'Translate to English';
 
   const prompt = document.getElementById('quiz-prompt');
-  // German hint line for context/definition modes
-  var germanHintHtml = '<div style="margin-top:8px;padding:6px 10px;border-radius:8px;background:rgba(13,148,136,0.06);border:1px solid rgba(13,148,136,0.12);font-size:0.78rem;color:var(--trans-color);">🇩🇪 ' + escapeHtml(word.g) + '</div>';
+  // German hint removed from prompt — only available via Hint button
   if (isContext) {
     if (isMC) {
-      prompt.innerHTML = word.s.replace('_____', '<span class="gap">_____</span>') + germanHintHtml;
+      prompt.innerHTML = word.s.replace('_____', '<span class="gap">_____</span>');
     } else if (type === 'context') {
       const contextForm = getContextForm(word);
       const hint = getFirstLetterHint(contextForm, true);
-      prompt.innerHTML = word.s.replace('_____', '<span class="gap">' + hint + '</span>') + germanHintHtml;
+      prompt.innerHTML = word.s.replace('_____', '<span class="gap">' + hint + '</span>');
     } else {
       const contextForm = getContextForm(word);
       const parts = contextForm.trim().split(/(\s+|-)/);
@@ -7056,11 +7055,11 @@ function showWord() {
       const allWords = parts.filter(x => !/^[\s-]+$/.test(x));
       const firstContent = allWords.find(p => !small.has(p.toLowerCase())) || allWords[0];
       const letter = firstContent[0];
-      prompt.innerHTML = word.s.replace('_____', '<span class="gap gap-hard">' + letter + '<span class="gap-line"></span></span>') + germanHintHtml;
+      prompt.innerHTML = word.s.replace('_____', '<span class="gap gap-hard">' + letter + '<span class="gap-line"></span></span>');
     }
   } else if (isDef) {
     if (isMC) {
-      prompt.innerHTML = '<em>' + word.d + '</em>' + germanHintHtml;
+      prompt.innerHTML = '<em>' + word.d + '</em>';
     } else if (type === 'definition') {
       // Easy mode: show first letter pattern + word count
       const cleaned = word.w.replace(/^to\s+/, '').replace(/\(.*?\)/g, '').replace(/\bsth\.?\s*/g, '').replace(/\bsb\.?\s*/g, '').replace(/[.!?]+$/g, '').trim().replace(/\s+/g, ' ');
@@ -7072,10 +7071,10 @@ function showWord() {
         return w[0] + '_'.repeat(Math.max(w.length - 1, 1));
       }).join(' ');
       const countLabel = wordCount === 1 ? '1 word' : wordCount + ' words';
-      prompt.innerHTML = '<em>' + word.d + '</em><div class="def-hint"><span class="def-hint-letter">' + hintParts + '</span><span class="def-hint-count">' + countLabel + '</span></div>' + germanHintHtml;
+      prompt.innerHTML = '<em>' + word.d + '</em><div class="def-hint"><span class="def-hint-letter">' + hintParts + '</span><span class="def-hint-count">' + countLabel + '</span></div>';
     } else {
       // Hard mode: definition + German hint but no letter hints
-      prompt.innerHTML = '<em>' + word.d + '</em>' + germanHintHtml;
+      prompt.innerHTML = '<em>' + word.d + '</em>';
     }
   } else if (!isCol) {
     prompt.innerHTML = '<span class="german-word">' + word.g + '</span>';
@@ -10742,7 +10741,7 @@ function renderGapFill(item) {
   var html = '<div class="grammar-instruction">' + grammarLabel('gap-fill') + '</div>';
   html += '<div class="grammar-prompt">' + item.p.replace(/_{2,}/g, '<span class="blank">______</span>') + '</div>';
   // German hint
-  if (item.hd) html += '<div style="font-size:0.72rem;color:var(--trans-color);margin:-0.3rem 0 0.5rem;font-style:italic;">🇩🇪 ' + item.hd + '</div>';
+  // German hint only via Hint button, not auto-displayed
   html += '<div class="grammar-options" id="grammar-options">';
   options.forEach(function(opt) {
     html += '<button class="grammar-option-btn" onclick="selectGrammarOption(this,\'' + opt.replace(/'/g, "\\'") + '\')">' + opt + '</button>';
@@ -10757,7 +10756,7 @@ function renderMC(item) {
   var cleanP = cleanPromptForMC(item.p);
   var html = '<div class="grammar-instruction">' + grammarLabel('multiple-choice') + '</div>';
   html += '<div class="grammar-prompt">' + cleanP + '</div>';
-  if (item.hd) html += '<div style="font-size:0.72rem;color:var(--trans-color);margin:-0.3rem 0 0.5rem;font-style:italic;">🇩🇪 ' + item.hd + '</div>';
+  // German hint only via Hint button, not auto-displayed
   html += '<div class="grammar-options" id="grammar-options" style="flex-direction:column;">';
   options.forEach(function(opt) {
     html += '<button class="grammar-option-btn" style="min-width:100%;text-align:left;" onclick="selectGrammarOption(this,\'' + opt.replace(/'/g, "\\'") + '\')">' + opt + '</button>';
@@ -10779,7 +10778,7 @@ function renderErrorCorrection(item) {
     wordIdx++;
   });
   html += '</div>';
-  if (item.hd) html += '<div style="font-size:0.72rem;color:var(--trans-color);margin-top:0.3rem;font-style:italic;">🇩🇪 ' + item.hd + '</div>';
+  // German hint only via Hint button
   html += '<div id="ec-input-area" style="display:none;margin-top:0.6rem;">';
   html += '<div id="ec-input-label" style="font-size:0.78rem;color:var(--accent);font-weight:600;margin-bottom:4px;"></div>';
   html += '<input type="text" class="grammar-type-input" id="grammar-answer-input" placeholder="' + (uiLang==='de'?'Korrektur eingeben...':'Type the correction...') + '" autocomplete="off" autocapitalize="off">';
@@ -10822,7 +10821,7 @@ function renderTypedAnswer(item, typeKey) {
   var label = grammarLabel(typeKey);
   var html = '<div class="grammar-instruction">' + label + '</div>';
   html += '<div class="grammar-prompt">' + item.p + '</div>';
-  if (item.hd) html += '<div style="font-size:0.72rem;color:var(--trans-color);margin-top:0.3rem;margin-bottom:0.3rem;font-style:italic;">🇩🇪 ' + item.hd + '</div>';
+  // German hint only via Hint button
   html += '<input type="text" class="grammar-type-input" id="grammar-answer-input" placeholder="' + (uiLang==='de'?'Deine Antwort eingeben...':'Type your answer...') + '" autocomplete="off" autocapitalize="off">';
   html += '<button class="grammar-check-btn" onclick="checkGrammarTyped()">' + (uiLang==='de'?'Prüfen':'Check') + '</button>';
   return html;
@@ -11161,11 +11160,21 @@ function processGrammarAnswer(item, answer, isCorrect, isClose) {
 }
 
 function showGrammarHint() {
-  const item = grammarSession.items[grammarSession.index];
+  var item = grammarSession.items[grammarSession.index];
   grammarSession.hintUsed = true;
-  const hintBox = document.getElementById('grammar-hint-box');
+  // Penalty: break combo
+  if (grammarSession.combo >= 2) showComboLost();
+  grammarSession.combo = 0;
+  updateComboBadge();
+  // Track hint count for XP penalty
+  grammarSession.hintCount = (grammarSession.hintCount || 0) + 1;
+  if (grammarSession.hintCount >= 3) {
+    grammarSession.xpEarned = Math.max(0, grammarSession.xpEarned - 5);
+  }
+  var hintBox = document.getElementById('grammar-hint-box');
   if (hintBox) {
-    hintBox.innerHTML = '\uD83D\uDCA1 ' + item.h + (item.hd ? '<br><span style="color:var(--muted);font-style:italic;">\uD83C\uDDE9\uD83C\uDDEA ' + item.hd + '</span>' : '');
+    var penaltyText = '<div style="font-size:0.65rem;color:var(--wrong);margin-top:6px;">' + (uiLang==='de' ? '⚠️ Combo zurückgesetzt' : '⚠️ Combo reset') + (grammarSession.hintCount >= 3 ? ' · -5 XP' : '') + '</div>';
+    hintBox.innerHTML = '💡 ' + item.h + (item.hd ? '<br><span style="color:var(--muted);font-style:italic;">🇩🇪 ' + item.hd + '</span>' : '') + penaltyText;
     hintBox.style.display = '';
   }
   document.getElementById('grammar-hint-btn').style.display = 'none';
