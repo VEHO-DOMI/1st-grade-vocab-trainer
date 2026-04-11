@@ -10887,37 +10887,54 @@ function renderContextPicker(item) {
 }
 
 function renderMatching(item) {
-  // Parse left items from prompt, right items from distractors array
-  // Prompt format: "Match ... 1: text, 2: text, 3: text 4: text"
-  // Distractors: ["a: text.", "b: text.", "c: text.", "d: text."]
-  // Correct answer: JSON like {"1":"c","2":"a","3":"d","4":"b"}
-  let leftItems = [], rightItems = [];
-  const prompt = item.p || '';
+  // Parse left + right items from prompt
+  // Format: "Instruction: 1) foo 2) bar 3) baz 4) qux — a) A b) B c) C d) D"
+  var leftItems = [], rightItems = [];
+  var prompt = item.p || '';
 
-  // Right items: from distractors array (each element is "a: text")
-  if (item.ds && item.ds.length > 0) {
-    rightItems = item.ds.map(s => {
-      const m = s.match(/^([a-z])[\s:.)]+\s*(.+)/i);
-      return m ? {id: m[1].toLowerCase(), text: m[2].trim().replace(/[.]$/, '')} : {id: '?', text: s.trim().replace(/[.]$/, '')};
-    });
+  // Split on " — " or " - " to separate left and right
+  var parts = prompt.split(/\s*[—–]\s*/);
+  var leftPart = parts[0] || '';
+  var rightPart = parts[1] || '';
+
+  // If no dash separator, try to split on letter items (a) b) c) d))
+  if (!rightPart) {
+    var letterStart = leftPart.search(/\s[a-d]\)\s/);
+    if (letterStart > 0) {
+      rightPart = leftPart.substring(letterStart).trim();
+      leftPart = leftPart.substring(0, letterStart).trim();
+    }
   }
 
-  // Left items: from prompt text (numbered with "1:", "2:", etc.)
-  // First extract the instruction (text before the numbered items)
-  const instructionMatch = prompt.match(/^(.*?)(?=\s*1\s*[:.)]\s*)/s);
-  const instruction = instructionMatch ? instructionMatch[1].trim().replace(/[.]$/, '') : prompt.split(/\d+\s*[:.)]/)[0].trim();
+  // Also check distractors array as fallback
+  if (!rightPart && item.ds && item.ds.length > 0) {
+    rightPart = item.ds.join(' ');
+  }
 
-  // Parse numbered items from prompt: "1: text, 2: text" or "1. text 2. text"
-  const leftMatches = prompt.match(/(\d+)\s*[:.)]\s*([^0-9]+?)(?=\s*\d+\s*[:.)]|$)/g);
+  // Extract instruction (text before "1)" or "1:")
+  var instructionMatch = leftPart.match(/^(.*?)(?=\s*1\s*[:.)])/s);
+  var instruction = instructionMatch ? instructionMatch[1].trim().replace(/[:]$/, '') : '';
+
+  // Parse numbered items: "1) foo 2) bar"
+  var leftMatches = leftPart.match(/(\d+)\s*[:.)]?\s*([^0-9]+?)(?=\s*\d+\s*[:.)]|$)/g);
   if (leftMatches) {
-    leftItems = leftMatches.map(s => {
-      const m = s.match(/(\d+)\s*[:.)]\s*(.+)/);
+    leftItems = leftMatches.map(function(s) {
+      var m = s.match(/(\d+)\s*[:.)]?\s*(.+)/);
       return m ? {id: m[1], text: m[2].trim().replace(/[,.]$/, '')} : {id: '?', text: s.trim()};
     });
   }
 
+  // Parse letter items: "a) foo b) bar"
+  var rightMatches = rightPart.match(/([a-d])\s*[:.)]?\s*([^a-d]+?)(?=\s*[a-d]\s*[:.)]|$)/gi);
+  if (rightMatches) {
+    rightItems = rightMatches.map(function(s) {
+      var m = s.match(/([a-d])\s*[:.)]?\s*(.+)/i);
+      return m ? {id: m[1].toLowerCase(), text: m[2].trim().replace(/[,.]$/, '')} : {id: '?', text: s.trim()};
+    });
+  }
+
   // Shuffle right column
-  rightItems = rightItems.sort(() => Math.random() - 0.5);
+  rightItems = rightItems.sort(function() { return Math.random() - 0.5; });
 
   let html = '<div class="grammar-instruction">Match the items:</div>';
   html += '<div class="grammar-prompt" style="font-size:0.85rem;">' + instruction + '</div>';
@@ -11077,9 +11094,11 @@ function checkGrammarTyped() {
         var diffWords = correctWords.filter(function(w) { return promptWords.indexOf(w) < 0; });
         if (diffWords.length > 0 && diffWords.join(' ') === normAnswer) { isCorrect = true; break; }
       }
-      // Partial match (student typed key part of the answer)
-      if (normA.includes(normAnswer) && normAnswer.length >= normA.length * 0.35 && normAnswer.split(' ').length >= 1) { isCorrect = true; break; }
-      if (normAnswer.includes(normA) && normA.length >= normAnswer.length * 0.35) { isCorrect = true; break; }
+      // Partial match — ONLY for error-correction and transformation with multi-word answers
+      if ((item.t === 'error-correction' || item.t === 'transformation') && normAnswer.split(' ').length >= 2) {
+        if (normA.includes(normAnswer) && normAnswer.length >= normA.length * 0.5) { isCorrect = true; break; }
+        if (normAnswer.includes(normA) && normA.length >= normAnswer.length * 0.5) { isCorrect = true; break; }
+      }
     }
   }
   processGrammarAnswer(item, answer, isCorrect, isClose);
