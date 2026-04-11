@@ -314,11 +314,30 @@ h1 { display: none; }
 .roadmap-check { color: var(--correct); font-size: 14px; }
 
 /* Combo multiplier */
-@keyframes comboPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.12);} }
+@keyframes comboPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.15);} }
 @keyframes comboLostFlash { 0%{opacity:1;transform:translate(-50%,-50%) scale(1.1);} 100%{opacity:0;transform:translate(-50%,-50%) scale(0.8);} }
-#combo-badge.x15 { background: #5DCAA5; color: #04342C; }
-#combo-badge.x2 { background: #EF9F27; color: #412402; }
-#combo-badge.x3 { background: #E24B4A; color: #fff; }
+@keyframes comboTierUp { 0%{transform:scale(0.5);opacity:0;} 50%{transform:scale(1.3);} 100%{transform:scale(1);opacity:1;} }
+@keyframes xpBurst { 0%{opacity:1;transform:translateY(0) scale(1);} 100%{opacity:0;transform:translateY(-60px) scale(1.2);} }
+#combo-badge { font-size: 0.82rem !important; padding: 4px 12px !important; border-radius: 12px !important; font-weight: 800 !important; letter-spacing: 0.5px; }
+#combo-badge.x15 { background: #5DCAA5; color: #04342C; box-shadow: 0 0 12px rgba(93,202,165,0.4); }
+#combo-badge.x2 { background: #EF9F27; color: #412402; box-shadow: 0 0 12px rgba(239,159,39,0.4); }
+#combo-badge.x3 { background: #E24B4A; color: #fff; box-shadow: 0 0 16px rgba(226,75,74,0.5); animation: comboPulse 0.5s ease infinite; }
+.xp-burst {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 1.8rem; font-weight: 900; color: var(--accent); font-family: 'Fredoka', sans-serif;
+  pointer-events: none; z-index: 9999; text-shadow: 0 2px 8px rgba(22,163,74,0.3);
+  animation: xpBurst 0.9s ease-out forwards;
+}
+.combo-tierup {
+  position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 1.5rem; font-weight: 900; color: #fff; font-family: 'Fredoka', sans-serif;
+  padding: 12px 24px; border-radius: 16px; pointer-events: none; z-index: 9999;
+  animation: comboTierUp 0.6s ease-out forwards;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+.combo-tierup.t15 { background: linear-gradient(135deg, #5DCAA5, #2dd4bf); }
+.combo-tierup.t2 { background: linear-gradient(135deg, #EF9F27, #f59e0b); }
+.combo-tierup.t3 { background: linear-gradient(135deg, #E24B4A, #ef4444); }
 @keyframes popIn { 0%{transform:scale(0.5);opacity:0;} 100%{transform:scale(1);opacity:1;} }
 
 /* Buttons */
@@ -787,6 +806,16 @@ body.overlay-open { overflow: hidden !important; position: fixed; width: 100%; }
 .duel-mini-block.correct { background: #22c55e; }
 .duel-mini-block.wrong { background: #ef4444; }
 .duel-mini-block.pending { background: var(--card-border); opacity: 0.3; }
+
+/* Error Correction clickable words */
+.ec-words { display: flex; flex-wrap: wrap; gap: 4px; line-height: 2; }
+.ec-word {
+  display: inline-block; padding: 4px 8px; border-radius: 8px; cursor: pointer;
+  border: 1.5px solid transparent; transition: all 0.15s; font-size: 1rem;
+}
+.ec-word:hover { background: var(--accent-glow); border-color: var(--card-border); }
+.ec-word:active { transform: scale(0.95); }
+.ec-word.ec-selected { background: rgba(220,38,38,0.1); border-color: var(--wrong); color: var(--wrong); font-weight: 700; text-decoration: line-through; }
 
 /* ===== ONBOARDING ===== */
 .onboarding-overlay {
@@ -4381,9 +4410,9 @@ const ZONE_COLORS = {
 // ===== COMBO MULTIPLIER =====
 const COMBO_TIERS = [
   {streak:0,mult:1,label:''},
-  {streak:3,mult:1.5,label:'1.5x'},
-  {streak:5,mult:2,label:'2x'},
-  {streak:10,mult:3,label:'3x'},
+  {streak:2,mult:1.5,label:'1.5x 🔥'},
+  {streak:4,mult:2,label:'2x 🔥🔥'},
+  {streak:7,mult:3,label:'3x 🔥🔥🔥'},
 ];
 function getComboTier(streak) {
   let tier = COMBO_TIERS[0];
@@ -4460,14 +4489,31 @@ function updateComboBadge() {
 }
 
 function showComboLost() {
-  const el = document.getElementById('combo-lost');
+  var el = document.getElementById('combo-lost');
   if (!el) return;
-  el.textContent = 'Combo lost!';
+  el.textContent = uiLang==='de' ? 'Combo verloren!' : 'Combo lost!';
   el.style.display = 'block';
   el.style.animation = 'none';
   el.offsetHeight;
   el.style.animation = 'comboLostFlash 1s ease-out forwards';
-  setTimeout(() => { el.style.display = 'none'; }, 1000);
+  setTimeout(function() { el.style.display = 'none'; }, 1000);
+}
+
+function showXPBurst(xp) {
+  var el = document.createElement('div');
+  el.className = 'xp-burst';
+  el.textContent = '+' + xp + ' XP';
+  document.body.appendChild(el);
+  setTimeout(function() { el.remove(); }, 1000);
+}
+
+function showComboTierUp(tier) {
+  var cls = tier.mult === 1.5 ? 't15' : tier.mult === 2 ? 't2' : 't3';
+  var el = document.createElement('div');
+  el.className = 'combo-tierup ' + cls;
+  el.textContent = tier.label + ' COMBO!';
+  document.body.appendChild(el);
+  setTimeout(function() { el.remove(); }, 1200);
 }
 
 function showLevelUpQueue(levels) {
@@ -10643,10 +10689,10 @@ function renderGrammarItem() {
     case 'gap-fill': html += renderGapFill(item); break;
     case 'multiple-choice': html += renderMC(item); break;
     case 'error-correction': html += renderErrorCorrection(item); break;
-    case 'transformation': html += renderTypedAnswer(item, 'Transformation'); break;
-    case 'translation': html += renderTypedAnswer(item, 'Translation'); break;
-    case 'free-form': html += renderTypedAnswer(item, 'Complete'); break;
-    case 'question-formation': html += renderTypedAnswer(item, 'Question Formation'); break;
+    case 'transformation': html += renderTypedAnswer(item, 'transformation'); break;
+    case 'translation': html += renderTypedAnswer(item, 'translation'); break;
+    case 'free-form': html += renderTypedAnswer(item, 'free-form'); break;
+    case 'question-formation': html += renderTypedAnswer(item, 'question-formation'); break;
     case 'sentence-building': html += renderSentenceBuilding(item); break;
     case 'tense-id': html += renderTenseId(item); break;
     case 'context-picker': html += renderContextPicker(item); break;
@@ -10668,12 +10714,37 @@ function renderGrammarItem() {
   showScreen('practice-screen');
 }
 
+// --- Grammar instruction labels (German/English) ---
+function grammarLabel(key) {
+  var labels = {
+    'gap-fill': uiLang==='de' ? 'Fülle die Lücke:' : 'Fill in the gap:',
+    'multiple-choice': uiLang==='de' ? 'Wähle die richtige Antwort:' : 'Choose the correct answer:',
+    'error-correction': uiLang==='de' ? 'Finde und korrigiere den Fehler:' : 'Find and fix the mistake:',
+    'transformation': uiLang==='de' ? 'Forme um:' : 'Transform:',
+    'translation': uiLang==='de' ? 'Übersetze ins Englische:' : 'Translate to English:',
+    'free-form': uiLang==='de' ? 'Vervollständige:' : 'Complete:',
+    'question-formation': uiLang==='de' ? 'Bilde die Frage:' : 'Form the question:',
+    'sentence-building': uiLang==='de' ? 'Tippe die Wörter in der richtigen Reihenfolge:' : 'Tap the words in the correct order:',
+    'tense-id': uiLang==='de' ? 'Erkenne die Zeitform:' : 'Identify the tense:',
+    'context-picker': uiLang==='de' ? 'Wähle den passenden Satz:' : 'Pick the correct sentence:',
+  };
+  return labels[key] || key;
+}
+
+// Strip brackets from prompts (for MC mode — brackets leak answers)
+function cleanPromptForMC(p) {
+  return p.replace(/\s*\([^)]*\/[^)]*\)\s*/g, ' ').replace(/\s{2,}/g, ' ').trim();
+}
+
 // --- Exercise Type Renderers ---
 function renderGapFill(item) {
-  const options = [...(item.ds || []), item.c].sort(() => Math.random() - 0.5);
-  let html = '<div class="grammar-prompt">' + item.p.replace(/_{2,}/g, '<span class="blank">______</span>') + '</div>';
+  var options = (item.ds || []).concat([item.c]).sort(function() { return Math.random() - 0.5; });
+  var html = '<div class="grammar-instruction">' + grammarLabel('gap-fill') + '</div>';
+  html += '<div class="grammar-prompt">' + item.p.replace(/_{2,}/g, '<span class="blank">______</span>') + '</div>';
+  // German hint
+  if (item.hd) html += '<div style="font-size:0.72rem;color:var(--trans-color);margin:-0.3rem 0 0.5rem;font-style:italic;">🇩🇪 ' + item.hd + '</div>';
   html += '<div class="grammar-options" id="grammar-options">';
-  options.forEach(opt => {
+  options.forEach(function(opt) {
     html += '<button class="grammar-option-btn" onclick="selectGrammarOption(this,\'' + opt.replace(/'/g, "\\'") + '\')">' + opt + '</button>';
   });
   html += '</div>';
@@ -10681,10 +10752,14 @@ function renderGapFill(item) {
 }
 
 function renderMC(item) {
-  const options = [...(item.ds || []), item.c].sort(() => Math.random() - 0.5);
-  let html = '<div class="grammar-prompt">' + item.p + '</div>';
+  var options = (item.ds || []).concat([item.c]).sort(function() { return Math.random() - 0.5; });
+  // Strip answer-leaking brackets from prompt for MC
+  var cleanP = cleanPromptForMC(item.p);
+  var html = '<div class="grammar-instruction">' + grammarLabel('multiple-choice') + '</div>';
+  html += '<div class="grammar-prompt">' + cleanP + '</div>';
+  if (item.hd) html += '<div style="font-size:0.72rem;color:var(--trans-color);margin:-0.3rem 0 0.5rem;font-style:italic;">🇩🇪 ' + item.hd + '</div>';
   html += '<div class="grammar-options" id="grammar-options" style="flex-direction:column;">';
-  options.forEach(opt => {
+  options.forEach(function(opt) {
     html += '<button class="grammar-option-btn" style="min-width:100%;text-align:left;" onclick="selectGrammarOption(this,\'' + opt.replace(/'/g, "\\'") + '\')">' + opt + '</button>';
   });
   html += '</div>';
@@ -10692,34 +10767,80 @@ function renderMC(item) {
 }
 
 function renderErrorCorrection(item) {
-  let html = '<div class="grammar-instruction">Find and fix the mistake:</div>';
-  html += '<div class="grammar-prompt">' + item.p.replace('Find and fix the mistake: ', '').replace('Find and fix the mistake:', '') + '</div>';
-  html += '<input type="text" class="grammar-type-input" id="grammar-answer-input" placeholder="Type the corrected sentence..." autocomplete="off" autocapitalize="off">';
-  html += '<button class="grammar-check-btn" onclick="checkGrammarTyped()">Check Answer</button>';
+  var sentence = item.p.replace(/^Find and fix the mistake:\s*/i, '').trim();
+  var html = '<div class="grammar-instruction">' + grammarLabel('error-correction') + '</div>';
+  // Render sentence as clickable words
+  var words = sentence.split(/(\s+)/);
+  html += '<div class="grammar-prompt ec-words" id="ec-word-area">';
+  var wordIdx = 0;
+  words.forEach(function(w) {
+    if (/^\s+$/.test(w)) { html += ' '; return; }
+    html += '<span class="ec-word" data-idx="' + wordIdx + '" onclick="tapEcWord(this)">' + w + '</span>';
+    wordIdx++;
+  });
+  html += '</div>';
+  if (item.hd) html += '<div style="font-size:0.72rem;color:var(--trans-color);margin-top:0.3rem;font-style:italic;">🇩🇪 ' + item.hd + '</div>';
+  html += '<div id="ec-input-area" style="display:none;margin-top:0.6rem;">';
+  html += '<div id="ec-input-label" style="font-size:0.78rem;color:var(--accent);font-weight:600;margin-bottom:4px;"></div>';
+  html += '<input type="text" class="grammar-type-input" id="grammar-answer-input" placeholder="' + (uiLang==='de'?'Korrektur eingeben...':'Type the correction...') + '" autocomplete="off" autocapitalize="off">';
+  html += '<button class="grammar-check-btn" onclick="checkGrammarTyped()">' + (uiLang==='de'?'Prüfen':'Check') + '</button>';
+  html += '</div>';
+  // Fallback: direct input if student prefers typing full sentence
+  html += '<div style="text-align:center;margin-top:0.5rem;"><button class="grammar-hint-btn" onclick="showEcDirectInput()" style="font-size:0.68rem;">' + (uiLang==='de'?'Oder ganzen Satz eingeben':'Or type full sentence') + '</button></div>';
   return html;
 }
 
-function renderTypedAnswer(item, label) {
-  let html = '<div class="grammar-instruction">' + label + ':</div>';
+function tapEcWord(el) {
+  // Toggle selection
+  var wasSelected = el.classList.contains('ec-selected');
+  // Deselect all first
+  document.querySelectorAll('.ec-word.ec-selected').forEach(function(w) { w.classList.remove('ec-selected'); });
+  if (wasSelected) {
+    document.getElementById('ec-input-area').style.display = 'none';
+    return;
+  }
+  el.classList.add('ec-selected');
+  var inputArea = document.getElementById('ec-input-area');
+  inputArea.style.display = '';
+  var label = document.getElementById('ec-input-label');
+  if (label) label.textContent = (uiLang==='de' ? 'Korrektur für: ' : 'Fix: ') + '"' + el.textContent + '"';
+  var input = document.getElementById('grammar-answer-input');
+  if (input) { input.value = ''; input.focus(); }
+}
+
+function showEcDirectInput() {
+  document.querySelectorAll('.ec-word.ec-selected').forEach(function(w) { w.classList.remove('ec-selected'); });
+  var inputArea = document.getElementById('ec-input-area');
+  inputArea.style.display = '';
+  var label = document.getElementById('ec-input-label');
+  if (label) label.textContent = uiLang==='de' ? 'Ganzen korrigierten Satz eingeben:' : 'Type the full corrected sentence:';
+  var input = document.getElementById('grammar-answer-input');
+  if (input) { input.value = ''; input.focus(); }
+}
+
+function renderTypedAnswer(item, typeKey) {
+  var label = grammarLabel(typeKey);
+  var html = '<div class="grammar-instruction">' + label + '</div>';
   html += '<div class="grammar-prompt">' + item.p + '</div>';
-  html += '<input type="text" class="grammar-type-input" id="grammar-answer-input" placeholder="Type your answer..." autocomplete="off" autocapitalize="off">';
-  html += '<button class="grammar-check-btn" onclick="checkGrammarTyped()">Check Answer</button>';
+  if (item.hd) html += '<div style="font-size:0.72rem;color:var(--trans-color);margin-top:0.3rem;margin-bottom:0.3rem;font-style:italic;">🇩🇪 ' + item.hd + '</div>';
+  html += '<input type="text" class="grammar-type-input" id="grammar-answer-input" placeholder="' + (uiLang==='de'?'Deine Antwort eingeben...':'Type your answer...') + '" autocomplete="off" autocapitalize="off">';
+  html += '<button class="grammar-check-btn" onclick="checkGrammarTyped()">' + (uiLang==='de'?'Prüfen':'Check') + '</button>';
   return html;
 }
 
 function renderSentenceBuilding(item) {
-  let words = item.c.replace(/[.!?]$/, '').split(' ').sort(() => Math.random() - 0.5);
-  let html = '<div class="grammar-instruction">Tap the words in the correct order:</div>';
-  html += '<div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.4rem;">Tap a word to add it. Tap it in the green area to remove it.</div>';
-  html += '<div class="sb-result-area" id="sb-result"><span style="color:var(--muted);font-size:0.8rem;">Your sentence will appear here...</span></div>';
+  var words = item.c.replace(/[.!?]$/, '').split(' ').sort(function() { return Math.random() - 0.5; });
+  var html = '<div class="grammar-instruction">' + grammarLabel('sentence-building') + '</div>';
+  html += '<div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.4rem;">' + (uiLang==='de'?'Tippe ein Wort um es hinzuzufügen. Tippe es im grünen Bereich um es zu entfernen.':'Tap a word to add it. Tap it in the green area to remove it.') + '</div>';
+  html += '<div class="sb-result-area" id="sb-result"><span style="color:var(--muted);font-size:0.8rem;">' + (uiLang==='de'?'Dein Satz erscheint hier...':'Your sentence will appear here...') + '</span></div>';
   html += '<div class="sb-chips" id="sb-chips">';
-  words.forEach((w, i) => {
+  words.forEach(function(w, i) {
     html += '<span class="sb-chip" data-word="' + w + '" data-idx="' + i + '" onclick="addSbChip(this)">' + w + '</span>';
   });
   html += '</div>';
   html += '<div style="display:flex;gap:8px;margin-top:0.5rem;">';
-  html += '<button class="grammar-hint-btn" onclick="resetSbChips()" style="flex:0 0 auto;">\u21BA Reset</button>';
-  html += '<button class="grammar-check-btn" style="flex:1;margin-top:0;" onclick="checkSentenceBuilding()">Check Answer</button>';
+  html += '<button class="grammar-hint-btn" onclick="resetSbChips()" style="flex:0 0 auto;">↺ Reset</button>';
+  html += '<button class="grammar-check-btn" style="flex:1;margin-top:0;" onclick="checkSentenceBuilding()">' + (uiLang==='de'?'Prüfen':'Check') + '</button>';
   html += '</div>';
   return html;
 }
@@ -10919,27 +11040,48 @@ function selectGrammarOption(btn, answer) {
 }
 
 function checkGrammarTyped() {
-  const input = document.getElementById('grammar-answer-input');
+  var input = document.getElementById('grammar-answer-input');
   if (!input) return;
-  const answer = input.value.trim();
+  var answer = input.value.trim();
   if (!answer) return;
   input.disabled = true;
-  const item = grammarSession.items[grammarSession.index];
-  const profile = item.strict ? ANSWER_PROFILES.strict : ANSWER_PROFILES.grammar;
-  const grade = gradeAnswer(answer, item.c, profile, item.a || []);
-  let isCorrect = grade.status === 'correct';
-  let isClose = grade.status === 'close';
-  if (!isCorrect && !isClose && ['transformation','free-form','translation','question-formation','gap-fill','error-correction'].includes(item.t)) {
-    const norm = s => s.replace(/[.!?,;:'"()]/g, '').replace(/\s+/g, ' ').toLowerCase().trim();
-    const normAnswer = norm(answer);
-    const allAccepted = [item.c, ...(item.a || [])];
-    const partial = allAccepted.some(a => {
-      const normA = norm(a);
-      if (normA.includes(normAnswer) && normAnswer.length >= normA.length * 0.4 && normAnswer.split(' ').length >= 2) return true;
-      if (normAnswer.includes(normA) && normA.length >= normAnswer.length * 0.4 && normA.split(' ').length >= 2) return true;
-      return false;
-    });
-    if (partial) isCorrect = true;
+  var item = grammarSession.items[grammarSession.index];
+  var profile = item.strict ? ANSWER_PROFILES.strict : ANSWER_PROFILES.grammar;
+  var grade = gradeAnswer(answer, item.c, profile, item.a || []);
+  var isCorrect = grade.status === 'correct';
+  var isClose = grade.status === 'close';
+
+  // Enhanced leniency for typed answers
+  if (!isCorrect && !isClose) {
+    var norm = function(s) { return s.replace(/[.!?,;:'"()]/g, '').replace(/\s+/g, ' ').toLowerCase().trim(); };
+    // Expand contractions for comparison
+    var expandContractions = function(s) {
+      return s.replace(/n't/g, ' not').replace(/i'm/g, 'i am').replace(/he's/g, 'he is').replace(/she's/g, 'she is').replace(/it's/g, 'it is').replace(/we're/g, 'we are').replace(/they're/g, 'they are').replace(/you're/g, 'you are').replace(/i've/g, 'i have').replace(/we've/g, 'we have').replace(/they've/g, 'they have').replace(/let's/g, 'let us').replace(/what's/g, 'what is').replace(/that's/g, 'that is').replace(/there's/g, 'there is').replace(/here's/g, 'here is').replace(/who's/g, 'who is');
+    };
+    var normAnswer = norm(answer);
+    var normAnswerExp = expandContractions(normAnswer);
+    var allAccepted = [item.c].concat(item.a || []);
+
+    for (var ai = 0; ai < allAccepted.length; ai++) {
+      var normA = norm(allAccepted[ai]);
+      var normAExp = expandContractions(normA);
+      // Exact match after normalization
+      if (normAnswer === normA || normAnswerExp === normAExp || normAnswer === normAExp || normAnswerExp === normA) { isCorrect = true; break; }
+      // Accept just the corrected word(s) if they typed only the fix (for error-correction)
+      if (item.t === 'error-correction' && normAnswer.length >= 1) {
+        // Check if what they typed is a key word in the correct answer
+        var correctWords = normA.split(' ');
+        if (correctWords.indexOf(normAnswer) >= 0) { isCorrect = true; break; }
+        // Check if it's the corrected portion (difference between prompt and answer)
+        var promptNorm = norm(item.p.replace(/^Find and fix the mistake:\s*/i, ''));
+        var promptWords = promptNorm.split(' ');
+        var diffWords = correctWords.filter(function(w) { return promptWords.indexOf(w) < 0; });
+        if (diffWords.length > 0 && diffWords.join(' ') === normAnswer) { isCorrect = true; break; }
+      }
+      // Partial match (student typed key part of the answer)
+      if (normA.includes(normAnswer) && normAnswer.length >= normA.length * 0.35 && normAnswer.split(' ').length >= 1) { isCorrect = true; break; }
+      if (normAnswer.includes(normA) && normA.length >= normAnswer.length * 0.35) { isCorrect = true; break; }
+    }
   }
   processGrammarAnswer(item, answer, isCorrect, isClose);
 }
@@ -10962,35 +11104,49 @@ function processGrammarAnswer(item, answer, isCorrect, isClose) {
   // SHOW_DE_FEEDBACK: true for grades 1-2, false for grades 3-4 (set per trainer)
   const showDe = typeof SHOW_DE_FEEDBACK !== 'undefined' ? SHOW_DE_FEEDBACK : true;
 
-  let xp = 0;
+  var xp = 0;
+  var correctLabel = uiLang==='de' ? '✅ Richtig!' : '✅ Correct!';
+  var almostLabel = uiLang==='de' ? '🔶 Fast!' : '🔶 Almost!';
+  var wrongLabel = uiLang==='de' ? '❌ Nicht ganz' : '❌ Not quite';
+  var yourAnswer = uiLang==='de' ? 'Deine Antwort' : 'Your answer';
+  var correctIs = uiLang==='de' ? 'Richtig' : 'Correct';
   if (isCorrect) {
+    var prevTier = getComboTier(grammarSession.combo);
     grammarSession.combo++;
-    const comboTier = getComboTier(grammarSession.combo);
+    var comboTier = getComboTier(grammarSession.combo);
     xp = Math.round(10 * comboTier.mult);
     if (grammarSession.hintUsed) xp = Math.round(xp * 0.5);
     grammarSession.xpEarned += xp;
-    const deExpl = (showDe && item.ed) ? '<br><span style="color:var(--muted);font-style:italic;">\uD83C\uDDE9\uD83C\uDDEA ' + item.ed + '</span>' : '';
+    // Show XP burst animation
+    showXPBurst(xp);
+    // Show combo tier-up if tier just changed
+    if (comboTier.mult > prevTier.mult && comboTier.mult > 1) {
+      setTimeout(function() { showComboTierUp(comboTier); }, 300);
+    }
+    var deExpl = (showDe && item.ed) ? '<br><span style="color:var(--muted);font-style:italic;">🇩🇪 ' + item.ed + '</span>' : '';
     feedbackArea.innerHTML = '<div class="grammar-feedback correct">' +
-      '<div class="grammar-feedback-title">\u2705 Correct!' + (xp > 10 ? ' +' + xp + ' XP' : ' +10 XP') + '</div>' +
+      '<div class="grammar-feedback-title">' + correctLabel + ' +' + xp + ' XP</div>' +
       '<div class="grammar-feedback-text">' + item.e + deExpl + '</div>' +
     '</div>';
   } else if (isClose) {
+    if (grammarSession.combo >= 2) showComboLost();
     grammarSession.combo = 0;
     xp = Math.max(1, Math.round(10 * 0.5));
     if (grammarSession.hintUsed) xp = Math.max(1, Math.round(xp * 0.5));
     grammarSession.xpEarned += xp;
-    const deExpl2 = (showDe && item.ed) ? '<br><span style="color:var(--muted);font-style:italic;">\uD83C\uDDE9\uD83C\uDDEA ' + item.ed + '</span>' : '';
+    var deExpl2 = (showDe && item.ed) ? '<br><span style="color:var(--muted);font-style:italic;">🇩🇪 ' + item.ed + '</span>' : '';
     feedbackArea.innerHTML = '<div class="grammar-feedback correct">' +
-      '<div class="grammar-feedback-title">\uD83D\uDD36 Almost! +' + xp + ' XP</div>' +
-      '<div class="grammar-feedback-text">Your answer: <em>' + answer + '</em><br>Correct: <strong>' + item.c + '</strong><br>' + item.e + deExpl2 + '</div>' +
+      '<div class="grammar-feedback-title">' + almostLabel + ' +' + xp + ' XP</div>' +
+      '<div class="grammar-feedback-text">' + yourAnswer + ': <em>' + answer + '</em><br>' + correctIs + ': <strong>' + item.c + '</strong><br>' + item.e + deExpl2 + '</div>' +
     '</div>';
-    isCorrect = true; // count as partial correct
+    isCorrect = true;
   } else {
+    if (grammarSession.combo >= 2) showComboLost();
     grammarSession.combo = 0;
-    const deExpl3 = (showDe && item.ed) ? '<br><span style="color:var(--muted);font-style:italic;">\uD83C\uDDE9\uD83C\uDDEA ' + item.ed + '</span>' : '';
+    var deExpl3 = (showDe && item.ed) ? '<br><span style="color:var(--muted);font-style:italic;">🇩🇪 ' + item.ed + '</span>' : '';
     feedbackArea.innerHTML = '<div class="grammar-feedback wrong">' +
-      '<div class="grammar-feedback-title">\u274C Not quite</div>' +
-      '<div class="grammar-feedback-text">Your answer: <em>' + answer + '</em><br>Correct: <strong>' + item.c + '</strong><br>' + item.e + deExpl3 + '</div>' +
+      '<div class="grammar-feedback-title">' + wrongLabel + '</div>' +
+      '<div class="grammar-feedback-text">' + yourAnswer + ': <em>' + answer + '</em><br>' + correctIs + ': <strong>' + item.c + '</strong><br>' + item.e + deExpl3 + '</div>' +
     '</div>';
   }
 
