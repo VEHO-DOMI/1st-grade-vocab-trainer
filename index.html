@@ -5987,8 +5987,8 @@ function buildReferenceList(sourceFilter, searchTerm) {
       // Clean sentence: replace _____ with the actual word in bold
       const sentenceDisplay = entry.s.replace('_____', `<strong style="color:var(--accent)">${entry.w}</strong>`);
       const rp = refWords[entry.w];
-      const refDue = rp && rp.dueDate && new Date(rp.dueDate) <= new Date();
-      const refDueBadge = refDue ? ' <span style="font-size:0.65rem;padding:1px 6px;border-radius:6px;background:rgba(245,158,11,0.15);color:#f59e0b;font-weight:600;">📅 Due</span>' : '';
+      // Due badge removed — status shading replaces it
+      const refDueBadge = '';
       item.innerHTML = `
         <div class="ref-word-header">
           <span class="ref-word-en">${entry.w}${refDueBadge}</span>
@@ -6545,7 +6545,7 @@ function startFlashcardsFromRef() {
     '<div class="setup-footer"><button class="btn btn-primary btn-block" onclick="launchFlashcardsFromPicker()">' + (uiLang==='de'?'Starten':'Start') + ' 📇</button></div></div>';
   document.body.appendChild(ov);
   // Select all by default
-  ov.querySelectorAll('.fc-unit-btn').forEach(function(b) { b.classList.add('selected'); });
+  // Units start unselected — user picks what to study
 }
 function toggleFcUnit(btn) { btn.classList.toggle('selected'); }
 function launchFlashcardsFromPicker() {
