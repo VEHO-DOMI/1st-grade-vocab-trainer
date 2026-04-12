@@ -2669,6 +2669,7 @@ body.playing .header-container { display: none; }
     </div>
     <div class="profile-logout-row">
       <button class="logout-btn" onclick="logout()">Log Out</button>
+      <button class="logout-btn" id="profile-mode-switch" onclick="showModeSelectScreen()" style="margin-left:auto;">🔄 Modus</button>
     </div>
   </div>
   <span id="rank-mode-label" style="display:none;"></span>
@@ -2695,7 +2696,7 @@ body.playing .header-container { display: none; }
       <span style="font-size:0.65rem;color:var(--muted);margin-left:auto;">Starten →</span>
     </div>
     <div class="home-smart-review-desc" id="smart-review-desc" style="display:none;"></div>
-    <button class="home-mode-switch-btn" id="home-mode-switch" onclick="showModeSelectScreen()">↩️ Zu Grammatik oder Story Mode wechseln</button>
+    <button class="home-mode-switch-btn" id="home-mode-switch" onclick="showModeSelectScreen()" style="display:none;">↩️ Zu Grammatik oder Story Mode wechseln</button>
   </div>
 
   <!-- Words/Rules — full width card -->
@@ -6610,6 +6611,20 @@ function startFlashcardsFromRef() {
     return '<button class="source-btn fc-unit-btn" data-source="' + key + '" onclick="toggleFcUnit(this)" style="text-align:center;">' + key + '<span class="count">' + count + ' ' + (uiLang==='de'?'Wörter':'words') + '</span></button>';
   }).join('');
   document.body.classList.add('overlay-open');
+  // Add smart review option if words available
+  var reviewWords = typeof getSmartReviewWords === 'function' ? getSmartReviewWords() : [];
+  setTimeout(function() {
+    var setupBody = document.querySelector('.setup-body');
+    if (setupBody && reviewWords.length > 0 && !document.getElementById('smart-review-setup')) {
+      var revBtn = document.createElement('button');
+      revBtn.id = 'smart-review-setup';
+      revBtn.className = 'home-fullwidth-card';
+      revBtn.style.cssText = 'margin-bottom:0.8rem;width:100%;box-sizing:border-box;padding:0.7rem 1rem;border-color:var(--accent);';
+      revBtn.onclick = function() { closePracticeSetup(); startSmartReview(); };
+      revBtn.innerHTML = '<span class="home-fullwidth-icon">🔄</span><div class="home-fullwidth-info"><span class="home-fullwidth-title">🔄 Smart Review (' + reviewWords.length + ')</span><span class="home-fullwidth-subtitle">Schwache Wörter wiederholen</span></div><span class="home-fullwidth-arrow">→</span>';
+      setupBody.insertBefore(revBtn, setupBody.firstChild);
+    }
+  }, 50);
   ov.innerHTML = '<div class="setup-step"><div class="setup-header"><button class="setup-close" onclick="document.getElementById(\'fc-unit-picker\').remove();document.body.classList.remove(\'overlay-open\')">✕</button><h2>' + (uiLang==='de'?'Karteikarten — Units wählen':'Flashcards — Select Units') + '</h2></div>' +
     '<div class="setup-body"><div class="source-grid">' + unitBtns + '</div>' +
     '<div class="quick-btns"><button class="quick-btn" onclick="document.querySelectorAll(\'.fc-unit-btn\').forEach(function(b){b.classList.add(\'selected\')})">' + (uiLang==='de'?'Alle':'All') + '</button><button class="quick-btn" onclick="document.querySelectorAll(\'.fc-unit-btn\').forEach(function(b){b.classList.remove(\'selected\')})">' + (uiLang==='de'?'Keine':'None') + '</button></div></div>' +
@@ -10023,7 +10038,7 @@ showHomeScreen = function() {
     var reviewWords = getSmartReviewWords();
     if (srHint) {
       if (reviewWords.length > 0) {
-        srHint.style.display = 'flex';
+        srHint.style.display = 'none'; // review moved to practice setup
         document.getElementById('smart-review-hint-text').textContent = reviewWords.length + ' ' + (uiLang==='de' ? 'Wörter zur Wiederholung' : 'words to review');
         srHint.onclick = function() { startSmartReview(); };
       } else { srHint.style.display = 'none'; }
@@ -10031,7 +10046,7 @@ showHomeScreen = function() {
     var srDesc = document.getElementById('smart-review-desc');
     if (srDesc) srDesc.textContent = uiLang==='de' ? 'Übt automatisch Wörter, die du falsch hattest' : 'Automatically reviews words you got wrong';
     // Mode switch link
-    var modeLink = document.getElementById('home-mode-switch');
+    var modeLink = document.getElementById('profile-mode-switch');
     if (modeLink) modeLink.textContent = uiLang==='de' ? '🔄 Zu Grammatik oder Story Mode wechseln' : '🔄 Switch to Grammar or Story Mode';
     // Battle arena subtitle
     var bSub = document.getElementById('battle-arena-subtitle');
@@ -10210,14 +10225,14 @@ function showGrammarHomeScreen() {
   var weakStructures = getGrammarWeakStructures();
   if (srHint) {
     if (weakStructures.length > 0) {
-      srHint.style.display = 'flex';
+      srHint.style.display = 'none'; // review moved to practice setup
       document.getElementById('smart-review-hint-text').textContent = weakStructures.length + ' ' + t('topics') + ' ' + (uiLang==='de' ? 'zur Wiederholung' : 'to review');
       srHint.onclick = function() { startGrammarSmartReview(weakStructures); };
     } else { srHint.style.display = 'none'; }
   }
   if (srDesc) srDesc.textContent = uiLang==='de' ? 'Übt automatisch Themen, die du falsch hattest' : 'Automatically reviews topics you got wrong';
   // Mode switch link
-  var modeLink = document.getElementById('home-mode-switch');
+  var modeLink = document.getElementById('profile-mode-switch');
   if (modeLink) modeLink.textContent = uiLang==='de' ? '🔄 Zu Vokabel oder Story Mode wechseln' : '🔄 Switch to Vocab or Story Mode';
   // Words → Rules card
   var wordsBtn = document.getElementById('home-words-btn');
