@@ -5445,7 +5445,11 @@ async function saveSessionResults() {
             merged[w].dueDate = due.toISOString();
           }
         }
-        await docRef.set({ source: src, words: merged });
+          // Preserve flashcard status from current session
+          if (state.progressData[slug] && state.progressData[slug].words && state.progressData[slug].words[w] && state.progressData[slug].words[w].status) {
+            merged[w].status = state.progressData[slug].words[w].status;
+          }
+        await docRef.set({ source: src, words: merged }, { merge: true });
         state.progressData[slug] = { source: src, words: merged };
       } else {
         // New progress doc — add spaced repetition fields
@@ -5455,6 +5459,13 @@ async function saveSessionResults() {
           const due = new Date();
           due.setDate(due.getDate() + newInterval);
           withSR[w] = { c: counts.c, w: counts.w, lastSeen: nowISO, interval: newInterval, dueDate: due.toISOString(), solvedTypes: counts.newTypes || [] };
+        }
+        // Preserve any flashcard status already saved to Firebase
+        if (state.progressData[slug] && state.progressData[slug].words) {
+          for (var wk of Object.keys(withSR)) {
+            var existingFc = state.progressData[slug].words[wk];
+            if (existingFc && existingFc.status) withSR[wk].status = existingFc.status;
+          }
         }
         await docRef.set({ source: src, words: withSR });
         state.progressData[slug] = { source: src, words: withSR };
