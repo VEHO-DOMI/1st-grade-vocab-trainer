@@ -5992,11 +5992,13 @@ function buildReferenceList(sourceFilter, searchTerm) {
     const refWords = refProg && refProg.words ? refProg.words : {};
     for (const entry of filtered) {
       const item = document.createElement('div');
-      var fcStatus = (refWords[entry.w] && refWords[entry.w].status) || '';
+      var fcKey = entry.w.replace(/\./g, '·');
+      var fcWord = refWords[entry.w] || refWords[fcKey] || {};
+      var fcStatus = fcWord.status || '';
       item.className = 'ref-word-item' + (fcStatus === 'known' ? ' fc-known' : fcStatus === 'study' ? ' fc-study' : '');
       // Clean sentence: replace _____ with the actual word in bold
       const sentenceDisplay = entry.s.replace('_____', `<strong style="color:var(--accent)">${entry.w}</strong>`);
-      const rp = refWords[entry.w];
+      const rp = refWords[entry.w] || refWords[fcKey];
       // Due badge removed — status shading replaces it
       const refDueBadge = '';
       item.innerHTML = `
@@ -6544,7 +6546,7 @@ function startStudyAgainReview() {
     if (!prog || !prog.words) return;
     var src = prog.source || slug;
     Object.keys(prog.words).forEach(function(w) {
-      if (prog.words[w].status === 'study') {
+      if (prog.words[w] && prog.words[w].status === 'study') {
         // Find the word in vocabData
         Object.keys(vocabData).forEach(function(key) {
           var found = vocabData[key].find(function(e) { return e.w === w; });
@@ -6790,9 +6792,14 @@ async function saveFlashcardProgress(word, status) {
     if (!state.progressData[slug]) state.progressData[slug] = { words: {} };
     if (!state.progressData[slug].words) state.progressData[slug].words = {};
     var wKey = word.w.replace(/\./g, '\u00b7');
-    if (!state.progressData[slug].words[word.w]) state.progressData[slug].words[word.w] = {};
-    state.progressData[slug].words[word.w].lastSeen = new Date().toISOString();
-    if (status) state.progressData[slug].words[word.w].status = status;
+    var localKey = word.w;
+    if (!state.progressData[slug].words[localKey]) state.progressData[slug].words[localKey] = {};
+    // Also store under dot-replaced key for Firebase compatibility
+    var fbKey = word.w.replace(/\./g, '·');
+    if (!state.progressData[slug].words[fbKey]) state.progressData[slug].words[fbKey] = {};
+    state.progressData[slug].words[localKey].lastSeen = new Date().toISOString();
+    state.progressData[slug].words[fbKey].lastSeen = new Date().toISOString();
+    if (status) { state.progressData[slug].words[localKey].status = status; state.progressData[slug].words[fbKey].status = status; }
   } catch(e) { console.error('Flashcard progress save error:', e); }
 }
 
