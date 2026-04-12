@@ -5285,6 +5285,11 @@ async function loadProgress() {
         }
       }
       state.progressData[doc.id] = data;
+      // Debug: check for status fields
+      if (data.words) {
+        var statusWords = Object.keys(data.words).filter(function(k) { return data.words[k].status; });
+        if (statusWords.length > 0) console.log("[FC-LOAD] doc=" + doc.id + " words with status: " + statusWords.length + " first: " + statusWords[0] + "=" + data.words[statusWords[0]].status);
+      }
     });
   } catch (e) { console.error('Error loading progress:', e); }
 }
@@ -6006,6 +6011,7 @@ function buildReferenceList(sourceFilter, searchTerm) {
       var fcKey = entry.w.replace(/\./g, '·');
       var fcWord = refWords[entry.w] || refWords[fcKey] || {};
       var fcStatus = fcWord.status || '';
+      if (fcStatus) console.log('[FC-DISPLAY] word=' + entry.w + ' status=' + fcStatus);
       item.className = 'ref-word-item' + (fcStatus === 'known' ? ' fc-known' : fcStatus === 'study' ? ' fc-study' : '');
       // Clean sentence: replace _____ with the actual word in bold
       const sentenceDisplay = entry.s.replace('_____', `<strong style="color:var(--accent)">${entry.w}</strong>`);
@@ -6799,6 +6805,7 @@ async function saveFlashcardProgress(word, status) {
     var update = { [base + '.lastSeen']: new Date().toISOString() };
     if (status) update[base + '.status'] = status;
     await docRef.set(update, { merge: true });
+    console.log("[FC-SAVE] slug=" + slug + " word=" + word.w + " status=" + status + " update=", JSON.stringify(update));
     // Update local state so dictionary shows status immediately
     if (!state.progressData[slug]) state.progressData[slug] = { words: {} };
     if (!state.progressData[slug].words) state.progressData[slug].words = {};
