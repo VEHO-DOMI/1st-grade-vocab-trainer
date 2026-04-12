@@ -737,6 +737,14 @@ body.overlay-open { overflow: hidden !important; position: fixed; width: 100%; }
 .flashcard-btn-again:active { transform: scale(0.97); }
 .flashcard-btn-got-it { flex: 1; padding: 1rem; border-radius: var(--radius); font-weight: 700; font-size: 1rem; cursor: pointer; border: 1.5px solid var(--correct); background: rgba(22,163,74,0.08); color: var(--correct); transition: transform 0.1s; }
 .flashcard-btn-got-it:active { transform: scale(0.97); }
+/* Compact flashcard layout */
+.flashcard { min-height: 250px; }
+.flashcard-front, .flashcard-back { min-height: 250px; padding: 1.5rem 1.2rem; }
+.flashcard-word { font-size: 1.4rem; word-break: break-word; overflow-wrap: break-word; }
+.flashcard-sentence { font-size: 0.9rem; }
+.flashcard-stage { padding: 0 0.8rem; }
+.flashcard-swipe-hint { margin-top: 0.5rem; }
+.flashcard-tap-hint { margin-top: 0.8rem; }
 .flashcard-swipe-indicator { position: absolute; top: 50%; transform: translateY(-50%); font-size: 2.5rem; font-weight: 800; opacity: 0; transition: opacity 0.15s; pointer-events: none; z-index: 10; padding: 0.5rem 1rem; border-radius: 12px; }
 .flashcard-swipe-indicator.left { left: 1rem; color: var(--wrong); border: 3px solid var(--wrong); background: rgba(220,38,38,0.1); }
 .flashcard-swipe-indicator.right { right: 1rem; color: var(--correct); border: 3px solid var(--correct); background: rgba(22,163,74,0.1); }
@@ -3009,7 +3017,7 @@ body.playing .header-container { display: none; }
       </button>
     </div>
     <button class="btn btn-sprint sprint-again" id="sprint-again-btn" style="display:none;" onclick="startSprint()">🏃 Another Sprint</button>
-    <button class="btn btn-secondary" onclick="goHome()">New Practice</button>
+    <button class="btn btn-secondary" id="results-home-btn" onclick="goHome()">New Practice</button>
   </div>
 </div>
 
@@ -6788,7 +6796,11 @@ async function saveFlashcardProgress(word, status) {
   } catch(e) { console.error('Flashcard progress save error:', e); }
 }
 
+var _fcReturnToDict = false;
 async function endFlashcards() {
+  _fcReturnToDict = true;
+  var homeBtn = document.getElementById('results-home-btn');
+  if (homeBtn) { homeBtn.textContent = '📖 Back to Dictionary'; homeBtn.onclick = function() { showWordReference(); }; }
   showScreen('results-screen');
   const total = flashcardGotWords.size;
   const remaining = flashcardDeck.length;
@@ -9965,8 +9977,8 @@ showHomeScreen = function() {
     var wordsBtn = document.getElementById('home-words-btn');
     if (wordsBtn) {
       var wIcon = wordsBtn.querySelector('.home-fullwidth-icon'); if (wIcon) wIcon.textContent = '📖';
-      var wTitle = document.getElementById('home-words-title'); if (wTitle) wTitle.textContent = uiLang==='de' ? 'Wörterbuch' : 'Dictionary';
-      var wSub = document.getElementById('home-words-subtitle'); if (wSub) wSub.textContent = uiLang==='de' ? 'Deine gesamte Vokabel-Bibliothek durchsuchen' : 'Browse your full vocabulary library';
+      var wTitle = document.getElementById('home-words-title'); if (wTitle) wTitle.textContent = uiLang==='de' ? 'Wörterbuch & Karteikarten' : 'Dictionary & Flashcards';
+      var wSub = document.getElementById('home-words-subtitle'); if (wSub) wSub.textContent = uiLang==='de' ? 'Vokabeln nachschlagen und mit Karteikarten üben' : 'Look up words and study with flashcards';
       wordsBtn.onclick = function() { showWordReference(); };
     }
     // Smart review hint
