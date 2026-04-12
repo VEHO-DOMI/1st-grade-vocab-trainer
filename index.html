@@ -172,7 +172,7 @@ h1 { display: none; }
 .profile-xp-row { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
 .profile-xp { font-size: 0.92rem; color: var(--accent); font-weight: 700; }
 .profile-rank-row { margin-top: 4px; }
-.profile-rank-pill { font-size: 0.78rem; padding: 5px 14px; border-radius: 10px; font-weight: 700; white-space: nowrap; }
+.profile-rank-pill { font-size: 0.82rem; padding: 6px 16px; border-radius: 12px; font-weight: 800; white-space: nowrap; letter-spacing: 0.3px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 .profile-badges-row { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
 .profile-badges-row .badge-icon { width: 30px; height: 30px; font-size: 17px; border-radius: 10px; transition: transform 0.15s, box-shadow 0.15s; }
 .profile-badges-row .badge-icon:hover { transform: scale(1.2); box-shadow: 0 0 12px var(--accent-glow); }
@@ -401,8 +401,8 @@ h1 { display: none; }
 .badge-icon:hover { transform: scale(1.15); }
 .badge-icon.empty { opacity: 0.3; font-size: 1rem; }
 
-.badge-popup { position: fixed; top: -80px; left: 50%; transform: translateX(-50%); z-index: 10001; background: linear-gradient(135deg, rgba(224,96,32,0.15), rgba(224,96,32,0.05)); border: 1px solid rgba(224,96,32,0.3); border-radius: 16px; padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 0.8rem; backdrop-filter: blur(12px); transition: top 0.4s ease; max-width: 90vw; }
-.badge-popup.show { top: 20px; }
+.badge-popup { position: fixed; top: -80px; opacity: 0; pointer-events: none; left: 50%; transform: translateX(-50%); z-index: 10001; background: linear-gradient(135deg, rgba(224,96,32,0.15), rgba(224,96,32,0.05)); border: 1px solid rgba(224,96,32,0.3); border-radius: 16px; padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 0.8rem; backdrop-filter: blur(12px); transition: top 0.4s ease; max-width: 90vw; }
+.badge-popup.show { top: 20px; opacity: 1; pointer-events: auto; }
 .badge-popup-icon { font-size: 2rem; }
 .badge-popup-text { font-size: 0.85rem; }
 .badge-popup-text strong { color: var(--accent2); display: block; font-size: 0.95rem; }
@@ -4776,7 +4776,7 @@ function showBadgePopups(badges) {
       document.getElementById('badge-popup-icon').textContent = b.icon;
       document.getElementById('badge-popup-name').textContent = b.name;
       document.getElementById('badge-popup').classList.add('show');
-      setTimeout(() => document.getElementById('badge-popup').classList.remove('show'), 3000);
+      setTimeout(function() { var bp = document.getElementById('badge-popup'); if (bp) { bp.classList.remove('show'); bp.style.display = 'none'; setTimeout(function() { bp.style.display = ''; }, 500); } }, 3000);
     }, delay);
     delay += 3500;
   }
