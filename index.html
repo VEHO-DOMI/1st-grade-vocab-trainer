@@ -2907,6 +2907,8 @@ body.playing .header-container { display: none; }
       </div>
       <span class="home-fullwidth-arrow">→</span>
     </button>
+    <button class="home-fullwidth-card" onclick="startStudyAgainReview()" style="padding:0.6rem 1rem;margin-bottom:0.6rem;width:100%;box-sizing:border-box;border-color:rgba(239,68,68,0.2);"><span class="home-fullwidth-icon">🔴</span><div class="home-fullwidth-info"><span class="home-fullwidth-title">Wiederholung</span><span class="home-fullwidth-subtitle">Nur rot markierte Wörter üben</span></div><span class="home-fullwidth-arrow">→</span></button>
+    
   </div>
 
   <div class="card" style="margin-bottom:0.8rem;">
@@ -6526,6 +6528,36 @@ let flashcardGotWords = new Set();
 let fcFlipped = false;
 let fcDirection = 'en-de'; // 'en-de' or 'de-en'
 
+function startStudyAgainReview() {
+  // Collect all words marked as 'study' from progressData
+  var studyWords = [];
+  Object.keys(state.progressData).forEach(function(slug) {
+    var prog = state.progressData[slug];
+    if (!prog || !prog.words) return;
+    var src = prog.source || slug;
+    Object.keys(prog.words).forEach(function(w) {
+      if (prog.words[w].status === 'study') {
+        // Find the word in vocabData
+        Object.keys(vocabData).forEach(function(key) {
+          var found = vocabData[key].find(function(e) { return e.w === w; });
+          if (found && !studyWords.some(function(sw) { return sw.w === w; })) {
+            studyWords.push({ ...found, source: key });
+          }
+        });
+      }
+    });
+  });
+  if (studyWords.length === 0) {
+    alert('No words marked for review yet. Use flashcards first!');
+    return;
+  }
+  state.selectedSources.clear();
+  studyWords.forEach(function(w) { state.selectedSources.add(w.source); });
+  // Override: build deck directly from studyWords
+  window._fcStudyOnly = studyWords;
+  startFlashcards();
+}
+
 function startFlashcardsFromRef() {
   // Show unit picker overlay before starting flashcards
   var old = document.getElementById('fc-unit-picker');
@@ -6581,11 +6613,16 @@ function launchFlashcards(direction) {
   flashcardGotCount = 0;
   flashcardGotWords = new Set();
   fcFlipped = false;
-  state.selectedSources.forEach(function(src) {
-    if (vocabData[src]) {
-      vocabData[src].forEach(function(word) { flashcardDeck.push({ ...word, source: src }); });
-    }
-  });
+  if (window._fcStudyOnly && window._fcStudyOnly.length > 0) {
+    flashcardDeck = window._fcStudyOnly.slice();
+    window._fcStudyOnly = null;
+  } else {
+    state.selectedSources.forEach(function(src) {
+      if (vocabData[src]) {
+        vocabData[src].forEach(function(word) { flashcardDeck.push({ ...word, source: src }); });
+      }
+    });
+  }
   shuffle(flashcardDeck);
   if (flashcardDeck.length === 0) return;
   showScreen('flashcard-screen');
@@ -6621,7 +6658,10 @@ function showFlashcard() {
     document.getElementById('fc-back-word').textContent = word.g;
     document.getElementById('fc-back-detail').textContent = word.d;
   }
-  document.getElementById('flashcard-counter').textContent = flashcardDeck.length + ' remaining';
+  var unitList = [];
+  state.selectedSources.forEach(function(s) { unitList.push(s); });
+  var unitLabel = unitList.length <= 3 ? unitList.join(', ') : unitList.length + ' units';
+  document.getElementById('flashcard-counter').textContent = flashcardDeck.length + ' remaining · ' + unitLabel;
   var il = document.getElementById('swipe-indicator-left');
   var ir = document.getElementById('swipe-indicator-right');
   if (il) il.style.opacity = '0';
@@ -6657,12 +6697,6 @@ function flashcardGotIt() {
 function flashcardAgain() {
   var word = flashcardDeck.shift();
   if (word) saveFlashcardProgress(word, 'study');
-  if (word && flashcardDeck.length > 0) {
-    var pos = Math.floor(Math.random() * flashcardDeck.length) + 1;
-    flashcardDeck.splice(Math.min(pos, flashcardDeck.length), 0, word);
-  } else if (word) {
-    flashcardDeck.push(word);
-  }
   showFlashcard();
 }
 
@@ -6744,6 +6778,13 @@ async function saveFlashcardProgress(word, status) {
     var update = { [base + '.lastSeen']: new Date().toISOString() };
     if (status) update[base + '.status'] = status;
     await docRef.set(update, { merge: true });
+    // Update local state so dictionary shows status immediately
+    if (!state.progressData[slug]) state.progressData[slug] = { words: {} };
+    if (!state.progressData[slug].words) state.progressData[slug].words = {};
+    var wKey = word.w.replace(/\./g, '\u00b7');
+    if (!state.progressData[slug].words[word.w]) state.progressData[slug].words[word.w] = {};
+    state.progressData[slug].words[word.w].lastSeen = new Date().toISOString();
+    if (status) state.progressData[slug].words[word.w].status = status;
   } catch(e) { console.error('Flashcard progress save error:', e); }
 }
 
