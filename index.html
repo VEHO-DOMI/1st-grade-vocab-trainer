@@ -5284,6 +5284,23 @@ async function loadProgress() {
           data.words[key] = migrateWordProgress(data.words[key]);
         }
       }
+      // Migrate flat dot-notation keys (from buggy flashcard saves) into nested words map
+      var flatKeys = Object.keys(data).filter(function(k) { return k.startsWith('words.') && k !== 'words'; });
+      if (flatKeys.length > 0) {
+        if (!data.words) data.words = {};
+        flatKeys.forEach(function(fk) {
+          var parts = fk.split('.');
+          if (parts.length === 3) {
+            var wordKey = parts[1];
+            var field = parts[2];
+            if (!data.words[wordKey]) data.words[wordKey] = {};
+            data.words[wordKey][field] = data[fk];
+          }
+          delete data[fk];
+        });
+        var cleanRef = studentsRef.doc(state.studentId).collection('progress').doc(doc.id);
+        cleanRef.set(data).catch(function(e) { console.warn('Migration write failed:', e); });
+      }
       state.progressData[doc.id] = data;
       // Debug: check for status fields
       if (data.words) {
@@ -6804,7 +6821,7 @@ async function saveFlashcardProgress(word, status) {
     var base = 'words.' + word.w.replace(/\./g, '\u00b7');
     var update = { [base + '.lastSeen']: new Date().toISOString() };
     if (status) update[base + '.status'] = status;
-    await docRef.set(update, { merge: true });
+    await docRef.update(update).catch(function() { return docRef.set(update, { merge: true }); });
     console.log("[FC-SAVE] slug=" + slug + " word=" + word.w + " status=" + status + " update=", JSON.stringify(update));
     // Update local state so dictionary shows status immediately
     if (!state.progressData[slug]) state.progressData[slug] = { words: {} };
