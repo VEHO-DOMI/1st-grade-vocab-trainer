@@ -713,13 +713,13 @@ body.overlay-open { overflow: hidden !important; position: fixed; width: 100%; }
 }
 .flashcard-header { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1rem 0.2rem; flex-shrink: 0; }
 .flashcard-counter { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
-.flashcard-stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 0.5rem; position: relative; overflow: hidden; touch-action: pan-y; }
+.flashcard-stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 1rem; padding: 0 0.5rem; position: relative; overflow: hidden; touch-action: pan-y; }
 .flashcard-container { perspective: 1200px; width: 100%; max-width: 92%; width: 100%; cursor: pointer; }
-.flashcard { position: relative; width: 100%; min-height: 200px; transition: transform 0.5s ease; transform-style: preserve-3d; }
+.flashcard { position: relative; width: 100%; min-height: 40vh; transition: transform 0.5s ease; transform-style: preserve-3d; }
 .flashcard.flipped { transform: rotateY(180deg); }
 .flashcard.swiping { transition: none !important; }
 .flashcard-front, .flashcard-back {
-  position: absolute; top: 0; left: 0; right: 0; min-height: 200px;
+  position: absolute; top: 0; left: 0; right: 0; min-height: 40vh;
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
   border-radius: var(--radius-lg); padding: 1.2rem 1.5rem;
   display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
