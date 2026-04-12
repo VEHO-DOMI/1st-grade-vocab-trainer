@@ -676,6 +676,9 @@ body.overlay-open { overflow: hidden !important; position: fixed; width: 100%; }
 .ref-source-group { margin-bottom: 1.2rem; }
 .ref-source-title { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-light); margin-bottom: 0.5rem; padding: 0.35rem 0; border-bottom: 1px solid rgba(22,163,74,0.15); }
 .ref-word-item { background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 0.8rem 1rem; margin-bottom: 0.35rem; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-card); }
+/* Flashcard word status shading */
+.ref-word-item.fc-known { background: rgba(34,197,94,0.07); border-left: 3px solid rgba(34,197,94,0.4); }
+.ref-word-item.fc-study { background: rgba(239,68,68,0.06); border-left: 3px solid rgba(239,68,68,0.3); }
 .ref-word-item:hover { border-color: rgba(22,163,74,0.25); background: var(--card-hover); transform: translateY(-1px); }
 .ref-word-item.expanded { border-color: rgba(22,163,74,0.4); box-shadow: var(--shadow-elevated); transform: none; }
 .ref-word-header { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
@@ -5979,7 +5982,8 @@ function buildReferenceList(sourceFilter, searchTerm) {
     const refWords = refProg && refProg.words ? refProg.words : {};
     for (const entry of filtered) {
       const item = document.createElement('div');
-      item.className = 'ref-word-item';
+      var fcStatus = (refWords[entry.w] && refWords[entry.w].status) || '';
+      item.className = 'ref-word-item' + (fcStatus === 'known' ? ' fc-known' : fcStatus === 'study' ? ' fc-study' : '');
       // Clean sentence: replace _____ with the actual word in bold
       const sentenceDisplay = entry.s.replace('_____', `<strong style="color:var(--accent)">${entry.w}</strong>`);
       const rp = refWords[entry.w];
@@ -6645,13 +6649,14 @@ function flashcardGotIt() {
   if (word && !flashcardGotWords.has(word.w)) {
     flashcardGotWords.add(word.w);
     flashcardGotCount++;
-    saveFlashcardProgress(word);
+    saveFlashcardProgress(word, 'known');
   }
   showFlashcard();
 }
 
 function flashcardAgain() {
   var word = flashcardDeck.shift();
+  if (word) saveFlashcardProgress(word, 'study');
   if (word && flashcardDeck.length > 0) {
     var pos = Math.floor(Math.random() * flashcardDeck.length) + 1;
     flashcardDeck.splice(Math.min(pos, flashcardDeck.length), 0, word);
@@ -6730,13 +6735,15 @@ function initFlashcardSwipe() {
   });
 }
 
-async function saveFlashcardProgress(word) {
+async function saveFlashcardProgress(word, status) {
   if (!studentsRef || !state.studentId) return;
   const slug = slugify(word.source);
   try {
     const docRef = studentsRef.doc(state.studentId).collection('progress').doc(slug);
-    const key = 'words.' + word.w.replace(/\./g, '\u00b7') + '.lastSeen';
-    await docRef.set({ [key]: new Date().toISOString() }, { merge: true });
+    var base = 'words.' + word.w.replace(/\./g, '\u00b7');
+    var update = { [base + '.lastSeen']: new Date().toISOString() };
+    if (status) update[base + '.status'] = status;
+    await docRef.set(update, { merge: true });
   } catch(e) { console.error('Flashcard progress save error:', e); }
 }
 
