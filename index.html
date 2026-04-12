@@ -2388,6 +2388,15 @@ body.playing .header-container { display: none; }
 .campaign-next-btn {
   margin-bottom: 1rem;
 }
+/* Flashcard layout overrides — scoped to #flashcard-screen only */
+#flashcard-screen .flashcard-stage { justify-content: flex-start !important; padding-top: 0.5rem !important; }
+#flashcard-screen .flashcard-container { max-width: 100% !important; flex: 1; display: flex; }
+#flashcard-screen .flashcard { min-height: auto !important; height: auto; flex: 1; }
+#flashcard-screen .flashcard-front, #flashcard-screen .flashcard-back { min-height: auto !important; bottom: 0; padding: 1.5rem 1.5rem !important; }
+#flashcard-screen .flashcard-word { font-size: 1.5rem !important; }
+#flashcard-screen .flashcard-header { padding: 0.8rem 1rem 0.4rem !important; }
+#flashcard-screen .flashcard-swipe-hint { margin-top: 0.3rem !important; }
+#flashcard-screen .flashcard-actions { max-width: 100% !important; padding: 0.3rem 0.8rem 0.8rem !important; }
 </style>
 </head>
 <body>
