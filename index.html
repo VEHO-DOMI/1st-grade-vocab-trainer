@@ -9958,9 +9958,10 @@ function showModeSelectScreen() {
       campaignCard.style.display = '';
       var cp = d.campaignProgress || {};
       var cLevels = (cp.levels ? Object.keys(cp.levels).filter(function(k) { return cp.levels[k].completed; }).length : 0);
-      document.getElementById('mode-campaign-stats').textContent = cLevels + '/15';
+      var totalLevels = campaignLevels.length;
+      document.getElementById('mode-campaign-stats').textContent = cLevels + '/' + totalLevels;
       var fill = document.getElementById('campaign-progress-fill');
-      if (fill) fill.style.width = Math.round((cLevels / 15) * 100) + '%';
+      if (fill) fill.style.width = Math.round((cLevels / totalLevels) * 100) + '%';
     } else {
       campaignCard.style.display = 'none';
     }
