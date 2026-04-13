@@ -10870,16 +10870,19 @@ function cleanPromptForMC(p) {
 
 // --- Exercise Type Renderers ---
 function renderGapFill(item) {
-  var options = (item.ds || []).concat([item.c]).sort(function() { return Math.random() - 0.5; });
   var html = '<div class="grammar-instruction">' + grammarLabel('gap-fill') + '</div>';
   html += '<div class="grammar-prompt">' + item.p.replace(/_{2,}/g, '<span class="blank">______</span>') + '</div>';
-  // German hint
-  // German hint only via Hint button, not auto-displayed
-  html += '<div class="grammar-options" id="grammar-options">';
-  options.forEach(function(opt) {
-    html += '<button class="grammar-option-btn" onclick="selectGrammarOption(this,\'' + opt.replace(/'/g, "\\'") + '\')">' + opt + '</button>';
-  });
-  html += '</div>';
+  if (item.ds && item.ds.length > 0) {
+    var options = item.ds.concat([item.c]).sort(function() { return Math.random() - 0.5; });
+    html += '<div class="grammar-options" id="grammar-options">';
+    options.forEach(function(opt) {
+      html += '<button class="grammar-option-btn" onclick="selectGrammarOption(this,\'' + opt.replace(/'/g, "\\'") + '\')">' + opt + '</button>';
+    });
+    html += '</div>';
+  } else {
+    html += '<div class="grammar-type-area"><input type="text" class="grammar-type-input" id="grammar-answer-input" placeholder="Type your answer..." autocomplete="off" autocapitalize="off">';
+    html += '<button class="grammar-check-btn" onclick="checkGrammarTyped()">Check</button></div>';
+  }
   return html;
 }
 
