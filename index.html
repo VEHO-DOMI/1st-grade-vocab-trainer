@@ -5461,12 +5461,12 @@ async function saveSessionResults() {
             const due = new Date();
             due.setDate(due.getDate() + 1);
             merged[w].dueDate = due.toISOString();
+            // Preserve flashcard status from current session
+            if (state.progressData[slug] && state.progressData[slug].words && state.progressData[slug].words[w] && state.progressData[slug].words[w].status) {
+              merged[w].status = state.progressData[slug].words[w].status;
+            }
           }
         }
-          // Preserve flashcard status from current session
-          if (state.progressData[slug] && state.progressData[slug].words && state.progressData[slug].words[w] && state.progressData[slug].words[w].status) {
-            merged[w].status = state.progressData[slug].words[w].status;
-          }
         await docRef.set({ source: src, words: merged }, { merge: true });
         state.progressData[slug] = { source: src, words: merged };
       } else {
