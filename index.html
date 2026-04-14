@@ -2804,6 +2804,18 @@ body.playing .header-container { display: none; }
     <button class="home-mode-switch-btn" id="home-mode-switch" onclick="showModeSelectScreen()" style="display:none;">↩️ Zu Grammatik oder Story Mode wechseln</button>
   </div>
 
+  <!-- Grammar Memory Match — grammar mode only -->
+  <div class="home-section" id="grammar-mm-section" style="display:none;">
+    <button class="home-fullwidth-card" id="grammar-mm-entry-btn" onclick="openGrammarMemoryMatchPicker()">
+      <span class="home-fullwidth-icon">🧩</span>
+      <div class="home-fullwidth-info">
+        <span class="home-fullwidth-title" id="grammar-mm-entry-title">Grammar Memory Match</span>
+        <span class="home-fullwidth-subtitle" id="grammar-mm-entry-subtitle">Match subject–form pairs to win XP</span>
+      </div>
+      <span class="home-fullwidth-arrow">→</span>
+    </button>
+  </div>
+
   <!-- Words/Rules — full width card -->
   <div class="home-section">
     <button class="home-fullwidth-card" id="home-words-btn" onclick="showWordReference()">
@@ -3173,6 +3185,31 @@ body.playing .header-container { display: none; }
       <div class="mm-done-stats" id="mm-done-stats"></div>
       <button class="btn btn-primary" onclick="startMemoryMatchRound()">Play Again</button>
       <button class="btn btn-secondary" style="margin-left:0.5rem;" onclick="endMemoryMatch()">Done</button>
+    </div>
+  </div>
+</div>
+
+<div id="grammar-mm-screen" class="screen">
+  <div class="mm-screen">
+    <div class="mm-header">
+      <button class="btn btn-secondary btn-small" onclick="endGrammarMemoryMatch()">&larr; Done</button>
+      <div class="mm-stats">
+        <div><span class="mm-stat-label" id="gmm-label-pairs">Pairs:</span><span id="gmm-pairs">0/0</span></div>
+        <div><span class="mm-stat-label" id="gmm-label-moves">Moves:</span><span id="gmm-moves">0</span></div>
+      </div>
+    </div>
+    <div class="wh-prompt-card" id="gmm-title-card" style="display:none;">
+      <div class="wh-prompt-label" id="gmm-title-label">Structure</div>
+      <div class="wh-prompt-text" id="gmm-title-text"></div>
+    </div>
+    <div id="gmm-picker" style="display:none;"></div>
+    <div id="gmm-grid" class="mm-grid"></div>
+    <div id="gmm-done" class="mm-done" style="display:none;">
+      <h2 id="gmm-done-title">🎉 Perfect!</h2>
+      <div class="mm-done-stats" id="gmm-done-stats"></div>
+      <button class="btn btn-primary" onclick="startGrammarMemoryMatchRound()">Play Again</button>
+      <button class="btn btn-secondary" style="margin-left:0.5rem;" onclick="openGrammarMemoryMatchPicker()">Pick Topic</button>
+      <button class="btn btn-secondary" style="margin-left:0.5rem;" onclick="endGrammarMemoryMatch()">Done</button>
     </div>
   </div>
 </div>
@@ -6524,6 +6561,9 @@ function showHomeScreen() {
   const reviewBtn2 = document.getElementById('review-btn');
   if (reviewBtn2) reviewBtn2.style.display = 'none';
 
+  // Hide grammar-only cards in vocab mode
+  var gmmSec = document.getElementById('grammar-mm-section');
+  if (gmmSec) gmmSec.style.display = 'none';
   showScreen('home-screen');
   setupPresence();
   const battleBtn = document.getElementById('btn-battle');
@@ -7504,6 +7544,252 @@ function finishMemoryMatch() {
 function endMemoryMatch() {
   document.body.classList.remove('playing');
   showHomeScreen();
+}
+
+// =========================================================
+// ========== GRAMMAR MEMORY MATCH =========================
+// =========================================================
+// Curated form-pair decks, keyed by grammar structure id (sid).
+// Each deck has short labels (<=14 chars) designed to render cleanly
+// on small (<=400px) phones. Pairs are semantic form-pairs: subject↔form,
+// base↔inflected, article↔noun, etc.
+const GRAMMAR_MM_DECKS = {
+  "m1-u1-plurals": { t:{en:"Irregular Plurals",de:"Unregelmäßige Mehrzahl"}, pairs:[
+    ["child","children"],["man","men"],["woman","women"],
+    ["foot","feet"],["tooth","teeth"],["mouse","mice"]
+  ]},
+  "m1-u1-contractions": { t:{en:"Contractions with be",de:"Kurzformen mit be"}, pairs:[
+    ["I am","I'm"],["he is","he's"],["she is","she's"],["it is","it's"],
+    ["we are","we're"],["you are","you're"],["they are","they're"]
+  ]},
+  "m1-u2-to-be": { t:{en:"Subject + to be",de:"Subjekt + to be"}, pairs:[
+    ["I","am"],["he","is"],["she","is"],["it","is"],
+    ["we","are"],["you","are"],["they","are"]
+  ]},
+  "m1-u3-have-got": { t:{en:"have / has got",de:"have / has got"}, pairs:[
+    ["I","have got"],["you","have got"],["he","has got"],["she","has got"],
+    ["it","has got"],["we","have got"],["they","have got"]
+  ]},
+  "m1-u5-possessive-adjectives": { t:{en:"Possessive Adjectives",de:"Possessivbegleiter"}, pairs:[
+    ["I","my"],["you","your"],["he","his"],["she","her"],
+    ["it","its"],["we","our"],["they","their"]
+  ]},
+  "m1-u6-present-simple-affirmative": { t:{en:"3rd Person -s",de:"3. Person -s"}, pairs:[
+    ["play","plays"],["go","goes"],["watch","watches"],["fly","flies"],
+    ["have","has"],["do","does"],["kiss","kisses"]
+  ]},
+  "m1-u7-articles": { t:{en:"Articles a / an",de:"Artikel a / an"}, pairs:[
+    ["a","book"],["an","apple"],["a","teacher"],["an","orange"],
+    ["a","house"],["an","umbrella"],["a","car"],["an","egg"]
+  ]},
+  "m1-u9-object-pronouns": { t:{en:"Object Pronouns",de:"Objektpronomen"}, pairs:[
+    ["I","me"],["you","you"],["he","him"],["she","her"],
+    ["it","it"],["we","us"],["they","them"]
+  ]},
+  "m1-u13-past-simple-regular": { t:{en:"Past Simple -ed",de:"Past Simple -ed"}, pairs:[
+    ["play","played"],["watch","watched"],["walk","walked"],["like","liked"],
+    ["stop","stopped"],["study","studied"],["try","tried"],["want","wanted"]
+  ]},
+  "m1-u14-irregular-verbs": { t:{en:"Irregular Past",de:"Unregelm. Past Simple"}, pairs:[
+    ["go","went"],["have","had"],["do","did"],["see","saw"],
+    ["eat","ate"],["come","came"],["make","made"],["take","took"]
+  ]}
+};
+
+let gmmState = { sid:null, deck:null, pairs:[], cards:[], first:null, second:null, moves:0, matched:0, startTime:0, busy:false };
+
+function awardGrammarXP(n, label) {
+  if (!n || n <= 0) return;
+  if (studentsRef && state.studentId) {
+    ffWrite(studentsRef.doc(state.studentId).update({
+      grammarXp: firebase.firestore.FieldValue.increment(n),
+      lastActive: firebase.firestore.FieldValue.serverTimestamp()
+    }), label || 'grammarXP');
+    if (state.studentData) state.studentData.grammarXp = (state.studentData.grammarXp || 0) + n;
+  }
+  if (typeof showBonusNotification === 'function') {
+    showBonusNotification('+' + n + ' XP' + (label ? ' — ' + label : ''));
+  }
+}
+
+// Build picker list of available decks, filtered by current grammar level filter
+function getAvailableGrammarMmDecks() {
+  const out = [];
+  const filter = (typeof grammarLevelFilter !== 'undefined' && grammarLevelFilter) ? grammarLevelFilter : null;
+  Object.keys(GRAMMAR_MM_DECKS).forEach(sid => {
+    if (filter && sid.indexOf(filter + '-') !== 0) return;
+    // Verify the structure actually exists in current grammar data (respects level filter)
+    if (typeof grammarStructures !== 'undefined' && grammarStructures.length) {
+      if (!grammarStructures.find(s => s.id === sid)) return;
+    }
+    out.push({ sid: sid, deck: GRAMMAR_MM_DECKS[sid] });
+  });
+  return out;
+}
+
+function openGrammarMemoryMatchPicker() {
+  const decks = getAvailableGrammarMmDecks();
+  if (!decks.length) {
+    alert(uiLang==='de' ? 'Keine Grammatik-Memory-Decks verfügbar.' : 'No Grammar Memory Match decks available.');
+    return;
+  }
+  document.body.classList.add('playing');
+  showScreen('grammar-mm-screen');
+  // Hide game elements, show picker
+  document.getElementById('gmm-title-card').style.display = 'none';
+  document.getElementById('gmm-grid').style.display = 'none';
+  document.getElementById('gmm-done').style.display = 'none';
+  document.getElementById('gmm-pairs').textContent = '–';
+  document.getElementById('gmm-moves').textContent = '–';
+  const picker = document.getElementById('gmm-picker');
+  const de = uiLang === 'de';
+  let html = '<div style="padding:0.5rem 0.2rem;">';
+  html += '<h2 style="font-family:Fredoka,sans-serif;font-size:1.1rem;margin:0 0 0.2rem;">' + (de?'🧩 Thema wählen':'🧩 Choose a topic') + '</h2>';
+  html += '<div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.8rem;">' + (de?'Finde die passenden Form-Paare.':'Find the matching form-pairs.') + '</div>';
+  html += '<div style="display:flex;flex-direction:column;gap:0.5rem;">';
+  decks.forEach(({sid, deck}) => {
+    const label = de ? deck.t.de : deck.t.en;
+    const n = deck.pairs.length;
+    html += '<button class="home-fullwidth-card" onclick="startGrammarMemoryMatch(\'' + sid + '\')" style="width:100%;">';
+    html += '<span class="home-fullwidth-icon">🧩</span>';
+    html += '<div class="home-fullwidth-info"><span class="home-fullwidth-title">' + label + '</span>';
+    html += '<span class="home-fullwidth-subtitle">' + n + ' ' + (de?'Paare':'pairs') + ' · ' + sid + '</span></div>';
+    html += '<span class="home-fullwidth-arrow">→</span></button>';
+  });
+  html += '</div></div>';
+  picker.innerHTML = html;
+  picker.style.display = '';
+}
+
+function startGrammarMemoryMatch(sid) {
+  const deck = GRAMMAR_MM_DECKS[sid];
+  if (!deck) { alert('Deck not found: ' + sid); return; }
+  gmmState.sid = sid;
+  gmmState.deck = deck;
+  document.getElementById('gmm-picker').style.display = 'none';
+  document.getElementById('gmm-grid').style.display = '';
+  startGrammarMemoryMatchRound();
+}
+
+function startGrammarMemoryMatchRound() {
+  const deck = gmmState.deck;
+  if (!deck) { openGrammarMemoryMatchPicker(); return; }
+  const allPairs = [...deck.pairs];
+  shuffle(allPairs);
+  const picks = allPairs.slice(0, Math.min(8, allPairs.length));
+  const cards = [];
+  picks.forEach((p, i) => {
+    cards.push({ pairId: i, side: 'a', text: p[0] });
+    cards.push({ pairId: i, side: 'b', text: p[1] });
+  });
+  shuffle(cards);
+  gmmState.pairs = picks;
+  gmmState.cards = cards;
+  gmmState.first = null; gmmState.second = null; gmmState.moves = 0; gmmState.matched = 0;
+  gmmState.startTime = Date.now(); gmmState.busy = false;
+  // Title card
+  const titleCard = document.getElementById('gmm-title-card');
+  const titleText = document.getElementById('gmm-title-text');
+  const titleLabel = document.getElementById('gmm-title-label');
+  if (titleCard && titleText) {
+    const de = uiLang === 'de';
+    titleLabel.textContent = de ? 'Struktur' : 'Structure';
+    titleText.textContent = de ? deck.t.de : deck.t.en;
+    titleCard.style.display = '';
+  }
+  // Labels localization
+  const de2 = uiLang === 'de';
+  const lblPairs = document.getElementById('gmm-label-pairs');
+  const lblMoves = document.getElementById('gmm-label-moves');
+  if (lblPairs) lblPairs.textContent = (de2 ? 'Paare:' : 'Pairs:');
+  if (lblMoves) lblMoves.textContent = (de2 ? 'Züge:' : 'Moves:');
+  renderGrammarMemoryMatch();
+  document.getElementById('gmm-done').style.display = 'none';
+  document.getElementById('gmm-grid').style.display = '';
+}
+
+function renderGrammarMemoryMatch() {
+  const grid = document.getElementById('gmm-grid');
+  grid.innerHTML = '';
+  grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+  gmmState.cards.forEach((c, idx) => {
+    const el = document.createElement('div');
+    el.className = 'mm-card hidden';
+    el.dataset.idx = idx;
+    el.dataset.pair = c.pairId;
+    el.dataset.side = c.side;
+    // No EN/DE label — both cards are English forms
+    el.textContent = c.text;
+    el.onclick = () => gmmFlip(idx);
+    grid.appendChild(el);
+  });
+  updateGrammarMemoryMatchStats();
+}
+
+function updateGrammarMemoryMatchStats() {
+  document.getElementById('gmm-pairs').textContent = gmmState.matched + '/' + gmmState.pairs.length;
+  document.getElementById('gmm-moves').textContent = gmmState.moves;
+}
+
+function gmmFlip(idx) {
+  if (gmmState.busy) return;
+  const el = document.querySelector('#gmm-grid .mm-card[data-idx="'+idx+'"]');
+  if (!el || !el.classList.contains('hidden')) return;
+  el.classList.remove('hidden');
+  el.classList.add('flipped','selected');
+  if (!gmmState.first) { gmmState.first = { idx: idx, el: el, card: gmmState.cards[idx] }; return; }
+  if (gmmState.first.idx === idx) return;
+  gmmState.second = { idx: idx, el: el, card: gmmState.cards[idx] };
+  gmmState.moves++;
+  updateGrammarMemoryMatchStats();
+  const a = gmmState.first, b = gmmState.second;
+  const isMatch = a.card.pairId === b.card.pairId && a.card.side !== b.card.side;
+  gmmState.busy = true;
+  if (isMatch) {
+    setTimeout(() => {
+      a.el.classList.remove('selected'); b.el.classList.remove('selected');
+      a.el.classList.add('matched'); b.el.classList.add('matched');
+      gmmState.matched++;
+      updateGrammarMemoryMatchStats();
+      setTimeout(() => { a.el.classList.add('gone'); b.el.classList.add('gone'); }, 400);
+      gmmState.first = null; gmmState.second = null; gmmState.busy = false;
+      if (gmmState.matched >= gmmState.pairs.length) setTimeout(finishGrammarMemoryMatch, 700);
+    }, 450);
+  } else {
+    setTimeout(() => {
+      a.el.classList.add('mismatch'); b.el.classList.add('mismatch');
+      setTimeout(() => {
+        a.el.classList.remove('selected','mismatch','flipped');
+        b.el.classList.remove('selected','mismatch','flipped');
+        a.el.classList.add('hidden'); b.el.classList.add('hidden');
+        gmmState.first = null; gmmState.second = null; gmmState.busy = false;
+      }, 550);
+    }, 500);
+  }
+}
+
+function finishGrammarMemoryMatch() {
+  const elapsed = Math.round((Date.now() - gmmState.startTime) / 1000);
+  const pairs = gmmState.pairs.length;
+  const baseXP = pairs * 4; // grammar weighted slightly higher than vocab (4 vs 3)
+  const efficient = gmmState.moves <= Math.ceil(pairs * 1.5);
+  const bonusXP = efficient ? 12 : 0;
+  const totalXP = baseXP + bonusXP;
+  document.getElementById('gmm-grid').style.display = 'none';
+  document.getElementById('gmm-done').style.display = '';
+  document.getElementById('gmm-done-title').textContent = efficient ? '🌟 Perfect Memory!' : '🎉 All Matched!';
+  const de = uiLang === 'de';
+  document.getElementById('gmm-done-stats').innerHTML =
+    (de?'Paare':'Pairs') + ': <strong>' + pairs + '</strong><br>' +
+    (de?'Züge':'Moves') + ': <strong>' + gmmState.moves + '</strong><br>' +
+    (de?'Zeit':'Time') + ': <strong>' + elapsed + 's</strong><br>' +
+    '<span style="color:var(--accent);font-weight:700;">+' + totalXP + ' XP' + (bonusXP?' ('+(de?'Effizienz-Bonus':'Efficiency bonus')+')':'') + '</span>';
+  awardGrammarXP(totalXP, 'Grammar Memory Match');
+}
+
+function endGrammarMemoryMatch() {
+  document.body.classList.remove('playing');
+  showGrammarHomeScreen();
 }
 
 // =========================================================
@@ -11368,6 +11654,15 @@ function showGrammarHomeScreen() {
   // Battle arena subtitle
   var bSub = document.getElementById('battle-arena-subtitle');
   if (bSub) bSub.textContent = uiLang==='de' ? 'Duell, Klassenquiz & Kampfverlauf' : 'Duel, Class Quiz & Battle History';
+  // Grammar Memory Match card — grammar mode only
+  var gmmSec = document.getElementById('grammar-mm-section');
+  if (gmmSec) {
+    gmmSec.style.display = '';
+    var gmmTitle = document.getElementById('grammar-mm-entry-title');
+    var gmmSub   = document.getElementById('grammar-mm-entry-subtitle');
+    if (gmmTitle) gmmTitle.textContent = uiLang==='de' ? 'Grammatik-Memory' : 'Grammar Memory Match';
+    if (gmmSub)   gmmSub.textContent   = uiLang==='de' ? 'Passende Formen finden, XP verdienen' : 'Match form-pairs to win XP';
+  }
   // Overall level bar
   var totalXp = (d.xp || 0) + (d.grammarXp || 0);
   var ol = getOverallLevel(totalXp);
