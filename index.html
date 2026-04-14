@@ -7400,17 +7400,30 @@ function endSpellingBee() {
 // =========================================================
 // ========== NEW VOCAB MODES: WORD HUNT ===================
 // =========================================================
-// Categories for Word Hunt — matches G1 vocab themes
+// Categories for Word Hunt — each has an explicit keyword list; a vocab entry matches
+// only if its ENGLISH WORD ITSELF (normalised) equals or contains one of these as a whole token.
+function _whMatch(w, kws) {
+  const base = (w.w || '').toLowerCase().replace(/^(to|a|an|the)\s+/, '').trim();
+  if (!base) return false;
+  const tokens = base.split(/[\s-]+/);
+  for (const kw of kws) {
+    if (base === kw) return true;
+    if (tokens.includes(kw)) return true;
+  }
+  return false;
+}
 const WH_CATEGORIES = [
-  { id: 'food', name_en: 'Food & Drink', name_de: 'Essen & Trinken', match: w => /food|eat|drink|juice|milk|bread|cheese|apple|banana|chicken|rice|egg|cake|cookie|fruit|vegetable|sugar|salt|coffee|tea|water|burger|pizza|soup|sandwich|orange|tomato|potato|pasta|breakfast|lunch|dinner|meal|carrot|onion|sauce|cream|chocolate|candy|sweet|pepper|butter|honey|salad|fish|meat|beef|pork|ham|bacon|noodle/i.test((w.w||'') + ' ' + (w.d||'')) },
-  { id: 'animal', name_en: 'Animals', name_de: 'Tiere', match: w => /animal|dog|cat|mouse|bird|horse|cow|sheep|pig|fish|rabbit|duck|chicken|goat|lion|tiger|bear|monkey|frog|snake|spider|insect|bee|butterfly|fly|elephant|zebra|giraffe|kangaroo|panda|parrot/i.test((w.w||'') + ' ' + (w.d||'')) },
-  { id: 'family', name_en: 'Family & People', name_de: 'Familie & Menschen', match: w => /family|mother|father|mum|dad|sister|brother|son|daughter|parent|child|baby|aunt|uncle|cousin|grandma|grandpa|grandmother|grandfather|husband|wife|friend|boy|girl|man|woman|person|people|neighbour|teacher|student/i.test((w.w||'') + ' ' + (w.d||'')) },
-  { id: 'clothes', name_en: 'Clothes', name_de: 'Kleidung', match: w => /clothes|wear|shirt|trouser|jean|skirt|dress|coat|jacket|sweater|pullover|hat|cap|scarf|glove|sock|shoe|boot|tie|belt|hoodie|uniform|pyjama|swimsuit|t-shirt|tshirt/i.test((w.w||'') + ' ' + (w.d||'')) },
-  { id: 'school', name_en: 'School', name_de: 'Schule', match: w => /school|book|pencil|pen|ruler|rubber|eraser|scissors|desk|chair|classroom|teacher|student|lesson|homework|exam|test|break|exercise|subject|blackboard|whiteboard|notebook|library|playground|backpack/i.test((w.w||'') + ' ' + (w.d||'')) },
-  { id: 'action', name_en: 'Actions (Verbs)', name_de: 'Verben (Tätigkeiten)', match: w => /^to\s/i.test(w.w||'') || (w.cf && w.w && w.w !== w.cf) },
-  { id: 'home', name_en: 'Home & Rooms', name_de: 'Zuhause & Räume', match: w => /house|home|room|bedroom|kitchen|bathroom|living room|garden|door|window|wall|floor|ceiling|roof|stairs|garage|sofa|chair|table|bed|cupboard|shelf|lamp|carpet|mirror|bathtub|shower|fridge|oven/i.test((w.w||'') + ' ' + (w.d||'')) },
-  { id: 'body', name_en: 'Body Parts', name_de: 'Körperteile', match: w => /body|head|hair|face|eye|ear|nose|mouth|lip|tooth|tongue|neck|shoulder|arm|hand|finger|leg|foot|toe|knee|back|chest|stomach|skin|heart|brain/i.test((w.w||'') + ' ' + (w.d||'')) }
+  { id: 'food', name_en: 'Food & Drink', name_de: 'Essen & Trinken', kws: ['food','drink','juice','milk','bread','cheese','apple','banana','chicken','rice','egg','eggs','cake','cookie','cookies','fruit','vegetable','vegetables','sugar','salt','coffee','tea','water','burger','pizza','soup','sandwich','orange','tomato','potato','pasta','breakfast','lunch','dinner','meal','carrot','onion','sauce','cream','chocolate','candy','sweets','pepper','butter','honey','salad','fish','meat','beef','pork','ham','bacon','noodle','noodles','lemonade','yoghurt','biscuit','biscuits','crisps','chips','ice cream','pear','grape','grapes','strawberry','strawberries','peach'] },
+  { id: 'animal', name_en: 'Animals', name_de: 'Tiere', kws: ['animal','dog','cat','mouse','bird','horse','cow','sheep','pig','fish','rabbit','duck','chicken','goat','lion','tiger','bear','monkey','frog','snake','spider','insect','bee','butterfly','fly','elephant','zebra','giraffe','kangaroo','panda','parrot','hamster','goldfish','rat','pony','wolf','fox','squirrel','shark','dolphin','whale','crocodile'] },
+  { id: 'family', name_en: 'Family & People', name_de: 'Familie & Menschen', kws: ['family','mother','father','mum','dad','sister','brother','son','daughter','parent','parents','child','children','baby','aunt','uncle','cousin','grandma','grandpa','grandmother','grandfather','husband','wife','friend','boy','girl','man','woman','person','people','neighbour','teacher','student'] },
+  { id: 'clothes', name_en: 'Clothes', name_de: 'Kleidung', kws: ['shirt','t-shirt','tshirt','trousers','jeans','skirt','dress','coat','jacket','sweater','pullover','hat','cap','scarf','glove','gloves','sock','socks','shoe','shoes','boot','boots','tie','belt','hoodie','uniform','pyjamas','swimsuit','sweatshirt','sunglasses','hairband','school tie'] },
+  { id: 'school', name_en: 'School', name_de: 'Schule', kws: ['book','pencil','pen','ruler','rubber','eraser','scissors','desk','chair','classroom','teacher','student','lesson','homework','exam','test','exercise','subject','blackboard','whiteboard','notebook','library','playground','backpack','school','schoolbag','school bag','pencil case','exercise book','board','projector','tablet'] },
+  { id: 'action', name_en: 'Actions (Verbs)', name_de: 'Verben (Tätigkeiten)', match: w => /^to\s/i.test(w.w||'') },
+  { id: 'home', name_en: 'Home & Rooms', name_de: 'Zuhause & Räume', kws: ['house','home','room','bedroom','kitchen','bathroom','living room','garden','door','window','wall','floor','ceiling','roof','stairs','garage','sofa','armchair','table','bed','cupboard','shelf','lamp','carpet','mirror','bathtub','shower','fridge','oven','toilet','sink','cooker'] },
+  { id: 'body', name_en: 'Body Parts', name_de: 'Körperteile', kws: ['body','head','hair','face','eye','eyes','ear','ears','nose','mouth','lip','lips','tooth','teeth','tongue','neck','shoulder','shoulders','arm','arms','hand','hands','finger','fingers','leg','legs','foot','feet','toe','toes','knee','knees','chest','stomach','skin','heart','brain'] }
 ];
+// Attach default matcher using _whMatch for categories with kws
+WH_CATEGORIES.forEach(c => { if (c.kws && !c.match) c.match = w => _whMatch(w, c.kws); });
 
 let whState = { round: 0, totalRounds: 5, score: 0, target: null, tiles: [], picked: new Set(), correctSet: new Set(), answered: false };
 
