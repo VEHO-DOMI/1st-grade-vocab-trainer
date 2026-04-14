@@ -2163,12 +2163,13 @@ body.playing .header-container { display: none; }
 .sb-prompt-label { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.6px; color:var(--muted); font-weight:700; margin-bottom:0.4rem; }
 .sb-prompt-german { font-size:1.3rem; font-weight:700; color:var(--accent); margin-bottom:0.4rem; }
 .sb-prompt-hint { font-size:0.85rem; color:var(--text-secondary, var(--muted)); font-style:italic; line-height:1.4; }
-.sb-answer-row { display:flex; flex-wrap:wrap; gap:0.3rem; justify-content:center; min-height:56px; padding:0.5rem; margin-bottom:0.6rem; background:var(--bg); border:2px dashed var(--card-border); border-radius:12px; }
-.sb-slot { width:42px; height:48px; display:flex; align-items:center; justify-content:center; background:var(--card); border:2px solid var(--card-border); border-radius:10px; font-size:1.2rem; font-weight:800; text-transform:uppercase; cursor:pointer; transition:transform 0.15s, border-color 0.2s; }
+.sb-answer-row { display:flex; flex-wrap:wrap; gap:0.3rem 0.7rem; justify-content:center; align-items:center; min-height:56px; padding:0.5rem; margin-bottom:0.6rem; background:var(--bg); border:2px dashed var(--card-border); border-radius:12px; }
+.sb-word { display:inline-flex; flex-wrap:nowrap; gap:0.3rem; align-items:center; }
+.sb-slot { width:42px; height:48px; display:flex; align-items:center; justify-content:center; background:var(--card); border:2px solid var(--card-border); border-radius:10px; font-size:1.2rem; font-weight:800; text-transform:uppercase; cursor:pointer; transition:transform 0.15s, border-color 0.2s; flex-shrink:0; }
 .sb-slot.filled { background:var(--accent-glow); border-color:var(--accent); color:var(--accent); }
 .sb-slot.filled:hover { transform:translateY(-2px); }
-.sb-slot.space { width:16px; border:none; background:transparent; }
-.sb-slot.hyphen { width:12px; border:none; background:transparent; color:var(--muted); font-weight:500; }
+.sb-slot.filled.reveal { background:var(--correct-glow, #d4f5db); border-color:var(--correct, #16a34a); color:var(--correct, #16a34a); cursor:default; }
+.sb-slot.hyphen { width:auto; min-width:14px; border:none; background:transparent; color:var(--muted); font-weight:500; padding:0 2px; }
 .sb-letters { display:flex; flex-wrap:wrap; gap:0.35rem; justify-content:center; margin-bottom:0.8rem; }
 .sb-letter-btn { width:44px; height:50px; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, var(--card) 0%, var(--bg) 100%); border:2px solid var(--card-border); border-radius:10px; font-size:1.3rem; font-weight:800; text-transform:uppercase; cursor:pointer; transition:transform 0.15s, background 0.2s; font-family:inherit; color:var(--text); }
 .sb-letter-btn:hover, .sb-letter-btn:active { transform:translateY(-3px); border-color:var(--accent); }
@@ -3163,10 +3164,10 @@ body.playing .header-container { display: none; }
 <div id="spelling-bee-screen" class="screen">
   <div class="sb-screen">
     <div class="sb-header">
-      <button class="btn btn-secondary btn-small" onclick="endSpellingBee()">&larr; Done</button>
+      <button class="btn btn-secondary btn-small" id="sb-done-btn" onclick="endSpellingBee()">&larr; Done</button>
       <div class="sb-stats">
-        <div><span class="mm-stat-label">Word:</span><span id="sb-idx">0/0</span></div>
-        <div><span class="mm-stat-label">Correct:</span><span id="sb-correct">0</span></div>
+        <div><span class="mm-stat-label" id="sb-label-word">Word:</span><span id="sb-idx">0/0</span></div>
+        <div><span class="mm-stat-label" id="sb-label-correct">Correct:</span><span id="sb-correct">0</span></div>
       </div>
     </div>
     <div class="sb-prompt-card">
@@ -3177,10 +3178,14 @@ body.playing .header-container { display: none; }
     <div id="sb-feedback" class="sb-feedback" style="display:none;"></div>
     <div id="sb-answer-row" class="sb-answer-row"></div>
     <div id="sb-letters" class="sb-letters"></div>
-    <div class="sb-actions">
-      <button class="btn btn-secondary" onclick="spellingBeeClear()">Clear</button>
-      <button class="btn btn-secondary" onclick="spellingBeeHint()">Hint (-2 XP)</button>
-      <button class="btn btn-primary" onclick="spellingBeeCheck()">Check ✓</button>
+    <div class="sb-actions" id="sb-input-actions">
+      <button class="btn btn-secondary" id="sb-back-btn" onclick="spellingBeeBackspace()">⌫</button>
+      <button class="btn btn-secondary" id="sb-clear-btn" onclick="spellingBeeClear()">Clear</button>
+      <button class="btn btn-secondary" id="sb-hint-btn" onclick="spellingBeeHint()">Hint (-2 XP)</button>
+      <button class="btn btn-primary" id="sb-check-btn" onclick="spellingBeeCheck()">Check ✓</button>
+    </div>
+    <div class="sb-actions" id="sb-continue-actions" style="display:none;">
+      <button class="btn btn-primary btn-block" id="sb-continue-btn" onclick="spellingBeeContinue()">Continue →</button>
     </div>
   </div>
 </div>
@@ -7230,28 +7235,56 @@ function endMemoryMatch() {
 // =========================================================
 // ========== NEW VOCAB MODES: SPELLING BEE ================
 // =========================================================
-let sbState = { deck: [], idx: 0, correct: 0, wrong: 0, currentWord: null, placed: [], letters: [], hintUsed: false };
+let sbState = { deck: [], idx: 0, correct: 0, wrong: 0, currentWord: null, placed: [], letters: [], hintUsed: false, answered: false };
+
+function sbT(key) {
+  const de = uiLang === 'de';
+  const d = {
+    done: de ? 'Fertig' : 'Done',
+    word: de ? 'Wort:' : 'Word:',
+    correct: de ? 'Richtig:' : 'Correct:',
+    translateSpell: de ? 'Übersetzen & Buchstabieren' : 'Translate & spell',
+    clear: de ? 'Löschen' : 'Clear',
+    hint: de ? 'Tipp (-2 XP)' : 'Hint (-2 XP)',
+    check: de ? 'Prüfen ✓' : 'Check ✓',
+    continue: de ? 'Weiter →' : 'Continue →',
+    correctMsg: de ? '✓ Richtig! ' : '✓ Correct! ',
+    wrongMsg: de ? '✗ Falsch — richtig wäre: ' : '✗ Wrong — correct was: ',
+    tooFew: de ? 'Zu wenige Wörter — wähle mehr Units.' : 'Too few words — pick more units.',
+    finished: de ? 'Buchstabier-Biene fertig!\n\n' : 'Spelling Bee complete!\n\n',
+    finishedCorrect: de ? 'Richtig: ' : 'Correct: '
+  };
+  return d[key];
+}
 
 function sbNormaliseTarget(w) {
-  // Use citation form if available; otherwise the plain word
   const base = w.cf ? w.cf : w.w.replace(/^(to|a|an|the)\s+/i, '');
   return base;
+}
+
+function sbLocaliseChrome() {
+  document.getElementById('sb-done-btn').innerHTML = '← ' + sbT('done');
+  document.getElementById('sb-label-word').textContent = sbT('word');
+  document.getElementById('sb-label-correct').textContent = sbT('correct');
+  document.getElementById('sb-prompt-label').textContent = sbT('translateSpell');
+  document.getElementById('sb-clear-btn').textContent = sbT('clear');
+  document.getElementById('sb-hint-btn').textContent = sbT('hint');
+  document.getElementById('sb-check-btn').textContent = sbT('check');
+  document.getElementById('sb-continue-btn').textContent = sbT('continue');
 }
 
 function startSpellingBee() {
   const pool = collectVocabFromSelectedUnits().filter(w => {
     const t = sbNormaliseTarget(w);
-    return t.length >= 3 && t.length <= 14;
+    return t.length >= 3 && t.length <= 20;
   });
-  if (pool.length < 5) {
-    alert(uiLang==='de' ? 'Zu wenige Wörter — wähle mehr Units.' : 'Too few words — pick more units.');
-    return;
-  }
+  if (pool.length < 5) { alert(sbT('tooFew')); return; }
   shuffle(pool);
   sbState.deck = pool.slice(0, Math.min(12, pool.length));
   sbState.idx = 0; sbState.correct = 0; sbState.wrong = 0;
   document.body.classList.add('playing');
   showScreen('spelling-bee-screen');
+  sbLocaliseChrome();
   showSpellingBeeWord();
 }
 
@@ -7260,14 +7293,13 @@ function showSpellingBeeWord() {
   const w = sbState.deck[sbState.idx];
   sbState.currentWord = w;
   sbState.hintUsed = false;
+  sbState.answered = false;
   const target = sbNormaliseTarget(w);
-  sbState.placed = []; // array of {letterIdx, char} in answer order
-  // Build letter pool: target chars (upper), shuffled. Skip spaces/hyphens (those are fixed separators in slots).
+  sbState.placed = [];
   const letterChars = [];
   for (const ch of target) {
     if (/[a-zA-Z]/.test(ch)) letterChars.push(ch.toUpperCase());
   }
-  // Add 2 random distractor letters to make it a tiny bit harder (only if word >= 5)
   if (target.length >= 5) {
     const abc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let added = 0, tries = 0;
@@ -7285,6 +7317,9 @@ function showSpellingBeeWord() {
   document.getElementById('sb-correct').textContent = sbState.correct;
   const fb = document.getElementById('sb-feedback');
   fb.style.display = 'none'; fb.className = 'sb-feedback';
+  document.getElementById('sb-input-actions').style.display = '';
+  document.getElementById('sb-continue-actions').style.display = 'none';
+  document.getElementById('sb-letters').style.display = '';
   renderSpellingBee();
 }
 
@@ -7292,41 +7327,55 @@ function renderSpellingBee() {
   const target = sbNormaliseTarget(sbState.currentWord);
   const answerRow = document.getElementById('sb-answer-row');
   answerRow.innerHTML = '';
+  // Build word groups so multi-word phrases wrap at word boundaries, not mid-word.
+  const words = target.split(' ');
   let letterSlotCount = 0;
-  for (let i = 0; i < target.length; i++) {
-    const ch = target[i];
-    if (ch === ' ') {
-      const sp = document.createElement('div'); sp.className = 'sb-slot space'; answerRow.appendChild(sp);
-    } else if (ch === '-') {
-      const hy = document.createElement('div'); hy.className = 'sb-slot hyphen'; hy.textContent = '-'; answerRow.appendChild(hy);
-    } else {
-      const slot = document.createElement('div');
-      slot.className = 'sb-slot';
-      slot.dataset.pos = letterSlotCount;
-      const placed = sbState.placed[letterSlotCount];
-      if (placed) {
-        slot.textContent = placed.char;
-        slot.classList.add('filled');
-        slot.onclick = () => spellingBeeRemove(letterSlotCount);
+  const revealAll = sbState.answered;
+  const correctUpper = target.replace(/[\s-]/g, '').toUpperCase();
+  words.forEach((wordChunk, wi) => {
+    const wordGroup = document.createElement('div');
+    wordGroup.className = 'sb-word';
+    for (let i = 0; i < wordChunk.length; i++) {
+      const ch = wordChunk[i];
+      if (ch === '-') {
+        const hy = document.createElement('div'); hy.className = 'sb-slot hyphen'; hy.textContent = '-'; wordGroup.appendChild(hy);
       } else {
-        slot.textContent = '';
+        const slot = document.createElement('div');
+        slot.className = 'sb-slot';
+        slot.dataset.pos = letterSlotCount;
+        const placed = sbState.placed[letterSlotCount];
+        if (revealAll) {
+          slot.textContent = correctUpper[letterSlotCount] || '';
+          slot.classList.add('filled', 'reveal');
+        } else if (placed) {
+          slot.textContent = placed.char;
+          slot.classList.add('filled');
+          const pos = letterSlotCount;
+          slot.onclick = () => spellingBeeRemoveAt(pos);
+        } else {
+          slot.textContent = '';
+        }
+        wordGroup.appendChild(slot);
+        letterSlotCount++;
       }
-      answerRow.appendChild(slot);
-      letterSlotCount++;
     }
-  }
+    answerRow.appendChild(wordGroup);
+  });
   const lettersRow = document.getElementById('sb-letters');
   lettersRow.innerHTML = '';
-  sbState.letters.forEach(L => {
-    const btn = document.createElement('button');
-    btn.className = 'sb-letter-btn' + (L.used ? ' used' : '');
-    btn.textContent = L.char;
-    btn.onclick = () => spellingBeePlace(L.idx);
-    lettersRow.appendChild(btn);
-  });
+  if (!revealAll) {
+    sbState.letters.forEach(L => {
+      const btn = document.createElement('button');
+      btn.className = 'sb-letter-btn' + (L.used ? ' used' : '');
+      btn.textContent = L.char;
+      btn.onclick = () => spellingBeePlace(L.idx);
+      lettersRow.appendChild(btn);
+    });
+  }
 }
 
 function spellingBeePlace(letterIdx) {
+  if (sbState.answered) return;
   const L = sbState.letters[letterIdx];
   if (!L || L.used) return;
   L.used = true;
@@ -7334,7 +7383,8 @@ function spellingBeePlace(letterIdx) {
   renderSpellingBee();
 }
 
-function spellingBeeRemove(pos) {
+function spellingBeeRemoveAt(pos) {
+  if (sbState.answered) return;
   const p = sbState.placed[pos];
   if (!p) return;
   sbState.letters[p.letterIdx].used = false;
@@ -7342,22 +7392,29 @@ function spellingBeeRemove(pos) {
   renderSpellingBee();
 }
 
+function spellingBeeBackspace() {
+  if (sbState.answered) return;
+  if (sbState.placed.length === 0) return;
+  const p = sbState.placed.pop();
+  sbState.letters[p.letterIdx].used = false;
+  renderSpellingBee();
+}
+
 function spellingBeeClear() {
+  if (sbState.answered) return;
   sbState.placed.forEach(p => { sbState.letters[p.letterIdx].used = false; });
   sbState.placed = [];
   renderSpellingBee();
 }
 
 function spellingBeeHint() {
-  if (sbState.hintUsed) return;
+  if (sbState.answered || sbState.hintUsed) return;
   sbState.hintUsed = true;
   const target = sbNormaliseTarget(sbState.currentWord).replace(/[\s-]/g, '').toUpperCase();
-  // Place the first missing letter
   if (sbState.placed.length >= target.length) return;
   const nextChar = target[sbState.placed.length];
   const letterIdx = sbState.letters.findIndex(L => !L.used && L.char === nextChar);
   if (letterIdx >= 0) spellingBeePlace(letterIdx);
-  // Small XP penalty
   if (studentsRef && state.studentId) {
     ffWrite(studentsRef.doc(state.studentId).update({ xp: firebase.firestore.FieldValue.increment(-2) }), 'sbHint');
     if (state.studentData) state.studentData.xp = Math.max(0, (state.studentData.xp||0) - 2);
@@ -7365,30 +7422,39 @@ function spellingBeeHint() {
 }
 
 function spellingBeeCheck() {
+  if (sbState.answered) return;
   const target = sbNormaliseTarget(sbState.currentWord).replace(/[\s-]/g, '').toUpperCase();
   const attempt = sbState.placed.map(p => p.char).join('');
   const fb = document.getElementById('sb-feedback');
+  sbState.answered = true;
   if (attempt === target) {
     sbState.correct++;
-    fb.textContent = (uiLang==='de' ? '✓ Richtig! ' : '✓ Correct! ') + sbNormaliseTarget(sbState.currentWord);
+    fb.textContent = sbT('correctMsg') + sbNormaliseTarget(sbState.currentWord);
     fb.className = 'sb-feedback correct'; fb.style.display = 'block';
     const xp = sbState.hintUsed ? 3 : 6;
     awardVocabXP(xp, 'Spelling Bee');
-    setTimeout(() => { sbState.idx++; showSpellingBeeWord(); }, 900);
   } else {
     sbState.wrong++;
-    fb.textContent = (uiLang==='de' ? '✗ Versuche es nochmal — richtig war: ' : '✗ Try again — correct was: ') + sbNormaliseTarget(sbState.currentWord);
+    fb.textContent = sbT('wrongMsg') + sbNormaliseTarget(sbState.currentWord);
     fb.className = 'sb-feedback wrong'; fb.style.display = 'block';
-    setTimeout(() => { sbState.idx++; showSpellingBeeWord(); }, 1600);
   }
+  document.getElementById('sb-correct').textContent = sbState.correct;
+  // Swap action buttons: hide input actions, show continue
+  document.getElementById('sb-input-actions').style.display = 'none';
+  document.getElementById('sb-continue-actions').style.display = '';
+  document.getElementById('sb-letters').style.display = 'none';
+  renderSpellingBee(); // re-render to reveal all letters in green
+}
+
+function spellingBeeContinue() {
+  sbState.idx++;
+  showSpellingBeeWord();
 }
 
 function finishSpellingBee() {
   const correct = sbState.correct, total = sbState.deck.length;
-  const de = uiLang === 'de';
   const pct = Math.round((correct / total) * 100);
-  const msg = (de ? 'Buchstabier-Biene fertig!\n\n' : 'Spelling Bee complete!\n\n') +
-    (de ? 'Richtig: ' : 'Correct: ') + correct + '/' + total + ' (' + pct + '%)';
+  const msg = sbT('finished') + sbT('finishedCorrect') + correct + '/' + total + ' (' + pct + '%)';
   setTimeout(() => { alert(msg); endSpellingBee(); }, 200);
 }
 
