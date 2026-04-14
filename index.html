@@ -393,10 +393,10 @@ h1 { display: none; }
 }
 
 /* Progressive Hint Button (vocab quiz) */
-.vocab-hint-btn { font-size: 0.78rem; padding: 8px 14px; line-height: 1.2; white-space: normal; text-align: center; }
-.vocab-hint-btn .vhb-label { font-weight: 700; display: block; }
-.vocab-hint-btn .vhb-preview { font-size: 0.68rem; opacity: 0.85; letter-spacing: 0.08em; font-family: 'Courier New', monospace; display: block; margin-top: 2px; }
-.vocab-hint-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.vocab-hint-btn { font-size: 0.82rem; padding: 8px 10px; line-height: 1.15; white-space: normal; text-align: center; min-width: 0; }
+.vocab-hint-btn .vhb-label { font-weight: 700; display: block; font-size: 0.8rem; }
+.vocab-hint-btn .vhb-cost { display: inline-block; margin-top: 3px; font-size: 0.62rem; font-weight: 700; padding: 1px 6px; border-radius: 8px; background: rgba(220,60,60,0.12); color: #c23; letter-spacing: 0.03em; }
+.vocab-hint-btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
 /* Gamification: XP, Streak, Badges, Leaderboard, Daily Challenge */
 .stat-card:nth-child(4)::before { background: linear-gradient(90deg, var(--accent), var(--accent-light)); }
@@ -492,6 +492,11 @@ h1 { display: none; }
 .quiz-prompt .gap.gap-hard .gap-line {
   display: inline-block; width: 8em; border-bottom: 2.5px solid var(--accent-light);
   vertical-align: baseline; margin-left: 0.05em; opacity: 0.5;
+}
+.quiz-prompt .gap.gap-pattern {
+  letter-spacing: 0.12em; border-bottom: none; background: none; padding: 0.05em 0.3em;
+  color: var(--accent-light); display: inline-block; min-width: 0;
+  font-family: 'Courier New', monospace; font-weight: 800;
 }
 .quiz-prompt .german-word {
   font-weight: 700; color: var(--trans-color); font-size: 1.25rem;
@@ -7997,22 +8002,12 @@ function updateVocabHintBtn() {
   const de = uiLang === 'de';
   if (nextLevel === 1) {
     const label = de ? 'Erster Buchstabe' : 'First letter';
-    btn.innerHTML = '<span class="vhb-label">💡 ' + label + '</span><span class="vhb-preview">A___  (−' + VOCAB_HINT_COSTS[1] + ' XP)</span>';
+    btn.innerHTML = '<span class="vhb-label">💡 ' + label + '</span><span class="vhb-cost">−' + VOCAB_HINT_COSTS[1] + ' XP</span>';
   } else if (nextLevel === 2) {
-    const info = _vocabHintWordInfo();
-    let preview = '_ _ _';
-    if (info) {
-      const parts = info.target.trim().split(/\s+/);
-      const small = new Set(['to','a','an','the','in','on','of','for','at','up','out','by','with','off','down','your','my']);
-      preview = parts.map(p => {
-        if (small.has(p.toLowerCase()) && parts.length > 1) return p;
-        return p[0] + '_'.repeat(Math.max(p.length - 1, 1));
-      }).join(' ');
-    }
     const label = de ? 'Wortlänge' : 'Word length';
-    btn.innerHTML = '<span class="vhb-label">💡 ' + label + '</span><span class="vhb-preview">' + preview + '  (−' + VOCAB_HINT_COSTS[2] + ' XP)</span>';
+    btn.innerHTML = '<span class="vhb-label">💡 ' + label + '</span><span class="vhb-cost">−' + VOCAB_HINT_COSTS[2] + ' XP</span>';
   } else {
-    btn.innerHTML = '<span class="vhb-label">💡 ' + (de ? 'Keine Tipps mehr' : 'No hints left') + '</span>';
+    btn.innerHTML = '<span class="vhb-label" style="opacity:0.65;">' + (de ? 'Keine Tipps mehr' : 'No hints left') + '</span>';
     btn.disabled = true;
   }
 }
@@ -8063,6 +8058,7 @@ function _applyVocabHintLevel2() {
     const gap = document.getElementById('vocab-gap');
     if (gap) {
       gap.classList.remove('gap-hard');
+      gap.classList.add('gap-pattern');
       gap.textContent = pattern;
     }
   } else if (info.isDef) {
