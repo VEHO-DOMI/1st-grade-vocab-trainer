@@ -2166,6 +2166,39 @@ body.playing .header-container { display: none; }
 .mm-done-stats { font-size:1rem; color:var(--text); margin-bottom:1.2rem; line-height:1.6; }
 @media (max-width: 400px) { .mm-grid { gap:0.35rem; } .mm-card { font-size:0.7rem; padding:0.3rem; border-radius:10px; } }
 
+/* ===== GRAMMAR BLITZ ===== */
+.blitz-screen { display:flex; flex-direction:column; gap:0.7rem; padding:0.5rem 0.2rem; max-width:640px; margin:0 auto; }
+.blitz-header { display:flex; align-items:center; justify-content:space-between; gap:0.5rem; }
+.blitz-timer-wrap { flex:1; height:10px; background:var(--card); border:1px solid var(--card-border); border-radius:6px; overflow:hidden; }
+.blitz-timer-fill { height:100%; background:linear-gradient(90deg, var(--accent), var(--accent-deep)); transition:width 0.25s linear; border-radius:6px; }
+.blitz-timer-fill.low { background:linear-gradient(90deg, #f59e0b, #dc2626); animation:blitzPulse 0.5s infinite alternate; }
+@keyframes blitzPulse { from { opacity:0.75; } to { opacity:1; } }
+.blitz-stats { display:flex; gap:0.6rem; font-weight:700; font-size:0.82rem; }
+.blitz-stat { background:var(--card); border:1px solid var(--card-border); border-radius:10px; padding:4px 10px; color:var(--text); }
+.blitz-stat strong { color:var(--accent); }
+.blitz-prompt-card { background:var(--card); border:1.5px solid var(--card-border); border-radius:14px; padding:1rem; min-height:80px; display:flex; flex-direction:column; gap:6px; }
+.blitz-prompt-label { font-size:0.62rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+.blitz-prompt-text { font-size:1rem; font-weight:600; color:var(--text); line-height:1.4; }
+.blitz-prompt-text .gap { display:inline-block; min-width:40px; border-bottom:2px solid var(--accent); color:transparent; margin:0 2px; }
+.blitz-options { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+.blitz-option { background:var(--card); border:2px solid var(--card-border); border-radius:12px; padding:0.7rem 0.6rem; font-size:0.88rem; font-weight:600; color:var(--text); cursor:pointer; transition:transform 0.12s, background 0.15s, border-color 0.15s; text-align:center; min-height:48px; display:flex; align-items:center; justify-content:center; word-break:break-word; }
+.blitz-option:hover:not(:disabled) { border-color:var(--accent); background:var(--card-hover); }
+.blitz-option:active:not(:disabled) { transform:scale(0.97); }
+.blitz-option:disabled { cursor:default; opacity:0.75; }
+.blitz-option.correct-flash { background:var(--correct-glow, #d4f5db); border-color:var(--correct, #16a34a); color:var(--correct, #16a34a); animation:mmMatch 0.4s ease; }
+.blitz-option.wrong-flash { background:var(--wrong-glow, #fce4e4); border-color:var(--wrong, #dc2626); color:var(--wrong, #dc2626); animation:mmShake 0.35s ease; }
+.blitz-option.reveal-correct { background:var(--correct-glow, #d4f5db); border-color:var(--correct, #16a34a); color:var(--correct, #16a34a); }
+.blitz-combo { position:absolute; top:-4px; right:-4px; background:var(--accent); color:white; border-radius:20px; padding:2px 8px; font-size:0.7rem; font-weight:800; box-shadow:0 2px 8px rgba(0,0,0,0.18); animation:mmMatch 0.35s ease; pointer-events:none; }
+.blitz-combo-anchor { position:relative; }
+.blitz-done { text-align:center; padding:1.4rem 0.6rem; background:var(--card); border:1.5px solid var(--card-border); border-radius:16px; }
+.blitz-done h2 { margin:0 0 0.5rem; font-family:Fredoka,sans-serif; font-size:1.35rem; color:var(--text); }
+.blitz-done-stats { font-size:0.92rem; color:var(--muted); line-height:1.7; margin-bottom:0.8rem; }
+@media (max-width: 400px) {
+  .blitz-options { gap:0.4rem; }
+  .blitz-option { font-size:0.8rem; padding:0.6rem 0.4rem; min-height:44px; }
+  .blitz-prompt-text { font-size:0.92rem; }
+}
+
 /* === Spelling Bee === */
 .sb-screen { padding: 0.8rem; max-width: 560px; margin: 0 auto; }
 .sb-header { display:flex; justify-content:space-between; align-items:center; gap:0.6rem; margin-bottom:0.8rem; }
@@ -2816,6 +2849,18 @@ body.playing .header-container { display: none; }
     </button>
   </div>
 
+  <!-- Grammar Blitz — grammar mode only -->
+  <div class="home-section" id="grammar-blitz-section" style="display:none;">
+    <button class="home-fullwidth-card" id="grammar-blitz-entry-btn" onclick="openGrammarBlitzPicker()">
+      <span class="home-fullwidth-icon">⚡</span>
+      <div class="home-fullwidth-info">
+        <span class="home-fullwidth-title" id="grammar-blitz-entry-title">Grammar Blitz</span>
+        <span class="home-fullwidth-subtitle" id="grammar-blitz-entry-subtitle">60-second speed round</span>
+      </div>
+      <span class="home-fullwidth-arrow">→</span>
+    </button>
+  </div>
+
   <!-- Words/Rules — full width card -->
   <div class="home-section">
     <button class="home-fullwidth-card" id="home-words-btn" onclick="showWordReference()">
@@ -3185,6 +3230,36 @@ body.playing .header-container { display: none; }
       <div class="mm-done-stats" id="mm-done-stats"></div>
       <button class="btn btn-primary" onclick="startMemoryMatchRound()">Play Again</button>
       <button class="btn btn-secondary" style="margin-left:0.5rem;" onclick="endMemoryMatch()">Done</button>
+    </div>
+  </div>
+</div>
+
+<div id="grammar-blitz-screen" class="screen">
+  <div class="blitz-screen">
+    <div class="blitz-header">
+      <button class="btn btn-secondary btn-small" onclick="endGrammarBlitz()">&larr; <span id="blitz-back-label">Done</span></button>
+      <div class="blitz-timer-wrap"><div class="blitz-timer-fill" id="blitz-timer-fill" style="width:100%;"></div></div>
+      <div class="blitz-stats">
+        <div class="blitz-stat blitz-combo-anchor">
+          <span id="blitz-label-score">Score:</span>&nbsp;<strong id="blitz-score">0</strong>
+          <span id="blitz-combo-badge" class="blitz-combo" style="display:none;">🔥<span id="blitz-combo-count">0</span></span>
+        </div>
+      </div>
+    </div>
+    <div id="blitz-picker"></div>
+    <div id="blitz-game" style="display:none;">
+      <div class="blitz-prompt-card">
+        <div class="blitz-prompt-label" id="blitz-prompt-label">Quick!</div>
+        <div class="blitz-prompt-text" id="blitz-prompt"></div>
+      </div>
+      <div class="blitz-options" id="blitz-options"></div>
+    </div>
+    <div id="blitz-done" class="blitz-done" style="display:none;">
+      <h2 id="blitz-done-title">⚡ Time!</h2>
+      <div class="blitz-done-stats" id="blitz-done-stats"></div>
+      <button class="btn btn-primary" onclick="startGrammarBlitzRound()">Play Again</button>
+      <button class="btn btn-secondary" style="margin-left:0.5rem;" onclick="openGrammarBlitzPicker()">Pick Topic</button>
+      <button class="btn btn-secondary" style="margin-left:0.5rem;" onclick="endGrammarBlitz()">Done</button>
     </div>
   </div>
 </div>
@@ -6564,6 +6639,8 @@ function showHomeScreen() {
   // Hide grammar-only cards in vocab mode
   var gmmSec = document.getElementById('grammar-mm-section');
   if (gmmSec) gmmSec.style.display = 'none';
+  var gbSec = document.getElementById('grammar-blitz-section');
+  if (gbSec) gbSec.style.display = 'none';
   showScreen('home-screen');
   setupPresence();
   const battleBtn = document.getElementById('btn-battle');
@@ -7788,6 +7865,266 @@ function finishGrammarMemoryMatch() {
 }
 
 function endGrammarMemoryMatch() {
+  document.body.classList.remove('playing');
+  showGrammarHomeScreen();
+}
+
+// =========================================================
+// ========== GRAMMAR BLITZ ================================
+// =========================================================
+// Timed speed round: 60 seconds of multiple-choice / gap-fill items
+// rendered as 4-tap buttons. Auto-advance on tap. +2 XP per correct,
+// +1 combo bonus at streak >=3. Personal best in localStorage.
+const BLITZ_DURATION_SEC = 60;
+let blitzState = {
+  sid: null,           // grammar structure filter, or null for mixed
+  pool: [],            // shuffled candidate items
+  poolIdx: 0,
+  current: null,
+  score: 0,
+  correct: 0,
+  answered: 0,
+  combo: 0,
+  bestCombo: 0,
+  timerId: null,
+  startTime: 0,
+  timeLeft: BLITZ_DURATION_SEC,
+  busy: false,
+  ended: false
+};
+
+function blitzBestKey(sid) { return 'g1_blitz_best_' + (sid || '_mix'); }
+function blitzGetBest(sid) { try { return parseInt(localStorage.getItem(blitzBestKey(sid)) || '0', 10) || 0; } catch(e) { return 0; } }
+function blitzSaveBest(sid, score) { try { localStorage.setItem(blitzBestKey(sid), String(score)); } catch(e) {} }
+
+// Build eligible item pool from grammarItems. Blitz-friendly = has ds with >=2 distractors AND short correct answer (<=30 chars).
+function getBlitzItemsFor(sid) {
+  if (typeof grammarItems === 'undefined' || !grammarItems.length) return [];
+  const keep = it => {
+    if (!it || !it.c || !it.ds || it.ds.length < 2) return false;
+    if (it.t !== 'multiple-choice' && it.t !== 'gap-fill') return false;
+    if (String(it.c).length > 40) return false;
+    return true;
+  };
+  let pool = grammarItems.filter(keep);
+  if (sid) pool = pool.filter(it => it.sid === sid);
+  return pool;
+}
+
+// Decks available: structures that have >=10 blitz-eligible items (or mixed bucket)
+function getAvailableBlitzTopics() {
+  const byStructure = {};
+  getBlitzItemsFor(null).forEach(it => { byStructure[it.sid] = (byStructure[it.sid] || 0) + 1; });
+  const out = [];
+  Object.keys(byStructure).forEach(sid => {
+    if (byStructure[sid] < 6) return;
+    const st = (typeof grammarStructures !== 'undefined') ? grammarStructures.find(s => s.id === sid) : null;
+    if (!st) return;
+    out.push({ sid: sid, name: st.n, nameDe: st.nd, count: byStructure[sid] });
+  });
+  out.sort((a, b) => a.sid.localeCompare(b.sid));
+  return out;
+}
+
+function openGrammarBlitzPicker() {
+  document.body.classList.add('playing');
+  showScreen('grammar-blitz-screen');
+  if (blitzState.timerId) { clearInterval(blitzState.timerId); blitzState.timerId = null; }
+  document.getElementById('blitz-game').style.display = 'none';
+  document.getElementById('blitz-done').style.display = 'none';
+  document.getElementById('blitz-timer-fill').style.width = '100%';
+  document.getElementById('blitz-timer-fill').classList.remove('low');
+  document.getElementById('blitz-score').textContent = '–';
+  document.getElementById('blitz-combo-badge').style.display = 'none';
+  const topics = getAvailableBlitzTopics();
+  const mixedCount = getBlitzItemsFor(null).length;
+  const picker = document.getElementById('blitz-picker');
+  const de = uiLang === 'de';
+  let html = '<div style="padding:0.4rem 0.2rem;">';
+  html += '<h2 style="font-family:Fredoka,sans-serif;font-size:1.15rem;margin:0 0 0.2rem;">⚡ ' + (de?'Grammar Blitz':'Grammar Blitz') + '</h2>';
+  html += '<div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.8rem;">' + (de?'60 Sekunden. So viele wie möglich. Antipp-Auswahl.':'60 seconds. As many as you can. Tap to answer.') + '</div>';
+  html += '<div style="display:flex;flex-direction:column;gap:0.45rem;">';
+  if (mixedCount >= 10) {
+    const best = blitzGetBest(null);
+    html += '<button class="home-fullwidth-card" onclick="startGrammarBlitz(null)" style="width:100%;">';
+    html += '<span class="home-fullwidth-icon">🎲</span>';
+    html += '<div class="home-fullwidth-info"><span class="home-fullwidth-title">' + (de?'Gemischt (alle Themen)':'Mixed (all topics)') + '</span>';
+    html += '<span class="home-fullwidth-subtitle">' + mixedCount + ' ' + (de?'Aufgaben':'items') + (best?' · '+(de?'Best':'Best')+': '+best:'') + '</span></div>';
+    html += '<span class="home-fullwidth-arrow">→</span></button>';
+  }
+  topics.forEach(top => {
+    const best = blitzGetBest(top.sid);
+    const label = de ? (top.nameDe || top.name) : top.name;
+    html += '<button class="home-fullwidth-card" onclick="startGrammarBlitz(\'' + top.sid + '\')" style="width:100%;">';
+    html += '<span class="home-fullwidth-icon">⚡</span>';
+    html += '<div class="home-fullwidth-info"><span class="home-fullwidth-title">' + label + '</span>';
+    html += '<span class="home-fullwidth-subtitle">' + top.count + ' ' + (de?'Aufgaben':'items') + (best?' · '+(de?'Best':'Best')+': '+best:'') + '</span></div>';
+    html += '<span class="home-fullwidth-arrow">→</span></button>';
+  });
+  if (!topics.length && mixedCount < 10) {
+    html += '<div style="color:var(--muted);padding:1rem;text-align:center;">' + (de?'Nicht genug Aufgaben für Blitz.':'Not enough items for Blitz.') + '</div>';
+  }
+  html += '</div></div>';
+  picker.innerHTML = html;
+  picker.style.display = '';
+}
+
+function startGrammarBlitz(sid) {
+  blitzState.sid = sid || null;
+  blitzState.pool = getBlitzItemsFor(blitzState.sid);
+  if (blitzState.pool.length < 5) {
+    alert(uiLang==='de' ? 'Nicht genug Aufgaben.' : 'Not enough items.');
+    return;
+  }
+  document.getElementById('blitz-picker').style.display = 'none';
+  startGrammarBlitzRound();
+}
+
+function startGrammarBlitzRound() {
+  // reset state
+  const pool = getBlitzItemsFor(blitzState.sid);
+  if (pool.length < 5) { openGrammarBlitzPicker(); return; }
+  shuffle(pool);
+  blitzState.pool = pool;
+  blitzState.poolIdx = 0;
+  blitzState.score = 0;
+  blitzState.correct = 0;
+  blitzState.answered = 0;
+  blitzState.combo = 0;
+  blitzState.bestCombo = 0;
+  blitzState.busy = false;
+  blitzState.ended = false;
+  blitzState.timeLeft = BLITZ_DURATION_SEC;
+  blitzState.startTime = Date.now();
+  document.getElementById('blitz-game').style.display = '';
+  document.getElementById('blitz-done').style.display = 'none';
+  document.getElementById('blitz-picker').style.display = 'none';
+  updateBlitzHud();
+  blitzNextItem();
+  if (blitzState.timerId) clearInterval(blitzState.timerId);
+  blitzState.timerId = setInterval(blitzTick, 250);
+}
+
+function blitzTick() {
+  if (blitzState.ended) return;
+  const elapsed = (Date.now() - blitzState.startTime) / 1000;
+  blitzState.timeLeft = Math.max(0, BLITZ_DURATION_SEC - elapsed);
+  const pct = (blitzState.timeLeft / BLITZ_DURATION_SEC) * 100;
+  const fill = document.getElementById('blitz-timer-fill');
+  if (fill) {
+    fill.style.width = pct + '%';
+    if (blitzState.timeLeft <= 10) fill.classList.add('low'); else fill.classList.remove('low');
+  }
+  if (blitzState.timeLeft <= 0) finishGrammarBlitz();
+}
+
+function updateBlitzHud() {
+  document.getElementById('blitz-score').textContent = blitzState.score;
+  const badge = document.getElementById('blitz-combo-badge');
+  const count = document.getElementById('blitz-combo-count');
+  if (blitzState.combo >= 3) {
+    if (count) count.textContent = blitzState.combo;
+    if (badge) badge.style.display = '';
+  } else {
+    if (badge) badge.style.display = 'none';
+  }
+  const lbl = document.getElementById('blitz-label-score');
+  if (lbl) lbl.textContent = (uiLang==='de'?'Punkte:':'Score:');
+  const back = document.getElementById('blitz-back-label');
+  if (back) back.textContent = (uiLang==='de'?'Ende':'Done');
+}
+
+function blitzNextItem() {
+  if (blitzState.ended) return;
+  if (blitzState.poolIdx >= blitzState.pool.length) {
+    // reshuffle if pool exhausted before timer ends
+    shuffle(blitzState.pool);
+    blitzState.poolIdx = 0;
+  }
+  const item = blitzState.pool[blitzState.poolIdx++];
+  blitzState.current = item;
+  blitzState.busy = false;
+  // Prompt: for gap-fill replace '___' with visual gap
+  const de = uiLang === 'de';
+  const lbl = document.getElementById('blitz-prompt-label');
+  if (lbl) lbl.textContent = de ? 'Schnell!' : 'Quick!';
+  const promptEl = document.getElementById('blitz-prompt');
+  if (promptEl) {
+    let txt = String(item.p || '').replace(/_{2,}/g, '<span class="gap">____</span>');
+    promptEl.innerHTML = txt;
+  }
+  // Build 4 options: correct + up to 3 distractors
+  const opts = [item.c].concat((item.ds || []).slice(0, 3));
+  shuffle(opts);
+  const optsEl = document.getElementById('blitz-options');
+  optsEl.innerHTML = '';
+  opts.forEach((text, i) => {
+    const b = document.createElement('button');
+    b.className = 'blitz-option';
+    b.textContent = text;
+    b.dataset.val = text;
+    b.onclick = () => blitzAnswer(b, text);
+    optsEl.appendChild(b);
+  });
+}
+
+function blitzAnswer(btn, picked) {
+  if (blitzState.busy || blitzState.ended) return;
+  blitzState.busy = true;
+  const item = blitzState.current;
+  const accepted = [item.c].concat(item.a || []).map(s => String(s).trim().toLowerCase());
+  const isCorrect = accepted.indexOf(String(picked).trim().toLowerCase()) >= 0;
+  blitzState.answered++;
+  const allBtns = document.querySelectorAll('#blitz-options .blitz-option');
+  allBtns.forEach(b => { b.disabled = true; });
+  if (isCorrect) {
+    btn.classList.add('correct-flash');
+    blitzState.correct++;
+    blitzState.combo++;
+    if (blitzState.combo > blitzState.bestCombo) blitzState.bestCombo = blitzState.combo;
+    // Base: 2 per correct, +1 bonus once combo >= 3, +2 bonus when combo >= 6
+    let gain = 2;
+    if (blitzState.combo >= 6) gain += 2;
+    else if (blitzState.combo >= 3) gain += 1;
+    blitzState.score += gain;
+  } else {
+    btn.classList.add('wrong-flash');
+    blitzState.combo = 0;
+    // Reveal correct
+    allBtns.forEach(b => { if (String(b.dataset.val).trim().toLowerCase() === String(item.c).trim().toLowerCase()) b.classList.add('reveal-correct'); });
+  }
+  updateBlitzHud();
+  const advanceMs = isCorrect ? 420 : 900;
+  setTimeout(() => { if (!blitzState.ended) blitzNextItem(); }, advanceMs);
+}
+
+function finishGrammarBlitz() {
+  if (blitzState.ended) return;
+  blitzState.ended = true;
+  if (blitzState.timerId) { clearInterval(blitzState.timerId); blitzState.timerId = null; }
+  document.getElementById('blitz-game').style.display = 'none';
+  document.getElementById('blitz-done').style.display = '';
+  const de = uiLang === 'de';
+  const prevBest = blitzGetBest(blitzState.sid);
+  const isNewBest = blitzState.score > prevBest;
+  if (isNewBest) blitzSaveBest(blitzState.sid, blitzState.score);
+  // XP award: 1 XP per score point, capped at 80
+  const xp = Math.min(blitzState.score, 80);
+  const titleEl = document.getElementById('blitz-done-title');
+  if (titleEl) titleEl.textContent = isNewBest ? (de?'🏆 Neuer Rekord!':'🏆 New best!') : (de?'⚡ Zeit abgelaufen!':'⚡ Time!');
+  const acc = blitzState.answered > 0 ? Math.round((blitzState.correct / blitzState.answered) * 100) : 0;
+  document.getElementById('blitz-done-stats').innerHTML =
+    (de?'Punkte':'Score') + ': <strong style="color:var(--accent);">' + blitzState.score + '</strong><br>' +
+    (de?'Richtig':'Correct') + ': <strong>' + blitzState.correct + '/' + blitzState.answered + '</strong> (' + acc + '%)<br>' +
+    (de?'Beste Combo':'Best combo') + ': <strong>🔥 ' + blitzState.bestCombo + '</strong><br>' +
+    (de?'Rekord':'Best') + ': <strong>' + Math.max(prevBest, blitzState.score) + '</strong><br>' +
+    '<span style="color:var(--accent);font-weight:700;">+' + xp + ' XP</span>';
+  if (xp > 0) awardGrammarXP(xp, 'Grammar Blitz');
+}
+
+function endGrammarBlitz() {
+  blitzState.ended = true;
+  if (blitzState.timerId) { clearInterval(blitzState.timerId); blitzState.timerId = null; }
   document.body.classList.remove('playing');
   showGrammarHomeScreen();
 }
@@ -11662,6 +11999,15 @@ function showGrammarHomeScreen() {
     var gmmSub   = document.getElementById('grammar-mm-entry-subtitle');
     if (gmmTitle) gmmTitle.textContent = uiLang==='de' ? 'Grammatik-Memory' : 'Grammar Memory Match';
     if (gmmSub)   gmmSub.textContent   = uiLang==='de' ? 'Passende Formen finden, XP verdienen' : 'Match form-pairs to win XP';
+  }
+  // Grammar Blitz card — grammar mode only
+  var gbSec = document.getElementById('grammar-blitz-section');
+  if (gbSec) {
+    gbSec.style.display = '';
+    var gbTitle = document.getElementById('grammar-blitz-entry-title');
+    var gbSub   = document.getElementById('grammar-blitz-entry-subtitle');
+    if (gbTitle) gbTitle.textContent = uiLang==='de' ? 'Grammar Blitz' : 'Grammar Blitz';
+    if (gbSub)   gbSub.textContent   = uiLang==='de' ? '60-Sekunden Speed-Runde' : '60-second speed round';
   }
   // Overall level bar
   var totalXp = (d.xp || 0) + (d.grammarXp || 0);
