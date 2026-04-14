@@ -2199,6 +2199,42 @@ body.playing .header-container { display: none; }
   .blitz-prompt-text { font-size:0.92rem; }
 }
 
+/* ===== ERROR HUNT ===== */
+.eh-screen { display:flex; flex-direction:column; gap:0.6rem; padding:0.4rem 0.2rem; max-width:640px; margin:0 auto; }
+.eh-header { display:flex; align-items:center; justify-content:space-between; gap:0.5rem; flex-wrap:wrap; }
+.eh-stats { display:flex; gap:0.5rem; font-size:0.8rem; font-weight:700; }
+.eh-stat { background:var(--card); border:1px solid var(--card-border); border-radius:10px; padding:4px 10px; color:var(--text); }
+.eh-stat strong { color:var(--accent); }
+.eh-title-card { background:var(--card); border:1.5px solid var(--card-border); border-radius:14px; padding:0.8rem 1rem; }
+.eh-title-label { font-size:0.62rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+.eh-title-text { font-size:1.05rem; font-weight:700; color:var(--text); font-family:Fredoka,sans-serif; margin-top:2px; }
+.eh-hint { font-size:0.75rem; color:var(--muted); margin-top:4px; }
+.eh-paragraph { background:var(--card); border:1.5px solid var(--card-border); border-radius:14px; padding:1rem; font-size:1.05rem; line-height:1.95; color:var(--text); }
+.eh-word { display:inline-block; padding:1px 3px; margin:0 1px; border-radius:6px; cursor:pointer; transition:background 0.15s, color 0.15s, transform 0.1s; user-select:none; }
+.eh-word:hover { background:var(--card-hover); }
+.eh-word:active { transform:scale(0.96); }
+.eh-word.found { background:var(--correct-glow, #d4f5db); color:var(--correct, #16a34a); cursor:default; font-weight:700; text-decoration:line-through; text-decoration-color:rgba(22,163,74,0.4); }
+.eh-word.found .eh-word-fix { text-decoration:none; margin-left:4px; color:var(--correct, #16a34a); font-weight:800; }
+.eh-word.wrong-click { background:var(--wrong-glow, #fce4e4); color:var(--wrong, #dc2626); animation:mmShake 0.35s ease; }
+.eh-word.revealed { background:rgba(245,158,11,0.18); color:#b45309; text-decoration:line-through; text-decoration-color:rgba(180,83,9,0.4); font-weight:700; }
+.eh-word.revealed .eh-word-fix { text-decoration:none; margin-left:4px; color:#b45309; font-weight:800; }
+.eh-fixbox { display:inline-block; background:var(--bg); border:2px solid var(--accent); border-radius:8px; padding:2px; margin:0 2px; vertical-align:middle; white-space:nowrap; }
+.eh-fixbox input { border:none; outline:none; background:transparent; font-size:0.95rem; font-family:inherit; font-weight:600; color:var(--text); width:7em; padding:2px 6px; }
+.eh-fixbox button { background:var(--accent); color:white; border:none; border-radius:6px; padding:3px 10px; font-weight:700; font-size:0.8rem; cursor:pointer; margin-left:4px; }
+.eh-fixbox button:hover { background:var(--accent-deep); }
+.eh-fixbox button.eh-cancel { background:transparent; color:var(--muted); padding:3px 6px; }
+.eh-controls { display:flex; gap:0.5rem; justify-content:space-between; align-items:center; }
+.eh-progress-wrap { flex:1; height:8px; background:var(--card); border:1px solid var(--card-border); border-radius:5px; overflow:hidden; }
+.eh-progress-fill { height:100%; background:linear-gradient(90deg, var(--accent), var(--accent-deep)); transition:width 0.3s; border-radius:5px; }
+.eh-done { text-align:center; padding:1.4rem 0.6rem; background:var(--card); border:1.5px solid var(--card-border); border-radius:16px; }
+.eh-done h2 { margin:0 0 0.5rem; font-family:Fredoka,sans-serif; font-size:1.35rem; color:var(--text); }
+.eh-done-stats { font-size:0.92rem; color:var(--muted); line-height:1.7; margin-bottom:0.8rem; }
+@media (max-width: 400px) {
+  .eh-paragraph { font-size:0.98rem; line-height:1.9; padding:0.8rem; }
+  .eh-fixbox input { width:5.5em; font-size:0.88rem; }
+  .eh-fixbox button { padding:2px 8px; font-size:0.72rem; }
+}
+
 /* === Spelling Bee === */
 .sb-screen { padding: 0.8rem; max-width: 560px; margin: 0 auto; }
 .sb-header { display:flex; justify-content:space-between; align-items:center; gap:0.6rem; margin-bottom:0.8rem; }
@@ -2849,6 +2885,18 @@ body.playing .header-container { display: none; }
     </button>
   </div>
 
+  <!-- Error Hunt — grammar mode only -->
+  <div class="home-section" id="error-hunt-section" style="display:none;">
+    <button class="home-fullwidth-card" id="error-hunt-entry-btn" onclick="openErrorHuntPicker()">
+      <span class="home-fullwidth-icon">🔍</span>
+      <div class="home-fullwidth-info">
+        <span class="home-fullwidth-title" id="error-hunt-entry-title">Error Hunt</span>
+        <span class="home-fullwidth-subtitle" id="error-hunt-entry-subtitle">Find & fix the mistakes</span>
+      </div>
+      <span class="home-fullwidth-arrow">→</span>
+    </button>
+  </div>
+
   <!-- Grammar Blitz — grammar mode only -->
   <div class="home-section" id="grammar-blitz-section" style="display:none;">
     <button class="home-fullwidth-card" id="grammar-blitz-entry-btn" onclick="openGrammarBlitzPicker()">
@@ -3230,6 +3278,37 @@ body.playing .header-container { display: none; }
       <div class="mm-done-stats" id="mm-done-stats"></div>
       <button class="btn btn-primary" onclick="startMemoryMatchRound()">Play Again</button>
       <button class="btn btn-secondary" style="margin-left:0.5rem;" onclick="endMemoryMatch()">Done</button>
+    </div>
+  </div>
+</div>
+
+<div id="error-hunt-screen" class="screen">
+  <div class="eh-screen">
+    <div class="eh-header">
+      <button class="btn btn-secondary btn-small" onclick="endErrorHunt()">&larr; <span id="eh-back-label">Done</span></button>
+      <div class="eh-stats">
+        <div class="eh-stat"><span id="eh-label-found">Found:</span>&nbsp;<strong id="eh-found">0/0</strong></div>
+        <div class="eh-stat"><span id="eh-label-miss">Misses:</span>&nbsp;<strong id="eh-miss">0</strong></div>
+      </div>
+    </div>
+    <div id="eh-picker"></div>
+    <div id="eh-game" style="display:none;">
+      <div class="eh-title-card">
+        <div class="eh-title-label" id="eh-title-label">Error Hunt</div>
+        <div class="eh-title-text" id="eh-title-text"></div>
+        <div class="eh-hint" id="eh-hint-text"></div>
+      </div>
+      <div class="eh-paragraph" id="eh-paragraph"></div>
+      <div class="eh-controls">
+        <div class="eh-progress-wrap"><div class="eh-progress-fill" id="eh-progress-fill" style="width:0%;"></div></div>
+        <button class="btn btn-secondary btn-small" id="eh-giveup-btn" onclick="errorHuntGiveUp()">Reveal</button>
+      </div>
+    </div>
+    <div id="eh-done" class="eh-done" style="display:none;">
+      <h2 id="eh-done-title">🎯 All found!</h2>
+      <div class="eh-done-stats" id="eh-done-stats"></div>
+      <button class="btn btn-primary" onclick="openErrorHuntPicker()">Next Paragraph</button>
+      <button class="btn btn-secondary" style="margin-left:0.5rem;" onclick="endErrorHunt()">Done</button>
     </div>
   </div>
 </div>
@@ -6641,6 +6720,8 @@ function showHomeScreen() {
   if (gmmSec) gmmSec.style.display = 'none';
   var gbSec = document.getElementById('grammar-blitz-section');
   if (gbSec) gbSec.style.display = 'none';
+  var ehSec = document.getElementById('error-hunt-section');
+  if (ehSec) ehSec.style.display = 'none';
   showScreen('home-screen');
   setupPresence();
   const battleBtn = document.getElementById('btn-battle');
@@ -8125,6 +8206,313 @@ function finishGrammarBlitz() {
 function endGrammarBlitz() {
   blitzState.ended = true;
   if (blitzState.timerId) { clearInterval(blitzState.timerId); blitzState.timerId = null; }
+  document.body.classList.remove('playing');
+  showGrammarHomeScreen();
+}
+
+// =========================================================
+// ========== ERROR HUNT ===================================
+// =========================================================
+// Authoring: paragraphs use inline markers [wrong|correct] for each error.
+// Accepted corrections may be pipe-separated: [wrong|correctA|correctB].
+// Student clicks a word to challenge it. Error words → input popup → submit.
+// Non-error words → red shake + miss counter. Score & XP based on finds/misses.
+const ERROR_HUNT_PARAGRAPHS = [
+  {
+    id: 'eh-p1',
+    t: { en: "Sam's Friends", de: "Sams Freunde" },
+    sid: 'm1-u2-to-be',
+    focus: { en: "Plurals + to be", de: "Mehrzahl + to be" },
+    // 4 errors: is→are, has→have, dog→dogs, are→is
+    text: "Sam and Tom [is|are] my friends. They [has|have] got two [dog|dogs]. My favourite colour [are|is] blue."
+  },
+  {
+    id: 'eh-p2',
+    t: { en: "My Family", de: "Meine Familie" },
+    sid: 'm1-u3-have-got',
+    focus: { en: "have got + possessives", de: "have got + Possessiv" },
+    // 4 errors: have→has, her→his, have→has, mother→mother's
+    text: "My dad [have|has] got a new car. [her|his] car is red. My sister [have|has] got a bike. The [mother|mother's] hat is on the table."
+  },
+  {
+    id: 'eh-p3',
+    t: { en: "Emma's Day", de: "Emmas Tag" },
+    sid: 'm1-u6-present-simple-affirmative',
+    focus: { en: "Present Simple + 3rd person -s", de: "Present Simple + 3. Person -s" },
+    // 4 errors: go→goes, play→plays, eat→eats, watch→watches
+    text: "Emma [go|goes] to school every day. She [play|plays] tennis on Mondays. After school she [eat|eats] a sandwich. In the evening she [watch|watches] TV."
+  },
+  {
+    id: 'eh-p4',
+    t: { en: "At the Zoo", de: "Im Zoo" },
+    sid: 'm1-u7-present-simple-negative',
+    focus: { en: "Present Simple negative/questions", de: "Present Simple negative/Fragen" },
+    // 4 errors: don't→doesn't, eat→eats (needs to test base form with auxiliary... keep simple), Do→Does, like→likes
+    text: "My brother [don't|doesn't] like lions. He [like|likes] tigers. [Do|Does] your sister like animals? She [don't|doesn't] like snakes."
+  },
+  {
+    id: 'eh-p5',
+    t: { en: "Right Now", de: "Gerade jetzt" },
+    sid: 'm1-u11-present-continuous',
+    focus: { en: "Present Continuous", de: "Present Continuous" },
+    // 4 errors: play→playing, is→are, watch→watching, sleeps→is sleeping
+    text: "Look! Dan is [play|playing] football. His friends [is|are] running fast. Mum is [watch|watching] from the window. The baby [sleeps|is sleeping] upstairs."
+  },
+  {
+    id: 'eh-p6',
+    t: { en: "Can You?", de: "Kannst du?" },
+    sid: 'm1-u5-can',
+    focus: { en: "can / can't + adjectives", de: "can / can't + Adjektive" },
+    // 4 errors: cans→can, to swim→swim, can't to→can't, is→are
+    text: "I [cans|can] ride a bike. My little sister can [to swim|swim] very well. But she [can't to|can't] read yet. Babies [is|are] small."
+  },
+  {
+    id: 'eh-p7',
+    t: { en: "Last Weekend", de: "Letztes Wochenende" },
+    sid: 'm1-u13-past-simple-regular',
+    focus: { en: "Past Simple: was/were + regular", de: "Past Simple: was/were + regelmäßig" },
+    // 4 errors: was→were, play→played, watch→watched, studyed→studied
+    text: "Last Saturday we [was|were] at the park. I [play|played] football with Max. In the evening we [watch|watched] a film. On Sunday I [studyed|studied] for the test."
+  },
+  {
+    id: 'eh-p8',
+    t: { en: "A Holiday Story", de: "Eine Feriengeschichte" },
+    sid: 'm1-u14-irregular-verbs',
+    focus: { en: "Past Simple irregular + going to", de: "Past Simple unregelmäßig + going to" },
+    // 4 errors: goed→went, eated→ate, seed→saw, go to→going to
+    text: "Last summer we [goed|went] to Italy. We [eated|ate] pizza every day. I [seed|saw] the sea for the first time. Next year we are [go to|going to] visit Spain."
+  }
+];
+
+let ehState = {
+  para: null,
+  tokens: [],         // [{text, err:{wrong, corrections:[...], found:bool, missed:bool}|null}]
+  totalErrors: 0,
+  foundErrors: 0,
+  misses: 0,
+  startTime: 0,
+  ended: false,
+  activeIdx: -1       // token index currently showing fixbox
+};
+
+function ehBestKey(id) { return 'g1_eh_best_' + id; }
+function ehGetBest(id) { try { return parseInt(localStorage.getItem(ehBestKey(id)) || '0', 10) || 0; } catch(e) { return 0; } }
+function ehSaveBest(id, score) { try { localStorage.setItem(ehBestKey(id), String(score)); } catch(e) {} }
+
+// Parse authoring text into tokens. Marker pattern: [wrong|correct1|correct2...]
+function parseErrorHuntText(src) {
+  const tokens = [];
+  const re = /\[([^\]]+)\]|(\s+)|([^\s\[]+)/g;
+  let m;
+  while ((m = re.exec(src)) !== null) {
+    if (m[1] !== undefined) {
+      const parts = m[1].split('|').map(s => s.trim());
+      const wrong = parts[0];
+      const corrections = parts.slice(1);
+      tokens.push({ text: wrong, err: { wrong: wrong, corrections: corrections, found: false, missed: false } });
+    } else if (m[2] !== undefined) {
+      tokens.push({ text: m[2], err: null, ws: true });
+    } else if (m[3] !== undefined) {
+      tokens.push({ text: m[3], err: null });
+    }
+  }
+  return tokens;
+}
+
+function ehEscapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function openErrorHuntPicker() {
+  document.body.classList.add('playing');
+  showScreen('error-hunt-screen');
+  document.getElementById('eh-game').style.display = 'none';
+  document.getElementById('eh-done').style.display = 'none';
+  document.getElementById('eh-found').textContent = '–';
+  document.getElementById('eh-miss').textContent  = '–';
+  const filter = (typeof grammarLevelFilter !== 'undefined' && grammarLevelFilter) ? grammarLevelFilter : null;
+  const paras = ERROR_HUNT_PARAGRAPHS.filter(p => !filter || (p.sid && p.sid.indexOf(filter + '-') === 0));
+  const de = uiLang === 'de';
+  let html = '<div style="padding:0.4rem 0.2rem;">';
+  html += '<h2 style="font-family:Fredoka,sans-serif;font-size:1.15rem;margin:0 0 0.2rem;">🔍 ' + (de?'Absatz wählen':'Pick a paragraph') + '</h2>';
+  html += '<div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.8rem;">' + (de?'Tippe auf ein Wort, das dir falsch vorkommt, und korrigiere es.':'Tap a word that looks wrong, then type the correct form.') + '</div>';
+  html += '<div style="display:flex;flex-direction:column;gap:0.45rem;">';
+  paras.forEach(p => {
+    // Count errors from marker
+    const tokens = parseErrorHuntText(p.text);
+    const errs = tokens.filter(t => t.err).length;
+    const best = ehGetBest(p.id);
+    const title = de ? p.t.de : p.t.en;
+    const focus = de ? p.focus.de : p.focus.en;
+    html += '<button class="home-fullwidth-card" onclick="startErrorHunt(\'' + p.id + '\')" style="width:100%;">';
+    html += '<span class="home-fullwidth-icon">🔍</span>';
+    html += '<div class="home-fullwidth-info"><span class="home-fullwidth-title">' + ehEscapeHtml(title) + '</span>';
+    html += '<span class="home-fullwidth-subtitle">' + ehEscapeHtml(focus) + ' · ' + errs + ' ' + (de?'Fehler':'errors') + (best?' · '+(de?'Best':'Best')+': '+best:'') + '</span></div>';
+    html += '<span class="home-fullwidth-arrow">→</span></button>';
+  });
+  if (!paras.length) html += '<div style="color:var(--muted);padding:1rem;text-align:center;">' + (de?'Keine Absätze verfügbar.':'No paragraphs available.') + '</div>';
+  html += '</div></div>';
+  document.getElementById('eh-picker').innerHTML = html;
+  document.getElementById('eh-picker').style.display = '';
+}
+
+function startErrorHunt(id) {
+  const para = ERROR_HUNT_PARAGRAPHS.find(p => p.id === id);
+  if (!para) return;
+  ehState.para = para;
+  ehState.tokens = parseErrorHuntText(para.text);
+  ehState.totalErrors = ehState.tokens.filter(t => t.err).length;
+  ehState.foundErrors = 0;
+  ehState.misses = 0;
+  ehState.startTime = Date.now();
+  ehState.ended = false;
+  ehState.activeIdx = -1;
+  const de = uiLang === 'de';
+  document.getElementById('eh-picker').style.display = 'none';
+  document.getElementById('eh-game').style.display = '';
+  document.getElementById('eh-done').style.display = 'none';
+  document.getElementById('eh-label-found').textContent = (de?'Gefunden:':'Found:');
+  document.getElementById('eh-label-miss').textContent  = (de?'Fehlgriffe:':'Misses:');
+  document.getElementById('eh-back-label').textContent  = (de?'Ende':'Done');
+  document.getElementById('eh-giveup-btn').textContent  = (de?'Zeigen':'Reveal');
+  document.getElementById('eh-title-label').textContent = (de?'Absatz':'Paragraph');
+  document.getElementById('eh-title-text').textContent  = de ? para.t.de : para.t.en;
+  document.getElementById('eh-hint-text').textContent   = (de?'Fokus: ':'Focus: ') + (de ? para.focus.de : para.focus.en);
+  renderErrorHuntParagraph();
+  updateErrorHuntHud();
+}
+
+function renderErrorHuntParagraph() {
+  const wrap = document.getElementById('eh-paragraph');
+  let html = '';
+  ehState.tokens.forEach((tok, i) => {
+    if (tok.ws) { html += tok.text.replace(/\n/g, '<br>'); return; }
+    let cls = 'eh-word';
+    let inner = ehEscapeHtml(tok.text);
+    let fix = '';
+    if (tok.err && tok.err.found) {
+      cls += ' found';
+      fix = ' <span class="eh-word-fix">→ ' + ehEscapeHtml(tok.err.userFix || tok.err.corrections[0]) + '</span>';
+    } else if (tok.err && tok.err.missed) {
+      cls += ' revealed';
+      fix = ' <span class="eh-word-fix">→ ' + ehEscapeHtml(tok.err.corrections[0]) + '</span>';
+    }
+    html += '<span class="' + cls + '" data-i="' + i + '" onclick="errorHuntClickWord(' + i + ')">' + inner + fix + '</span>';
+  });
+  wrap.innerHTML = html;
+}
+
+function errorHuntClickWord(i) {
+  if (ehState.ended) return;
+  if (ehState.activeIdx >= 0) return; // one fixbox open at a time
+  const tok = ehState.tokens[i];
+  if (!tok || tok.ws) return;
+  if (tok.err && (tok.err.found || tok.err.missed)) return;
+  const el = document.querySelector('#eh-paragraph .eh-word[data-i="' + i + '"]');
+  if (!el) return;
+  if (!tok.err) {
+    // Not an error → wrong click
+    ehState.misses++;
+    el.classList.add('wrong-click');
+    updateErrorHuntHud();
+    setTimeout(() => { el.classList.remove('wrong-click'); }, 450);
+    return;
+  }
+  // It IS an error → open fixbox
+  ehState.activeIdx = i;
+  const box = document.createElement('span');
+  box.className = 'eh-fixbox';
+  box.innerHTML = '<input type="text" id="eh-fix-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="…"><button onclick="errorHuntSubmitFix()">✓</button><button class="eh-cancel" onclick="errorHuntCancelFix()">✕</button>';
+  el.textContent = '';
+  el.appendChild(box);
+  const input = document.getElementById('eh-fix-input');
+  if (input) {
+    input.focus();
+    input.onkeydown = function(ev) {
+      if (ev.key === 'Enter') { ev.preventDefault(); errorHuntSubmitFix(); }
+      else if (ev.key === 'Escape') { ev.preventDefault(); errorHuntCancelFix(); }
+    };
+  }
+}
+
+function errorHuntSubmitFix() {
+  if (ehState.activeIdx < 0) return;
+  const i = ehState.activeIdx;
+  const tok = ehState.tokens[i];
+  const input = document.getElementById('eh-fix-input');
+  if (!input || !tok || !tok.err) return;
+  const val = String(input.value || '').trim();
+  if (!val) { input.focus(); return; }
+  const accepted = tok.err.corrections.map(s => s.toLowerCase());
+  const matched = accepted.indexOf(val.toLowerCase()) >= 0;
+  if (matched) {
+    tok.err.found = true;
+    tok.err.userFix = tok.err.corrections[accepted.indexOf(val.toLowerCase())];
+    ehState.foundErrors++;
+    ehState.activeIdx = -1;
+    renderErrorHuntParagraph();
+    updateErrorHuntHud();
+    if (ehState.foundErrors >= ehState.totalErrors) setTimeout(finishErrorHunt, 450);
+  } else {
+    // Wrong fix — count as miss, close box (keep word clickable again)
+    ehState.misses++;
+    ehState.activeIdx = -1;
+    const el = document.querySelector('#eh-paragraph .eh-word[data-i="' + i + '"]');
+    if (el) { el.innerHTML = ehEscapeHtml(tok.text); el.classList.add('wrong-click'); setTimeout(() => el.classList.remove('wrong-click'), 450); }
+    updateErrorHuntHud();
+  }
+}
+
+function errorHuntCancelFix() {
+  if (ehState.activeIdx < 0) return;
+  const i = ehState.activeIdx;
+  const tok = ehState.tokens[i];
+  ehState.activeIdx = -1;
+  const el = document.querySelector('#eh-paragraph .eh-word[data-i="' + i + '"]');
+  if (el && tok) el.innerHTML = ehEscapeHtml(tok.text);
+}
+
+function updateErrorHuntHud() {
+  document.getElementById('eh-found').textContent = ehState.foundErrors + '/' + ehState.totalErrors;
+  document.getElementById('eh-miss').textContent  = ehState.misses;
+  const pct = ehState.totalErrors > 0 ? (ehState.foundErrors / ehState.totalErrors) * 100 : 0;
+  const fill = document.getElementById('eh-progress-fill');
+  if (fill) fill.style.width = pct + '%';
+}
+
+function errorHuntGiveUp() {
+  if (ehState.ended) return;
+  // Mark unfound errors as 'missed' (revealed)
+  ehState.tokens.forEach(tok => { if (tok.err && !tok.err.found) tok.err.missed = true; });
+  renderErrorHuntParagraph();
+  finishErrorHunt(true);
+}
+
+function finishErrorHunt(revealed) {
+  if (ehState.ended) return;
+  ehState.ended = true;
+  const elapsed = Math.round((Date.now() - ehState.startTime) / 1000);
+  document.getElementById('eh-game').style.display = 'none';
+  document.getElementById('eh-done').style.display = '';
+  const de = uiLang === 'de';
+  // Score: 10 per found, -2 per miss, min 0. Cap at 10*totalErrors.
+  const rawScore = ehState.foundErrors * 10 - ehState.misses * 2;
+  const score = Math.max(0, rawScore);
+  const perfect = ehState.foundErrors === ehState.totalErrors && ehState.misses === 0 && !revealed;
+  const prev = ehGetBest(ehState.para.id);
+  const isNewBest = score > prev;
+  if (isNewBest) ehSaveBest(ehState.para.id, score);
+  const xp = Math.min(score, 60);
+  document.getElementById('eh-done-title').textContent = perfect ? (de?'🎯 Alles perfekt!':'🎯 Flawless!') : (revealed ? (de?'🔎 Aufgedeckt':'🔎 Revealed') : (de?'🎉 Fertig!':'🎉 Done!'));
+  document.getElementById('eh-done-stats').innerHTML =
+    (de?'Gefunden':'Found') + ': <strong>' + ehState.foundErrors + '/' + ehState.totalErrors + '</strong><br>' +
+    (de?'Fehlgriffe':'Misses') + ': <strong>' + ehState.misses + '</strong><br>' +
+    (de?'Zeit':'Time') + ': <strong>' + elapsed + 's</strong><br>' +
+    (de?'Punkte':'Score') + ': <strong style="color:var(--accent);">' + score + '</strong>' + (isNewBest ? ' 🏆 ' + (de?'Rekord':'Best') : '') + '<br>' +
+    '<span style="color:var(--accent);font-weight:700;">+' + xp + ' XP</span>';
+  if (xp > 0) awardGrammarXP(xp, 'Error Hunt');
+}
+
+function endErrorHunt() {
+  ehState.ended = true;
   document.body.classList.remove('playing');
   showGrammarHomeScreen();
 }
@@ -12008,6 +12396,15 @@ function showGrammarHomeScreen() {
     var gbSub   = document.getElementById('grammar-blitz-entry-subtitle');
     if (gbTitle) gbTitle.textContent = uiLang==='de' ? 'Grammar Blitz' : 'Grammar Blitz';
     if (gbSub)   gbSub.textContent   = uiLang==='de' ? '60-Sekunden Speed-Runde' : '60-second speed round';
+  }
+  // Error Hunt card — grammar mode only
+  var ehSec = document.getElementById('error-hunt-section');
+  if (ehSec) {
+    ehSec.style.display = '';
+    var ehTitle = document.getElementById('error-hunt-entry-title');
+    var ehSub   = document.getElementById('error-hunt-entry-subtitle');
+    if (ehTitle) ehTitle.textContent = uiLang==='de' ? 'Fehler-Jagd' : 'Error Hunt';
+    if (ehSub)   ehSub.textContent   = uiLang==='de' ? 'Fehler finden und korrigieren' : 'Find & fix the mistakes';
   }
   // Overall level bar
   var totalXp = (d.xp || 0) + (d.grammarXp || 0);
