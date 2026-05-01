@@ -2,6 +2,14 @@
 
 Reverse-chronological release history. Going forward, update on each substantive change. Earlier history (pre-2026-04-11) lives only in `git log`.
 
+## 2026-05-01 — Phase 0 polish
+- Fix stray "60" timer always visible at top of Komplett / Sprint / MC / Flashcards (`speed-timer-wrap` is now properly hidden when not in Speed Round).
+- Fix XP-for-zero-correct exploit: ending a session with no correct answers now awards 0 XP instead of streak-bonus + perfect-round bonus.
+- Results page: show a friendly placeholder when a session ended without any attempted words, instead of a blank `RESULTS` box.
+- Story Mode prologue: scene images now load (references corrected from `lp-prologue-0X.jpg` → `prologue-0X.jpg` to match the actual files on disk).
+- Word Hunt failure UX softened: 2 mistakes allowed per round before the round ends (was 1). After the first wrong tap, a "Wrong — 1 try left!" / "Falsch — du hast noch 1 Versuch!" message shows.
+- (Note: Memory Match — vocab and grammar — was already softly forgiving on wrong matches; no change needed there.)
+
 ## 2026-04-20 — The Lost Pages
 - New thematic story campaign: *The Lost Pages / Die verlorenen Seiten* (G1 redesign with prologue scenes and characters Penny, Rex)
 
