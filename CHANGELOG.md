@@ -2,6 +2,15 @@
 
 Reverse-chronological release history. Going forward, update on each substantive change. Earlier history (pre-2026-04-11) lives only in `git log`.
 
+## 2026-05-02 — Sprint 1: tasks rebuild functional fixes
+First wave of fixes from the G1 tasks audit (`Grade1_Tasks_Audit.md`):
+- **Speed Round timer race**: `checkAnswer()` now guards against post-deadline submissions — answering after the 60s timer expires no longer counts.
+- **Grammar hint XP penalty restructured**: penalty no longer fires at hint time (which double-punished wrong answers). Now applied per-item at grading time in `processGrammarAnswer()`, and `nextGrammarItem()` resets `hintUsed` + `hintCount` so penalties don't leak across items in the same session.
+- **Daily Challenge null-CLASS_ID guard**: `dailySeed(getTodayStr(), CLASS_ID || 'guest')` — offline/guest mode now produces deterministic seeds.
+- **Word of the Day stability**: `getWordOfTheDay()` now sorts vocab alphabetically by headword before indexing, so adding new vocab doesn't shift today's WOTD.
+- **Error correction grading tightened**: removed the substring + word-extraction + 50%-length-partial fallbacks for error-correction items (was too lenient — students passed by typing fragments like "they are" or "and tom are" when "are" was the actual fix). Transformation tasks keep the multi-word leniency. Add explicit `a:[]` alternatives where genuine variants should be accepted.
+- (Deferred to a follow-up sprint: flashcard persistence race fix, grammarLevelFilter init verification.)
+
 ## 2026-05-01 — Phase 0 polish
 - Fix stray "60" timer always visible at top of Komplett / Sprint / MC / Flashcards (`speed-timer-wrap` is now properly hidden when not in Speed Round).
 - Fix XP-for-zero-correct exploit: ending a session with no correct answers now awards 0 XP instead of streak-bonus + perfect-round bonus.

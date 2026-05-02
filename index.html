@@ -5337,7 +5337,7 @@ function getDailyChallengeWords() {
   for (const [src, entries] of Object.entries(vocabData)) {
     for (const e of entries) allWords.push({ ...e, source: src });
   }
-  const rng = seededRandom(dailySeed(getTodayStr(), CLASS_ID));
+  const rng = seededRandom(dailySeed(getTodayStr(), CLASS_ID || 'guest'));
   for (let i = allWords.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1));
     [allWords[i], allWords[j]] = [allWords[j], allWords[i]];
@@ -5347,7 +5347,7 @@ function getDailyChallengeWords() {
 
 function getDailyChallengeTypes() {
   const types = ['context', 'definition', 'translation'];
-  const rng = seededRandom(dailySeed(getTodayStr(), CLASS_ID) + 999);
+  const rng = seededRandom(dailySeed(getTodayStr(), CLASS_ID || 'guest') + 999);
   return Array.from({length: 10}, () => types[Math.floor(rng() * types.length)]);
 }
 
@@ -9603,6 +9603,8 @@ function gradeAnswer(userInput, expected, profile, extraAlts) {
 
 function checkAnswer() {
   if (state.answered) { nextWord(); return; }
+  // Sprint 1.1: prevent post-deadline submissions in Speed Round from scoring.
+  if (state.isSpeedRound && state.speedTimeLeft <= 0) return;
   const input = document.getElementById('answer-input');
   const userAnswer = input.value.trim();
   if (!userAnswer) return;
@@ -10018,6 +10020,9 @@ function getWordOfTheDay() {
     for (const e of entries) allWords.push({ ...e, source: src });
   }
   if (allWords.length === 0) return null;
+  // Sprint 1.6: sort by headword first so the index is stable across content
+  // additions (otherwise inserting new vocab can shift today's WOTD mid-day).
+  allWords.sort((a, b) => (a.w || '').localeCompare(b.w || ''));
   // Deterministic daily seed
   const today = new Date();
   const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
@@ -13755,19 +13760,15 @@ function checkGrammarTyped() {
       var normAExp = expandContractions(normA);
       // Exact match after normalization
       if (normAnswer === normA || normAnswerExp === normAExp || normAnswer === normAExp || normAnswerExp === normA) { isCorrect = true; break; }
-      // Accept just the corrected word(s) if they typed only the fix (for error-correction)
-      if (item.t === 'error-correction' && normAnswer.length >= 1) {
-        // Check if what they typed is a key word in the correct answer
-        var correctWords = normA.split(' ');
-        if (correctWords.indexOf(normAnswer) >= 0) { isCorrect = true; break; }
-        // Check if it's the corrected portion (difference between prompt and answer)
-        var promptNorm = norm(item.p.replace(/^Find and fix the mistake:\s*/i, ''));
-        var promptWords = promptNorm.split(' ');
-        var diffWords = correctWords.filter(function(w) { return promptWords.indexOf(w) < 0; });
-        if (diffWords.length > 0 && diffWords.join(' ') === normAnswer) { isCorrect = true; break; }
-      }
-      // Partial match — ONLY for error-correction and transformation with multi-word answers
-      if ((item.t === 'error-correction' || item.t === 'transformation') && normAnswer.split(' ').length >= 2) {
+      // Sprint 1.7: error-correction now requires exact match against item.c
+      // or any item.a alternative (after normalization + contraction expansion).
+      // Substring + word-extraction + 50%-length-partial fallbacks have been
+      // removed — they were too lenient (a student typing "they are" passed
+      // when "are" was the actual fix; "and tom are" passed by containing "are").
+      // Add explicit alternatives to item.a if a real variant should be accepted.
+      // Partial match — ONLY for transformation with multi-word answers (kept
+      // because transformation legitimately has multiple acceptable orderings).
+      if (item.t === 'transformation' && normAnswer.split(' ').length >= 2) {
         if (normA.includes(normAnswer) && normAnswer.length >= normA.length * 0.5) { isCorrect = true; break; }
         if (normAnswer.includes(normA) && normA.length >= normAnswer.length * 0.5) { isCorrect = true; break; }
       }
@@ -13808,6 +13809,10 @@ function processGrammarAnswer(item, answer, isCorrect, isClose) {
     var comboTier = getComboTier(grammarSession.combo);
     xp = Math.round(10 * comboTier.mult);
     if (grammarSession.hintUsed) xp = Math.round(xp * 0.5);
+    // Sprint 1.2: deeper penalty for spamming hints (3+ on this item) — applied
+    // here at grading time instead of in showGrammarHint, so it scales with the
+    // actual XP earned.
+    if ((grammarSession.hintCount || 0) >= 3) xp = Math.max(1, xp - 5);
     grammarSession.xpEarned += xp;
     // Show XP burst animation
     showXPBurst(xp);
@@ -13859,14 +13864,13 @@ function showGrammarHint() {
   if (grammarSession.combo >= 2) showComboLost();
   grammarSession.combo = 0;
   updateComboBadge();
-  // Track hint count for XP penalty
+  // Track hint count. Sprint 1.2: don't deduct from session XP here — penalty
+  // is applied per-item in processGrammarAnswer at grading time, where it
+  // can scale with the actual XP earned.
   grammarSession.hintCount = (grammarSession.hintCount || 0) + 1;
-  if (grammarSession.hintCount >= 3) {
-    grammarSession.xpEarned = Math.max(0, grammarSession.xpEarned - 5);
-  }
   var hintBox = document.getElementById('grammar-hint-box');
   if (hintBox) {
-    var penaltyText = '<div style="font-size:0.65rem;color:var(--wrong);margin-top:6px;">' + (uiLang==='de' ? '⚠️ Combo zurückgesetzt' : '⚠️ Combo reset') + (grammarSession.hintCount >= 3 ? ' · -5 XP' : '') + '</div>';
+    var penaltyText = '<div style="font-size:0.65rem;color:var(--wrong);margin-top:6px;">' + (uiLang==='de' ? '⚠️ Combo zurückgesetzt' : '⚠️ Combo reset') + (grammarSession.hintCount >= 3 ? (uiLang==='de' ? ' · weniger XP' : ' · less XP') : '') + '</div>';
     hintBox.innerHTML = '💡 ' + item.h + (item.hd ? '<br><span style="color:var(--muted);font-style:italic;">🇩🇪 ' + item.hd + '</span>' : '') + penaltyText;
     hintBox.style.display = '';
   }
@@ -13876,6 +13880,10 @@ function showGrammarHint() {
 function nextGrammarItem() {
   grammarSession.index++;
   grammarSession.answered = false;
+  // Sprint 1.2: reset per-item hint state so the half-XP / 3-hint penalties
+  // don't leak across items in the same session.
+  grammarSession.hintUsed = false;
+  grammarSession.hintCount = 0;
   if (grammarSession.index >= grammarSession.items.length) {
     showGrammarResults();
   } else {
@@ -14088,7 +14096,7 @@ function getDailyGrammarItems() {
   var battleTypes = ['gap-fill', 'multiple-choice', 'context-picker'];
   var candidates = grammarItems.filter(function(i) { return battleTypes.indexOf(i.t) >= 0 && i.ds && i.ds.length >= 3; });
   if (candidates.length === 0) return [];
-  var rng = seededRandom(dailySeed(getTodayStr(), CLASS_ID));
+  var rng = seededRandom(dailySeed(getTodayStr(), CLASS_ID || 'guest'));
   for (var i = candidates.length - 1; i > 0; i--) {
     var j = Math.floor(rng() * (i + 1));
     var tmp = candidates[i]; candidates[i] = candidates[j]; candidates[j] = tmp;
