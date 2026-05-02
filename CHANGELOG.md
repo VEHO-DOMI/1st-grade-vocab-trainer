@@ -2,6 +2,12 @@
 
 Reverse-chronological release history. Going forward, update on each substantive change. Earlier history (pre-2026-04-11) lives only in `git log`.
 
+## 2026-05-02 — Micro-sprint: clean audit baseline
+Closes the small-scale content + schema issues identified by the new audit tooling (`TOOLS/sprint-audit/`).
+- Renamed two duplicate grammar item IDs: `m1-u4-because-sb-001` (second instance → `-002`), and `m1-u7-adverbs-frequency-sb-001` (second instance → `-003`, since `-002` was already taken).
+- Rewrote 15 vocab entries with definition or context-sentence leakage to remove headword tokens from their definitions and sentences. Affected entries: "Her name is", "His name is" (Unit 3); "Help me!" (Unit 6); "orange", "glass" (Unit 7); "a day", "a week" (Unit 9); "Can I help you?", "tin" (Unit 10); "9 o'clock", "to skateboard", "to hide" (Unit 11); "It's my birthday.", "How old are you?" (Unit 12); "to radio" (Unit 13).
+- Audit baseline now clean: 0 schema issues, 0 vocab leaks across 759 entries / 858 grammar items.
+
 ## 2026-05-02 — Sprint 1: tasks rebuild functional fixes
 First wave of fixes from the G1 tasks audit (`Grade1_Tasks_Audit.md`):
 - **Speed Round timer race**: `checkAnswer()` now guards against post-deadline submissions — answering after the 60s timer expires no longer counts.
