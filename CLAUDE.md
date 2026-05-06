@@ -16,6 +16,10 @@ Single-file SPA: HTML, CSS, JS, and vocab data are all bundled into `index.html`
 ├── index.html         ← entire app (HTML + inline CSS + inline JS + vocabData)
 ├── avatars/           ← 50 PNG avatars (01.png … 50.png)
 ├── campaign/          ← story-mode assets (prologue images, character art for Lost Pages)
+├── activity/          ← Activity Game sibling app (Draw / Show / Explain)
+│   ├── index.html     ← standalone group game; no login, no Firebase, no XP
+│   └── data/
+│       └── activity-words.js  ← auto-generated; rebuild via TOOLS/activity-audit-g1/
 └── README.md, CLAUDE.md, CHANGELOG.md
 ```
 
@@ -51,6 +55,8 @@ Single-file SPA: HTML, CSS, JS, and vocab data are all bundled into `index.html`
 **Live multiplayer:**
 - Battle Arena — live duels vs classmates
 - Class Quiz — Kahoot-style teacher-orchestrated round
+
+**Activity Game (sibling app at `activity/`):** teacher-orchestrated group game — Draw / Show / Explain (multi-select), 30/60/90 s rounds, 3/5/8/∞ rounds-per-group, multi-select 15-unit picker, group scoring with tie-break, optional time bonus. No login. Words come from `activity/data/activity-words.js` (single primary category per word, 759 entries categorized through an A1 lens). Regenerate via `TOOLS/activity-audit-g1/build-activity-words.js` after editing `teacher-overrides.csv`.
 
 ## Firebase
 

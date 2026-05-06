@@ -2930,6 +2930,18 @@ body.playing .header-container { display: none; }
     </button>
   </div>
 
+  <!-- Activity Game — full width card (sibling app at /activity/) -->
+  <div class="home-section">
+    <button class="home-fullwidth-card" id="home-activity-btn" onclick="window.location.href='activity/'">
+      <span class="home-fullwidth-icon">🎯</span>
+      <div class="home-fullwidth-info">
+        <span class="home-fullwidth-title" id="home-activity-title">Activity Game</span>
+        <span class="home-fullwidth-subtitle" id="home-activity-subtitle">Zeichnen, zeigen, erklären — Klassenspiel</span>
+      </div>
+      <span class="home-fullwidth-arrow">→</span>
+    </button>
+  </div>
+
   <!-- Battle Arena — full width card -->
   <div class="home-section">
     <button class="home-fullwidth-card" id="btn-battle" onclick="openBattleLobby()" style="display:none;">
@@ -12210,6 +12222,11 @@ showHomeScreen = function() {
       var wSub = document.getElementById('home-words-subtitle'); if (wSub) wSub.textContent = uiLang==='de' ? 'Vokabeln nachschlagen und mit Karteikarten üben' : 'Look up words and study with flashcards';
       wordsBtn.onclick = function() { showWordReference(); };
     }
+    // Activity game card
+    var actTitle = document.getElementById('home-activity-title');
+    if (actTitle) actTitle.textContent = uiLang==='de' ? 'Activity Game' : 'Activity Game';
+    var actSub = document.getElementById('home-activity-subtitle');
+    if (actSub) actSub.textContent = uiLang==='de' ? 'Zeichnen, zeigen, erklären — Klassenspiel' : 'Draw, show, explain — group game';
     // Smart review hint
     var srHint = document.getElementById('smart-review-hint');
     var reviewWords = getSmartReviewWords();

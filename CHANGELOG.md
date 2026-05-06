@@ -2,6 +2,15 @@
 
 Reverse-chronological release history. Going forward, update on each substantive change. Earlier history (pre-2026-04-11) lives only in `git log`.
 
+## 2026-05-06 — Activity Game mode
+- New sibling app at `activity/` — teacher-orchestrated group game for 1ABC: **Draw It** ✏️ / **Show It** 🎭 / **Explain It** 💬, plus mix-mode with per-word category cue.
+- Setup: ≥2 group names, time-per-round picker (30 / 60 / 90 s), 3/5/8/∞ rounds-per-group, multi-select modes (≥1 required), multi-select 15-unit grid with quick-chips, live "words available" counter, optional time-bonus toggle.
+- Group scoring with two-stage tie-break (correct-total then skip-total) and 🤝 Tie badge.
+- 759 MORE 1 vocab entries categorized **from scratch** through an A1 10–11 yo lens — every word reviewed individually with a written justification (532 high-confidence calls, 227 medium-confidence). Distribution: 295 Draw / 250 Show / 214 Explain — heavily Draw-biased (39%) because A1 corpus is concrete-noun-dominated (food, clothes, body parts, household, animals). Tooling at `TOOLS/activity-audit-g1/`; per-word reasoning in `reports/g1-categorizations.csv`; review guide in `TEACHER_REVIEW.md`. The master `MORE1_Master_Vocabulary_List_Units_1-15.docx` was used for cross-reference (clean).
+- Cross-grade consistency: words appearing in multiple grades (`whisper`, `crawl`, `shocked`, `scissors`, `to dance`, `Grandma`, `to laugh`, etc.) get identical categorizations.
+- Mobile-first dark theme with G1 forest-green brand accent. Rich SFX. Big 84-px Correct + Skip buttons; Undo demoted.
+- Home-screen card "🎯 Activity Game" links to `activity/`. DE/EN swap wired into the existing `showHomeScreen` updater. No login / Firebase / XP.
+
 ## 2026-05-02 — Micro-sprint: clean audit baseline
 Closes the small-scale content + schema issues identified by the new audit tooling (`TOOLS/sprint-audit/`).
 - Renamed two duplicate grammar item IDs: `m1-u4-because-sb-001` (second instance → `-002`), and `m1-u7-adverbs-frequency-sb-001` (second instance → `-003`, since `-002` was already taken).
