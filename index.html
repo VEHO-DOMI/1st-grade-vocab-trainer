@@ -10274,19 +10274,20 @@ function showBattleLobby(players) {
   });
   const modal = document.createElement('div');
   modal.className = 'battle-modal-bg battle-modal';
+  modal.style.cssText = 'max-height:90vh;display:flex;flex-direction:column;box-sizing:border-box;';
   var duelLabel = state.mode === 'grammar' ? '🧠 ' + (uiLang==='de'?'Grammatik-Duell':'Grammar Duel') : '🏆 ' + (uiLang==='de'?'Wort-Duell':'Word Duel');
   var titleText = uiLang==='de' ? '⚔️ Battle Arena' : '⚔️ Battle Arena';
   var onlineText = players.length + ' ' + (uiLang==='de' ? (players.length===1?'Mitschüler':'Mitschüler') + ' online' : 'classmate' + (players.length>1?'s':'') + ' online');
   var classQuizLabel = uiLang==='de' ? '🎓 Klassenquiz beitreten' : '🎓 Join Class Quiz';
   var historyLabel = uiLang==='de' ? '📋 Kampfverlauf' : '📋 Battle History';
   var cancelLabel = uiLang==='de' ? 'Schließen' : 'Cancel';
-  modal.innerHTML = '<div style="text-align:center;margin-bottom:16px;"><div style="font-size:18px;font-weight:700;">' + titleText + '</div><div style="font-size:13px;opacity:0.5;margin-top:4px;">' + onlineText + '</div></div>' +
-    '<button onclick="document.getElementById(\'battle-lobby-overlay\').remove();openClassQuizJoin();" style="width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--accent-light),var(--accent));border:none;color:#fff;margin-bottom:10px;">' + classQuizLabel + '</button>' +
-    '<div>' + listHtml + '</div>' +
-    '<div style="border-top:1px solid var(--card-border);margin-top:12px;padding-top:12px;">' +
+  modal.innerHTML = '<div style="text-align:center;margin-bottom:16px;flex-shrink:0;"><div style="font-size:18px;font-weight:700;">' + titleText + '</div><div style="font-size:13px;opacity:0.5;margin-top:4px;">' + onlineText + '</div></div>' +
+    '<button onclick="document.getElementById(\'battle-lobby-overlay\').remove();openClassQuizJoin();" style="width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--accent-light),var(--accent));border:none;color:#fff;margin-bottom:10px;flex-shrink:0;">' + classQuizLabel + '</button>' +
+    '<div style="overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;flex:1 1 auto;margin:0 -4px;padding:0 4px;">' + listHtml + '</div>' +
+    '<div style="border-top:1px solid var(--card-border);margin-top:12px;padding-top:12px;flex-shrink:0;">' +
     '<button onclick="document.getElementById(\'battle-lobby-overlay\').remove();openDuelHub();" style="width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--accent-glow);border:1px solid var(--accent);color:var(--accent);">' + duelLabel + '</button>' +
     '<button onclick="document.getElementById(\'battle-lobby-overlay\').remove();showBattleHistory();" style="width:100%;padding:10px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:var(--card);border:1px solid var(--card-border);color:var(--text);margin-top:8px;">' + historyLabel + '</button>' +
-    '</div><div style="text-align:center;margin-top:12px;"><button onclick="document.getElementById(\'battle-lobby-overlay\').remove()" class="battle-modal-close">' + cancelLabel + '</button></div>';
+    '</div><div style="text-align:center;margin-top:12px;flex-shrink:0;"><button onclick="document.getElementById(\'battle-lobby-overlay\').remove()" class="battle-modal-close">' + cancelLabel + '</button></div>';
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
 }
